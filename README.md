@@ -6,8 +6,6 @@ NeuSDK_demo是一个开源工程，为了演示如何使用NeuSDK。
 
 # 算法
 
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
 |                |功能描述|应用场景                        |
 |----------------|-------------------------------|-----------------------------|
 |人脸检测|单人脸检测、多人脸检测、验证活体（单目、双目）|门禁场景|
