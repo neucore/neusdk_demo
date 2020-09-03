@@ -1,4 +1,4 @@
-# Welcome to neusdk_demo!
+# Welcome to NeuSDK_Demo!
 
 NeuSDK是Neucore实现的人脸人形相关的SDK，支持Linux和Android操作系统，包含多项专为嵌入式系统设计的算法模型。算法包在Amlogic多款AI芯片上优化和裁剪，在实时性和精度上都达到业内领先水准。
 
