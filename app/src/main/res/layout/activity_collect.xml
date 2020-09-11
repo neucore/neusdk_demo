@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_port2"
+    android:orientation="vertical">
+<include layout="@layout/title"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <com.neucore.neusdk_demo.view.AutoFitTextureView
+            android:id="@+id/texture_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
+        <ImageView
+            android:id="@+id/iv_parent"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:background="@mipmap/photo_bg" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <LinearLayout
+                android:id="@+id/ll_success"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:visibility="invisible"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="5dp"
+                    android:src="@mipmap/success" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="录入成功"
+                    android:textSize="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
+            <Button
+                android:id="@+id/btn_take_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确认录入"
+                android:textSize="20dp"
+                android:background="@drawable/btn_bg"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"/>
+            <Button
+                android:id="@+id/btn_re_take_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="录入人脸"
+                android:layout_margin="10dp"
+                android:background="@drawable/btn_bg"
+                android:textSize="20dp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

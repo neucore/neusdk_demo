@@ -1,0 +1,81 @@
+apply plugin: 'com.android.library'
+//apply plugin: 'org.greenrobot.greendao'//添加
+apply plugin: 'android-aspectjx'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+//greendao {
+//    schemaVersion 7
+//    daoPackage 'com.neucore.greendao.gen'
+//}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'com.lzy.net:okgo:3.0.4'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc4'
+    implementation 'com.qianwen:okhttp-utils:3.8.0'
+    implementation 'com.qianwen:update-app:3.5.2'//实现自我更新
+    implementation 'commons-net:commons-net:3.6'
+
+}
+
+task makeJar(type: Copy) {
+    delete 'build/libs/neulink.jar' //删除build/libs/文件夹下名字为TestJarV1.jar的jar包
+    from('build/intermediates/packaged-classes/release/') //从这个目录下取出默认jar包
+    into('build/libs/') //将jar包输出到指定目录下
+    include('classes.jar')
+    rename('classes.jar', 'neulink.jar') //自定义jar包的名字
+}
+
+makeJar.dependsOn(build)
+
+aspectjx {
+    //关闭AspectJX功能
+    enabled true
+
+    //排除所有package路径中包含`android.support`的class文件及库（jar文件）
+    exclude 'android.support'
+    //exclude 'com.fasterxml'
+    exclude '.jar'
+    //includes the libs that you want to weave
+    //includeJarFilter 'universal-image-loader', 'AspectJX-Demo/library'
+
+    //excludes the libs that you don't want to weave
+    //excludeJarFilter 'universal-image-loader'
+
+}
+
