@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.neulink;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -81,9 +82,17 @@ public class SampleConnector {
     Handler tHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-//            Intent intent = new Intent(application, LogService.class);
-//            application.startService(intent);
-//            Log.i(TAG,"success startLogService");
+            Intent intent = new Intent(application, LogService.class);
+            Log.i(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
+            Log.i(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.i(TAG,"startForegroundService");
+                application.startForegroundService(intent);
+            } else {
+                Log.i(TAG,"startService");
+                application.startService(intent);
+            }
+            Log.i(TAG,"success startLogService");
             return true;
         }
     });

@@ -2,6 +2,9 @@ package com.neucore.neulink.impl;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -9,11 +12,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.util.DeviceUtils;
@@ -97,11 +103,29 @@ public class LogService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        /**
+         * Android >=8
+         */
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "log_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("")
+                    .setContentText("").build();
+
+            startForeground(1, notification);
+        }
+
         init();
         register();
         deploySwitchLogFileTask();
         new LogCollectorThread().start();
     }
+
 
     @SuppressLint("InvalidWakeLockTag")
     private void init(){
