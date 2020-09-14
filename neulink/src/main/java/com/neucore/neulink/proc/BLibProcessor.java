@@ -375,6 +375,10 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             File tmp = images[i];
             //工号.jpg即ext_id=工号
             String tmpName = tmp.getName();
+            if(tmpName==null||tmpName.trim().length()==0){
+                Log.i(TAG,"图片文件为空，其不符合【ext_id.jpg】规则");
+                continue;
+            }
             String ext_id = tmpName.substring(0, tmpName.indexOf("."));
             Map imageData = new HashMap();
             imageData.put("ext_id", ext_id);
