@@ -1,15 +1,12 @@
 package com.neucore.neulink.cfg;
 
-//import org.apache.commons.configuration.PropertiesConfiguration;
-
 import android.content.Context;
 import android.util.Log;
 
-import com.alibaba.sdk.android.oss.OSS;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.EnDecoderUtil;
+import com.neucore.neulink.util.EnDecUtil;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
@@ -211,7 +208,7 @@ public class ConfigContext {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             encrypt = Base64.getDecoder().decode(setting);
         }
-        setting = new String(EnDecoderUtil.DESDecrypt("neucore-security-key",encrypt));
+        setting = new String(EnDecUtil.DESDecrypt("neucore-security-key",encrypt));
         return setting;
     }
 }
