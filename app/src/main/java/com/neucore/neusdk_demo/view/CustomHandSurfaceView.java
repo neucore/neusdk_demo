@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
@@ -11,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -72,7 +74,8 @@ public class CustomHandSurfaceView extends SurfaceView implements
         try {
             String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
             if ("5".equals(type) ) {  //虚拟背景
-                saveBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_surface_drawable),AppInfo.getWidthPingMu(),AppInfo.getHeightPingMu(),true);
+                //saveBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_surface_drawable),AppInfo.getWidthPingMu(),AppInfo.getHeightPingMu(),true);
+                saveBitmap = Bitmap.createBitmap(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
             }else {  //手势检测 , Pose检测
                 saveBitmap = Bitmap.createBitmap(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
             }
@@ -227,7 +230,7 @@ public class CustomHandSurfaceView extends SurfaceView implements
 
                 }
             }
-        }else if ("4".equals(type)){ //手势
+        }else if ("4".equals(type)){ //Pose检测
             if (canvas != null){
                 for (int a = 0; a < rectList.size(); a++){
                     float[] pose_node = rectList.get(a).getPose_node();
@@ -292,19 +295,20 @@ public class CustomHandSurfaceView extends SurfaceView implements
                 Rect rectF = new Rect(0,0, AppInfo.getWidthPingMu(), AppInfo.getHeightPingMu());
                 for (int a = 0; a < rectList.size(); a++){
                     mpaint.setStyle(Paint.Style.STROKE);
-                    canvas.drawBitmap(saveBitmap,rect,rectF,mpaint);
+                    //两个Bitmap合成一个Bitmap   bitmapPeople 和 saveBitmap 合成一个bitmap
+                    canvas.drawBitmap(rectList.get(a).getBitmapPeople(),rect,rectF,mpaint);
                     //canvas.drawBitmap(int[] colors,0,0,0,0,saveBitmap.getWidth(),saveBitmap.getHeight(),false,mpaint);
 
-                    mpaint.setStyle(Paint.Style.FILL);
-                    mpaint.setStrokeWidth(dip2px(context, 2));
-                    mpaint.setTextSize(50);
-                    canvas.drawText(rectList.get(a).getText(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().top - 20,mpaint);
-                    canvas.drawText(rectList.get(a).getSwipe(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().bottom + 70,mpaint);
-
-                    canvas.drawColor(0x00FFFFFF);    //设置画布背景色
-                    mpaint.setStyle(Paint.Style.FILL);
-                    mpaint.setStrokeWidth(dip2px(context, 3));
-                    canvas.drawRect(rectList.get(a).getRect().left, rectList.get(a).getRect().top, rectList.get(a).getRect().right,rectList.get(a).getRect().bottom, mpaint);
+//                    mpaint.setStyle(Paint.Style.FILL);
+//                    mpaint.setStrokeWidth(dip2px(context, 2));
+//                    mpaint.setTextSize(50);
+//                    canvas.drawText(rectList.get(a).getText(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().top - 20,mpaint);
+//                    canvas.drawText(rectList.get(a).getSwipe(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().bottom + 70,mpaint);
+//
+//                    canvas.drawColor(0x00FFFFFF);    //设置画布背景色
+//                    mpaint.setStyle(Paint.Style.FILL);
+//                    mpaint.setStrokeWidth(dip2px(context, 3));
+//                    canvas.drawRect(rectList.get(a).getRect().left, rectList.get(a).getRect().top, rectList.get(a).getRect().right,rectList.get(a).getRect().bottom, mpaint);
 
                 }
             }
@@ -314,8 +318,66 @@ public class CustomHandSurfaceView extends SurfaceView implements
             mSurfaceHolder.unlockCanvasAndPost(canvas);
         }
 
-
     }
+
+    /**
+     * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
+     * @param backBitmap 在底部的位图
+     * @param frontBitmap 盖在上面的位图
+     * @return
+     */
+    public static Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
+
+        if (backBitmap == null || backBitmap.isRecycled()
+                || frontBitmap == null || frontBitmap.isRecycled()) {
+            return null;
+        }
+        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bitmap);
+        Rect baseRect  = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
+        Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
+        canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
+        return bitmap;
+    }
+
+    private Bitmap ChangeBitmap(Bitmap bitmap){
+        int bitmap_h;
+        int bitmap_w;
+        int mArrayColorLengh;
+        int[] mArrayColor;
+        int count = 0;
+        mArrayColorLengh = bitmap.getWidth() * bitmap.getHeight();
+        mArrayColor = new int[mArrayColorLengh];
+        bitmap_w=bitmap.getWidth();
+        bitmap_h =bitmap.getHeight();
+        int newcolor=-1;
+        for (int i = 0; i < bitmap.getHeight(); i++) {
+            for (int j = 0; j < bitmap.getWidth(); j++) {
+                //获得Bitmap 图片中每一个点的color颜色值
+                int color = bitmap.getPixel(j, i);
+                //将颜色值存在一个数组中 方便后面修改
+                // mArrayColor[count] = color;
+                int r = Color.red(color);
+                int g = Color.green(color);
+                int b = Color.blue(color);
+                int a =Color.alpha(color);
+                if (r==244&&g==67&&b==54){//把黄色的箭头白色 因为黄色箭头rgb大部分是255 255 33(值可以用画图工具取值) 组合
+                    // 但是还有小部分有别的值组成（箭头所不能变成全白有黄色斑点）
+                    a=0;
+                    r=255;
+                    g=255;
+                    b=255;
+                }
+                color = Color.argb(a, r, g, b);
+                mArrayColor[count]=color;
+                Log.i("imagecolor","============"+ mArrayColor[count]);
+                count++;
+            }
+        }
+        Bitmap mbitmap = Bitmap.createBitmap( mArrayColor, bitmap_w, bitmap_h, Bitmap.Config.ARGB_4444 );
+        return mbitmap;
+    }
+
 
     private void draw_line(float p1_x, float p1_y, float p2_x, float p2_y, float p1_score, float p2_score) {
         if (p1_score == 0.0f || p2_score == 0.0f) {

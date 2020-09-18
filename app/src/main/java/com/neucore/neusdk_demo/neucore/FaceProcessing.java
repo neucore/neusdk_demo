@@ -37,6 +37,8 @@ import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.AppInfo;
+import com.neucore.neusdk_demo.utils.SPUtils;
+import com.neucore.neusdk_demo.utils.SharePrefConstant;
 import com.neucore.neusdk_demo.utils.Size;
 import com.neucore.neusdk_demo.utils.Util;
 
@@ -175,7 +177,8 @@ public class FaceProcessing extends Thread {
             mIRimageWidth = paramImage.getWidth();
             mIRimageHeight = paramImage.getHeight();
 
-            mPendingIRFrameData = this.getBytesFromImageAsTypeIR(paramImage);
+            //mPendingIRFrameData = this.getBytesFromImageAsTypeIR(paramImage);
+            mPendingIRFrameData = this.getBytesFromImageAsTypeIRFast(paramImage);
             mIRDataready = true;
 
             // Notify the processor thread if the rgb data is ready
@@ -188,18 +191,22 @@ public class FaceProcessing extends Thread {
     /**
      * Sets the frame data received from the RGB camera.
      */
-    public void setRGBFrameData(Image paramImage) {
+    public void setRGBFrameData(Image paramImage,byte[] rgbData) {
 
         synchronized (mLock) {
-            if (mPendingRGBFrameData != null) {
-                mPendingRGBFrameData = null;
-            }
+//            if (mPendingRGBFrameData != null) {
+//                mPendingRGBFrameData = null;
+//            }
 
             mRGBimageWidth = paramImage.getWidth();
             mRGBimageHeight = paramImage.getHeight();
 
-            mPendingRGBFrameData = this.getBytesFromImageAsTypeRGB(paramImage);
-
+            String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
+            if ("2".equals(type)){ //双目专用
+                mPendingRGBFrameData = this.getBytesFromImageAsTypeRGBFast(paramImage);
+            }else {
+                mPendingRGBFrameData = rgbData;
+            }
             mRGBDataready = true;
 
             // Notify the processor thread if the ir data is ready
@@ -577,6 +584,31 @@ public class FaceProcessing extends Thread {
         return null;
     }
 
+    //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
+    public byte[] getBytesFromImageAsTypeRGBFast(Image image) {  //总共耗时3毫秒
+        Image.Plane Y = image.getPlanes()[0];
+        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
+        Image.Plane V = image.getPlanes()[2];
+
+        int Yb = Y.getBuffer().remaining();
+        int Ub = U.getBuffer().remaining();
+        int Vb = V.getBuffer().remaining();
+
+        byte[] data = new byte[Yb + Ub + Vb];
+
+        for (int s = 0; s < 3; s += 3){
+            if (s == 0){
+                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+            }else if (s == 1){
+                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+            }else if (s == 2){
+                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+            }
+        }
+        //上面的for循环,总共耗时 (5-2) = 3 毫秒
+        return data;
+    }
+
     public byte[] getBytesFromImageAsTypeIR(Image image) {
         try {
             //获取源数据，如果是YUV格式的数据planes.length = 3
@@ -662,6 +694,31 @@ public class FaceProcessing extends Thread {
             Log.i(TAG, e.toString());
         }
         return null;
+    }
+
+    //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
+    public byte[] getBytesFromImageAsTypeIRFast(Image image) {  //总共耗时3毫秒
+        Image.Plane Y = image.getPlanes()[0];
+        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
+        Image.Plane V = image.getPlanes()[2];
+
+        int Yb = Y.getBuffer().remaining();
+        int Ub = U.getBuffer().remaining();
+        int Vb = V.getBuffer().remaining();
+
+        byte[] data = new byte[Yb + Ub + Vb];
+
+        for (int s = 0; s < 3; s += 3){
+            if (s == 0){
+                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+            }else if (s == 1){
+                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+            }else if (s == 2){
+                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+            }
+        }
+        //上面的for循环,总共耗时 (5-2) = 3 毫秒
+        return data;
     }
 
     private OnFaceSuccessListener onFaceSuccessListener;

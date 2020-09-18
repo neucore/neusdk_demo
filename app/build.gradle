@@ -80,5 +80,6 @@ dependencies {
 
     //权限申请
     implementation 'pub.devrel:easypermissions:2.0.1'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
 }
