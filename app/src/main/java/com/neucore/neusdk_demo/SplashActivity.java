@@ -19,13 +19,23 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class SplashActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    public String[] CAMERA = {Manifest.permission.CAMERA};
+    //public String[] MOUNT = {Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
+    public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
     public String[] PHONE = {Manifest.permission.READ_PHONE_STATE};
+    public String[] CAMERA = {Manifest.permission.CAMERA};
+    public String[] LOCK = {Manifest.permission.WAKE_LOCK};
+    //public String[] WINDOW = {Manifest.permission.SYSTEM_ALERT_WINDOW};
+    public String[] KEYGUARD = {Manifest.permission.DISABLE_KEYGUARD};
+    public String[] WIFI = {Manifest.permission.ACCESS_WIFI_STATE};
+    //public String[] REQUEST = {Manifest.permission.REQUEST_INSTALL_PACKAGES};
+    public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
+    //public String[] READ_LOGS = {Manifest.permission.READ_LOGS};
     public String[] PERMISSIONS;
 
     {
-        PERMISSIONS = concatAll(STORAGE,CAMERA,PHONE);
+        PERMISSIONS = concatAll(STORAGE, NETWORK,PHONE,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
     }
+
     public <T> T[] concatAll(T[] first, T[]... rest) {
         int totalLength = first.length;
         for (T[] array : rest) {

@@ -1,11 +1,14 @@
 package com.neucore.neusdk_demo;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -32,7 +35,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.NeuSDK.NeuFaceNode;
+import com.bumptech.glide.Glide;
 import com.neucore.NeuSDK.NeuFaceQuality;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
@@ -72,15 +75,15 @@ import com.neucore.neusdk_demo.utils.WeiboDialogUtils;
 import com.neucore.neusdk_demo.view.AutoFitTextureView;
 import com.neucore.neusdk_demo.view.CustomHandSurfaceView;
 import com.neucore.neusdk_demo.view.CustomSurfaceView;
+import com.neucore.neusdk_demo.view.SeekAttentionView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -92,7 +95,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +114,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
+    private Handler dHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -143,6 +145,18 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                 case 3://检测到人脸
                     Bitmap bm2=(Bitmap)msg.obj;
                     setSuccess2(bm2);
+                    break;
+                case 4:
+                    String photo = (String)msg.obj;
+                    String url = registerPath + photo + ".jpg";
+                    Glide.with(DetectActivity.this).load(url).asBitmap().centerCrop().into(iv_parent);
+                    tv_yanzheng.setText("检测到人脸");
+
+                    ObjectAnimator animator = SeekAttentionView.tada(iv_parent);
+                    animator.setRepeatCount(1);
+                    animator.start();
+                    break;
+                default:
                     break;
             }
         }
@@ -192,6 +206,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                                 setPaintViewUIPose(image);
                             }else if ("5".equals(type)){ //虚拟背景
                                 setPaintViewUISegment(image);
+                            }else {
+                                setPaintViewUIPose(image);
                             }
                         }
                     }
@@ -199,7 +215,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
                 if (mFaceProcessor != null && !mFaceProcessor.getRGBDataready()) {
                     //LogUtils.d(TAG,"rgb  Dataready"+ reader.getHeight()+","+reader.getWidth());
-                    mFaceProcessor.setRGBFrameData(image);
+                    mFaceProcessor.setRGBFrameData(image,mPendingRGBFrameData);
                 } else {
                     Log.e(TAG,"mfaceProcessor="+(mFaceProcessor != null)+ " getRGBDataready ="+ mFaceProcessor.getRGBDataready());
                 }
@@ -208,15 +224,19 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         }
     };
 
+    private byte[] mPendingRGBFrameData;
+    private Bitmap saveBitmap;
+
+    //人脸框
     private void setPaintViewUI(Image image) {
         //LogUtils.d(TAG,"rgb  0 0 0 0 " );
         int mRGBimageWidth = image.getWidth();
         int mRGBimageHeight = image.getHeight();
 
-        //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        byte[] mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //byte[] mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //LogUtils.d(TAG,"rgb  2222" );
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+//        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式  这个快1毫秒
+        LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
         mat2.put(0,0,mPendingRGBFrameData);
@@ -270,7 +290,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         }
 
         long time = System.currentTimeMillis();
-        if (Math.abs(faceTime - time) > 500){
+        if (Math.abs(faceTime - time) > 1000){
             for (int i = 0; i < resultRgb.length; i++) {
                 //如果特征值有效,进行人脸识别
                 if (resultRgb[i].getFeatureValid() == true) {
@@ -304,16 +324,26 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
                     if (maxSum > 0.8) {
                         //如果大于阈值,识别结果绘制到 mat 中
-                        String name = name_org.get(maxID) + " maxSum=" + String.format("%.2f", maxSum);
+                        //String name = name_org.get(maxID) + " maxSum=" + String.format("%.2f", maxSum);
+                        String name = name_org.get(maxID);
                         faceTime = System.currentTimeMillis();
-                        System.out.println("eee     识别name: "+name);
+                        System.out.println("eee     识别name: " + name);
+
+                        Message msg = new Message();
+                        msg.what = 4;
+                        msg.obj = name;
+                        dHandler.sendMessage(msg);
                         //Imgproc.putText(rgb_mat, name, new Point(face_rect.x, face_rect.y), Imgproc.FONT_HERSHEY_SIMPLEX, 2, new Scalar(0, 0, 255), 4, 8);
                     }
+                }else {
+                    //清除记录
+                    dHandler.sendEmptyMessage(1);
                 }
             }
         }
 
     }
+
 
     private int paintViewUIHandNum = 0;
     //手势识别
@@ -323,8 +353,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         int mRGBimageHeight = image.getHeight();
 
         //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        byte[] mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //byte[] mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
@@ -484,6 +514,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
     }
 
+
     private int paintViewUIPoseNum = 0;
     //Pose检测
     private void setPaintViewUIPose(Image image) {
@@ -492,8 +523,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         int mRGBimageHeight = image.getHeight();
 
         //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        byte[] mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //byte[] mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
@@ -546,6 +577,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
     }
 
+
+    private int paintViewUISegmentNum = 0;
     //虚拟背景
     private void setPaintViewUISegment(Image image) {
         //LogUtils.d(TAG,"rgb  0 0 0 0 " );
@@ -553,8 +586,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         int mRGBimageHeight = image.getHeight();
 
         //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        byte[] mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //byte[] mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
@@ -565,74 +598,173 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         //LogUtils.d(TAG,"rgb  5555" );
         Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 
-        LogUtils.d(TAG,"rgb  6666" );
+        LogUtils.d(TAG,"rgb 虚拟背景  6666" );
         transpose(rgb_mat, rgb_mat);    //耗时4毫秒
         //LogUtils.d(TAG,"rgb  7777" );
         flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.d(TAG,"rgb 虚拟背景  8888" );
 
 
-        //获取虚拟背景int[]数据
-        Imgproc.cvtColor(rgb_mat,rgb_mat,Imgproc.COLOR_RGBA2BGR);
-        byte[] mask = new byte[rgb_mat.rows() * rgb_mat.cols()];
-        NeuSegmentFactory.getInstance().create().neu_iva_segment_detect(rgb_mat,mask);
-        LogUtils.d(TAG,"rgb  9999" );
+        long time = System.currentTimeMillis();
+        if (Math.abs(faceTime - time) > 3000){
+            //tHandler.sendEmptyMessage(BITMAP_DIALOG_SHOW);
 
-        int[] image_value = {244, 67, 54};
-        int size = rgb_mat.cols() * rgb_mat.rows() * 3;
-        byte[] color_map = new byte[size];
-        for(int i = 0; i < size; i++) {
-            color_map[i] = (byte) (image_value[i%3] * mask[i/3]);
+            //获取虚拟背景int[]数据
+            Imgproc.cvtColor(rgb_mat,rgb_mat,Imgproc.COLOR_RGBA2BGR);
+            byte[] mask = new byte[rgb_mat.rows() * rgb_mat.cols()];
+            NeuSegmentFactory.getInstance().create().neu_iva_segment_detect(rgb_mat,mask);
+            LogUtils.d(TAG,"rgb 虚拟背景  9999" );
+
+            int[] image_value = {244, 67, 54};  //#F44336
+            int size = rgb_mat.cols() * rgb_mat.rows() * 3;
+            byte[] color_map = new byte[size];
+            for(int i = 0; i < size; i++) {
+                color_map[i] = (byte) (image_value[i%3] * mask[i/3]);
+            }
+
+            Mat colorMat = new Mat(rgb_mat.rows() ,rgb_mat.cols(), CvType.CV_8UC3);
+            colorMat.put(0,0,color_map);
+
+            //addWeighted(rgb_mat, 0, color, 1, 0, rgb_mat);
+
+            Bitmap mDrawBitmap = Bitmap.createBitmap(colorMat.cols(), colorMat.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(colorMat, mDrawBitmap);
+            LogUtils.d(TAG,"rgb 虚拟背景  end  end  0000" );
+
+            //先将人形的黑色区域去除
+            Bitmap peopleBitmap = ChangeBitmap(mDrawBitmap,2); //把人之外的其他区域,变成透明色
+            LogUtils.d(TAG,"rgb 虚拟背景  end  end  1111" );
+
+            LogUtils.d(TAG,"rgb 虚拟背景  end  end  2222" );
+            //然后,人形和图片合成新的图片
+            Bitmap chBitmap = mergeBitmap(saveBitmap,peopleBitmap);
+            LogUtils.d(TAG,"rgb 虚拟背景  end  end  3333" );
+            //把人形变成透明色
+            Bitmap newBitmap = ChangeBitmap(chBitmap,1);
+
+            LogUtils.d(TAG,"rgb 虚拟背景  end  end  4444" );
+
+            List<NeuHandInfo> rectList = new ArrayList<>();
+            rectList.clear();
+            NeuHandInfo neuHandInfo = new NeuHandInfo();
+            neuHandInfo.setBitmapPeople(newBitmap);
+            rectList.add(neuHandInfo);
+            Util.sendIntEventMessge(Constants.HAND_START, rectList);
+
+            faceTime = System.currentTimeMillis();
+
+            //tHandler.sendEmptyMessage(BITMAP_DIALOG_HIDE);
         }
 
-        //System.out.println("31   所有点的坐标: " + Arrays.toString(color_map));
-
-//        List<NeuHandInfo> rectList = new ArrayList<>();
-//        rectList.clear();
-//        for (int i = 0; i < resultRgb.length; i++) {
-//
-//            NeuHandInfo neuHandInfo = new NeuHandInfo();
-//
-//            rectList.add(neuHandInfo);
-//        }
-//        if (rectList.size() > 0){
-//            paintViewUIPoseNum = 0;
-//            Util.sendIntEventMessge(Constants.HAND_START, rectList);
-//            //LogUtils.d(TAG,"rgb  10 10 10 10" );
-//        }else {
-//            if (paintViewUIPoseNum == 0){
-//                paintViewUIPoseNum++;
-//
-//                rectList.clear();
-//                NeuHandInfo neuHandInfo = new NeuHandInfo();
-//                neuHandInfo.setRect(new Rect(0,0,0,0));
-//
-//                rectList.add(neuHandInfo);
-//
-//                Util.sendIntEventMessge(Constants.HAND_START, rectList);
-//            }
-//        }
-
     }
+
+
+    /**
+     * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
+     * @param backBitmap 在底部的位图
+     * @param frontBitmap 盖在上面的位图
+     * @return
+     */
+    public Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
+
+        if (backBitmap == null || backBitmap.isRecycled()
+                || frontBitmap == null || frontBitmap.isRecycled()) {
+            return null;
+        }
+        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bitmap);
+        Rect baseRect  = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
+        Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
+        canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
+        return bitmap;
+    }
+
+    private Bitmap ChangeBitmap(Bitmap bitmap,int type){
+        int bitmap_h;
+        int bitmap_w;
+        int mArrayColorLengh;
+        int[] mArrayColor;
+        int count = 0;
+        mArrayColorLengh = bitmap.getWidth() * bitmap.getHeight();
+        mArrayColor = new int[mArrayColorLengh];
+        bitmap_w=bitmap.getWidth();
+        bitmap_h =bitmap.getHeight();
+        int newcolor=-1;
+        for (int i = 0; i < bitmap.getHeight(); i++) {
+            for (int j = 0; j < bitmap.getWidth(); j++) {
+                //获得Bitmap 图片中每一个点的color颜色值
+                int color = bitmap.getPixel(j, i);
+                //将颜色值存在一个数组中 方便后面修改
+                int r = Color.red(color);
+                int g = Color.green(color);
+                int b = Color.blue(color);
+                int a =Color.alpha(color);
+                //System.out.println("     r: "+r+"  g: "+g+"   b: "+b);
+                if (type == 1){
+                    if (r==244&&g==67&&b==54){//把人形变成透明色
+                        a=0;
+                        r=255;
+                        g=255;
+                        b=255;
+                    }
+                }else if (type == 2){
+                    if (r==0&&g==0&&b==0){  //把人形之外的其他区域,变成透明色
+                        a=0;
+                        r=255;
+                        g=255;
+                        b=255;
+                    }
+                }
+                color = Color.argb(a, r, g, b);
+                //bm.setPixel(col, row, Color.argb(a, r, g, b));
+                mArrayColor[count]=color;
+                //Log.i("imagecolor","============"+ mArrayColor[count]);
+                count++;
+            }
+        }
+        Bitmap mbitmap = Bitmap.createBitmap( mArrayColor, bitmap_w, bitmap_h, Bitmap.Config.ARGB_8888 );
+        return mbitmap;
+    }
+
+
 
     //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
     public byte[] getBytesFromImageAsType(Image image) {
+        //LogUtils.d(TAG,"rgb  1111   asType  1111" );
         Image.Plane Y = image.getPlanes()[0];
-        Image.Plane U = image.getPlanes()[1];
+        //LogUtils.d(TAG,"rgb  1111   asType  2222" );
+        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
+        //LogUtils.d(TAG,"rgb  1111   asType  3333" );
         Image.Plane V = image.getPlanes()[2];
+        //LogUtils.d(TAG,"rgb  1111   asType  4444" );
 
         int Yb = Y.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  5555" );
         int Ub = U.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  6666" );
         int Vb = V.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  7777" );
 
         byte[] data = new byte[Yb + Ub + Vb];
+        //LogUtils.d(TAG,"rgb  1111   asType  8888" );
 
-        Y.getBuffer().get(data, 0, Yb);
-        U.getBuffer().get(data, Yb, Ub);
-        V.getBuffer().get(data, Yb+ Ub, Vb);
+        for (int s = 0; s < 3; s += 3){
+            if (s == 0){
+                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999" );
+            }else if (s == 1){
+                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+            }else if (s == 2){
+                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+            }
+        }
+        //LogUtils.d(TAG,"rgb  1111   asType  9999  3333" );
         return data;
     }
+
 
     private int faceRecognNum = 0;
     private long faceTime = 0;
@@ -774,7 +906,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         ButterKnife.bind(this);
         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
         if ("0".equals(type) || "1".equals(type) || "2".equals(type)){ //单目,双目,人脸识别,才注册
-            //face_register();
+            face_register();
             ll_activity_detect_bottom.setVisibility(View.VISIBLE);
         }else {
             ll_activity_detect_bottom.setVisibility(View.GONE);
@@ -787,6 +919,10 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         heightPingMu = dm.heightPixels;
         AppInfo.setWidthPingMu(widthPingMu);
         AppInfo.setHeightPingMu(heightPingMu);
+
+        if ("5".equals(type)){
+            saveBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_surface_drawable),AppInfo.getWidthPingMu(),AppInfo.getHeightPingMu(),true);
+        }
 
         mPermissionHelper = new PermissionHelper(this, this);
         mPermissionHelper.requestPermissions();
@@ -807,12 +943,12 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     private ArrayList<byte[]> feature_org = new ArrayList<byte[]>();
     private ArrayList<byte[]> feature_mask = new ArrayList<byte[]>();
     private ArrayList<String> name_org = new ArrayList<String>();
+    public String registerPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + "/twocamera/photo/";
 
     //创建bitmapFactory对象，并设置config值
     BitmapFactory.Options options = new BitmapFactory.Options();
     public void face_register() {
-        String registerPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/twocamera/photo/";
         File face_file = new File(registerPath);
 
         //下面注册后缀为 jpg 的文件
@@ -940,6 +1076,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     }
 
     private boolean startPaintBoolean = false;
+    private static final int BITMAP_DIALOG_SHOW = 600;
+    private static final int BITMAP_DIALOG_HIDE = 601;
     Handler tHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -972,6 +1110,12 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                     }else { //单目 和 其他的(手势)
                         startPaintBoolean = true;
                     }
+                    break;
+                case BITMAP_DIALOG_SHOW:
+                    mWeiboDialog = WeiboDialogUtils.createLoadingDialog(DetectActivity.this, "虚拟背景生成中...");
+                    break;
+                case BITMAP_DIALOG_HIDE:
+                    WeiboDialogUtils.closeDialog(mWeiboDialog);
                     break;
                 default:
                     break;
@@ -1132,12 +1276,12 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                     Message msg = new Message();
                     msg.what = 2;
                     msg.obj = bitmap;
-                    handler.sendMessage(msg);
+                    dHandler.sendMessage(msg);
                 }else{
                     Message msg = new Message();
                     msg.what = 3;
                     msg.obj = face;
-                    handler.sendMessage(msg);
+                    dHandler.sendMessage(msg);
                 }
             }
         });
@@ -1227,8 +1371,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 //                    mFaceProcessor.interrupt();
 //                }
 //            }
-            if (handler != null){
-                handler.removeCallbacksAndMessages(null);
+            if (dHandler != null){
+                dHandler.removeCallbacksAndMessages(null);
             }
             if (handler_bide != null){
                 handler_bide.removeCallbacksAndMessages(null);
@@ -1270,7 +1414,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data2 = baos.toByteArray();
             data=data2;
-            handler.sendEmptyMessage(0);
+            dHandler.sendEmptyMessage(0);
         }
     }
     private void setSuccess2(Bitmap bitmap){
@@ -1289,7 +1433,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         public void run() {
             bide++;
             if(bide==10){
-                handler.sendEmptyMessage(1);
+                dHandler.sendEmptyMessage(1);
             }
             handler_bide.postDelayed(this, HANDLER_BIDE_DELAYED);// 1000是延时时长
         }
@@ -1317,8 +1461,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 //                mFaceProcessor.interrupt();
 //            }
 //        }
-        if (handler != null){
-            handler.removeCallbacksAndMessages(null);
+        if (dHandler != null){
+            dHandler.removeCallbacksAndMessages(null);
         }
         if (handler_bide != null){
             handler_bide.removeCallbacksAndMessages(null);
