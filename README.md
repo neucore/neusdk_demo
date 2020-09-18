@@ -44,25 +44,80 @@ neulink使用说明
     实现一个XXXApplication extends android.app.Application
     在XXXApplication的onCreate()方法内添加如下代码
     ```
-    ContextHolder.getInstance().setContext(getApplicationContext());
-    Intent logService =  new Intent (this, LogService.class);
-    startService( logService );
+    ContextHolder.getInstance().setContext(this);
+    /**
+     * 用户人脸数据库服务
+     */
+    IUserService service = UserService.getInstance(this);
+    /**
+     * 集成Neulink
+     */
+    SampleConnector register = new SampleConnector(this,callback,service);
 
-    if (android.os.Build.VERSION.SDK_INT > 9) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-    }
-    //注册服务
-    NeulinkService service = NeulinkService.getInstance();
-    service.buildMqttService(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER));
+    ```
     
-    //neulink扩展入口: 人脸库同步扩展注册
-    ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+    扩展实现
     
-    //处理初始化应用carsh【异常日志上报】
-    CarshHandler crashHandler = CarshHandler.getIntance();
-    crashHandler.init();
+    ```
+    /**
+     * 外部扩展
+     */
+    IExtendCallback callback = new IExtendCallback() {
+        @Override
+        public void onCallBack() {
+            /**
+             * 人脸下发 扩展
+             */
+            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+            /**
+             * 人脸比对 扩展
+             */
+            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            /**
+             * 人脸查询 扩展
+             */
+            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
 
+            /**
+             * 唤醒 扩展
+             */
+            ListenerFactory.getInstance().setAwakenListener(new AwakenActionListener());
+            /**
+             * 休眠 扩展
+             */
+            ListenerFactory.getInstance().setHibrateListener(new HibrateActionListener());
+
+            /**
+             * 算法升级 扩展
+             */
+            ListenerFactory.getInstance().setHibrateListener(new AlogUpgrdActionListener());
+
+            /**
+             * APK 升级扩展
+             */
+            ListenerFactory.getInstance().setHibrateListener(new ApkUpgrdActionListener());
+
+            /**
+             *
+             */
+            ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
+
+            /**
+             * 图片&文件上传
+             */
+            //StorageFactory.getInstance().uploadBak("/sdcard/twocamera/icon/1593399670069.jpg", UUID.randomUUID().toString(),1);
+
+            /**
+             * 人脸上报
+             */
+            //new SampleFaceUpload().v10sample();
+
+            /**
+             * 人脸上报
+             */
+            //new SampleFaceUpload().v11sample();
+        }
+    };
     ```
 
 配置文件管理
@@ -81,14 +136,14 @@ neuconfig.properties
 #测试环境tcp://10.18.9.99:1883
 #生产环境tcp://10.18.105.254
 
-MQTT-Server=tcp://10.18.9.99:1883
+MQTT-Server=tcp://mqtt.neucore.com:1883
 
-#下列配置项不需要启动即能生效
+#下列配置项不需要启动即能生效[默认]
 Storage.Type=OSS
 #################################################
 #OSS配置项
-OSS.EndPoint=https://oss-cn-shanghai.aliyuncs.com
-OSS.BucketName=neudevice
+OSS.EndPoint=xxxx
+OSS.BucketName=ddd
 OSS.AccessKeyID=xxxx
 OSS.AccessKeySecret=xxxdd
 #################################################
@@ -113,46 +168,10 @@ Context.getFilesDir()/
     + neucore/config 配置文件目录
     
 
-人脸同步扩展实现；参考下列代码faceListener实现完成其团队的人脸存储。。。。
+人脸同步扩展实现,参考下列代码
+SampleFaceListener.java实现完成其团队的人脸存储。。。。
 
-
-```
- //人脸识别上报代码sample
-NeulinkService service = NeulinkService.getInstance();
-NeulinkPublisherFacde publisher = service.getPublisherFacde();
-
-FaceInfo faceDetect = new FaceInfo();
-//设置抓拍到的时间点unixtime_stamp
-faceDetect.setTimestamp(12345);
-//类型: 1 检测  2 检测+识别 3 检测+人脸属性
-faceDetect.setType(1);
-//检测对象信息
-DetectInfo detectInfo = new DetectInfo();
-//发送的人脸图片/face_id/背景图的地址 oss存储的路径【不包括EndPoint内容】
-detectInfo.setDir("290b1000010e1200000337304e424e50/20200624/073828_71");
-//人脸照片文件名
-detectInfo.setFaceImage("face_0328.jpg");
-
-//调用算法得到的人脸id
-detectInfo.setFaceId("0");
-
-faceDetect.setDetectInfo(detectInfo);
-
-//识别对象信息【可选，识别出来的需要】
-RecogInfo recogInfo = new RecogInfo();
-//是否识别 0:未识别；1：已识别
-recogInfo.setRecognized(1);
-//该人脸和数据中所有条目进行对比得到的最大相似度
-recogInfo.setSimilarityValue("0.5736");
-//人脸相似度阈值
-recogInfo.setSimilarityThreshold("0.5");
-//卡号
-recogInfo.setExtId("434343243");
-//姓名
-recogInfo.setName("张三");
-//识别对象
-faceDetect.setRecogInfo(recogInfo);
-
-publisher.upldFaceInfo(faceDetect);
+人脸识别上报代码sample,参考下列代码
+SampleFaceUpload.java
 
 
