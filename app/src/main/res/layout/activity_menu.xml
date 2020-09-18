@@ -214,6 +214,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -221,7 +222,17 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/icon_user"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="用户管理"
+                android:textSize="18sp"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -255,28 +266,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_export"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/icon_export"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="导入导出"
-                android:textSize="18sp"/>
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/ll_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -297,13 +286,6 @@
                 android:text="记录查询"
                 android:textSize="18sp"/>
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_data"
@@ -326,6 +308,35 @@
                 android:text="数据管理"
                 android:textSize="18sp"/>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_export"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/icon_export"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="导入导出"
+                android:textSize="18sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
 
         <LinearLayout
             android:id="@+id/ll_system"
@@ -380,6 +391,18 @@
             android:gravity="center">
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </LinearLayout>
