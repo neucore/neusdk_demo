@@ -330,6 +330,11 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             failed.toArray(faileds);
             return faileds;
         }
+        /**
+         * 清空图片临时目录
+         */
+        FileUtils.deleteDirectory(toDir.getAbsolutePath());//清空
+
         return null;
     }
 
