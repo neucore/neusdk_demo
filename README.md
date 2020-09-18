@@ -4,7 +4,6 @@ NeuSDK是Neucore实现的人脸人形相关的SDK，支持Linux和Android操作�
 
 NeuSDK_demo是一个开源工程，为了演示如何使用NeuSDK。
 
-<<<<<<< HEAD
 将版本发布压缩包中,  
 NeuSDK 文件夹下 libneucore.so 放到 neucore_test_live\app\libs\armeabi-v7a\ 目录
 
@@ -15,8 +14,6 @@ NeuSDK_jar 文件夹下 NeuSDK.jar 放到 neucore_test_live\app\libs\ 目录
 通过android studio 构建并运行
 
 注意: 一定要确保libovxlib.so 加入到 vendor/etc/public.libraries.txt 文件中并重启过,否则算法会报dlopen 失败
-
-
 
 neulink使用说明
 
@@ -173,9 +170,8 @@ SampleFaceListener.java实现完成其团队的人脸存储。。。。
 
 人脸识别上报代码sample,参考下列代码
 SampleFaceUpload.java
-=======
+
 # 算法
->>>>>>> c3b871314ccf87353e7a2b735fb4e0329c700a0f
 
 |                |功能描述|应用场景                        |
 |----------------|-------------------------------|-----------------------------|
