@@ -959,50 +959,55 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             }
         });
 
-        //通过循环的方式，将 registerPath 目录下所有的后缀为 .jpg 图像进行注册并将文件名对应为人名
-        for (File face : jpg_faces_name) {
-            Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
-            //通过图片中的旋转信息旋转图片,目的是为了让图像正确方向
-            bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
+        if(jpg_faces_name!=null){
+            /**
+             * 不能为空！
+             */
+            //通过循环的方式，将 registerPath 目录下所有的后缀为 .jpg 图像进行注册并将文件名对应为人名
+            for (File face : jpg_faces_name) {
+                Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
+                //通过图片中的旋转信息旋转图片,目的是为了让图像正确方向
+                bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
 
-            NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
+                NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
 
-            if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
-                if (register_face.getFeatureValid() == true) {
-                    feature_org.add(register_face.getFeature());
-                    feature_mask.add(register_face.getMaskFeature());
-                    name_org.add(face.getName().split("\\.")[0]);
-                    Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
+                    if (register_face.getFeatureValid() == true) {
+                        feature_org.add(register_face.getFeature());
+                        feature_mask.add(register_face.getMaskFeature());
+                        name_org.add(face.getName().split("\\.")[0]);
+                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                    }
+                }else{
+                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
                 }
-            }else{
-                Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
             }
-        }
 
-        //下面注册后缀为 png 的文件
-        File png_faces_name[] = face_file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith("png");
-            }
-        });
-
-        //通过循环的方式，将 registerPath 目录下所有的后缀为 .png 图像进行注册并将文件名对应为人名
-        for (File face : png_faces_name) {
-            Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
-            bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
-
-            NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
-
-            if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
-                if (register_face.getFeatureValid() == true) {
-                    feature_org.add(register_face.getFeature());
-                    feature_mask.add(register_face.getMaskFeature());
-                    name_org.add(face.getName().split("\\.")[0]);
-                    Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+            //下面注册后缀为 png 的文件
+            File png_faces_name[] = face_file.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith("png");
                 }
-            }else{
-                Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+            });
+
+            //通过循环的方式，将 registerPath 目录下所有的后缀为 .png 图像进行注册并将文件名对应为人名
+            for (File face : png_faces_name) {
+                Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
+                bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
+
+                NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
+
+                if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
+                    if (register_face.getFeatureValid() == true) {
+                        feature_org.add(register_face.getFeature());
+                        feature_mask.add(register_face.getMaskFeature());
+                        name_org.add(face.getName().split("\\.")[0]);
+                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                    }
+                }else{
+                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+                }
             }
         }
     }
