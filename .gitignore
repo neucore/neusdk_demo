@@ -19,6 +19,7 @@ build/
 .transforms
 .idea
 .so
-libs/
+libs/NeuSDK.jar
+libs/armeabi-v7a/libneucore.so
 /nb
 *.nb
