@@ -14,13 +14,40 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
-    buildTypes {
+    signingConfigs {
         release {
+            keyAlias 'neusdk'
+            keyPassword 'neusdkdemo2020'
+            storeFile file('../neusdkdemo.jks')
+            storePassword 'neusdkdemo2020'
+        }
+    }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            //添加此行代码，可以在release包下打印log
+//            debuggable true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
             minifyEnabled false
             //添加此行代码，可以在release包下打印log
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            //添加此行代码，可以在release包下打印log
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+        }
+
     }
     aaptOptions {
         cruncherEnabled = false
