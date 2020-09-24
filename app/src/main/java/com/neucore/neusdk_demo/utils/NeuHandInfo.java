@@ -13,6 +13,8 @@ public class NeuHandInfo {
     private float[] pose_node = new float[36];
     private float[] pose_node_score = new float[18];
     private Bitmap bitmapPeople;
+    private float[] mLandMarkPoints = new float[212];
+    private float[] mKeyPoints = new float[10];
 
     public Rect getRect() {
         return rect;
@@ -60,6 +62,22 @@ public class NeuHandInfo {
 
     public void setBitmapPeople(Bitmap bitmapPeople) {
         this.bitmapPeople = bitmapPeople;
+    }
+
+    public float[] getmLandMarkPoints() {
+        return mLandMarkPoints;
+    }
+
+    public void setmLandMarkPoints(float[] mLandMarkPoints) {
+        this.mLandMarkPoints = mLandMarkPoints;
+    }
+
+    public float[] getmKeyPoints() {
+        return mKeyPoints;
+    }
+
+    public void setmKeyPoints(float[] mKeyPoints) {
+        this.mKeyPoints = mKeyPoints;
     }
 }
 

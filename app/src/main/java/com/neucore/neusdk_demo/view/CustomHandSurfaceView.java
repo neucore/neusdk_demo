@@ -196,10 +196,10 @@ public class CustomHandSurfaceView extends SurfaceView implements
     }
 
     public void drawsTwo(List<NeuHandInfo> rectList) {
-        canvas = mSurfaceHolder.lockCanvas();
 
         if (canvas != null){
             canvas.drawColor(0x00FFFFFF);    //设置画布背景色
+            canvas = mSurfaceHolder.lockCanvas();
         }
 
         mpaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -236,7 +236,7 @@ public class CustomHandSurfaceView extends SurfaceView implements
                     float[] pose_node = rectList.get(a).getPose_node();
                     float[] pose_node_score = rectList.get(a).getPose_node_score();
 
-                    for(int j = 0; j < 18; ++j){
+                    for(int j = 0; j < 15; j++){
                         mpaint.setStrokeWidth(dip2px(context, 3));
                         mpaint.setStyle(Paint.Style.FILL);
                         canvas.drawCircle(Util.widthPointTrans(pose_node[j * 2]) , Util.heightPointTrans(pose_node[j * 2 + 1]),5,mpaint);
@@ -267,14 +267,8 @@ public class CustomHandSurfaceView extends SurfaceView implements
                                     pose_node_score[i], pose_node_score[i+1]);
                         }
 
-                        draw_line(pose_node[NeuPose.LEye*2], pose_node[NeuPose.LEye*2 + 1], pose_node[NeuPose.LEar*2], pose_node[NeuPose.LEar*2 + 1],
-                                pose_node_score[NeuPose.LEye], pose_node_score[NeuPose.LEar]);
-                        draw_line(pose_node[NeuPose.REye*2], pose_node[NeuPose.REye*2 + 1], pose_node[NeuPose.REar*2], pose_node[NeuPose.REar*2 + 1],
-                                pose_node_score[NeuPose.REye], pose_node_score[NeuPose.REar]);
-                        draw_line(pose_node[NeuPose.LEye*2], pose_node[NeuPose.LEye*2 + 1], pose_node[NeuPose.Nose*2], pose_node[NeuPose.Nose*2 + 1],
-                                pose_node_score[NeuPose.LEye], pose_node_score[NeuPose.Nose]);
-                        draw_line(pose_node[NeuPose.REye*2], pose_node[NeuPose.REye*2 + 1], pose_node[NeuPose.Nose*2], pose_node[NeuPose.Nose*2 + 1],
-                                pose_node_score[NeuPose.REye], pose_node_score[NeuPose.Nose]);
+                        draw_line(pose_node[NeuPose.Head*2], pose_node[NeuPose.Head*2 + 1], pose_node[NeuPose.Nose*2], pose_node[NeuPose.Nose*2 + 1],
+                                pose_node_score[NeuPose.Head], pose_node_score[NeuPose.Nose]);
 
                         draw_line(pose_node[NeuPose.Neck*2], pose_node[NeuPose.Neck*2 + 1], pose_node[NeuPose.RShoulder*2], pose_node[NeuPose.RShoulder*2 + 1],
                                 pose_node_score[NeuPose.Neck], pose_node_score[NeuPose.RShoulder]);
@@ -284,6 +278,7 @@ public class CustomHandSurfaceView extends SurfaceView implements
                                 pose_node_score[NeuPose.RShoulder], pose_node_score[NeuPose.RHip]);
                         draw_line(pose_node[NeuPose.LShoulder*2], pose_node[NeuPose.LShoulder*2 + 1], pose_node[NeuPose.LHip*2], pose_node[NeuPose.LHip*2 + 1],
                                 pose_node_score[NeuPose.LShoulder], pose_node_score[NeuPose.LHip]);
+
                     }
 
                 }
@@ -299,19 +294,26 @@ public class CustomHandSurfaceView extends SurfaceView implements
                     canvas.drawBitmap(rectList.get(a).getBitmapPeople(),rect,rectF,mpaint);
                     //canvas.drawBitmap(int[] colors,0,0,0,0,saveBitmap.getWidth(),saveBitmap.getHeight(),false,mpaint);
 
-//                    mpaint.setStyle(Paint.Style.FILL);
-//                    mpaint.setStrokeWidth(dip2px(context, 2));
-//                    mpaint.setTextSize(50);
-//                    canvas.drawText(rectList.get(a).getText(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().top - 20,mpaint);
-//                    canvas.drawText(rectList.get(a).getSwipe(),(rectList.get(a).getRect().left * 2) /3 + rectList.get(a).getRect().right/3, rectList.get(a).getRect().bottom + 70,mpaint);
-//
-//                    canvas.drawColor(0x00FFFFFF);    //设置画布背景色
-//                    mpaint.setStyle(Paint.Style.FILL);
-//                    mpaint.setStrokeWidth(dip2px(context, 3));
-//                    canvas.drawRect(rectList.get(a).getRect().left, rectList.get(a).getRect().top, rectList.get(a).getRect().right,rectList.get(a).getRect().bottom, mpaint);
-
                 }
             }
+        }else if ("7".equals(type)){  //人脸关键点
+            if (canvas != null){
+                for (int a = 0; a < rectList.size(); a++){
+                    float[] markPoints = rectList.get(a).getmLandMarkPoints();
+                    float[] keyPoints = rectList.get(a).getmKeyPoints();
+                    //在 mat 中画 106 个关键点
+                    mpaint.setStrokeWidth(dip2px(context, 3));
+                    mpaint.setStyle(Paint.Style.FILL);
+                    for(int id = 0; id < 106; id++) {
+                        canvas.drawCircle(Util.widthPointTrans(markPoints[2*id]) , Util.heightPointTrans(markPoints[2*id+1]),5,mpaint);
+                    }
+                    //在 mat 中画 5 个关键点
+                    for(int id = 0;id < 5; id++) {
+                        canvas.drawCircle(Util.widthPointTrans(keyPoints[2*id]) , Util.heightPointTrans(keyPoints[2*id+1]),5,mpaint);
+                    }
+                }
+            }
+
         }
 
         if (canvas != null){
@@ -380,6 +382,7 @@ public class CustomHandSurfaceView extends SurfaceView implements
 
 
     private void draw_line(float p1_x, float p1_y, float p2_x, float p2_y, float p1_score, float p2_score) {
+        System.out.println("   p1_x: "+p1_x +"   p1_y: "+p1_y + "   p2_x: "+p2_x +"   p2_y: "+p2_y +"   p1_score: "+p1_score +"   p2_score: "+p2_score);
         if (p1_score == 0.0f || p2_score == 0.0f) {
             return;
         } else {
