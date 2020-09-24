@@ -452,6 +452,9 @@ public class HelpUtil {
 
         //判断 /storage/emulated/0/neucore/ 路径是否存在
         File orgpath = new File(OrgFilepath);
+        if (orgpath.exists()){
+            orgpath.delete();
+        }
         if(! orgpath.exists()){
             orgpath.mkdirs();
         }

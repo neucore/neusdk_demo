@@ -86,10 +86,10 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     private void initView() {
         if (mMyCountDownTimer != null) {
             mMyCountDownTimer.cancel();
-            mMyCountDownTimer = new MyCountDownTimer(1 * 1000, 1000);
+            mMyCountDownTimer = new MyCountDownTimer(1 * 1000, 2000);
             mMyCountDownTimer.start();
         } else {
-            mMyCountDownTimer = new MyCountDownTimer(1 * 1000, 1000);
+            mMyCountDownTimer = new MyCountDownTimer(1 * 1000, 2000);
             mMyCountDownTimer.start();
         }
 
@@ -110,7 +110,9 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
         @Override
         public void onTick(long millisUntilFinished) {
-
+            if (!EasyPermissions.hasPermissions(SplashActivity.this, PERMISSIONS)) {
+                EasyPermissions.requestPermissions(SplashActivity.this, "请允许权限，否则无法使用", 123, PERMISSIONS);
+            }
         }
 
         @Override

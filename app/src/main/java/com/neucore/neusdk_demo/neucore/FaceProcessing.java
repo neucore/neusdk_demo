@@ -5,11 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.media.Image;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.neucore.NeuSDK.NeuFace;
-import com.neucore.NeuSDK.NeuFaceNode;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
 
@@ -33,10 +33,12 @@ import java.util.List;
 import static org.opencv.core.Core.flip;
 import static org.opencv.core.Core.transpose;
 
+import com.neucore.neulink.app.Const;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.AppInfo;
+import com.neucore.neusdk_demo.utils.HelpUtil;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
 import com.neucore.neusdk_demo.utils.Size;
@@ -265,7 +267,7 @@ public class FaceProcessing extends Thread {
                     //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
 
 
-                    NeuFaceNode[] resultRgb = mNeucore_face.neu_iva_face_detect(rgb_mat);
+                    NeuFaceRecgNode[] resultRgb = mNeucore_face.neu_iva_face_detect(rgb_mat,false);
                     System.out.println("      点的坐标 byte: "+ resultRgb.length );
 
                     List<Rect> rectList = new ArrayList<>();
@@ -311,7 +313,7 @@ public class FaceProcessing extends Thread {
                         }
                     }
 
-                    NeuFaceRecgNode[] result = mNeucore_face.neu_iva_face_detect_live(rgb_mat, ir_mat);
+                    NeuFaceRecgNode[] result = mNeucore_face.neu_iva_face_detect_live(rgb_mat, ir_mat,true);// withTracking 是否进行人脸追踪
                     for (int i = 0; i < result.length; i++) {
 
                         if(result[i].getIslive() == false) {

@@ -206,6 +206,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                                 setPaintViewUIPose(image);
                             }else if ("5".equals(type)){ //虚拟背景
                                 setPaintViewUISegment(image);
+                            }else if ("7".equals(type)){ //人脸关键点
+                                setPaintViewUIFacePoint(image);
                             }else {
                                 setPaintViewUIPose(image);
                             }
@@ -253,7 +255,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
 //        NeuFaceNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect(rgb_mat);
-        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat);
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat,true); //withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
         List<Rect> rectList = new ArrayList<>();
@@ -523,8 +525,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         int mRGBimageHeight = image.getHeight();
 
         //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
@@ -542,7 +544,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取手势数据
-        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgb_mat);
+        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgb_mat,true); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
         List<NeuHandInfo> rectList = new ArrayList<>();
@@ -577,8 +579,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
     }
 
-
     private int paintViewUISegmentNum = 0;
+
     //虚拟背景
     private void setPaintViewUISegment(Image image) {
         //LogUtils.d(TAG,"rgb  0 0 0 0 " );
@@ -586,8 +588,8 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         int mRGBimageHeight = image.getHeight();
 
         //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //LogUtils.d(TAG,"rgb  2222" );
         Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
         //LogUtils.d(TAG,"rgb  3333" );
@@ -660,6 +662,70 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     }
 
 
+    private int paintViewFacePointNum = 0;
+    //人脸关键点
+    private void setPaintViewUIFacePoint(Image image) {
+        //LogUtils.d(TAG,"rgb  0 0 0 0 " );
+        int mRGBimageWidth = image.getWidth();
+        int mRGBimageHeight = image.getHeight();
+
+        //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //LogUtils.d(TAG,"rgb  2222" );
+        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
+        //LogUtils.d(TAG,"rgb  3333" );
+        mat2.put(0,0,mPendingRGBFrameData);
+        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
+        //LogUtils.d(TAG,"rgb  4444" );
+        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
+        //LogUtils.d(TAG,"rgb  5555" );
+        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
+
+        LogUtils.d(TAG,"rgb  6666" );
+        transpose(rgb_mat, rgb_mat);    //耗时4毫秒
+        //LogUtils.d(TAG,"rgb  7777" );
+        flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
+        //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
+        LogUtils.d(TAG,"rgb  8888" );
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgb_mat);
+        //获取手势数据
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat,false); // withTracking 是否进行人脸追踪
+        LogUtils.d(TAG,"rgb  9999" );
+
+        List<NeuHandInfo> rectList = new ArrayList<>();
+        rectList.clear();
+        for (int i = 0; i < resultRgb.length; i++) {
+            float[] mLandMarkPoints = resultRgb[i].getLandMarkPoints();
+            float[] mKeyPoints = resultRgb[i].getKeyPoints();
+
+            NeuHandInfo neuHandInfo = new NeuHandInfo();
+            neuHandInfo.setmLandMarkPoints(mLandMarkPoints);
+            neuHandInfo.setmKeyPoints(mKeyPoints);
+
+            rectList.add(neuHandInfo);
+        }
+        if (rectList.size() > 0){
+            paintViewFacePointNum = 0;
+            Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+        }else {
+            if (paintViewFacePointNum == 0){
+                paintViewFacePointNum++;
+
+                rectList.clear();
+                NeuHandInfo neuHandInfo = new NeuHandInfo();
+                neuHandInfo.setRect(new Rect(0,0,0,0));
+
+                rectList.add(neuHandInfo);
+
+                Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            }
+        }
+
+    }
+
+
     /**
      * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
      * @param backBitmap 在底部的位图
@@ -726,45 +792,6 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         Bitmap mbitmap = Bitmap.createBitmap( mArrayColor, bitmap_w, bitmap_h, Bitmap.Config.ARGB_8888 );
         return mbitmap;
     }
-
-
-
-    //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
-    public byte[] getBytesFromImageAsType(Image image) {
-        //LogUtils.d(TAG,"rgb  1111   asType  1111" );
-        Image.Plane Y = image.getPlanes()[0];
-        //LogUtils.d(TAG,"rgb  1111   asType  2222" );
-        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
-        //LogUtils.d(TAG,"rgb  1111   asType  3333" );
-        Image.Plane V = image.getPlanes()[2];
-        //LogUtils.d(TAG,"rgb  1111   asType  4444" );
-
-        int Yb = Y.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  5555" );
-        int Ub = U.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  6666" );
-        int Vb = V.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  7777" );
-
-        byte[] data = new byte[Yb + Ub + Vb];
-        //LogUtils.d(TAG,"rgb  1111   asType  8888" );
-
-        for (int s = 0; s < 3; s += 3){
-            if (s == 0){
-                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
-                //LogUtils.d(TAG,"rgb  1111   asType  9999" );
-            }else if (s == 1){
-                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
-                //LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
-            }else if (s == 2){
-                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
-                //LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
-            }
-        }
-        //LogUtils.d(TAG,"rgb  1111   asType  9999  3333" );
-        return data;
-    }
-
 
     private int faceRecognNum = 0;
     private long faceTime = 0;
@@ -887,6 +914,47 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         return null;
     }
 
+    //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
+    public byte[] getBytesFromImageAsType(Image image) {
+        //LogUtils.d(TAG,"rgb  1111   asType  1111" );
+        Image.Plane Y = image.getPlanes()[0];
+        //LogUtils.d(TAG,"rgb  1111   asType  2222" );
+        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
+        //LogUtils.d(TAG,"rgb  1111   asType  3333" );
+        Image.Plane V = image.getPlanes()[2];
+        //LogUtils.d(TAG,"rgb  1111   asType  4444" );
+
+        int Yb = Y.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  5555" );
+        int Ub = U.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  6666" );
+        int Vb = V.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  7777" );
+
+        byte[] data = new byte[Yb + Ub + Vb];
+        //LogUtils.d(TAG,"rgb  1111   asType  8888" );
+
+//        for (int s = 0; s < 3; s += 3){
+//            if (s == 0){
+//                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+//                //LogUtils.d(TAG,"rgb  1111   asType  9999" );
+//            }else if (s == 1){
+//                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+//                //LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+//            }else if (s == 2){
+//                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+//                //LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+//            }
+//        }
+
+        Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+        U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+        V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+
+        //LogUtils.d(TAG,"rgb  1111   asType  9999  3333" );
+        return data;
+    }
+
     private int widthPingMu;
     private int heightPingMu;
     @BindView(R.id.ll_activity_detect_bottom)
@@ -905,9 +973,13 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         }
         ButterKnife.bind(this);
         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
-        if ("0".equals(type) || "1".equals(type) || "2".equals(type)){ //单目,双目,人脸识别,才注册
+        if ("0".equals(type) || "1".equals(type) || "2".equals(type) || "7".equals(type)){ //单目,双目,人脸识别, 人脸关键点 才注册
             face_register();
-            ll_activity_detect_bottom.setVisibility(View.VISIBLE);
+            if ("7".equals(type)){
+                ll_activity_detect_bottom.setVisibility(View.GONE);
+            }else {
+                ll_activity_detect_bottom.setVisibility(View.VISIBLE);
+            }
         }else {
             ll_activity_detect_bottom.setVisibility(View.GONE);
         }
@@ -1105,7 +1177,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                     String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
                     if ("0".equals(type) || "1".equals(type) || "2".equals(type)){
                         Util.sendIntEventMessge(Constants.OPEN_KCF);
-                    }else if ("3".equals(type) || "4".equals(type) || "5".equals(type)){ //手势检测  Pose检测  虚拟背景
+                    }else if ("3".equals(type) || "4".equals(type) || "5".equals(type) || "7".equals(type)){ //手势检测  Pose检测  虚拟背景  人脸关键点
                         Util.sendIntEventMessge(Constants.OPEN_HAND_KCF);
                     }
 
@@ -1156,7 +1228,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                             customSurfaceView.drawsTwo(rectList);
                         }
                     }
-                },1000);
+                },1500);
                 break;
 
             case Constants.CLOSE_KCF://关闭
@@ -1493,7 +1565,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
         if ("0".equals(type) || "1".equals(type) || "2".equals(type)){ //单目,双目
             Util.sendIntEventMessge(Constants.CLOSE_KCF);
-        }else if ("3".equals(type) || "4".equals(type) || "5".equals(type)){ //手势 , Pose , 虚拟背景
+        }else if ("3".equals(type) || "4".equals(type) || "5".equals(type) || "7".equals(type)){ //手势 , Pose , 虚拟背景 , 人脸关键点
             Util.sendIntEventMessge(Constants.CLOSE_HAND_KCF);
         }
 
