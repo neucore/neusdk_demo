@@ -35,12 +35,12 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
     private String TAG = "SampleFaceListener";
     public SampleFaceListener(){
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
-        mNeucore_face  = NeuFaceFactory.getInstance().create();
     }
     @Override
     public UpdateResult doAction(NeulinkEvent event) {
         FaceCmd faceCmd = (FaceCmd) event.getSource();
         String cmd = faceCmd.getCmd();//add：添加|del：删除|update：更新|sync：同步
+        mNeucore_face  = NeuFaceFactory.getInstance().create();
         long reqTime = faceCmd.getReqtime();
         /**
          * 总包数
@@ -68,6 +68,8 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
         if(ADD.equalsIgnoreCase(cmd)||
                 UPDATE.equalsIgnoreCase(cmd)||
                 SYNC.equalsIgnoreCase(cmd)){
+            //保存人脸到 twocamera/photo/ 文件夹下
+            getFaceSidsAdd(images);
             /**
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
@@ -75,6 +77,8 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
             libManagerService.insertOrUpdFacelib(reqTime,params,images);
         }
         else if(DEL.equalsIgnoreCase(cmd)){
+            //删除人脸到 twocamera/photo/ 文件夹下
+            getFaceSidsDelete(params);
             /**
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
@@ -143,7 +147,7 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
 
                 Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
                 //保存人脸到 twocamera/photo/ 文件夹下
-                bytesToImage(bitmap,ext_id);
+                //bytesToImage(bitmap,ext_id);
                 /**
                  * 单张图片信息
                  *
@@ -179,6 +183,31 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
         return imagesData;
     }
 
+
+    private void getFaceSidsAdd(Map<String,Map<String,Object>> images)  {
+
+        int len = images==null?0:images.size();
+        String[] ext_ids = new String[len];
+        if(len>0){
+            images.keySet().toArray(ext_ids);
+        }
+        for(int i=0;i<len;i++){
+            File tmp = (File) images.get(ext_ids[i]).get("file");
+            //工号.jpg即ext_id=工号
+            String tmpName = tmp.getName();
+            String ext_id = tmpName.substring(0, tmpName.indexOf("."));
+            try {
+                byte[] image = facelibImageReader(tmp);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+                //保存人脸到 twocamera/photo/ 文件夹下
+                bytesToImage(bitmap,ext_id);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void bytesToImage(Bitmap bitmap,String ext_id){
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/twocamera/photo/" + ext_id + ".jpg";
@@ -197,6 +226,33 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
             Log.d("neu", "Error accessing file: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getFaceSidsDelete(List<FaceData> params)  {
+
+        int size = params==null?0:params.size();
+        for(int i=0;i<size;i++){
+            FaceData param= params.get(i);
+            String ext_id = String.valueOf(param.getExtId());
+            try {
+                //删除人脸到 twocamera/photo/ 文件夹下
+                imageToDelete(ext_id);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void imageToDelete(String ext_id){
+        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + "/twocamera/photo/" + ext_id + ".jpg";
+        System.out.println("  删除图片: "+filePath);
+        File file = new File(filePath);
+        if (file.exists()){
+            file.delete();
         }
     }
 

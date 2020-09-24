@@ -172,6 +172,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
 
         Toast.makeText(this, "哈哈，我成功启动了！", Toast.LENGTH_LONG).show();
 
+        initViewNb();
+    }
+
+    private void initViewNb() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
