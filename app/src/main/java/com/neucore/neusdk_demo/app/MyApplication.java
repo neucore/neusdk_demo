@@ -17,9 +17,6 @@ import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
-import com.neucore.neusdk_demo.utils.HelpUtil;
-
-import org.opencv.android.OpenCVLoader;
 
 public class MyApplication extends Application
 {
@@ -66,6 +63,23 @@ public class MyApplication extends Application
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
+
+//            /**
+//             * 设备序列号生成器；主要是为了扩展支持自己不想建立云服务，想使用neucore云服务
+//             */
+//            ListenerFactory.getInstance().setDeviceService(new IDeviceService() {
+//                /**
+//                 * 这个主要是为了支持非neucore生产的硬件；
+//                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
+//                 * @return
+//                 */
+//                @Override
+//                public String getSN() {
+//                    //@TODO 必须实现
+//                    return null;
+//                }
+//            });
+
             /**
              * 人脸下发 扩展
              */
