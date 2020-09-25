@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.msg.CPUInfo;
 import com.neucore.neulink.msg.DeviceInfo;
 import com.neucore.neulink.msg.DiskInfo;
@@ -59,7 +60,7 @@ public class NeulinkScheduledReport {
         catch (Exception ex){}
 
         DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setDeviceId(DeviceUtils.getDeviceId(context));
+        deviceInfo.setDeviceId(DeviceUtils.getDeviceId(context)+"@@"+ ListenerFactory.getInstance().getDeviceService().getSN());
         deviceInfo.setMac(DeviceUtils.getMacAddress());
 
         deviceInfo.setTag(AppUtils.getVersionName(context));

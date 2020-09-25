@@ -2,6 +2,9 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
+import com.neucore.neulink.device.IDeviceService;
+import com.neucore.neulink.device.DeviceServiceImpl;
+
 public class ListenerFactory {
     private String TAG = "ListenerFactory";
     private ICmdListener alogListener = new ICmdListener<Result>() {
@@ -153,4 +156,15 @@ public class ListenerFactory {
     public void setRecoverListener(ICmdListener<QueryResult> recoverListener) {
         this.recoverListener = recoverListener;
     }
+
+    public IDeviceService getDeviceService() {
+        return deviceService;
+    }
+
+    public void setDeviceService(IDeviceService deviceService) {
+        this.deviceService = deviceService;
+    }
+
+    private IDeviceService deviceService = new DeviceServiceImpl();
+
 }
