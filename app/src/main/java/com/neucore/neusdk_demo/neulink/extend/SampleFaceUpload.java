@@ -93,6 +93,10 @@ public class SampleFaceUpload {
         faceUpload.setTimestamp(12345);
         //类型: 1 检测 2 检测+识别 3 检测+人脸属性
         faceUpload.setType(1);
+        /**
+         * 临时访客不在有效期进出时进行提醒。。。
+         */
+        faceUpload.setAttachInfo("失效访客");
         //检测对象信息f
         DetectInfo detectInfo = new DetectInfo();
 
