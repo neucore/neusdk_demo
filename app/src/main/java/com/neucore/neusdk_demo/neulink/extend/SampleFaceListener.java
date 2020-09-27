@@ -12,6 +12,8 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.rrpc.FaceCmd;
 import com.neucore.neulink.rrpc.FaceData;
+import com.neucore.neulink.rrpc.KVPair;
+import com.neucore.neulink.rrpc.KVPair.KeyEnum;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
@@ -55,6 +57,31 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
          * 获取人脸描述数据
          */
         List<FaceData> params = faceCmd.getPayload();
+        /**
+         * FaceData 结构介绍
+         * ext_id:
+         * 访客规则：用逗号连接xxx,中控卡号；
+         * eg:vip1,888888 表示VIP访客；
+         * eg:n1,666666 表示普通访客【面试人员等】;
+         * 正式员工规则：中控卡号
+         *
+         */
+        /**
+         * 扩展信息：
+         * extInfo：KVPair[]
+         */
+        /**
+         * 名单类型
+         */
+        KVPair.KeyEnum type = KVPair.KeyEnum.Type;
+        /**
+         * 名单起效时间：unix_timestamp
+         */
+        KVPair.KeyEnum start = KeyEnum.PeriodStart;
+        /**
+         * 名单失效时间：unix_timestamp
+         */
+        KVPair.KeyEnum end = KeyEnum.PeriodEnd;
         /**
          * key:ext_id : 卡号;
          * value: Map<String,Object> keys:ext_id,image_type,file
