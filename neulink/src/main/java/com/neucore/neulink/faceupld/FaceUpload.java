@@ -16,6 +16,9 @@ public class FaceUpload extends ArgCmd {
     @SerializedName("type")
     private int type;
 
+    @SerializedName("attach_info")
+    private String attachInfo;
+
     @SerializedName("ai_data")
     private AIData aiData;
 
@@ -49,6 +52,14 @@ public class FaceUpload extends ArgCmd {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getAttachInfo() {
+        return attachInfo;
+    }
+
+    public void setAttachInfo(String attachInfo) {
+        this.attachInfo = attachInfo;
     }
 
     public AIData getAiData() {
