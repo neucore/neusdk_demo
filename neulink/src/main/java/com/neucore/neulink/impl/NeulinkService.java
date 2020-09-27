@@ -132,12 +132,17 @@ public class NeulinkService {
         int deviceIdBKDRHash = HashAlgorithms.SDBMHash(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()));
 
         int partition = deviceIdBKDRHash %ConfigContext.getInstance().getConfig("Topic.Partition",8);
-
-        String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5+"/"+partition;
+        String custcode = getCustCode();
+        String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5+"/"+custcode+"/"+partition;
 
         Log.d(TAG,topStr);
         
         mqttService.publish(payload,topStr, qos, false);
+    }
+
+    private String getCustCode(){
+        //@TODO 这个需要借助算法团队提供api接口
+        return "0@Default";
     }
 
     boolean isConnected(){
