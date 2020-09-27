@@ -395,4 +395,8 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         return imagesData;
     }
 
+    public static void main(String[] args) throws Exception{
+        List<FaceData> data = facelibDataReader(new File("/Users/alex.zhu/Downloads/test.json"));
+        System.out.println(data.size());
+    }
 }
