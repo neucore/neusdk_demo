@@ -149,12 +149,14 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                 case 4:
                     String photo = (String)msg.obj;
                     String url = registerPath + photo + ".jpg";
-                    Glide.with(DetectActivity.this).load(url).asBitmap().centerCrop().into(iv_parent);
-                    tv_yanzheng.setText("检测到人脸");
+                    if (iv_parent != null && tv_yanzheng != null){
+                        Glide.with(DetectActivity.this).load(url).asBitmap().centerCrop().into(iv_parent);
+                        tv_yanzheng.setText("检测到人脸");
+                        ObjectAnimator animator = SeekAttentionView.tada(iv_parent);
+                        animator.setRepeatCount(1);
+                        animator.start();
+                    }
 
-                    ObjectAnimator animator = SeekAttentionView.tada(iv_parent);
-                    animator.setRepeatCount(1);
-                    animator.start();
                     break;
                 default:
                     break;
@@ -231,32 +233,35 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
     //人脸框
     private void setPaintViewUI(Image image) {
-        //LogUtils.d(TAG,"rgb  0 0 0 0 " );
-        int mRGBimageWidth = image.getWidth();
-        int mRGBimageHeight = image.getHeight();
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        int width = image.getWidth();
+        int height = image.getHeight();
 
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+
+        mPendingRGBFrameData = Util.ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-//        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式  这个快1毫秒
-        LogUtils.d(TAG,"rgb  2222" );
-        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-        //LogUtils.d(TAG,"rgb  3333" );
-        mat2.put(0,0,mPendingRGBFrameData);
-        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  4444" );
-        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  5555" );
-        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        LogUtils.d(TAG,"rgb  6666" );
-        transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-        //LogUtils.d(TAG,"rgb  7777" );
-        flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
+        //LogUtils.d(TAG,"rgb  6666" );
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
-//        NeuFaceNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect(rgb_mat);
-        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat,true); //withTracking 是否进行人脸追踪
+        //获取人脸数据
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,true); //withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
+
+        yuvMat.release();
+
 
         List<Rect> rectList = new ArrayList<>();
         rectList.clear();
@@ -274,10 +279,10 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             int x2 = rect_event.right;
             int y2 = rect_event.bottom;
 
-            int aaaX1 = (x1 * widthPingMu) / widthSize;
-            int aaaX2 = (x2 * widthPingMu) / widthSize;
-            int aaaY1 = (y1 * heightPingMu) / heightSize;
-            int aaaY2 = (y2 * heightPingMu) / heightSize;
+            int aaaX1 = (int) Util.widthPointTrans(x1);
+            int aaaX2 = (int) Util.widthPointTrans(x2);
+            int aaaY1 = (int) Util.heightPointTrans(y1);
+            int aaaY2 = (int) Util.heightPointTrans(y2);
 
             Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
             rectList.add(rect);
@@ -350,32 +355,51 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     private int paintViewUIHandNum = 0;
     //手势识别
     private void setPaintViewUIHand(Image image) {
-        //LogUtils.d(TAG,"rgb  0 0 0 0 " );
-        int mRGBimageWidth = image.getWidth();
-        int mRGBimageHeight = image.getHeight();
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //LogUtils.d(TAG,"rgb  2222" );
-        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-        //LogUtils.d(TAG,"rgb  3333" );
-        mat2.put(0,0,mPendingRGBFrameData);
-        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  4444" );
-        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  5555" );
-        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
+        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
 
-        LogUtils.d(TAG,"rgb  6666" );
-        transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-        //LogUtils.d(TAG,"rgb  7777" );
-        flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
+        mPendingRGBFrameData = Util.ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取手势数据
-        NeuHandNode[] resultRgb = NeuHandFactory.getInstance().create().neu_iva_hand_detect(rgb_mat);
+        NeuHandNode[] resultRgb = NeuHandFactory.getInstance().create().neu_iva_hand_detect(rgbMat);
         LogUtils.d(TAG,"rgb  9999" );
+
+        yuvMat.release();
+
+
+//        int mRGBimageWidth = image.getWidth();
+//        int mRGBimageHeight = image.getHeight();
+//
+//        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+//        //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+//        //LogUtils.d(TAG,"rgb  2222" );
+//        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
+//        //LogUtils.d(TAG,"rgb  3333" );
+//        mat2.put(0,0,mPendingRGBFrameData);
+//        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
+//        //LogUtils.d(TAG,"rgb  4444" );
+//        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
+//        //LogUtils.d(TAG,"rgb  5555" );
+//        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
+
 
         List<NeuHandInfo> rectList = new ArrayList<>();
         rectList.clear();
@@ -394,10 +418,10 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             int x2 = rect_event.right;
             int y2 = rect_event.bottom;
 
-            int aaaX1 = (x1 * widthPingMu) / widthSize;
-            int aaaX2 = (x2 * widthPingMu) / widthSize;
-            int aaaY1 = (y1 * heightPingMu) / heightSize;
-            int aaaY2 = (y2 * heightPingMu) / heightSize;
+            int aaaX1 = (int) Util.widthPointTrans(x1);
+            int aaaX2 = (int) Util.widthPointTrans(x2);
+            int aaaY1 = (int) Util.heightPointTrans(y1);
+            int aaaY2 = (int) Util.heightPointTrans(y2);
 
             Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
             neuHandInfo.setRect(rect);
@@ -427,7 +451,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             neuHandInfo.setSwipe(swipe);
 
             //调用分类网络,手势分类
-            int status = NeuHandFactory.getInstance().create().neu_iva_hand_class(rgb_mat, resultRgb[i]);
+            int status = NeuHandFactory.getInstance().create().neu_iva_hand_class(rgbMat, resultRgb[i]);
             if (status != 0) {
                 Log.e(TAG,"error at mNeuHand.neu_iva_hand_class()");
                 rectList.add(neuHandInfo);
@@ -520,32 +544,35 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     private int paintViewUIPoseNum = 0;
     //Pose检测
     private void setPaintViewUIPose(Image image) {
-        //LogUtils.d(TAG,"rgb  0 0 0 0 " );
-        int mRGBimageWidth = image.getWidth();
-        int mRGBimageHeight = image.getHeight();
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //LogUtils.d(TAG,"rgb  2222" );
-        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-        //LogUtils.d(TAG,"rgb  3333" );
-        mat2.put(0,0,mPendingRGBFrameData);
-        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  4444" );
-        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  5555" );
-        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 
-        LogUtils.d(TAG,"rgb  6666" );
-        transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-        //LogUtils.d(TAG,"rgb  7777" );
-        flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
+        mPendingRGBFrameData = Util.ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
-        //获取手势数据
-        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgb_mat,true); // withTracking 是否进行人脸追踪
+        //获取Pose数据
+        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,true); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
+
+        yuvMat.release();
+
 
         List<NeuHandInfo> rectList = new ArrayList<>();
         rectList.clear();
@@ -665,33 +692,35 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     private int paintViewFacePointNum = 0;
     //人脸关键点
     private void setPaintViewUIFacePoint(Image image) {
-        //LogUtils.d(TAG,"rgb  0 0 0 0 " );
-        int mRGBimageWidth = image.getWidth();
-        int mRGBimageHeight = image.getHeight();
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        //LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
+        //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-        //LogUtils.d(TAG,"rgb  2222" );
-        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-        //LogUtils.d(TAG,"rgb  3333" );
-        mat2.put(0,0,mPendingRGBFrameData);
-        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  4444" );
-        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-        //LogUtils.d(TAG,"rgb  5555" );
-        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 
-        LogUtils.d(TAG,"rgb  6666" );
-        transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-        //LogUtils.d(TAG,"rgb  7777" );
-        flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒
+        mPendingRGBFrameData = Util.ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
-        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgb_mat);
-        //获取手势数据
-        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat,false); // withTracking 是否进行人脸追踪
+        //获取人脸关键点数据
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,false); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
+
+        yuvMat.release();
+
 
         List<NeuHandInfo> rectList = new ArrayList<>();
         rectList.clear();
@@ -818,21 +847,21 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         try {
             //获取源数据，如果是YUV格式的数据planes.length = 3
             //plane[i]里面的实际数据可能存在byte[].length <= capacity (缓冲区总大小)
-            //LogUtils.d(TAG,"rgb  1111  0000" );
+            LogUtils.d(TAG,"rgb  1111  0000" );
             final Image.Plane[] planes = image.getPlanes();
 
             //数据有效宽度，一般的，图片width <= rowStride，这也是导致byte[].length <= capacity的原因
             // 所以我们只取width部分
-            //LogUtils.d(TAG,"rgb  1111  1111" );
+            LogUtils.d(TAG,"rgb  1111  1111" );
             int width = image.getWidth();
             int height = image.getHeight();
 
-            //LogUtils.d(TAG,"rgb  1111  2222" );
+            LogUtils.d(TAG,"rgb  1111  2222" );
             //此处用来装填最终的YUV数据，需要1.5倍的图片大小，因为Y U V 比例为 4:1:1
             byte[] yuvBytes = new byte[width * height * ImageFormat.getBitsPerPixel(ImageFormat.YUV_420_888) / 8];
             //目标数组的装填到的位置
             int dstIndex = 0;
-            //LogUtils.d(TAG,"rgb  1111  3333" );
+            LogUtils.d(TAG,"rgb  1111  3333   length: " + planes.length);
 
             //临时存储uv数据的
             byte uBytes[] = new byte[width * height / 4];
@@ -853,22 +882,26 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                 buffer.get(bytes);
                 //上面这段代码,每次耗时3--4毫秒
 
+                LogUtils.d(TAG,"rgb  1111  4444  00" );
                 int srcIndex = 0;
                 if (i == 0) {
-                    //LogUtils.d(TAG,"rgb  1111  4444  00" );
                     //直接取出来所有Y的有效区域，也可以存储成一个临时的bytes，到下一步再copy
                     for (int j = 0; j < height; j++) {
                         System.arraycopy(bytes, srcIndex, yuvBytes, dstIndex, width);
                         srcIndex += rowStride;
                         dstIndex += width;
                     }
-                    //LogUtils.d(TAG,"rgb  1111  4444" );
-                } else if (i == 1) {
-                    //LogUtils.d(TAG,"rgb  1111  5555  00" );
+                    LogUtils.d(TAG,"rgb  1111  4444" );
+                } else if (i == 1 || i ==2) {
+                    LogUtils.d(TAG,"rgb  1111  5555  00" );
                     //根据pixelsStride取相应的数据
                     for (int j = 0; j < height / 2; j++) {
                         for (int k = 0; k < width / 2; k++) {
-                            uBytes[uIndex++] = bytes[srcIndex];
+                            if (i == 1){
+                                uBytes[uIndex++] = bytes[srcIndex];
+                            }else if (i == 2){
+                                vBytes[vIndex++] = bytes[srcIndex];
+                            }
                             srcIndex += pixelsStride;
                         }
                         if (pixelsStride == 2) {
@@ -877,23 +910,24 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                             srcIndex += rowStride - width / 2;
                         }
                     }
-                    //LogUtils.d(TAG,"rgb  1111  5555" );
-                } else if (i == 2) {
-                    //LogUtils.d(TAG,"rgb  1111  6666  00" );
-                    //根据pixelsStride取相应的数据
-                    for (int j = 0; j < height / 2; j++) {
-                        for (int k = 0; k < width / 2; k++) {
-                            vBytes[vIndex++] = bytes[srcIndex];
-                            srcIndex += pixelsStride;
-                        }
-                        if (pixelsStride == 2) {
-                            srcIndex += rowStride - width;
-                        } else if (pixelsStride == 1) {
-                            srcIndex += rowStride - width / 2;
-                        }
-                    }
-                    //LogUtils.d(TAG,"rgb  1111  6666" );
+                    LogUtils.d(TAG,"rgb  1111  5555" );
                 }
+//                else if (i == 2) {
+//                    LogUtils.d(TAG,"rgb  1111  6666  00" );
+//                    //根据pixelsStride取相应的数据
+//                    for (int j = 0; j < height / 2; j++) {
+//                        for (int k = 0; k < width / 2; k++) {
+//                            vBytes[vIndex++] = bytes[srcIndex];
+//                            srcIndex += pixelsStride;
+//                        }
+//                        if (pixelsStride == 2) {
+//                            srcIndex += rowStride - width;
+//                        } else if (pixelsStride == 1) {
+//                            srcIndex += rowStride - width / 2;
+//                        }
+//                    }
+//                    LogUtils.d(TAG,"rgb  1111  6666" );
+//                }
             }
 
             //根据要求的结果类型进行填充
@@ -901,22 +935,86 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                 yuvBytes[dstIndex++] = uBytes[i];
                 yuvBytes[dstIndex++] = vBytes[i];
             }
-            //LogUtils.d(TAG,"rgb  1111  7777" );
+            LogUtils.d(TAG,"rgb  1111  7777" );
 
             return yuvBytes;
         } catch (final Exception e) {
             if (image != null) {
                 image.close();
             }
-            //LogUtils.d(TAG,"rgb  1111  8888" );
+            LogUtils.d(TAG,"rgb  1111  8888" );
             Log.i(TAG, e.toString());
         }
         return null;
     }
 
     //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
+    public byte[] getBytesFromImageAsType1(Image image) {
+        LogUtils.d(TAG,"rgb  1111   asType  1111" );
+        Image.Plane Y = image.getPlanes()[0];
+        //LogUtils.d(TAG,"rgb  1111   asType  2222" );
+        Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
+        //LogUtils.d(TAG,"rgb  1111   asType  3333" );
+        Image.Plane V = image.getPlanes()[2];
+        //LogUtils.d(TAG,"rgb  1111   asType  4444" );
+
+//        ByteBuffer yByte = Y.getBuffer();
+//        int Yb = yByte.remaining();
+//        byte[] bytesYb = new byte[Yb];
+//        yByte.get(bytesYb);
+
+        int Yb = Y.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  5555" );
+        int Ub = U.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  6666" );
+        int Vb = V.getBuffer().remaining();
+        //LogUtils.d(TAG,"rgb  1111   asType  7777" );
+
+        byte[] data = new byte[Yb + Ub + Vb];
+        //LogUtils.d(TAG,"rgb  1111   asType  8888" );
+
+        for (int s = 1; s <= 3; s += 3){
+            if (s == 1){
+                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999 0000" );
+            }
+            if (s == 2){
+                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+            }
+            if (s == 3){
+                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+                //LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+            }
+        }
+
+//        for(int a=1,b=2,c=3;a<b;c++,a++,b--){
+//            LogUtils.d(TAG,"rgb  1111   asType  9999  3个变量:  a="+a+"  b="+b+"   c="+c );
+//            if (c == 3){
+//                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+//                LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+//            }
+//            if (b == 2){
+//                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+//                LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+//            }
+//            if (a == 1){
+//                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+//                LogUtils.d(TAG,"rgb  1111   asType  9999 0000" );
+//            }
+//        }
+
+//        Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+//        U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+//        V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+
+        LogUtils.d(TAG,"rgb  1111   asType  9999  end" );
+        return data;
+    }
+
+    //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
     public byte[] getBytesFromImageAsType(Image image) {
-        //LogUtils.d(TAG,"rgb  1111   asType  1111" );
+        LogUtils.d(TAG,"rgb  1111   asType  1111" );
         Image.Plane Y = image.getPlanes()[0];
         //LogUtils.d(TAG,"rgb  1111   asType  2222" );
         Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
@@ -934,24 +1032,27 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         byte[] data = new byte[Yb + Ub + Vb];
         //LogUtils.d(TAG,"rgb  1111   asType  8888" );
 
-//        for (int s = 0; s < 3; s += 3){
-//            if (s == 0){
-//                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
-//                //LogUtils.d(TAG,"rgb  1111   asType  9999" );
-//            }else if (s == 1){
-//                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
-//                //LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
-//            }else if (s == 2){
-//                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
-//                //LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
-//            }
-//        }
+        for(int a=1,b=2,c=3;a<b;c++,a++,b--){
+            LogUtils.d(TAG,"rgb  1111   asType  9999  3个变量:  a="+a+"  b="+b+"   c="+c );
+            if (c == 3){
+                V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+                LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+            }
+            if (b == 2){
+                U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+                LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+            }
+            if (a == 1){
+                Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+                LogUtils.d(TAG,"rgb  1111   asType  9999 0000" );
+            }
+        }
 
-        Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
-        U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
-        V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
+//        Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
+//        U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
+//        V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
 
-        //LogUtils.d(TAG,"rgb  1111   asType  9999  3333" );
+        LogUtils.d(TAG,"rgb  1111   asType  9999  end" );
         return data;
     }
 
