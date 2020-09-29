@@ -103,7 +103,9 @@ public class NeuCamera {
             }
 
             @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+                Log.d(TAG,"onSurfaceTextureUpdated");
+            }
         };
 
         if (mTextureview.isAvailable()) {
@@ -198,6 +200,7 @@ public class NeuCamera {
         float centerY = viewRect.centerY();
         if (camera_name == NeuCameraUtil.RGB_CAMERA){
             if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
+                matrix.postScale(1, -1); // 镜像水平翻转
                 bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
                 matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
                 float scale = Math.max(
@@ -205,8 +208,15 @@ public class NeuCamera {
                         (float) viewWidth / mPreviewSize.getWidth());
                 matrix.postScale(scale, scale, centerX, centerY);
                 matrix.postRotate(90 * (rotation - 2), centerX, centerY);
-            } else if (Surface.ROTATION_180 == rotation) {
-                matrix.postRotate(180, centerX, centerY);
+            } else if (Surface.ROTATION_180 == rotation || Surface.ROTATION_0 ==rotation) {
+//                matrix.postScale(-1, 0); // 镜像水平翻转
+//                bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
+//                matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
+//                float scale = Math.max(
+//                        (float) viewHeight / mPreviewSize.getHeight(),
+//                        (float) viewWidth / mPreviewSize.getWidth());
+//                matrix.postScale(scale, scale, centerX, centerY);
+                //matrix.postRotate(90 * (rotation - 2), centerX, centerY);
             }
             LogUtils.i("TAG","rotation:"+rotation);
             mTextureview.setTransform(matrix);
@@ -284,7 +294,8 @@ public class NeuCamera {
     private void setUpCaptureRequestBuilder(CaptureRequest.Builder builder) {
         builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         // 获取设备方向
-        int rotation = Surface.ROTATION_90 ;//getWindowManager().getDefaultDisplay().getRotation();//
+        //int rotation = Surface.ROTATION_90 ;//getWindowManager().getDefaultDisplay().getRotation();//
+        int rotation = Surface.ROTATION_0 ;//getWindowManager().getDefaultDisplay().getRotation();//
         //rotation=1;
         // 根据设备方向计算设置照片的方向
         builder.set(CaptureRequest.JPEG_ORIENTATION

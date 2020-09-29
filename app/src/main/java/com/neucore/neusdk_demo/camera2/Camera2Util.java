@@ -473,13 +473,6 @@ public class Camera2Util {
         @Override
         public void onImageAvailable(ImageReader reader) {
             if (onImageAvailableListener_RGB != null) {
-                if (reader != null){
-                    LogUtils.d("ImageAvailableListener","rgb  1111" );
-                    Image image = reader.acquireLatestImage();//最后一帧
-                    image.close();
-                    byte[] rgb = Util.getBytesFromImageAsTypeRGB(image);
-                    LogUtils.d("ImageAvailableListener","rgb  1111" );
-                }
                 onImageAvailableListener_RGB.onImageAvailable(reader);
             }
         }
