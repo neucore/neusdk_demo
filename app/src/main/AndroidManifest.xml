@@ -32,7 +32,8 @@
             </intent-filter>-->
         </activity>
         <activity android:name="com.neucore.neusdk_demo.DetectActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <activity android:name="com.neucore.neusdk_demo.AddUserActivity"
             android:launchMode="singleTask"></activity>
         <activity android:name="com.neucore.neusdk_demo.SearchActivity"
