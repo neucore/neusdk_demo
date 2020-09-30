@@ -205,7 +205,8 @@ public class FaceProcessing extends Thread {
 
             String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
             if ("2".equals(type)){ //双目专用
-                mPendingRGBFrameData = this.getBytesFromImageAsTypeRGBFast(paramImage);
+                //mPendingRGBFrameData = this.getBytesFromImageAsTypeRGBFast(paramImage);
+                mPendingRGBFrameData = Util.ImageToByte(paramImage);
             }else {
                 mPendingRGBFrameData = rgbData;
             }
@@ -249,14 +250,14 @@ public class FaceProcessing extends Thread {
                     mat1.put(0,0,mPendingIRFrameData);
                     //Mat ir_mat = new Mat(mIRimageHeight, mIRimageWidth,CvType.CV_8UC3);
                     Mat ir_mat = Imgcodecs.imdecode(new MatOfByte(mPendingIRFrameData), CvType.CV_8UC3);
-                    Imgproc.cvtColor(mat1 , ir_mat, Imgproc.COLOR_YUV420sp2BGR);
+                    Imgproc.cvtColor(mat1 , ir_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
 
                     //将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
                     Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
                     mat2.put(0,0,mPendingRGBFrameData);
                     //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
                     Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-                    Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
+                    Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
 
                     //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，下面代码将不再需要
                     transpose(ir_mat, ir_mat);
