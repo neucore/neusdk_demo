@@ -234,19 +234,24 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     //人脸框
     private void setPaintViewUI(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
-        int width = image.getWidth();
-        int height = image.getHeight();
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
 
         //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
 
-        mPendingRGBFrameData = Util.ImageToByte(image);
+        mPendingRGBFrameData = ImageToByte(image);
         LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
         Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
@@ -260,7 +265,6 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,true); //withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
-        yuvMat.release();
 
 
         List<Rect> rectList = new ArrayList<>();
@@ -352,24 +356,67 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     }
 
 
+    private byte[] dataI = null;
+    private int ySize = 0;
+    private byte[] ImageToByte(Image image ) {
+
+        Image.Plane yPlane = image.getPlanes()[0];
+        if (ySize == 0){
+            ySize = yPlane.getBuffer().remaining();
+        }
+
+        Image.Plane uPlane = image.getPlanes()[1];
+        Image.Plane vPlane = image.getPlanes()[2];
+
+        int uSize = uPlane.getBuffer().remaining();
+        int vSize = vPlane.getBuffer().remaining();
+
+        if (dataI == null){
+            dataI = new byte[ySize + (ySize / 2)];
+        }
+
+        yPlane.getBuffer().get(dataI, 0, ySize);
+
+        ByteBuffer ub = uPlane.getBuffer();
+        ByteBuffer vb = vPlane.getBuffer();
+
+        int uvPixelStride = uPlane.getPixelStride();
+        if (uvPixelStride == 1) {
+            ub.get(dataI, ySize, uSize);
+            vb.get(dataI, ySize + uSize, vSize);
+            return dataI;
+        }
+        vb.get(dataI, ySize, vSize);
+        return dataI;
+
+    }
+
+
+    private int width = 0;
+    private int height = 0;
     private int paintViewUIHandNum = 0;
     //手势识别
     private void setPaintViewUIHand(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
-        int width = image.getWidth();
-        int height = image.getHeight();
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
 
         //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
 
-        mPendingRGBFrameData = Util.ImageToByte(image);
+        mPendingRGBFrameData = ImageToByte(image);
         LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
         Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        yuvMat.release();
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
         //LogUtils.d(TAG,"rgb  6666" );
@@ -381,8 +428,6 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         //获取手势数据
         NeuHandNode[] resultRgb = NeuHandFactory.getInstance().create().neu_iva_hand_detect(rgbMat);
         LogUtils.d(TAG,"rgb  9999" );
-
-        yuvMat.release();
 
 
 //        int mRGBimageWidth = image.getWidth();
@@ -545,20 +590,25 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     //Pose检测
     private void setPaintViewUIPose(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
-        int width = image.getWidth();
-        int height = image.getHeight();
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
 
         //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
 
-        mPendingRGBFrameData = Util.ImageToByte(image);
+        mPendingRGBFrameData = ImageToByte(image);
         LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
         Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        yuvMat.release();
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
         //LogUtils.d(TAG,"rgb  6666" );
@@ -571,7 +621,6 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,true); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
-        yuvMat.release();
 
 
         List<NeuHandInfo> rectList = new ArrayList<>();
@@ -693,19 +742,24 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     //人脸关键点
     private void setPaintViewUIFacePoint(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
-        int width = image.getWidth();
-        int height = image.getHeight();
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
 
         //mPendingRGBFrameData = getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
         //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
 
-        mPendingRGBFrameData = Util.ImageToByte(image);
+        mPendingRGBFrameData = ImageToByte(image);
         LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
         Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
@@ -719,7 +773,6 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,false); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
-        yuvMat.release();
 
 
         List<NeuHandInfo> rectList = new ArrayList<>();
