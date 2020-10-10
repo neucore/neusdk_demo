@@ -186,10 +186,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 //初始化拷贝nb文件
                 HelpUtil.copyAssetResource2File(MyApplication.getContext());
                 OpenCVLoader.initDebug();
-                NeuFaceFactory.getInstance().create();
-                NeuHandFactory.getInstance().create();
+                //NeuFaceFactory.getInstance().create();
+                //NeuHandFactory.getInstance().create();
                 NeuPoseFactory.getInstance().create();
-                NeuSegmentFactory.getInstance().create();
+                //NeuSegmentFactory.getInstance().create();
 
                 FaceProcessing.getInstance(MyApplication.getContext());
             }
@@ -247,8 +247,11 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 mHandler.sendEmptyMessage(START_ACTIVITY);
                 break;
             case R.id.ll_pose_testing:  //Pose检测
-                SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"4");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+                //SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"4");
+                //mHandler.sendEmptyMessage(START_ACTIVITY);
+
+                //startActivity(new Intent(MenuActivity.this,TestPoseActivity.class));
+                startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
                 break;
             case R.id.ll_background_fade:   //虚拟背景
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"5");
