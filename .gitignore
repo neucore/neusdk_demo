@@ -20,6 +20,7 @@ build/
 .idea
 .so
 libs/NeuSDK.jar
+/libs/Jama-1.0.3.jar
 libs/armeabi-v7a/libneucore.so
 /nb
 *.nb
