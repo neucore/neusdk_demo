@@ -1445,15 +1445,12 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     }
 
     private void getZuoBiaoXYContent(List<Rect> rectList) {
-        customSurfaceView.setUpStartDraw();
-
         if (customSurfaceView != null) {
             customSurfaceView.drawsTwo(rectList);
         }
     }
 
     private void getZuoBiaoXYContentHand(List<NeuHandInfo> rectList) {
-        customHandSurfaceView.setUpStartDraw();
         if (customHandSurfaceView != null) {
             customHandSurfaceView.drawsTwo(rectList);
         }
@@ -1713,14 +1710,14 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             textureView_IR.destroyDrawingCache();
         }
 
-        if (EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().unregister(this);
-        }
         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
         if ("0".equals(type) || "1".equals(type) || "2".equals(type)){ //单目,双目
             Util.sendIntEventMessge(Constants.CLOSE_KCF);
         }else if ("3".equals(type) || "4".equals(type) || "5".equals(type) || "7".equals(type)){ //手势 , Pose , 虚拟背景 , 人脸关键点
             Util.sendIntEventMessge(Constants.CLOSE_HAND_KCF);
+        }
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
         }
 
         finish();
