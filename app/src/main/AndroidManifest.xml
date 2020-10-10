@@ -52,6 +52,10 @@
             android:launchMode="singleTask"></activity>
         <activity android:name="com.neucore.neusdk_demo.DeviceInfoActivity"
             android:launchMode="singleTask"></activity>
+        <activity android:name="com.neucore.neusdk_demo.TestPoseActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name="com.neucore.neusdk_demo.Camera2Activity"
+            android:launchMode="singleTask"></activity>
         <!-- Mqtt Service -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <!-- Log Service -->
