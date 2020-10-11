@@ -8,12 +8,6 @@ import android.graphics.Rect;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-import android.renderscript.Type;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 

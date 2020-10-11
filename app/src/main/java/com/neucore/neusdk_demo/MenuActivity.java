@@ -186,10 +186,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 //初始化拷贝nb文件
                 HelpUtil.copyAssetResource2File(MyApplication.getContext());
                 OpenCVLoader.initDebug();
-                //NeuFaceFactory.getInstance().create();
-                //NeuHandFactory.getInstance().create();
+                NeuFaceFactory.getInstance().create();
+                NeuHandFactory.getInstance().create();
                 NeuPoseFactory.getInstance().create();
-                //NeuSegmentFactory.getInstance().create();
+                NeuSegmentFactory.getInstance().create();
 
                 FaceProcessing.getInstance(MyApplication.getContext());
             }
