@@ -6,6 +6,8 @@ import android.hardware.camera2.CameraDevice;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +55,50 @@ public class Camera2Activity extends AppCompatActivity {
     private Bitmap bitmap;
     String TAG = "NEUCORE Camera2Activity";
 
+    private static final int FACE_PROCESSING = 18;
+    private Handler camera2Handler;
+    private camera2ProcessingThread camera2ProcessingThread;
+    class camera2ProcessingThread extends Thread {
+        public void run() {
+            Looper.prepare();
+
+            camera2Handler = new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case FACE_PROCESSING:
+                            Image image = (Image) msg.obj;
+                            setPaintViewUIPose(image);
+
+                            //sendToMainHandler(UPDATE_IMAGE,image);
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+            });
+
+            Looper.loop();  //looper开始处理消息。
+        }
+    }
+
+    private static final int UPDATE_IMAGE = 23;
+    Handler mainHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what){
+                case UPDATE_IMAGE:
+                    Image image = (Image) msg.obj;
+                    setPaintViewUIPose(image);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +119,7 @@ public class Camera2Activity extends AppCompatActivity {
 
                 Image.Plane[] planes = image.getPlanes();
 
-                setPaintViewUIPose(image);
-
+                sendToCamera2Handler(FACE_PROCESSING,image);
             }
         });
 
@@ -87,6 +132,30 @@ public class Camera2Activity extends AppCompatActivity {
                 Util.sendIntEventMessge(Constants.OPEN_HAND_KCF);
             }
         },1000);
+
+        if (camera2ProcessingThread != null) {
+            if (camera2ProcessingThread.isAlive()) {
+                camera2ProcessingThread.interrupt();
+            }
+        }
+        camera2ProcessingThread = new camera2ProcessingThread();
+        camera2ProcessingThread.start();
+    }
+
+    //发送handler通知
+    public void sendToCamera2Handler(int what, Object obj) {
+        Message me = new Message();
+        me.what = what;
+        me.obj = obj;
+        camera2Handler.sendMessage(me);
+    }
+
+    //发送handler通知
+    public void sendToMainHandler(int what, Object obj) {
+        Message me = new Message();
+        me.what = what;
+        me.obj = obj;
+        mainHandler.sendMessage(me);
     }
 
 
@@ -123,7 +192,7 @@ public class Camera2Activity extends AppCompatActivity {
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取Pose数据
-        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,true); // withTracking 是否进行人脸追踪
+        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,false); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
 
@@ -143,7 +212,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIPoseNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+            LogUtils.d(TAG,"rgb  10 10 10 10" + rectList.size() );
         }else {
             if (paintViewUIPoseNum == 0){
                 paintViewUIPoseNum++;
@@ -259,5 +328,17 @@ public class Camera2Activity extends AppCompatActivity {
         if (EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
+        if (camera2ProcessingThread != null) {
+            if (camera2ProcessingThread.isAlive()) {
+                camera2ProcessingThread.interrupt();
+            }
+        }
+        if (camera2Handler != null){
+            camera2Handler.removeCallbacksAndMessages(null);
+        }
+        if (mainHandler != null){
+            mainHandler.removeCallbacksAndMessages(null);
+        }
+        finish();
     }
 }
