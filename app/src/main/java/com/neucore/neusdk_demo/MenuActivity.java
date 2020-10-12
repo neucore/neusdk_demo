@@ -247,10 +247,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 mHandler.sendEmptyMessage(START_ACTIVITY);
                 break;
             case R.id.ll_pose_testing:  //Pose检测
-                //SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"4");
+                SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"4");
                 //mHandler.sendEmptyMessage(START_ACTIVITY);
 
-                //startActivity(new Intent(MenuActivity.this,TestPoseActivity.class));
                 startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
                 break;
             case R.id.ll_background_fade:   //虚拟背景
