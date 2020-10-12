@@ -231,8 +231,8 @@ public class CustomPoseSurfaceView extends SurfaceView implements
                     for(int j = 0; j < 15; j++){
                         mpaint.setStrokeWidth(dip2px(context, 3));
                         mpaint.setStyle(Paint.Style.FILL);
-                        //canvas.drawCircle(Util.widthPointTrans(pose_node[j * 2]) , Util.heightPointTrans(pose_node[j * 2 + 1]),5,mpaint);
-                        canvas.drawCircle( (pose_node[j * 2]) , (pose_node[j * 2 + 1]),5,mpaint);
+                        canvas.drawCircle(Util.widthPointTrans6421(pose_node[j * 2]) , Util.heightPointTrans6421(pose_node[j * 2 + 1]),5,mpaint);
+//                        canvas.drawCircle( (pose_node[j * 2]) , (pose_node[j * 2 + 1]),5,mpaint);
 
                         // draw line of Nose and Neck
                         for (int i = NeuPose.Nose; i <= NeuPose.Neck-1; i++) {
@@ -298,11 +298,11 @@ public class CustomPoseSurfaceView extends SurfaceView implements
                     mpaint.setStrokeWidth(dip2px(context, 3));
                     mpaint.setStyle(Paint.Style.FILL);
                     for(int id = 0; id < 106; id++) {
-                        canvas.drawCircle(Util.widthPointTrans(markPoints[2*id]) , Util.heightPointTrans(markPoints[2*id+1]),5,mpaint);
+                        canvas.drawCircle(Util.widthPointTrans6421(markPoints[2*id]) , Util.heightPointTrans6421(markPoints[2*id+1]),5,mpaint);
                     }
                     //在 mat 中画 5 个关键点
                     for(int id = 0;id < 5; id++) {
-                        canvas.drawCircle(Util.widthPointTrans(keyPoints[2*id]) , Util.heightPointTrans(keyPoints[2*id+1]),5,mpaint);
+                        canvas.drawCircle(Util.widthPointTrans6421(keyPoints[2*id]) , Util.heightPointTrans6421(keyPoints[2*id+1]),5,mpaint);
                     }
                 }
             }
@@ -379,10 +379,10 @@ public class CustomPoseSurfaceView extends SurfaceView implements
         if (p1_score == 0.0f || p2_score == 0.0f) {
             return;
         } else {
-//            canvas.drawLine(Util.widthPointTrans(p1_x),Util.heightPointTrans(p1_y),
-//                    Util.widthPointTrans(p2_x),Util.heightPointTrans(p2_y),mpaint);
-            canvas.drawLine( (p1_x), (p1_y),
-                    (p2_x),(p2_y),mpaint);
+            canvas.drawLine(Util.widthPointTrans6421(p1_x),Util.heightPointTrans6421(p1_y),
+                    Util.widthPointTrans6421(p2_x),Util.heightPointTrans6421(p2_y),mpaint);
+//            canvas.drawLine( (p1_x), (p1_y),
+//                    (p2_x),(p2_y),mpaint);
         }
     }
 

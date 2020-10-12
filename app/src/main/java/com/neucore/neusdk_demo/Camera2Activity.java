@@ -225,7 +225,7 @@ public class Camera2Activity extends AppCompatActivity {
         LogUtils.d(TAG,"rgb  8888" );
         //获取Pose数据
         NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgb_mat,false); // withTracking 是否进行人脸追踪
-        LogUtils.d(TAG,"rgb  9999  " + resultRgb.length);
+        LogUtils.d(TAG,"rgb  9999  ");
 
 
 
