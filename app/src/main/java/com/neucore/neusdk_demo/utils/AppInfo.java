@@ -4,15 +4,15 @@ public class AppInfo {
 
     private static boolean startKCF = false; //默认关闭
 
-    private static int widthPingMu = 800;
+    private static int widthPingMu = 1920;
 
-    private static int heightPingMu = 1232;
+    private static int heightPingMu = 1080;
 
 
     public static void clear(){
         startKCF = false;
-        widthPingMu = 800;
-        heightPingMu = 1232;
+        widthPingMu = 1920;
+        heightPingMu = 1080;
     }
 
     public static boolean getStartKCF() {
