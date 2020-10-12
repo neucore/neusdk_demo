@@ -124,6 +124,22 @@ public class Util {
         return mY1;
     }
 
+    public static float widthPointTrans6421(float x1){
+        Size size = new Size(640,480);
+        float widthSize = size.getWidth();
+        float widthPingMu = 1920;
+        float mX1 = ( (x1 * widthPingMu) / widthSize);
+        return mX1;
+    }
+
+    public static float heightPointTrans6421(float y1){
+        Size size = new Size(640,480);
+        float heightSize = size.getHeight();
+        float heightPingMu = 1080;
+        float mY1 = (y1 * heightPingMu) / heightSize;
+        return mY1;
+    }
+
     public static byte[] getBytesFromImageAsTypeRGB(Image image) {
         try {
             //获取源数据，如果是YUV格式的数据planes.length = 3
