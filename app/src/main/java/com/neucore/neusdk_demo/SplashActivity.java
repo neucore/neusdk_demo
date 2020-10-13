@@ -4,12 +4,17 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.neucore.neusdk_demo.app.MyApplication;
+import com.neucore.neusdk_demo.dialog.TransferAdminsDialog;
+import com.neucore.neusdk_demo.utility.Constants;
+import com.neucore.neusdk_demo.utils.SPUtils;
+import com.neucore.neusdk_demo.utils.SharePrefConstant;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,8 +122,30 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
         @Override
         public void onFinish() {
-            startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
-            finish();
+            TransferAdminsDialog transferAdminsDialog = new TransferAdminsDialog(SplashActivity.this);
+            transferAdminsDialog.show();
+            transferAdminsDialog.setButtonCancelOnClick(new TransferAdminsDialog.CheckButtonCancelOnclick() {
+                @Override
+                public void onClick(View view) {
+                    transferAdminsDialog.finish();
+
+                    //64010
+                    SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    finish();
+                }
+            });
+            transferAdminsDialog.setButtonSureOnClick(new TransferAdminsDialog.CheckButtonSureOnclick() {
+                @Override
+                public void onClick(View view) {
+                    transferAdminsDialog.finish();
+
+                    //6421
+                    SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE,Constants.TYPE_6421);
+                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    finish();
+                }
+            });
         }
     }
 

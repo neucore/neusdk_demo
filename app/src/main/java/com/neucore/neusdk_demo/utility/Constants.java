@@ -16,4 +16,7 @@ public class Constants {
     //手势持续(手势+识别, 人脸关键点, Pose检测)
     public static final int HAND_START = 10050;
 
+    public static final String TYPE_64010 = "64010";
+    public static final String TYPE_6421 = "6421";
+
 }

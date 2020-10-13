@@ -10,6 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ImageView
+        android:rotation="-180"
+        android:id="@+id/image_view"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:visibility="gone"
         android:id="@+id/fragment_content_two_ll"
