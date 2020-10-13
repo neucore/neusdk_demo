@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,10 +17,16 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luoye.bzcamera.BZCamera2View;
+import com.neucore.NeuSDK.NeuFaceRecgNode;
+import com.neucore.NeuSDK.NeuHandClass;
+import com.neucore.NeuSDK.NeuHandNode;
+import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
 import com.neucore.neulink.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.camera2.YUVConvertUtil;
+import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
+import com.neucore.neusdk_demo.neucore.NeuHandFactory;
 import com.neucore.neusdk_demo.neucore.NeuPoseFactory;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.AppInfo;
@@ -27,6 +34,7 @@ import com.neucore.neusdk_demo.utils.NCModeSelectEvent;
 import com.neucore.neusdk_demo.utils.NeuHandInfo;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
+import com.neucore.neusdk_demo.utils.Size;
 import com.neucore.neusdk_demo.utils.Util;
 import com.neucore.neusdk_demo.view.CustomPoseSurfaceView;
 import com.neucore.neusdk_demo.view.CustomSurfaceView;
@@ -60,8 +68,11 @@ public class Camera2Activity extends AppCompatActivity {
     String TAG = "NEUCORE Camera2Activity";
 
     private static final int FACE_PROCESSING = 18;
+    private static final int IMAGE_PLANE = 19;
     private Handler camera2Handler;
     private camera2ProcessingThread camera2ProcessingThread;
+    private ImageView image_view;
+
     class camera2ProcessingThread extends Thread {
         public void run() {
             Looper.prepare();
@@ -76,6 +87,13 @@ public class Camera2Activity extends AppCompatActivity {
 
                             sendToMainHandler(UPDATE_IMAGE,image);
                             break;
+                        case IMAGE_PLANE:
+                            Image.Plane[] planes = (Image.Plane[]) msg.obj;
+                            System.out.println("     开始时间  2222 + width: "+width);
+
+                            //sendToMainHandler(IMAGE_PLANE_UPDATE,planes);
+
+                            break;
                         default:
                             break;
                     }
@@ -88,6 +106,7 @@ public class Camera2Activity extends AppCompatActivity {
     }
 
     private static final int UPDATE_IMAGE = 23;
+    private static final int IMAGE_PLANE_UPDATE = 24;
     Handler mainHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -95,6 +114,38 @@ public class Camera2Activity extends AppCompatActivity {
                 case UPDATE_IMAGE:
                     Image image = (Image) msg.obj;
                     setPaintViewUIPose(image);
+                    break;
+                case IMAGE_PLANE_UPDATE:
+                    System.out.println("     开始时间  3333 " );
+                    Image.Plane[] planes = (Image.Plane[]) msg.obj;
+
+                    System.out.println("     开始时间  3333 " );
+//                    if (null == yBuffer) {
+//                        yBuffer = new byte[width * height];
+//                    }
+//                    ByteBuffer byU = planes[1].getBuffer();
+//                    ByteBuffer byV = planes[2].getBuffer();
+//                    if (null == uBuffer) {
+//                        uBuffer = new byte[byU.capacity()];
+//                    }
+//                    if (null == vBuffer) {
+//                        vBuffer = new byte[byV.capacity()];
+//                    }
+//                    System.out.println("     开始时间  3333 " );
+//                    planes[0].getBuffer().get(yBuffer);
+//                    byU.get(vBuffer);
+//                    byV.get(uBuffer);
+//                    System.out.println("     开始时间  4444");
+
+
+//                    final Bitmap bitmap = yuvConvertUtil.yuv420_2_Bitmap(yBuffer, uBuffer, vBuffer, planes[1].getPixelStride(), width , height, 0, true);
+//                    image_view.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            image_view.setImageBitmap(bitmap);
+//                            System.out.println("     开始时间  5555");
+//                        }
+//                    });
                     break;
                 default:
                     break;
@@ -105,6 +156,9 @@ public class Camera2Activity extends AppCompatActivity {
     private int widthPingMu;
     private int heightPingMu;
     private boolean onResume = false;
+    private boolean onThread = false;
+    private int width = 0;
+    private int height = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,9 +170,10 @@ public class Camera2Activity extends AppCompatActivity {
         }
         ButterKnife.bind(this);
         yuvConvertUtil = new YUVConvertUtil(this);
+        image_view = findViewById(R.id.image_view);
         BZCamera2View bz_camera2_view = findViewById(R.id.bz_camera2_view);
         bz_camera2_view.setCheckCameraCapacity(false);
-        bz_camera2_view.setPreviewTargetSize(640, 480);
+        bz_camera2_view.setPreviewTargetSize(1920, 1080);
         bz_camera2_view.setOnStatusChangeListener(new BZCamera2View.OnStatusChangeListener() {
             @Override
             public void onPreviewSuccess(CameraDevice mCameraDevice, int width, int height) {
@@ -129,12 +184,34 @@ public class Camera2Activity extends AppCompatActivity {
             public void onImageAvailable(Image image, int displayOrientation, float fps) {
                 System.out.println("     开始时间  1111");
 
-                Image.Plane[] planes = image.getPlanes();
-
-                //sendToCamera2Handler(FACE_PROCESSING,image);
-
                 if (onResume){
-                    setPaintViewUIPose(image);
+                    if (AppInfo.getStartKCF()) { //View图层 UI初始化完成
+                        Image.Plane[] planes = image.getPlanes();
+
+//                        if (onThread){
+//                            if (width != 0){
+//                                width = image.getWidth();
+//                            }
+//                            if (height != 0){
+//                                height = image.getHeight();
+//                            }
+//                            System.out.println("     开始时间  1111   3333");
+//                            //sendToCamera2Handler(FACE_PROCESSING,image);
+//                            sendToCamera2HandlerDelayed(IMAGE_PLANE,planes); //延迟50ms
+//                            System.out.println("     开始时间  1111   4444");
+//                        }
+
+                        String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
+                        if ("3".equals(type)){ //手势
+                            setPaintViewUIHand(image);
+                        }else if ("4".equals(type)){ //Pose检测
+                            setPaintViewUIPose(image);
+                        }else if ("7".equals(type)){ //人脸关键点
+                            setPaintViewUIFacePoint(image);
+                        }
+
+                    }
+
                 }
             }
         });
@@ -142,7 +219,12 @@ public class Camera2Activity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Util.sendIntEventMessge(Constants.OPEN_HAND_KCF);
+                String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
+                if ("0".equals(type) || "1".equals(type)){ //单目活体, 单目非活体
+                    Util.sendIntEventMessge(Constants.OPEN_KCF);
+                }else if ("3".equals(type) || "4".equals(type) || "7".equals(type)){ //手势 , Pose检测 , 人脸关键点
+                    Util.sendIntEventMessge(Constants.OPEN_HAND_KCF);
+                }
             }
         },1000);
 
@@ -153,6 +235,14 @@ public class Camera2Activity extends AppCompatActivity {
 //        }
 //        camera2ProcessingThread = new camera2ProcessingThread();
 //        camera2ProcessingThread.start();
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onThread = true;
+//            }
+//        },2000);
+
     }
 
     //发送handler通知
@@ -161,6 +251,13 @@ public class Camera2Activity extends AppCompatActivity {
         me.what = what;
         me.obj = obj;
         camera2Handler.sendMessage(me);
+    }
+    //发送handler通知
+    public void sendToCamera2HandlerDelayed(int what, Object obj) {
+        Message me = new Message();
+        me.what = what;
+        me.obj = obj;
+        camera2Handler.sendMessageDelayed(me,70);
     }
 
     //发送handler通知
@@ -171,9 +268,174 @@ public class Camera2Activity extends AppCompatActivity {
         mainHandler.sendMessage(me);
     }
 
+    private int paintViewUIHandNum = 0;
+    //手势识别
+    private void setPaintViewUIHand(Image image) {
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
 
-    private int width = 0;
-    private int height = 0;
+        mPendingRGBFrameData = ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        yuvMat.release();
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
+        //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
+        LogUtils.d(TAG,"rgb  8888" );
+        //获取手势数据
+        NeuHandNode[] resultRgb = NeuHandFactory.getInstance().create().neu_iva_hand_detect(rgbMat);
+        LogUtils.d(TAG,"rgb  9999" );
+
+        List<NeuHandInfo> rectList = new ArrayList<>();
+        rectList.clear();
+        for (int i = 0; i < resultRgb.length; i++) {
+            NeuHandInfo neuHandInfo = new NeuHandInfo();
+            //调用检测算法,得到手势框,5点信息,特征值等信息
+            //在 mat 中画手势框
+            Rect rect_event = new Rect(resultRgb[i].getLeft(),resultRgb[i].getTop(),
+                    (resultRgb[i].getLeft() + resultRgb[i].getWidth()),resultRgb[i].getTop() + resultRgb[i].getHeight());
+
+            int x1 = rect_event.left;
+            int y1 = rect_event.top;
+            int x2 = rect_event.right;
+            int y2 = rect_event.bottom;
+
+            int aaaX1 = (int) Util.widthPointTrans6421(x1);
+            int aaaX2 = (int) Util.widthPointTrans6421(x2);
+            int aaaY1 = (int) Util.heightPointTrans6421(y1);
+            int aaaY2 = (int) Util.heightPointTrans6421(y2);
+
+            Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
+            neuHandInfo.setRect(rect);
+
+            // Mat 中标注滑动手势
+            String swipe = "";
+            switch (resultRgb[i].getHandSwipe()) {
+                case NeuHandSwipe.NEU_IVA_STATE_UNKNOW:
+                    swipe = "unknow";
+                    break;
+                case NeuHandSwipe.NEU_IVA_STATE_LEFT:
+                    swipe = "left";
+                    break;
+                case NeuHandSwipe.NEU_IVA_STATE_RIGHT:
+                    swipe = "right";
+                    break;
+                case NeuHandSwipe.NEU_IVA_STATE_UP:
+                    swipe = "up";
+                    break;
+                case NeuHandSwipe.NEU_IVA_STATE_DOWN:
+                    swipe = "down";
+                    break;
+                default:
+                    swipe = "default";
+            }
+            System.out.println("1    swipe: "+swipe);
+            neuHandInfo.setSwipe(swipe);
+
+            //调用分类网络,手势分类
+            int status = NeuHandFactory.getInstance().create().neu_iva_hand_class(rgbMat, resultRgb[i]);
+            if (status != 0) {
+                Log.e(TAG,"error at mNeuHand.neu_iva_hand_class()");
+                rectList.add(neuHandInfo);
+                continue;
+            }
+
+            String text = "";
+            switch (resultRgb[i].getHandClass()) {
+                case NeuHandClass.NEU_IVA_HAND_FIRST:
+                    text = "first";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_ONE:
+                    text = "one";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_TWO:
+                    text = "two";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_THREE:
+                    text = "three";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_FOUR:
+                    text = "four";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_FIVE:
+                    text = "five";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_SIX:
+                    text = "six";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_SEVEN:
+                    text = "seven";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_EIGHT:
+                    text = "eight";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_NINE:
+                    text = "nine";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_TEN:
+                    text = "ten";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_HANDHEART:
+                    text = "handheart";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_OK:
+                    text = "ok";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_ROCK:
+                    text = "rock";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_NO:
+                    text = "no";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_STOP:
+                    text = "stop";
+                    break;
+                case NeuHandClass.NEU_IVA_HAND_OTHER:
+                    text = "other";
+                    break;
+                default:
+                    text = "default";
+            }
+            System.out.println("1    text: "+text);
+            neuHandInfo.setText(text);
+            rectList.add(neuHandInfo);
+        }
+        if (rectList.size() > 0){
+            paintViewUIHandNum = 0;
+            Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+        }else {
+            if (paintViewUIHandNum == 0){
+                paintViewUIHandNum++;
+
+                rectList.clear();
+                NeuHandInfo neuHandInfo = new NeuHandInfo();
+                neuHandInfo.setRect(new Rect(0,0,0,0));
+                neuHandInfo.setSwipe("");
+                neuHandInfo.setText("");
+
+                rectList.add(neuHandInfo);
+
+                Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            }
+        }
+
+    }
+
     private byte[] mPendingRGBFrameData;
     private int paintViewUIPoseNum = 0;
     //Pose检测
@@ -249,6 +511,73 @@ public class Camera2Activity extends AppCompatActivity {
         }else {
             if (paintViewUIPoseNum == 0){
                 paintViewUIPoseNum++;
+
+                rectList.clear();
+                NeuHandInfo neuHandInfo = new NeuHandInfo();
+                neuHandInfo.setRect(new Rect(0,0,0,0));
+
+                rectList.add(neuHandInfo);
+
+                Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            }
+        }
+
+    }
+
+
+    private int paintViewFacePointNum = 0;
+    //人脸关键点
+    private void setPaintViewUIFacePoint(Image image) {
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
+
+        mPendingRGBFrameData = ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        yuvMat.release();
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
+        //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
+        LogUtils.d(TAG,"rgb  8888" );
+        //获取人脸关键点数据
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,false); // withTracking 是否进行人脸追踪
+        LogUtils.d(TAG,"rgb  9999" );
+
+
+
+        List<NeuHandInfo> rectList = new ArrayList<>();
+        rectList.clear();
+        for (int i = 0; i < resultRgb.length; i++) {
+            float[] mLandMarkPoints = resultRgb[i].getLandMarkPoints();
+            float[] mKeyPoints = resultRgb[i].getKeyPoints();
+
+            NeuHandInfo neuHandInfo = new NeuHandInfo();
+            neuHandInfo.setmLandMarkPoints(mLandMarkPoints);
+            neuHandInfo.setmKeyPoints(mKeyPoints);
+
+            rectList.add(neuHandInfo);
+        }
+        if (rectList.size() > 0){
+            paintViewFacePointNum = 0;
+            Util.sendIntEventMessge(Constants.HAND_START, rectList);
+            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+        }else {
+            if (paintViewFacePointNum == 0){
+                paintViewFacePointNum++;
 
                 rectList.clear();
                 NeuHandInfo neuHandInfo = new NeuHandInfo();
@@ -346,10 +675,52 @@ public class Camera2Activity extends AppCompatActivity {
     @BindView(R.id.fragment_content_two_ll)
     LinearLayout fragment_content_two_ll;
     private CustomPoseSurfaceView customHandSurfaceView;
+    private CustomSurfaceView customSurfaceView;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onModeSwitch(NCModeSelectEvent ncModeSelectEvent) {
         switch (ncModeSelectEvent.getMode()) {
+            case Constants.OPEN_KCF://开启
+                fragment_content_two_ll.setVisibility(View.VISIBLE);
+                if (customSurfaceView != null) {
+                    fragment_content_two_ll.removeView(customSurfaceView);
+                }
+                customSurfaceView = new CustomSurfaceView(Camera2Activity.this);
+                fragment_content_two_ll.addView(customSurfaceView);
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppInfo.setStartKCF(true);
+                        if (customSurfaceView != null) {
+                            List<Rect> rectList = new ArrayList<>();
+                            rectList.add(new Rect(0,0,0,0));
+                            customSurfaceView.drawsTwo(rectList);
+                        }
+                    }
+                },1500);
+                break;
+
+            case Constants.CLOSE_KCF://关闭
+                customSurfaceView.setUpStartDrawTwo();     //画布可以画
+                if (customSurfaceView != null) {
+                    fragment_content_two_ll.removeView(customHandSurfaceView);
+                }
+                fragment_content_two_ll.setVisibility(View.GONE);
+                AppInfo.setStartKCF(false);
+                break;
+
+            case Constants.FACE_START: //收到坐标消息
+                if (AppInfo.getStartKCF()) { //UI初始化完成
+                    if (fragment_content_two_ll.getVisibility() == View.GONE){
+                        fragment_content_two_ll.setVisibility(View.VISIBLE);
+                    }
+                    List<Rect> rectList = ncModeSelectEvent.getList();
+                    //Rect rect = ncModeSelectEvent.getRect();
+                    getZuoBiaoXYContent(rectList);
+                }
+                break;
             case Constants.OPEN_HAND_KCF://开启
                 fragment_content_two_ll.setVisibility(View.VISIBLE);
                 if (customHandSurfaceView != null) {
@@ -390,6 +761,12 @@ public class Camera2Activity extends AppCompatActivity {
         }
     }
 
+    private void getZuoBiaoXYContent(List<Rect> rectList) {
+        if (customSurfaceView != null) {
+            customSurfaceView.drawsTwo(rectList);
+        }
+    }
+
     private void getZuoBiaoXYContentHand(List<NeuHandInfo> rectList) {
         if (customHandSurfaceView != null) {
             customHandSurfaceView.drawsTwo(rectList);
@@ -401,11 +778,18 @@ public class Camera2Activity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         onResume = false;
+        onThread = false;
         Util.clearAllCache(MyApplication.getContext());
         //Pose
         Util.sendIntEventMessge(Constants.CLOSE_HAND_KCF);
         if (EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
+        }
+        String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
+        if ("0".equals(type) || "1".equals(type) ){ //单目活体, 单目非活体
+            Util.sendIntEventMessge(Constants.CLOSE_KCF);
+        }else if ("3".equals(type) || "4".equals(type) || "7".equals(type)){ //手势 , Pose , 人脸关键点
+            Util.sendIntEventMessge(Constants.CLOSE_HAND_KCF);
         }
         if (camera2ProcessingThread != null) {
             if (camera2ProcessingThread.isAlive()) {

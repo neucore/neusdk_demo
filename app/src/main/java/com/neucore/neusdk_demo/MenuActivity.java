@@ -26,6 +26,7 @@ import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 import com.neucore.neusdk_demo.neucore.NeuHandFactory;
 import com.neucore.neusdk_demo.neucore.NeuPoseFactory;
 import com.neucore.neusdk_demo.neucore.NeuSegmentFactory;
+import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.HelpUtil;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 import com.neucore.neulink.util.RequestContext;
@@ -192,6 +193,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 NeuSegmentFactory.getInstance().create();
 
                 FaceProcessing.getInstance(MyApplication.getContext());
+
+                Util.clearAllCache(MyApplication.getContext());
             }
         },1000);
     }
@@ -244,13 +247,31 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 break;
             case R.id.ll_gesture_discern:   //手势检测+识别
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"3");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+
+                String equip_type3 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type3)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type3)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }
                 break;
             case R.id.ll_pose_testing:  //Pose检测
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"4");
-                //mHandler.sendEmptyMessage(START_ACTIVITY);
 
-                startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                String equip_type4 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type4)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type4)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }
                 break;
             case R.id.ll_background_fade:   //虚拟背景
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"5");
@@ -262,7 +283,17 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 break;
             case R.id.ll_face_key_points:   //人脸关键点
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"7");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+
+                String equip_type7 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type7)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type7)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }
                 break;
             default:
                 break;
