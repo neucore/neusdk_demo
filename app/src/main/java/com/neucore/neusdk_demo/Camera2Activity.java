@@ -173,7 +173,7 @@ public class Camera2Activity extends AppCompatActivity {
         image_view = findViewById(R.id.image_view);
         BZCamera2View bz_camera2_view = findViewById(R.id.bz_camera2_view);
         bz_camera2_view.setCheckCameraCapacity(false);
-        bz_camera2_view.setPreviewTargetSize(1920, 1080);
+        bz_camera2_view.setPreviewTargetSize(640, 480);
         bz_camera2_view.setOnStatusChangeListener(new BZCamera2View.OnStatusChangeListener() {
             @Override
             public void onPreviewSuccess(CameraDevice mCameraDevice, int width, int height) {
@@ -202,7 +202,9 @@ public class Camera2Activity extends AppCompatActivity {
 //                        }
 
                         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
-                        if ("3".equals(type)){ //手势
+                        if ("0".equals(type) || "1".equals(type)){
+                            setPaintViewUI(image);
+                        }else if ("3".equals(type)){ //手势
                             setPaintViewUIHand(image);
                         }else if ("4".equals(type)){ //Pose检测
                             setPaintViewUIPose(image);
@@ -268,7 +270,75 @@ public class Camera2Activity extends AppCompatActivity {
         mainHandler.sendMessage(me);
     }
 
+    //人脸框
+    private void setPaintViewUI(Image image) {
+        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        if (width == 0){
+            width = image.getWidth();
+        }
+        if (height == 0){
+            height = image.getHeight();
+        }
+
+        mPendingRGBFrameData = ImageToByte(image);
+        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+
+        Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
+        yuvMat.put(0, 0, mPendingRGBFrameData);
+        if (rgbMat == null){
+            rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        }
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        yuvMat.release();
+        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
+
+        //LogUtils.d(TAG,"rgb  6666" );
+        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        LogUtils.d(TAG,"rgb  7777" );
+        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
+        //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
+        LogUtils.d(TAG,"rgb  8888" );
+        //获取人脸数据
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,true); //withTracking 是否进行人脸追踪
+        LogUtils.d(TAG,"rgb  9999" );
+
+
+
+        List<Rect> rectList = new ArrayList<>();
+        rectList.clear();
+        for (int i = 0; i < resultRgb.length; i++) {
+            //调用检测算法,得到人脸框,5点信息,特征值等信息
+            //在 mat 中画人脸框
+            Rect rect_event = new Rect(resultRgb[i].getLeft(),resultRgb[i].getTop(),
+                    (resultRgb[i].getLeft() + resultRgb[i].getWidth()),resultRgb[i].getTop() + resultRgb[i].getHeight());
+
+            int x1 = rect_event.left;
+            int y1 = rect_event.top;
+            int x2 = rect_event.right;
+            int y2 = rect_event.bottom;
+
+            int aaaX1 = (int) Util.widthPointTrans6421(x1);
+            int aaaX2 = (int) Util.widthPointTrans6421(x2);
+            int aaaY1 = (int) Util.heightPointTrans6421(y1);
+            int aaaY2 = (int) Util.heightPointTrans6421(y2);
+
+            Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
+            rectList.add(rect);
+        }
+        if (rectList.size() > 0){
+            Util.sendIntEventMessge(Constants.FACE_START, rectList);
+            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+        }else {
+            rectList.clear();
+            rectList.add(new Rect(0,0,0,0));
+            Util.sendIntEventMessge(Constants.FACE_START, rectList);
+        }
+
+    }
+
     private int paintViewUIHandNum = 0;
+    private Mat rgbMat;
     //手势识别
     private void setPaintViewUIHand(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
@@ -284,7 +354,9 @@ public class Camera2Activity extends AppCompatActivity {
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
-        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        if (rgbMat == null){
+            rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
@@ -453,8 +525,10 @@ public class Camera2Activity extends AppCompatActivity {
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
-        Mat rgb_mat = new Mat(height, width, CvType.CV_8UC3);
-        Imgproc.cvtColor(yuvMat, rgb_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+        if (rgbMat == null){
+            rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        }
+        Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" );
         //这里,查看图片,要求图片人是朝上的
@@ -486,7 +560,7 @@ public class Camera2Activity extends AppCompatActivity {
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取Pose数据
-        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgb_mat,false); // withTracking 是否进行人脸追踪
+        NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,false); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999  ");
 
 
@@ -541,7 +615,9 @@ public class Camera2Activity extends AppCompatActivity {
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
-        Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        if (rgbMat == null){
+            rgbMat = new Mat(height, width, CvType.CV_8UC3);
+        }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒

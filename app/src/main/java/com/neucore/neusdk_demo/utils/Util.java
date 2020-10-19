@@ -125,7 +125,7 @@ public class Util {
     }
 
     public static float widthPointTrans6421(float x1){
-        Size size = new Size(1920,1080);
+        Size size = new Size(640,480);
         float widthSize = size.getWidth();
         float widthPingMu = 1920;
         float mX1 = ( (x1 * widthPingMu) / widthSize);
@@ -133,7 +133,7 @@ public class Util {
     }
 
     public static float heightPointTrans6421(float y1){
-        Size size = new Size(1920,1080);
+        Size size = new Size(640,480);
         float heightSize = size.getHeight();
         float heightPingMu = 1080;
         float mY1 = (y1 * heightPingMu) / heightSize;
