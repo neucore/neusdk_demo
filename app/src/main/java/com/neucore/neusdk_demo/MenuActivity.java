@@ -235,15 +235,42 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 break;
             case R.id.ll_one_camera_life:  //单目活体
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"0");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+                String equip_type0 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type0)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type0)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }
                 break;
             case R.id.ll_one_camera_no_life: //单目非活体
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"1");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+                String equip_type1 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type1)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type1)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }
                 break;
             case R.id.ll_two_camera_life:   //双目活体
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"2");
-                mHandler.sendEmptyMessage(START_ACTIVITY);
+                String equip_type2 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+                if (Constants.TYPE_64010.equals(equip_type2)){
+                    //64010竖屏
+                    //竖屏64010板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                }else if (Constants.TYPE_6421.equals(equip_type2)){
+                    //6421横屏
+                    //横屏6421板子专属
+                    Toast.makeText(MyApplication.getContext(),"该板子不支持双摄像头",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.ll_gesture_discern:   //手势检测+识别
                 SPUtils.put(MyApplication.getContext(), SharePrefConstant.type,"3");
