@@ -201,6 +201,7 @@ public class Camera2Activity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    //注册人脸数据
                     face_register();
                 }
             },4000);
