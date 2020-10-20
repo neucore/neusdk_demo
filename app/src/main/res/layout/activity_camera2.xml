@@ -18,6 +18,118 @@
         android:layout_height="match_parent"/>
 
     <LinearLayout
+        android:visibility="visible"
+        android:id="@+id/ll_activity_detect_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:background="#60000000"
+        android:focusable="false"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    >
+
+                    <ImageView
+                        android:id="@+id/iv_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@mipmap/photo_bg" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_yanzheng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="请靠近屏幕 "
+                    android:textColor="#00D8DD"
+                    android:textStyle="bold"
+                    android:textSize="41dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <com.neucore.neusdk_demo.view.DigitalClock_new
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/item_bg"
+                    android:textSize="26dp">
+                </com.neucore.neusdk_demo.view.DigitalClock_new>
+                <com.neucore.neusdk_demo.view.DigitalClock24_new
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/item_bg"
+                    android:textSize="80dp">
+                </com.neucore.neusdk_demo.view.DigitalClock24_new>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <RelativeLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_deviceid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:textColor="@color/item_bg"
+                android:textSize="30dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_peoplenum2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="人员数：0"
+                    android:gravity="center"
+                    android:textColor="@color/item_bg"
+                    android:textSize="30dp"/>
+                <TextView
+                    android:id="@+id/tv_peoplenum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="人脸数：0"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:textColor="@color/item_bg"
+                    android:textSize="30dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:visibility="gone"
         android:id="@+id/fragment_content_two_ll"
         android:layout_width="match_parent"
