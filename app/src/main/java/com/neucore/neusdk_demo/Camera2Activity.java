@@ -1,10 +1,15 @@
 package com.neucore.neusdk_demo;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.camera2.CameraDevice;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,11 +18,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.luoye.bzcamera.BZCamera2View;
+import com.neucore.NeuSDK.NeuFaceQuality;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
+import com.neucore.NeuSDK.NeuFaceRegisterNode;
 import com.neucore.NeuSDK.NeuHandClass;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
@@ -38,6 +47,7 @@ import com.neucore.neusdk_demo.utils.Size;
 import com.neucore.neusdk_demo.utils.Util;
 import com.neucore.neusdk_demo.view.CustomPoseSurfaceView;
 import com.neucore.neusdk_demo.view.CustomSurfaceView;
+import com.neucore.neusdk_demo.view.SeekAttentionView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,6 +58,9 @@ import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +85,8 @@ public class Camera2Activity extends AppCompatActivity {
     private Handler camera2Handler;
     private camera2ProcessingThread camera2ProcessingThread;
     private ImageView image_view;
+    private TextView tv_yanzheng;
+    private ImageView iv_parent;
 
     class camera2ProcessingThread extends Thread {
         public void run() {
@@ -111,6 +126,18 @@ public class Camera2Activity extends AppCompatActivity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what){
+                case 4:
+                    String photo = (String)msg.obj;
+                    String url = registerPath + photo + ".jpg";
+                    if (iv_parent != null && tv_yanzheng != null){
+                        Glide.with(Camera2Activity.this).load(url).asBitmap().centerCrop().into(iv_parent);
+                        tv_yanzheng.setText("检测到人脸");
+                        ObjectAnimator animator = SeekAttentionView.tada(iv_parent);
+                        animator.setRepeatCount(1);
+                        animator.start();
+                    }
+
+                    break;
                 case UPDATE_IMAGE:
                     Image image = (Image) msg.obj;
                     setPaintViewUIPose(image);
@@ -169,6 +196,19 @@ public class Camera2Activity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
         ButterKnife.bind(this);
+        String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
+        if ("0".equals(type) || "1".equals(type)) { //单目 人脸识别 才注册
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    face_register();
+                }
+            },4000);
+            LinearLayout ll_activity_detect_bottom = (LinearLayout) findViewById(R.id.ll_activity_detect_bottom);
+            ll_activity_detect_bottom.setVisibility(View.VISIBLE);
+            tv_yanzheng = findViewById(R.id.tv_yanzheng);
+            iv_parent = findViewById(R.id.iv_parent);
+        }
         yuvConvertUtil = new YUVConvertUtil(this);
         image_view = findViewById(R.id.image_view);
         BZCamera2View bz_camera2_view = findViewById(R.id.bz_camera2_view);
@@ -270,6 +310,7 @@ public class Camera2Activity extends AppCompatActivity {
         mainHandler.sendMessage(me);
     }
 
+    private long faceTime = 0;
     //人脸框
     private void setPaintViewUI(Image image) {
         LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
@@ -333,6 +374,58 @@ public class Camera2Activity extends AppCompatActivity {
             rectList.clear();
             rectList.add(new Rect(0,0,0,0));
             Util.sendIntEventMessge(Constants.FACE_START, rectList);
+        }
+
+        long time = System.currentTimeMillis();
+        if (Math.abs(faceTime - time) > 1000){
+            for (int i = 0; i < resultRgb.length; i++) {
+                //如果特征值有效,进行人脸识别
+                if (resultRgb[i].getFeatureValid() == true) {
+
+                    float maxSum = 0;
+                    int maxID = 0;
+
+                    if (resultRgb[i].getIsmask() == true) {
+                        // 从注册图中找到相似度最大的ID 和 最大相似度
+                        for (int org_size = 0; org_size < feature_mask.size(); org_size++) {
+                            float sum = NeuFaceFactory.getInstance().create().neu_iva_face_similarity(feature_mask.get(org_size), resultRgb[i].getFeature());
+                            if (sum > maxSum) {
+                                maxSum = sum;
+                                maxID = org_size;
+                            }
+                        }
+                    } else {
+                        // 从注册图中找到相似度最大的ID 和 最大相似度
+                        for (int org_size = 0; org_size < feature_org.size(); org_size++) {
+                            float sum = NeuFaceFactory.getInstance().create().neu_iva_face_similarity(feature_org.get(org_size), resultRgb[i].getFeature());
+                            if (sum > maxSum) {
+                                maxSum = sum;
+                                maxID = org_size;
+                            }
+                        }
+                    }
+
+                    if (name_org.size() != 0) {
+                        Log.d(TAG, "max sum name=" + name_org.get(maxID) + "  maxSum=" + maxSum);
+                    }
+
+                    if (maxSum > 0.8) {
+                        //如果大于阈值,识别结果绘制到 mat 中
+                        //String name = name_org.get(maxID) + " maxSum=" + String.format("%.2f", maxSum);
+                        String name = name_org.get(maxID);
+                        faceTime = System.currentTimeMillis();
+                        System.out.println("eee     识别name: " + name);
+
+                        Message msg = new Message();
+                        msg.what = 4;
+                        msg.obj = name;
+                        mainHandler.sendMessage(msg);
+                    }
+                }else {
+                    //清除记录
+                    //dHandler.sendEmptyMessage(1);
+                }
+            }
         }
 
     }
@@ -847,6 +940,120 @@ public class Camera2Activity extends AppCompatActivity {
         if (customHandSurfaceView != null) {
             customHandSurfaceView.drawsTwo(rectList);
         }
+    }
+
+    private ArrayList<byte[]> feature_org = new ArrayList<byte[]>();
+    private ArrayList<byte[]> feature_mask = new ArrayList<byte[]>();
+    private ArrayList<String> name_org = new ArrayList<String>();
+    public String registerPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + "/twocamera/photo/";
+
+    //创建bitmapFactory对象，并设置config值
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    public void face_register() {
+        File face_file = new File(registerPath);
+
+        //下面注册后缀为 jpg 的文件
+        File jpg_faces_name[] = face_file.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("jpg");
+            }
+        });
+
+        if(jpg_faces_name!=null){
+            /**
+             * 不能为空！
+             */
+            //通过循环的方式，将 registerPath 目录下所有的后缀为 .jpg 图像进行注册并将文件名对应为人名
+            for (File face : jpg_faces_name) {
+                Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
+                //通过图片中的旋转信息旋转图片,目的是为了让图像正确方向
+                bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
+
+                NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
+
+                if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
+                    if (register_face.getFeatureValid() == true) {
+                        feature_org.add(register_face.getFeature());
+                        feature_mask.add(register_face.getMaskFeature());
+                        name_org.add(face.getName().split("\\.")[0]);
+                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                    }
+                }else{
+                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+                }
+            }
+
+            //下面注册后缀为 png 的文件
+            File png_faces_name[] = face_file.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith("png");
+                }
+            });
+
+            //通过循环的方式，将 registerPath 目录下所有的后缀为 .png 图像进行注册并将文件名对应为人名
+            for (File face : png_faces_name) {
+                Bitmap bitmap = BitmapFactory.decodeFile(registerPath + face.getName(), options);
+                bitmap = rotateBitmap(bitmap, getBitmapDegree(registerPath + face.getName()));
+
+                NeuFaceRegisterNode register_face = NeuFaceFactory.getInstance().create().neu_iva_get_picture_face_feature_bitmap(bitmap);
+
+                if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
+                    if (register_face.getFeatureValid() == true) {
+                        feature_org.add(register_face.getFeature());
+                        feature_mask.add(register_face.getMaskFeature());
+                        name_org.add(face.getName().split("\\.")[0]);
+                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                    }
+                }else{
+                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+                }
+            }
+        }
+    }
+
+    /**
+     * 读取图片的旋转的角度
+     *
+     * @param path 图片绝对路径
+     * @return 图片的旋转角度
+     */
+    public static int getBitmapDegree(String path) {
+        int degree = 0;
+        try {
+            // 从指定路径下读取图片，并获取其EXIF信息
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 获取图片的旋转信息
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
+        if (degrees == 0 || null == bitmap) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.setRotate(degrees, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+        Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        bitmap.recycle();
+        return bmp;
     }
 
 
