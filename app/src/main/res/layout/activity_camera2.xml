@@ -18,7 +18,7 @@
         android:layout_height="match_parent"/>
 
     <LinearLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/ll_activity_detect_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
