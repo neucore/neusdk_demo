@@ -239,7 +239,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 if (Constants.TYPE_64010.equals(equip_type0)){
                     //64010竖屏
                     //竖屏64010板子专属
-                    mHandler.sendEmptyMessage(START_ACTIVITY);
+//                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }else if (Constants.TYPE_6421.equals(equip_type0)){
                     //6421横屏
                     //横屏6421板子专属
@@ -252,7 +253,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 if (Constants.TYPE_64010.equals(equip_type1)){
                     //64010竖屏
                     //竖屏64010板子专属
-                    mHandler.sendEmptyMessage(START_ACTIVITY);
+//                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }else if (Constants.TYPE_6421.equals(equip_type1)){
                     //6421横屏
                     //横屏6421板子专属
@@ -279,7 +281,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 if (Constants.TYPE_64010.equals(equip_type3)){
                     //64010竖屏
                     //竖屏64010板子专属
-                    mHandler.sendEmptyMessage(START_ACTIVITY);
+//                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }else if (Constants.TYPE_6421.equals(equip_type3)){
                     //6421横屏
                     //横屏6421板子专属
@@ -293,7 +296,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 if (Constants.TYPE_64010.equals(equip_type4)){
                     //64010竖屏
                     //竖屏64010板子专属
-                    mHandler.sendEmptyMessage(START_ACTIVITY);
+//                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }else if (Constants.TYPE_6421.equals(equip_type4)){
                     //6421横屏
                     //横屏6421板子专属
@@ -315,7 +319,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                 if (Constants.TYPE_64010.equals(equip_type7)){
                     //64010竖屏
                     //竖屏64010板子专属
-                    mHandler.sendEmptyMessage(START_ACTIVITY);
+//                    mHandler.sendEmptyMessage(START_ACTIVITY);
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }else if (Constants.TYPE_6421.equals(equip_type7)){
                     //6421横屏
                     //横屏6421板子专属

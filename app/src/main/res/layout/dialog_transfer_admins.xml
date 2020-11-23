@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:gravity="center"
-                android:text="竖屏64010板子"
+                android:text="竖屏64010板子(选这个)"
                 android:textColor="@color/black"
                 android:textSize="14dp"/>
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_height="45dp"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
-                android:text="横屏6421板子(选这个)"
+                android:text="横屏6421板子"
                 android:textColor="@color/black"
                 android:textSize="14dp"/>
         </LinearLayout>
