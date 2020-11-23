@@ -302,6 +302,10 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
 
         long time = System.currentTimeMillis();
         if (Math.abs(faceTime - time) > 1000){
+            if (resultRgb.length == 0){
+                //清除记录
+                dHandler.sendEmptyMessage(1);
+            }
             for (int i = 0; i < resultRgb.length; i++) {
                 //如果特征值有效,进行人脸识别
                 if (resultRgb[i].getFeatureValid() == true) {
@@ -345,6 +349,9 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
                         msg.obj = name;
                         dHandler.sendMessage(msg);
                         //Imgproc.putText(rgb_mat, name, new Point(face_rect.x, face_rect.y), Imgproc.FONT_HERSHEY_SIMPLEX, 2, new Scalar(0, 0, 255), 4, 8);
+                    }else {
+                        //清除记录
+                        dHandler.sendEmptyMessage(1);
                     }
                 }else {
                     //清除记录
