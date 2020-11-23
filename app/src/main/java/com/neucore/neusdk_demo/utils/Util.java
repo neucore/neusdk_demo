@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
@@ -14,6 +15,9 @@ import android.view.View;
 
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.neulink.util.LogUtils;
+import com.neucore.neusdk_demo.Camera2Activity;
+import com.neucore.neusdk_demo.Camera2PortraitActivity;
+import com.neucore.neusdk_demo.MenuActivity;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 import com.neucore.neusdk_demo.utility.Constants;
@@ -136,6 +140,22 @@ public class Util {
         Size size = new Size(640,480);
         float heightSize = size.getHeight();
         float heightPingMu = 1080;
+        float mY1 = (y1 * heightPingMu) / heightSize;
+        return mY1;
+    }
+
+    public static float widthPointTrans64010(float x1){
+        Size size = new Size(480,640);
+        float widthSize = size.getWidth();
+        float widthPingMu = 800;
+        float mX1 = widthPingMu - ( (x1 * widthPingMu) / widthSize);
+        return mX1;
+    }
+
+    public static float heightPointTrans64010(float y1){
+        Size size = new Size(480,640);
+        float heightSize = size.getHeight();
+        float heightPingMu = 1280;
         float mY1 = (y1 * heightPingMu) / heightSize;
         return mY1;
     }

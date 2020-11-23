@@ -54,7 +54,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -72,7 +71,7 @@ import static org.opencv.core.Core.flip;
 import static org.opencv.core.Core.transpose;
 
 
-public class Camera2Activity extends AppCompatActivity {
+public class Camera2PortraitActivity extends AppCompatActivity {
     private byte[] yBuffer = null;
     private byte[] uBuffer = null;
     private byte[] vBuffer = null;
@@ -134,7 +133,7 @@ public class Camera2Activity extends AppCompatActivity {
                     String photo = (String)msg.obj;
                     String url = registerPath + photo + ".jpg";
                     if (iv_parent != null && tv_yanzheng != null){
-                        Glide.with(Camera2Activity.this).load(url).asBitmap().centerCrop().into(iv_parent);
+                        Glide.with(Camera2PortraitActivity.this).load(url).asBitmap().centerCrop().into(iv_parent);
                         tv_yanzheng.setText("检测到人脸");
                         ObjectAnimator animator = SeekAttentionView.tada(iv_parent);
                         animator.setRepeatCount(1);
@@ -200,6 +199,13 @@ public class Camera2Activity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
         ButterKnife.bind(this);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+        widthPingMu = dm.widthPixels;
+        heightPingMu = dm.heightPixels;
+        System.out.println("cameraIdList: "+"   widthPingMu: "+widthPingMu +"   heightPingMu: "+heightPingMu);
+
         String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
         if ("0".equals(type) || "1".equals(type)) { //单目 人脸识别 才注册
             new Handler().postDelayed(new Runnable() {
@@ -218,7 +224,8 @@ public class Camera2Activity extends AppCompatActivity {
         image_view = findViewById(R.id.image_view);
         BZCamera2View bz_camera2_view = findViewById(R.id.bz_camera2_view);
         bz_camera2_view.setCheckCameraCapacity(false);
-        bz_camera2_view.setPreviewTargetSize(640, 480);
+//        bz_camera2_view.setPreviewTargetSize(640, 480);
+        bz_camera2_view.setPreviewTargetSize(480, 640);
         bz_camera2_view.setOnStatusChangeListener(new BZCamera2View.OnStatusChangeListener() {
             @Override
             public void onPreviewSuccess(CameraDevice mCameraDevice, int width, int height) {
@@ -337,12 +344,12 @@ public class Camera2Activity extends AppCompatActivity {
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
         LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
-        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
         //LogUtils.d(TAG,"rgb  6666" );
-        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.d(TAG,"rgb  7777" );
-        //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
+        //flip(rgbMat, rgbMat, 1);  //耗时4毫秒  注释
+        //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取人脸数据
@@ -364,10 +371,10 @@ public class Camera2Activity extends AppCompatActivity {
             int x2 = rect_event.right;
             int y2 = rect_event.bottom;
 
-            int aaaX1 = (int) Util.widthPointTrans6421(x1);
-            int aaaX2 = (int) Util.widthPointTrans6421(x2);
-            int aaaY1 = (int) Util.heightPointTrans6421(y1);
-            int aaaY2 = (int) Util.heightPointTrans6421(y2);
+            int aaaX1 = (int) widthPointTrans64010(x1);
+            int aaaX2 = (int) widthPointTrans64010(x2);
+            int aaaY1 = (int) heightPointTrans64010(y1);
+            int aaaY2 = (int) heightPointTrans64010(y2);
 
             Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
             rectList.add(rect);
@@ -468,7 +475,7 @@ public class Camera2Activity extends AppCompatActivity {
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
         //LogUtils.d(TAG,"rgb  6666" );
-        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.d(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
@@ -491,10 +498,10 @@ public class Camera2Activity extends AppCompatActivity {
             int x2 = rect_event.right;
             int y2 = rect_event.bottom;
 
-            int aaaX1 = (int) Util.widthPointTrans6421(x1);
-            int aaaX2 = (int) Util.widthPointTrans6421(x2);
-            int aaaY1 = (int) Util.heightPointTrans6421(y1);
-            int aaaY2 = (int) Util.heightPointTrans6421(y2);
+            int aaaX1 = (int) widthPointTrans64010(x1);
+            int aaaX2 = (int) widthPointTrans64010(x2);
+            int aaaY1 = (int) heightPointTrans64010(y1);
+            int aaaY2 = (int) heightPointTrans64010(y2);
 
             Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
             neuHandInfo.setRect(rect);
@@ -659,7 +666,7 @@ public class Camera2Activity extends AppCompatActivity {
 
 
         //LogUtils.d(TAG,"rgb  6666" );
-        //transpose(rgbMat, rgbMat);    //耗时4毫秒(旋转图片)  此处,只有我们项目中有需要
+        transpose(rgbMat, rgbMat);    //耗时4毫秒(旋转图片)  此处,只有我们项目中有需要
         LogUtils.d(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
@@ -729,7 +736,7 @@ public class Camera2Activity extends AppCompatActivity {
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
         //LogUtils.d(TAG,"rgb  6666" );
-        //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
+        transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.d(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
@@ -866,7 +873,7 @@ public class Camera2Activity extends AppCompatActivity {
                 if (customSurfaceView != null) {
                     fragment_content_two_ll.removeView(customSurfaceView);
                 }
-                customSurfaceView = new CustomSurfaceView(Camera2Activity.this);
+                customSurfaceView = new CustomSurfaceView(Camera2PortraitActivity.this);
                 fragment_content_two_ll.addView(customSurfaceView);
 
 
@@ -907,7 +914,7 @@ public class Camera2Activity extends AppCompatActivity {
                 if (customHandSurfaceView != null) {
                     fragment_content_two_ll.removeView(customHandSurfaceView);
                 }
-                customHandSurfaceView = new CustomPoseSurfaceView(Camera2Activity.this);
+                customHandSurfaceView = new CustomPoseSurfaceView(Camera2PortraitActivity.this);
                 fragment_content_two_ll.addView(customHandSurfaceView);
 
 
@@ -1066,6 +1073,22 @@ public class Camera2Activity extends AppCompatActivity {
         Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         bitmap.recycle();
         return bmp;
+    }
+
+    public static float widthPointTrans64010(float x1){
+        Size size = new Size(480,640);
+        float widthSize = size.getWidth();
+        float widthPingMu = 800;
+        float mX1 = widthPingMu - ( (x1 * widthPingMu) / widthSize);
+        return mX1;
+    }
+
+    public static float heightPointTrans64010(float y1){
+        Size size = new Size(480,640);
+        float heightSize = size.getHeight();
+        float heightPingMu = 1280;
+        float mY1 = (y1 * heightPingMu) / heightSize;
+        return mY1;
     }
 
 
