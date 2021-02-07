@@ -2,8 +2,8 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
-import com.neucore.neulink.device.IDeviceService;
-import com.neucore.neulink.device.DeviceServiceImpl;
+import com.neucore.neulink.service.device.IDeviceService;
+import com.neucore.neulink.service.device.DeviceServiceImpl;
 
 public class ListenerFactory {
     private String TAG = "ListenerFactory";

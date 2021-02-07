@@ -68,6 +68,9 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     /**
      * 集成Neulink
      */
+     /**
+      * extConfig.setProperty(ConfigContext.REGIST_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道;默认
+      */
     SampleConnector register = new SampleConnector(this,callback,service);
 
     ```

@@ -11,6 +11,7 @@
 .idea/gradle.xml
 .idea/misc.xml
 .DS_Store
+EnDecUtilMain.java
 build/
 /build
 /captures

@@ -23,8 +23,10 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class NeuHttpHelper{
@@ -216,6 +218,60 @@ public class NeuHttpHelper{
 		}
 
 		return tmpFile;
+	}
+
+	public static String post(String url,String json,int connTime,int execTime,int tryNum){
+
+		Response response = null;
+		int trys = 1;
+		int code = 200;
+		InputStream is = null;
+
+		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+		OkHttpClient client = new OkHttpClient.Builder()
+				.connectTimeout(connTime, TimeUnit.SECONDS)//设置连接超时时间
+				.readTimeout(execTime, TimeUnit.SECONDS)//设置读取超时时间
+				.build();
+		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
+		Request request = new Request.Builder()
+				.url(url)
+				.post(requestBody)
+				.build();
+		while(trys<=tryNum){
+			try {
+				response = client.newCall(request).execute();
+				code = response.code();
+				if (code != 200) {
+					throw new RuntimeException(url + ",失败 with code=" + code);
+				}
+				String responseData = response.body().string();
+				return responseData;
+			}
+			catch (IOException ex){
+				Log.e(TAG,"第"+trys+"下载"+url+"失败：",ex);
+				if(trys==tryNum) {
+					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+				}
+				trys++;
+				continue;
+			}
+			catch (NeulinkException ex){
+				throw ex;
+			}
+			catch (RuntimeException ex){
+				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+				}
+				catch (IOException ex){}
+			}
+		}
+		throw new RuntimeException(url + ",失败 with code=" + code);
 	}
 
 	private static Gson gson = new Gson();

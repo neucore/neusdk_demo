@@ -1,4 +1,4 @@
-package com.neucore.neulink.device;
+package com.neucore.neulink.service.device;
 
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -12,5 +12,10 @@ public class DeviceServiceImpl implements IDeviceService {
          * 这个主要时提供给中小企业不想建立云平台，想使用neucore云服务
          */
         return DeviceUtils.getCPUSN(ContextHolder.getInstance().getContext());
+    }
+
+    @Override
+    public void regist() {
+
     }
 }

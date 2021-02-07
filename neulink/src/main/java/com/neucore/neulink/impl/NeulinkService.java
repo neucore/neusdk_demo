@@ -5,10 +5,14 @@ import android.util.Log;
 
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.msg.NeulinkZone;
+import com.neucore.neulink.msg.ResRegist;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.HashAlgorithms;
+import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
+import com.neucore.neulink.util.NeuHttpHelper;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -19,6 +23,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 public class NeulinkService {
@@ -28,11 +34,11 @@ public class NeulinkService {
 
     private MqttService mqttService = null;
     private IMqttCallBack starMQTTCallBack;
-    private boolean inited = false;
+    private Boolean inited = false;
     private NeulinkScheduledReport autoReporter = null;
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
-
+    private String defaultServerUri,newServiceUri,registServer,neulinkServer;
     public static NeulinkService getInstance(){
         return instance;
     }
@@ -40,44 +46,47 @@ public class NeulinkService {
      * 构建EasyMqttService对象
      */
     public void buildMqttService(String serverUri) {
-        if(!inited){
-            Context context = ContextHolder.getInstance().getContext();
-            mqttService = new MqttService.Builder()
-                    //设置自动重连
-                    .autoReconnect(true)
-                    //设置不清除回话session 可收到服务器之前发出的推送消息
-                    .cleanSession(false)
-                    //唯一标示 保证每个设备都唯一就可以 建议 imei
-                    .clientId(DeviceUtils.getDeviceId(context))
-                    //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
-                    .serverUrl(serverUri)
-                    //心跳包默认的发送间隔
-                    .keepAliveInterval(20)
-                    //设置发布和订阅回调接口
-                    .mqttCallback(mqttCallback)
-                    //设置连接或者发布动作侦听器
-                    .mqttActionListener(mqttActionListener)
-                    //设置消息侦听器
-                    //.mqttMessageListener(messageListener)
-                    //构建出EasyMqttService 建议用application的context
-                    .bulid(context);
-            starMQTTCallBack = new NeulinkMsgCallBack(context,this);
-
-            //this.connect();
-            mqttService.connect();
-
-            autoReporter = new NeulinkScheduledReport(context,this);
-            publisherFacde = new NeulinkPublisherFacde(context,this);
-            subscriberFacde = new NeulinkSubscriberFacde(context,this);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    UserService.getInstance(ContextHolder.getInstance().getContext()).load();
-//                }
-//            }).start();
-            inited = true;
+        this.defaultServerUri = serverUri;
+        Context context = ContextHolder.getInstance().getContext();
+        autoReporter = new NeulinkScheduledReport(context,this);
+        publisherFacde = new NeulinkPublisherFacde(context,this);
+        subscriberFacde = new NeulinkSubscriberFacde(context,this);
+        init(serverUri,context);
+        int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+        if(channel==1){
+            autoReporter.start();
         }
+    }
 
+    private void init(String serverUri,Context context){
+        synchronized (inited){
+            if(!inited){
+                mqttService = new MqttService.Builder()
+                        //设置自动重连
+                        .autoReconnect(true)
+                        //设置不清除回话session 可收到服务器之前发出的推送消息
+                        .cleanSession(false)
+                        //唯一标示 保证每个设备都唯一就可以 建议 imei
+                        .clientId(DeviceUtils.getDeviceId(context))
+                        //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
+                        .serverUrl(serverUri)
+                        //心跳包默认的发送间隔
+                        .keepAliveInterval(20)
+                        //设置发布和订阅回调接口
+                        .mqttCallback(mqttCallback)
+                        //设置连接或者发布动作侦听器
+                        .mqttActionListener(mqttActionListener)
+                        //设置消息侦听器
+                        //.mqttMessageListener(messageListener)
+                        //构建出EasyMqttService 建议用application的context
+                        .bulid(context);
+                starMQTTCallBack = new NeulinkMsgCallBack(context,this);
+
+                //this.connect();
+                mqttService.connect();
+                inited = true;
+            }
+        }
     }
 
     public NeulinkPublisherFacde getPublisherFacde(){
@@ -129,22 +138,98 @@ public class NeulinkService {
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
-        int deviceIdBKDRHash = HashAlgorithms.SDBMHash(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()));
+//        int deviceIdBKDRHash = HashAlgorithms.SDBMHash(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()));
+//        int partition = deviceIdBKDRHash %ConfigContext.getInstance().getConfig("Topic.Partition",8);
 
-        int partition = deviceIdBKDRHash %ConfigContext.getInstance().getConfig("Topic.Partition",8);
-        String custcode = getCustCode();
-        String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5+"/"+custcode+"/"+partition;
+        String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
 
-        Log.d(TAG,topStr);
-        
-        mqttService.publish(payload,topStr, qos, false);
+        int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+
+        Context context = ContextHolder.getInstance().getContext();
+
+        if (channel==0){
+
+            Log.d(TAG,"upload2cloud with mqtt");
+
+            if(newServiceUri==null){
+                newServiceUri = defaultServerUri;
+            }
+            init(newServiceUri,context);
+            /**
+             * MQTT机制
+             */
+            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+            Log.d(TAG,topStr);
+            mqttService.publish(payload,topStr, qos, false);
+        }
+        else{
+            /**
+             * 设备端2cloud
+             */
+            Log.d(TAG,"upload2cloud with http");
+
+            /**
+             * 设备注册：
+             *
+             */
+            if(topStr.contains("msg/req/devinfo")){
+                /**
+                 * HTTP机制
+                 */
+                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com");
+
+                String response = NeuHttpHelper.post(registServer+"/v1/device/regist",payload,10,60,3);
+                Log.d(TAG,"设备注册响应："+response);
+
+                /**
+                 * {
+                 * 	"code": 200,
+                 * 	"msg": "注册成功",
+                 * 	"zone": {
+                 * 		"zoneid": 3,
+                 * 		"custcode": "saic",
+                 * 		"placecode": "test",
+                 * 		"server": "mqtt.neucore.com",
+                 * 		"port": 1883,
+                 * 	    "http.server":"https://data.neuapi.com"
+                 *   }
+                 * }
+                 */
+                ResRegist resRegist = (ResRegist)JSonUtils.toObject(response, ResRegist.class);
+                NeulinkZone zone = resRegist.getZone();
+                custid = zone.getCustid();
+                storeid = zone.getStoreid();
+                zoneid = zone.getId();
+                newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
+                init(newServiceUri,context);
+                neulinkServer = zone.getHttpServer();
+            }
+            else {
+                try {
+                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+                    Log.d(TAG,topStr);
+                    String topic = URLEncoder.encode(topStr,"UTF-8");
+                    String response = NeuHttpHelper.post(neulinkServer+"/neulink/upload2cloud?topic="+topic,payload,10,60,3);
+                    Log.d(TAG,"设备upload2cloud响应："+response);
+                } catch (Exception e) {
+                    Log.d(TAG,"upload2cloud error with: "+e.getMessage());
+                }
+            }
+        }
     }
-
-    private String getCustCode(){
+    private String custid="notimpl";
+    private String getCustId(){
+        return "notimpl";
+    }
+    private String storeid="notimpl";
+    private String getStoreId(){
+        return storeid;
+    }
+    private int zoneid=0;
+    private int getZoneId(){
         //@TODO 这个需要借助算法团队提供api接口
-        return "0@Default";
+        return zoneid;
     }
-
     boolean isConnected(){
         return true;//mqttService.isConnected();
     }
@@ -160,7 +245,11 @@ public class NeulinkService {
             //连接成功
             //建议在这里执行订阅逻辑
             //如果cleanSession设置为false的话，不用每次启动app都订阅，第一次订阅后 后面只执行连接操作即可
-            autoReporter.start();
+            int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+            if(channel==0){
+                autoReporter.start();
+            }
+
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectSuccess(arg0);
             }
@@ -205,8 +294,6 @@ public class NeulinkService {
             String msgContent = new String(receivedMessage.getPayload());
             Log.i(TAG, "messageArrived:" + msgContent);
             Log.i(TAG, detailLog);
-
-
 
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.messageArrived(topic, msgContent, receivedMessage.getQos());
