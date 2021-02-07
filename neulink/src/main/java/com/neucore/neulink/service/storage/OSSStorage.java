@@ -1,4 +1,4 @@
-package com.neucore.neulink.storage;
+package com.neucore.neulink.service.storage;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
