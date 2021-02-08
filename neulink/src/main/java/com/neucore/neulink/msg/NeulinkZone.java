@@ -13,8 +13,8 @@ public class NeulinkZone {
     private String mqttServer;
     @SerializedName("mqtt.port")
     private int mqttPort;
-    @SerializedName("http.server")
-    private String httpServer;
+    @SerializedName("upload.server")
+    private String uploadServer;
 
     public int getId() {
         return id;
@@ -56,11 +56,11 @@ public class NeulinkZone {
         this.mqttPort = mqttPort;
     }
 
-    public String getHttpServer() {
-        return httpServer;
+    public String getUploadServer() {
+        return uploadServer;
     }
 
-    public void setHttpServer(String httpServer) {
-        this.httpServer = httpServer;
+    public void setUploadServer(String uploadServer) {
+        this.uploadServer = uploadServer;
     }
 }
