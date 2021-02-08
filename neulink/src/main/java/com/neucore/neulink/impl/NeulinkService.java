@@ -9,7 +9,6 @@ import com.neucore.neulink.msg.NeulinkZone;
 import com.neucore.neulink.msg.ResRegist;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.HashAlgorithms;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
@@ -23,7 +22,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
@@ -176,7 +174,7 @@ public class NeulinkService {
                 /**
                  * HTTP机制
                  */
-                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_SERVER,"https://data.neuapi.com");
+                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com");
 
                 String response = NeuHttpHelper.post(registServer+"/v1/device/regist",payload,10,60,3);
                 Log.d(TAG,"设备注册响应："+response);
@@ -202,7 +200,7 @@ public class NeulinkService {
                 zoneid = zone.getId();
                 newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
                 init(newServiceUri,context);
-                neulinkServer = zone.getHttpServer();
+                neulinkServer = zone.getUploadServer();
             }
             else {
                 try {
