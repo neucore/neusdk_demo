@@ -3,7 +3,6 @@ package com.neucore.neulink.cfg;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -34,7 +33,7 @@ public class ConfigContext {
     public final static String LOG_LEVEL = "Log.Level";
 
     public final static String  UPLOAD_CHANNEL = "upload.channel";
-    public final static String UPLOAD_SERVER = "upload.server";
+    public final static String REGIST_SERVER = "regist.server";
 
     private String TAG = "ConfigContext";
 
@@ -55,7 +54,7 @@ public class ConfigContext {
         defaultConfig.setProperty(TOPIC_PARTITION,"HQ+EDnzpP4k=");
         defaultConfig.setProperty(LOG_LEVEL,"ePrfOnatyOs=");
         defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
-        defaultConfig.setProperty(UPLOAD_SERVER,"YcCiqgrFpSewdKCbNPFxRoSsPNIM1pEe");
+        defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRoSsPNIM1pEe");
     }
     private Properties extConfig = new Properties();
     private Properties configs = new Properties();
