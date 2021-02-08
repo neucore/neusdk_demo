@@ -52,7 +52,7 @@ public class NeulinkService {
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
         init(serverUri,context);
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
         if(channel==1){
             autoReporter.start();
         }
@@ -143,7 +143,7 @@ public class NeulinkService {
 
         String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
 
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
         Context context = ContextHolder.getInstance().getContext();
 
@@ -176,7 +176,7 @@ public class NeulinkService {
                 /**
                  * HTTP机制
                  */
-                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com");
+                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_SERVER,"https://data.neuapi.com");
 
                 String response = NeuHttpHelper.post(registServer+"/v1/device/regist",payload,10,60,3);
                 Log.d(TAG,"设备注册响应："+response);
@@ -245,7 +245,7 @@ public class NeulinkService {
             //连接成功
             //建议在这里执行订阅逻辑
             //如果cleanSession设置为false的话，不用每次启动app都订阅，第一次订阅后 后面只执行连接操作即可
-            int channel = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_CHANNEL,0);
+            int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
                 autoReporter.start();
             }
