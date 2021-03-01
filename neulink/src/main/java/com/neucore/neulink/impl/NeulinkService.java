@@ -200,6 +200,10 @@ public class NeulinkService {
                 zoneid = zone.getId();
                 newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
                 init(newServiceUri,context);
+                /**
+                 * upload.server 默认值
+                 * https://data.neuapi.com/neulink/upload2cloud
+                 */
                 neulinkServer = zone.getUploadServer();
             }
             else {
@@ -207,7 +211,7 @@ public class NeulinkService {
                     topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
-                    String response = NeuHttpHelper.post(neulinkServer+"/neulink/upload2cloud?topic="+topic,payload,10,60,3);
+                    String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,10,60,3);
                     Log.d(TAG,"设备upload2cloud响应："+response);
                 } catch (Exception e) {
                     Log.d(TAG,"upload2cloud error with: "+e.getMessage());
