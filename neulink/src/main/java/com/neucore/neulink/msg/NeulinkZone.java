@@ -14,7 +14,7 @@ public class NeulinkZone {
     @SerializedName("mqtt.port")
     private int mqttPort;
     @SerializedName("upload.server")
-    private String uploadServer;
+    private String uploadServer="https://data.neuapi.com/neulink/upload2cloud";//默认值
 
     public int getId() {
         return id;
