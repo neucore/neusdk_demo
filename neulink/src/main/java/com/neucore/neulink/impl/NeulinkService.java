@@ -221,7 +221,7 @@ public class NeulinkService {
     }
     private String custid="notimpl";
     private String getCustId(){
-        return "notimpl";
+        return custid;
     }
     private String storeid="notimpl";
     private String getStoreId(){
@@ -229,7 +229,6 @@ public class NeulinkService {
     }
     private int zoneid=0;
     private int getZoneId(){
-        //@TODO 这个需要借助算法团队提供api接口
         return zoneid;
     }
     boolean isConnected(){
