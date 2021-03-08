@@ -54,7 +54,7 @@ public class ConfigContext {
         defaultConfig.setProperty(TOPIC_PARTITION,"HQ+EDnzpP4k=");
         defaultConfig.setProperty(LOG_LEVEL,"ePrfOnatyOs=");
         defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
-        defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRoSsPNIM1pEe");
+        defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRkFFGfiMM+IXv6Ft4mvB0Enb4z9vlvJJuPyfCaAA3EqR");
     }
     private Properties extConfig = new Properties();
     private Properties configs = new Properties();
