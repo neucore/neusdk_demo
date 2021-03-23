@@ -1,4 +1,4 @@
-package com.neucore.neulink.device;
+package com.neucore.neulink.service.device;
 
 public interface IDeviceService {
     /**
@@ -6,4 +6,6 @@ public interface IDeviceService {
      * @return
      */
     String getSN();
+
+    void regist();
 }

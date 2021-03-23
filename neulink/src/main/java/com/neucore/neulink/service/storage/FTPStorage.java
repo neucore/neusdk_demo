@@ -1,4 +1,4 @@
-package com.neucore.neulink.storage;
+package com.neucore.neulink.service.storage;
 
 import android.util.Log;
 

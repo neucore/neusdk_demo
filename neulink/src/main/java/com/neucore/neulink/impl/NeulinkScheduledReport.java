@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
+import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.msg.CPUInfo;
 import com.neucore.neulink.msg.DeviceInfo;
@@ -34,6 +35,7 @@ public class NeulinkScheduledReport {
 
     private  Context context;
     private  NeulinkService service;
+    private Boolean started = false;
 
     public NeulinkScheduledReport(Context context, NeulinkService service) {
         this.context = context;
@@ -41,10 +43,14 @@ public class NeulinkScheduledReport {
     }
 
     void start(){
-        regist();
-        status();
-        stat();
-        lgUpld();
+        synchronized (started){
+            if(!started){
+                regist();
+                status();
+                stat();
+                lgUpld();
+            }
+        }
     }
 
     /**
@@ -93,6 +99,10 @@ public class NeulinkScheduledReport {
      * msg/req/status/${req_no}/v1.0[/${md5}], qos=0
      */
     private void status() {
+        try {
+            Thread.sleep(15);
+        }
+        catch (Exception ex){}
 
         new Thread("status") {
             public void run() {

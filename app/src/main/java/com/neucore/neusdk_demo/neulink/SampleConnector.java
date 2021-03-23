@@ -16,6 +16,7 @@ import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.impl.LogService;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.util.Properties;
 
@@ -63,7 +64,8 @@ public class SampleConnector {
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        //extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.105.254:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.105.254:1883");
+        //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         ConfigContext.getInstance().setExtConfig(extConfig);
 
         /**
@@ -111,6 +113,7 @@ public class SampleConnector {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
         NeulinkService service = NeulinkService.getInstance();
         service.buildMqttService(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER));//tcp://10.18.9.99:1883"));
         return service;
