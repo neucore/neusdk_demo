@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_port2"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.neucore.neusdk_demo.view.AutoFitTextureView
+                android:id="@+id/textureView_RGB"
+                android:layout_width="400dp"
+                android:layout_height="640dp"
+                android:layout_gravity="center"/>
+
+<!--            android:layout_width="480dp"-->
+<!--            android:layout_height="640dp"-->
+
+<!--            android:layout_width="400dp"-->
+<!--            android:layout_height="616dp"-->
+
+<!--            android:layout_width="800px"-->
+<!--            android:layout_height="1232px"-->
+
+        </FrameLayout>
+
+        <!--android:layout_marginEnd="-300dp"-->
+        <LinearLayout
+            android:layout_width="307dp"
+            android:layout_height="307dp"
+            android:layout_gravity="right"
+            android:orientation="vertical">
+            <com.neucore.neusdk_demo.view.AutoFitTextureView
+                android:id="@+id/textureView_IR"
+                android:rotation="-90"
+                android:layout_width="192dp"
+                android:layout_gravity="right"
+                android:layout_height="307dp"/>
+        </LinearLayout>
+        <!--<com.zqzn.android.face.processor.FaceRecBoxView
+            android:id="@+id/camera_mask_view"
+            android:layout_width="480dp"
+            android:layout_height="64
+            0dp" />-->
+    </FrameLayout>
+    <!--android:layout_weight="4"-->
+    <LinearLayout
+        android:id="@+id/ll_activity_detect_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:background="#80000000"
+        android:focusable="false"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="60dp"
+                    android:orientation="vertical"
+                    >
+
+                    <ImageView
+                        android:id="@+id/iv_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@mipmap/photo_bg" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_name_gv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="#b7a50e"
+                        android:textSize="36dp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tv_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"
+                        android:text=""
+                        android:visibility="gone"
+                        android:textSize="36dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_yanzheng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请靠近屏幕 "
+                    android:textColor="#00D8DD"
+                    android:textStyle="bold"
+                    android:textSize="41dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <com.neucore.neusdk_demo.view.DigitalClock_new
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/item_bg"
+                    android:textSize="26dp">
+                </com.neucore.neusdk_demo.view.DigitalClock_new>
+                <com.neucore.neusdk_demo.view.DigitalClock24_new
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/item_bg"
+                    android:textSize="80dp">
+                </com.neucore.neusdk_demo.view.DigitalClock24_new>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_deviceid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:textColor="@color/item_bg"
+                android:textSize="30dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_peoplenum2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="人员数：0"
+                    android:gravity="center"
+                    android:textColor="@color/item_bg"
+                    android:textSize="30dp"/>
+                <TextView
+                    android:id="@+id/tv_peoplenum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="人脸数：0"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:textColor="@color/item_bg"
+                    android:textSize="30dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/fragment_content_two_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+</RelativeLayout>

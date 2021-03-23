@@ -97,10 +97,12 @@ public class FaceProcessing extends Thread {
     //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
     public void copyAssetResource2File(Context context)
     {
-        String ModelFileName = "nb/";
+        Log.d(TAG, "开始拷贝nb文件");
+        long begin = System.currentTimeMillis();
+
         String OrgFilepath = "/storage/emulated/0/neucore/";
-        String ModelFilepath0 = "/storage/emulated/0/neucore/nb/";
-        String ModelFilepath = "/storage/emulated/0/neucore/nb/S905D3/";
+        String ModelFilepath = "/storage/emulated/0/neucore/nb/";
+        String cameraPath = "/storage/emulated/0/neucore/camera/";
 
         try {
             //判断 /storage/emulated/0/neucore/ 路径是否存在
@@ -110,15 +112,15 @@ public class FaceProcessing extends Thread {
             }
 
             //判断 /storage/emulated/0/neucore/nb/ 路径是否存在
-            File despath0 = new File(ModelFilepath0);
-            if(! despath0.exists()){
-                despath0.mkdirs();
-            }
-
-            //判断 /storage/emulated/0/neucore/nb/S90503/ 路径是否存在
             File despath = new File(ModelFilepath);
             if(! despath.exists()){
                 despath.mkdirs();
+            }
+
+            //判断 /storage/emulated/0/neucore/camera/ 路径是否存在
+            File caPath = new File(cameraPath);
+            if(! caPath.exists()){
+                caPath.mkdirs();
             }
 
             /**
@@ -127,11 +129,19 @@ public class FaceProcessing extends Thread {
              * 达到节约时间目的
              */
 
+            //for S905D3
+            String ModelFileName = "nb/S905D3/";
+            String tmp_ModelFilepath = ModelFilepath + "S905D3/";
+            File tmp_path = new File(tmp_ModelFilepath);
+            if(! tmp_path.exists()){
+                tmp_path.mkdirs();
+            }
+
             String[] filenames = context.getAssets().list(ModelFileName);
             for (String file : filenames) {
                 InputStream is = context.getAssets().open(ModelFileName + file);
 
-                File outF = new File(ModelFilepath+file);
+                File outF = new File(tmp_ModelFilepath+file);
                 FileOutputStream fos = new FileOutputStream(outF);
 
                 int byteCount;
@@ -144,6 +154,34 @@ public class FaceProcessing extends Thread {
                 fos.close();
                 outF.setReadable(true);
             }
+
+            //for A311D
+            ModelFileName = "nb/A311D/";
+            tmp_ModelFilepath = ModelFilepath + "A311D/";
+            tmp_path = new File(tmp_ModelFilepath);
+            if(! tmp_path.exists()){
+                tmp_path.mkdirs();
+            }
+
+            filenames = context.getAssets().list(ModelFileName);
+            for (String file : filenames) {
+                InputStream is = context.getAssets().open(ModelFileName + file);
+
+                File outF = new File(tmp_ModelFilepath+file);
+                FileOutputStream fos = new FileOutputStream(outF);
+
+                int byteCount;
+                byte[] buffer = new byte[1024];
+                while ((byteCount = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, byteCount);
+                }
+                fos.flush();
+                is.close();
+                fos.close();
+                outF.setReadable(true);
+            }
+
+            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
         }
