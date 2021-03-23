@@ -27,7 +27,7 @@ import com.luoye.bzcamera.BZCamera2View;
 import com.neucore.NeuSDK.NeuFaceQuality;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
-import com.neucore.NeuSDK.NeuHandClass;
+import com.neucore.NeuSDK.NeuHandClass1;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
@@ -524,7 +524,7 @@ public class Camera2Activity extends AppCompatActivity {
             neuHandInfo.setSwipe(swipe);
 
             //调用分类网络,手势分类
-            int status = NeuHandFactory.getInstance().create().neu_iva_hand_class(rgbMat, resultRgb[i]);
+            int status = NeuHandFactory.getInstance().create().neu_iva_hand_class_1(rgbMat, resultRgb[i]);
             if (status != 0) {
                 Log.e(TAG,"error at mNeuHand.neu_iva_hand_class()");
                 rectList.add(neuHandInfo);
@@ -533,55 +533,55 @@ public class Camera2Activity extends AppCompatActivity {
 
             String text = "";
             switch (resultRgb[i].getHandClass()) {
-                case NeuHandClass.NEU_IVA_HAND_FIRST:
+                case NeuHandClass1.NEU_IVA_HAND_FIRST:
                     text = "first";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_ONE:
+                case NeuHandClass1.NEU_IVA_HAND_ONE:
                     text = "one";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_TWO:
+                case NeuHandClass1.NEU_IVA_HAND_TWO:
                     text = "two";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_THREE:
+                case NeuHandClass1.NEU_IVA_HAND_THREE:
                     text = "three";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_FOUR:
+                case NeuHandClass1.NEU_IVA_HAND_FOUR:
                     text = "four";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_FIVE:
+                case NeuHandClass1.NEU_IVA_HAND_FIVE:
                     text = "five";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_SIX:
+                case NeuHandClass1.NEU_IVA_HAND_SIX:
                     text = "six";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_SEVEN:
+                case NeuHandClass1.NEU_IVA_HAND_SEVEN:
                     text = "seven";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_EIGHT:
+                case NeuHandClass1.NEU_IVA_HAND_EIGHT:
                     text = "eight";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_NINE:
+                case NeuHandClass1.NEU_IVA_HAND_NINE:
                     text = "nine";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_TEN:
+                case NeuHandClass1.NEU_IVA_HAND_TEN:
                     text = "ten";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_HANDHEART:
+                case NeuHandClass1.NEU_IVA_HAND_HANDHEART:
                     text = "handheart";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_OK:
+                case NeuHandClass1.NEU_IVA_HAND_OK:
                     text = "ok";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_ROCK:
+                case NeuHandClass1.NEU_IVA_HAND_ROCK:
                     text = "rock";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_NO:
+                case NeuHandClass1.NEU_IVA_HAND_NO:
                     text = "no";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_STOP:
+                case NeuHandClass1.NEU_IVA_HAND_STOP:
                     text = "stop";
                     break;
-                case NeuHandClass.NEU_IVA_HAND_OTHER:
+                case NeuHandClass1.NEU_IVA_HAND_OTHER:
                     text = "other";
                     break;
                 default:
