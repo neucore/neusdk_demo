@@ -32,6 +32,9 @@ public class ConfigContext {
     public final static String TOPIC_PARTITION = "Topic.Partition";
     public final static String LOG_LEVEL = "Log.Level";
 
+    public final static String  UPLOAD_CHANNEL = "upload.channel";
+    public final static String REGIST_SERVER = "regist.server";
+
     private String TAG = "ConfigContext";
 
     private static ConfigContext configContext = new ConfigContext();
@@ -50,6 +53,8 @@ public class ConfigContext {
         defaultConfig.setProperty(FTP_PASSWORD,"p7sQSFKvWKw=");
         defaultConfig.setProperty(TOPIC_PARTITION,"HQ+EDnzpP4k=");
         defaultConfig.setProperty(LOG_LEVEL,"ePrfOnatyOs=");
+        defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
+        defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRkFFGfiMM+IXv6Ft4mvB0Enb4z9vlvJJuPyfCaAA3EqR");
     }
     private Properties extConfig = new Properties();
     private Properties configs = new Properties();
