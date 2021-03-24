@@ -33,16 +33,16 @@
 
         <!--android:layout_marginEnd="-300dp"-->
         <LinearLayout
-            android:layout_width="307dp"
-            android:layout_height="307dp"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
             android:layout_gravity="right"
             android:orientation="vertical">
             <com.neucore.neusdk_demo.view.AutoFitTextureView
                 android:id="@+id/textureView_IR"
                 android:rotation="-90"
-                android:layout_width="192dp"
+                android:layout_width="120dp"
                 android:layout_gravity="right"
-                android:layout_height="307dp"/>
+                android:layout_height="192dp"/>
         </LinearLayout>
         <!--<com.zqzn.android.face.processor.FaceRecBoxView
             android:id="@+id/camera_mask_view"

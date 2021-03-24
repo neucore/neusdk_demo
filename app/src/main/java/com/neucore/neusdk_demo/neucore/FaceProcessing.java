@@ -243,8 +243,12 @@ public class FaceProcessing extends Thread {
 
             String type = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.type,"");
             if ("2".equals(type)){ //双目专用
+                //6421设备用的
+                mPendingRGBFrameData = this.getBytesFromImageAsTypeRGB(paramImage);
                 //mPendingRGBFrameData = this.getBytesFromImageAsTypeRGBFast(paramImage);
-                mPendingRGBFrameData = Util.ImageToByte(paramImage);
+
+                //64010设备用的
+                //mPendingRGBFrameData = Util.ImageToByte(paramImage);
             }else {
                 mPendingRGBFrameData = rgbData;
             }
@@ -287,13 +291,20 @@ public class FaceProcessing extends Thread {
                     Mat mat1 = new Mat((int)(mIRimageHeight*1.5), mIRimageWidth, CvType.CV_8UC1);
                     mat1.put(0,0,mPendingIRFrameData);
                     //Mat ir_mat = new Mat(mIRimageHeight, mIRimageWidth,CvType.CV_8UC3);
-                    Mat ir_mat = Imgcodecs.imdecode(new MatOfByte(mPendingIRFrameData), CvType.CV_8UC3);
-                    Imgproc.cvtColor(mat1 , ir_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+
+                    //64010设备专用的
+                    //Mat ir_mat = Imgcodecs.imdecode(new MatOfByte(mPendingIRFrameData), CvType.CV_8UC3);
+                    //Imgproc.cvtColor(mat1 , ir_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
+                    //6421设备专用的
+                    Mat ir_mat = Imgcodecs.imdecode(new MatOfByte(mPendingIRFrameData), CvType.CV_8UC4);
+                    Imgproc.cvtColor(mat1 , ir_mat, Imgproc.COLOR_RGBA2RGB);
+
 
                     //将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
                     Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
                     mat2.put(0,0,mPendingRGBFrameData);
                     //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
+                    //64010设备专用的
                     Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
                     Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV2RGB_NV21, 3);
 
@@ -301,9 +312,15 @@ public class FaceProcessing extends Thread {
                     transpose(ir_mat, ir_mat);
                     flip(ir_mat, ir_mat, 1);//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
 
+                    //保存图片,查看图片颜色,方向  (ir_mat需要红外摄像头黑白图片,无杂色)
+                    //Imgcodecs.imwrite("/storage/emulated/0/neucore/ir.jpg",ir_mat);
+
                     transpose(rgb_mat, rgb_mat);
                     flip(rgb_mat, rgb_mat, 1);
                     //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
+
+                    //保存图片,查看图片颜色,方向  (rgb_mat需要是正常肉眼可见彩色图片,无杂色)
+                    //Imgcodecs.imwrite("/storage/emulated/0/neucore/rgb.jpg",rgb_mat);
 
 
                     NeuFaceRecgNode[] resultRgb = mNeucore_face.neu_iva_face_detect(rgb_mat,false);
@@ -362,7 +379,9 @@ public class FaceProcessing extends Thread {
 
                         org.opencv.core.Rect rect = new org.opencv.core.Rect(result[i].getLeft(), result[i].getTop(), result[i].getWidth(), result[i].getHeight());
                         Mat sub = new Mat(rgb_mat, rect);
-                        //Imgproc.cvtColor(sub , sub, Imgproc.COLOR_RGB2BGR); //Bitmap 需要bgr的图像显示的才是正确的，确保转换成bitmap的cv::mat 是bgr格式
+
+                        //只有6421,才需要下面这句 COLOR_RGB2BGR 转换
+                        Imgproc.cvtColor(sub , sub, Imgproc.COLOR_RGB2BGR); //Bitmap 需要bgr的图像显示的才是正确的，确保转换成bitmap的cv::mat 是bgr格式
                         Bitmap face = Bitmap.createBitmap(sub.cols(), sub.rows(), Bitmap.Config.ARGB_8888);
                         Utils.matToBitmap(sub, face);//这个是发现的人脸，转换成了bitmap，当然也可以是其他的格式
 
@@ -370,8 +389,8 @@ public class FaceProcessing extends Thread {
                         ArrayList<byte[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
                         ArrayList<String> name_org = UserService.getInstance(mContext).getNames();
 
-                        Log.e(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
-                                +" isglass="+result[i].getIsglass()+" angle="+result[i].getFaceAngle()[0]+" "+result[i].getFaceAngle()[1]+" "+result[i].getFaceAngle()[2]);
+                        //Log.e(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
+                        //        +" isglass="+result[i].getIsglass()+" angle="+result[i].getFaceAngle()[0]+" "+result[i].getFaceAngle()[1]+" "+result[i].getFaceAngle()[2]);
 
                         //如果特征值有效,进行人脸识别
                         if (result[i].getFeatureValid() == true) {
@@ -404,9 +423,11 @@ public class FaceProcessing extends Thread {
                             Log.e(TAG,"maxSum="+maxSum);
                             if (maxSum > 0.8) {
                                 onFaceSuccessListener.success(face,name_org.get(maxID));
+                                System.out.println("------------999  7777  得到人脸--------上方 name is " + name_org.get(maxID));
                                 Log.d(TAG, "###### found one registered person, name is " + name_org.get(maxID));
                             }else {
                                 onFaceSuccessListener.success(face,"检测到人脸");
+                                System.out.println("------------999  7777  得到人脸--------下方 ");
                             }
                         }
                     }
