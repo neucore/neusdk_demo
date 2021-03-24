@@ -301,7 +301,7 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
         }
 
         long time = System.currentTimeMillis();
-        if (Math.abs(faceTime - time) >1000){
+        if (Math.abs(faceTime - time) > 1000){
             if (resultRgb.length == 0){
                 //清除记录
                 dHandler.sendEmptyMessage(1);
