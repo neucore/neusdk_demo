@@ -139,8 +139,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                 @Override
                 public void onClick(View view) {
                     transferAdminsDialog.finish();
-
                     //竖屏64010板子
+                    //64010
                     SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
                     startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
                     finish();
@@ -152,6 +152,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     transferAdminsDialog.finish();
 
                     //6421 横屏  1920x1080
+                    //6421
                     SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE,Constants.TYPE_6421);
                     startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
                     finish();
