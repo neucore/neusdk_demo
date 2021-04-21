@@ -1,5 +1,5 @@
 package com.neucore.neulink.extend;
 
-public interface ICmdListener<T extends Result> {
+public interface ICmdListener<T> {
     T doAction(NeulinkEvent event);
 }

@@ -5,6 +5,12 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.bak.BackupCmd;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
@@ -183,30 +189,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
      * @param result
      */
     protected void resLstRsl2Cloud(NeulinkTopicParser.Topic topic,String result){
-        String resTopic = resTopics.get(topic.getBiz());
+        String resTopic = resTopic();
+        if(resTopic==null||resTopic.trim().length()==0){
+            return;
+        }
         NeulinkService.getInstance().publishMessage(resTopic,topic.getVersion(),topic.getReqId(),result,topic.getQos());
     }
 
-    private Map<String,String> resTopics = new HashMap<String,String>();
-    {
-        resTopics.put("reboot","rmsg/res/reboot");
-        resTopics.put("hibrate","rmsg/res/hibrate");
-        resTopics.put("awaken","rmsg/res/awaken");
-        resTopics.put("alog","rrpc/res/alog");
-        resTopics.put("debug","rrpc/res/debug");
-        resTopics.put("shell","rrpc/res/shell");
-        resTopics.put("rlog","rrpc/res/rlog");
-        resTopics.put("qlog","rrpc/res/qlog");
-        resTopics.put("blib","rrpc/res/blib");
-        resTopics.put("lib","rrpc/res/lib");
-        resTopics.put("qlib","rrpc/res/qlib");
-        resTopics.put("cfg","rrpc/res/cfg");
-        resTopics.put("qcfg","rrpc/res/qcfg");
-        resTopics.put("backup","rrpc/res/backup");
-        resTopics.put("recover","rrpc/res/recover");
-        resTopics.put("check","rrpc/res/check");
 
-    }
     /**
      * 命令消息到达是日志状态默认为处理中，只有无法响应的请求【eg:reboot】消息到达是日志记录的状态是成功
      *
@@ -216,8 +206,19 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
 //        return Message.STATUS_PROCESS;
 //    }
 
+    /**
+     * neulink协议处理
+     * @param topic
+     * @param payload
+     * @return
+     */
     public abstract T process(NeulinkTopicParser.Topic topic, Req payload);
 
+    /**
+     * 解析处理
+     * @param payload
+     * @return
+     */
     public abstract Req parser(String payload);
 
     protected abstract Res responseWrapper(Req t, T result);
@@ -225,5 +226,9 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     protected abstract Res fail(Req t, String error);
 
     protected abstract Res fail(Req t,int code, String error);
+
+    protected abstract String resTopic();
+
+    protected abstract ICmdListener getListener();
 }
 

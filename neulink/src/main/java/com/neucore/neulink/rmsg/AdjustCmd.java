@@ -2,9 +2,9 @@ package com.neucore.neulink.rmsg;
 
 import com.neucore.neulink.impl.ArgCmd;
 
-public class Adjust extends ArgCmd {
+public class AdjustCmd extends ArgCmd {
 
-    public Adjust(){
+    public AdjustCmd(){
         this.cmdStr = "adjust";
     }
 }

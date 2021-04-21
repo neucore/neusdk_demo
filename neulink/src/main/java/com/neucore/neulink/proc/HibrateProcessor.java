@@ -7,10 +7,12 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.rmsg.HibrateCmd;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -26,7 +28,7 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     @Override
     public Map<String,String> process(NeulinkTopicParser.Topic topic, ArgCmd cmd) {
         try {
-            ICmdListener listener = ListenerFactory.getInstance().getHibrateListener();
+            ICmdListener<Result> listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"Hibrate Listener does not implemention");
             }
@@ -74,5 +76,15 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
         res.setCode(code);
         res.setMsg(error);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rmsg/res/hibrate";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getHibrateListener();
     }
 }

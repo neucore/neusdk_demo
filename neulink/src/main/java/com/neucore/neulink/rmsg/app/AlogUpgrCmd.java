@@ -3,7 +3,7 @@ package com.neucore.neulink.rmsg.app;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.ArgCmd;
 
-public class AlogUpgr extends ArgCmd {
+public class AlogUpgrCmd extends ArgCmd {
 
     @SerializedName("vinfo")
     private String vinfo;
@@ -14,7 +14,7 @@ public class AlogUpgr extends ArgCmd {
     @SerializedName("md5")
     private String md5;
 
-    public AlogUpgr(){
+    public AlogUpgrCmd(){
         cmdStr = "upgrade";
     }
 

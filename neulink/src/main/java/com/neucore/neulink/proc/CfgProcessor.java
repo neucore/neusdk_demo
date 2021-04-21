@@ -6,6 +6,9 @@ import com.neucore.neulink.cfg.CfgCmd;
 import com.neucore.neulink.cfg.CfgCmdRes;
 import com.neucore.neulink.cfg.CfgItem;
 import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DeviceUtils;
@@ -19,22 +22,12 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
     @Override
     public String process(NeulinkTopicParser.Topic topic, CfgCmd cmd) {
 
-        CfgItem[] items = cmd.getData();
 
-        int size = items==null?0:items.length;
         try {
-            if ("add".equalsIgnoreCase(cmd.getCmdStr())) {
-                ConfigContext.getInstance().add(items);
-            }
-            else if("update".equalsIgnoreCase(cmd.getCmdStr())){
-                ConfigContext.getInstance().update(items);
-            }
-            else if("del".equalsIgnoreCase(cmd.getCmdStr())){
-                ConfigContext.getInstance().delete(items);
-            }
-            else if("sync".equalsIgnoreCase(cmd.getCmdStr())){
-                ConfigContext.getInstance().sync(items);
-            }
+            CfgItem[] items = cmd.getData();
+            NeulinkEvent<CfgCmd> event = new NeulinkEvent(cmd);
+            ICmdListener listener = getListener();
+            listener.doAction(event);
             return "success";
         }
         catch (Throwable ex){
@@ -71,5 +64,15 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
         res.setCode(code);
         res.setMsg(message);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/cfg";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getCfgListener();
     }
 }

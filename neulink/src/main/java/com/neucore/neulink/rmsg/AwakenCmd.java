@@ -2,9 +2,9 @@ package com.neucore.neulink.rmsg;
 
 import com.neucore.neulink.impl.ArgCmd;
 
-public class Awaken extends ArgCmd {
+public class AwakenCmd extends ArgCmd {
 
-    public Awaken(){
+    public AwakenCmd(){
         this.cmdStr = "awaken";
     }
 }

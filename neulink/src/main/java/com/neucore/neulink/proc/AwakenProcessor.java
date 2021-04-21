@@ -31,7 +31,7 @@ public class AwakenProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
     public Map<String,String> process(NeulinkTopicParser.Topic topic, ArgCmd cmd) {
         try {
 
-            ICmdListener listener = ListenerFactory.getInstance().getAwakenListener();
+            ICmdListener listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"awaken Listener does not implemention");
             }
@@ -79,5 +79,15 @@ public class AwakenProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
         res.setCode(code);
         res.setMsg(error);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rmsg/res/awaken";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getAwakenListener();
     }
 }

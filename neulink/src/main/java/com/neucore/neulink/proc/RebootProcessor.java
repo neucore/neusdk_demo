@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 
+import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.GProcessor;
@@ -66,5 +67,14 @@ public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
         res.setCode(code);
         res.setMsg(error);
         return res;
+    }
+    @Override
+    protected String resTopic(){//不需要响应
+        return null;
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return null;
     }
 }

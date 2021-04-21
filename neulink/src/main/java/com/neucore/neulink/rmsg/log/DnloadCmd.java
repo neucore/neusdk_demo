@@ -3,7 +3,7 @@ package com.neucore.neulink.rmsg.log;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.Cmd;
 
-public class Dnload extends Cmd {
+public class DnloadCmd extends Cmd {
 
     @SerializedName("type")
     private String type;
@@ -13,7 +13,7 @@ public class Dnload extends Cmd {
     @SerializedName("end")
     private String end;
 
-    public Dnload(){
+    public DnloadCmd(){
         this.cmdStr = "download";
     }
 

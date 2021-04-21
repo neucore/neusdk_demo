@@ -1,10 +1,12 @@
 package com.neucore.neulink.rrpc;
 
+import com.neucore.neulink.impl.Cmd;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FaceCmd {
+public class FaceCmd extends Cmd {
 
     private String cmd;
     private long reqtime;

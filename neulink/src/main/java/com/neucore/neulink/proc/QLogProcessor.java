@@ -6,10 +6,11 @@ import android.util.Log;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.neucore.neulink.app.Const;
+import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.rmsg.log.Dnload;
+import com.neucore.neulink.rmsg.log.DnloadCmd;
 import com.neucore.neulink.rmsg.log.DnloadRes;
 import com.neucore.neulink.rmsg.log.LogResult;
 import com.neucore.neulink.util.ContextHolder;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
+public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
 
     public QLogProcessor(Context context){
         super(context);
@@ -38,7 +39,7 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
     }
 
     @Override
-    public LogResult process(NeulinkTopicParser.Topic topic, Dnload cmd) {
+    public LogResult process(NeulinkTopicParser.Topic topic, DnloadCmd cmd) {
         try{
             LogResult result = new LogResult();
 
@@ -59,7 +60,7 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
         }
     }
 
-    private LogResult getUser(NeulinkTopicParser.Topic topic,Dnload cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
+    private LogResult getUser(NeulinkTopicParser.Topic topic, DnloadCmd cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
 
         int offset = 0;
 
@@ -123,7 +124,7 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");//日志名称格式
 
-    private LogResult getSys(NeulinkTopicParser.Topic topic,final Dnload cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
+    private LogResult getSys(NeulinkTopicParser.Topic topic,final DnloadCmd cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
 
         File logs = new File(DeviceUtils.getLogPath(this.getContext()));
 
@@ -197,12 +198,12 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
         return result;
     }
     @Override
-    public Dnload parser(String payload) {
-        return (Dnload) JSonUtils.toObject(payload,Dnload.class);
+    public DnloadCmd parser(String payload) {
+        return (DnloadCmd) JSonUtils.toObject(payload, DnloadCmd.class);
     }
 
     @Override
-    protected DnloadRes responseWrapper(Dnload cmd, LogResult result) {
+    protected DnloadRes responseWrapper(DnloadCmd cmd, LogResult result) {
         DnloadRes res = new DnloadRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
@@ -219,7 +220,7 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
     }
 
     @Override
-    protected DnloadRes fail(Dnload cmd, String error) {
+    protected DnloadRes fail(DnloadCmd cmd, String error) {
         DnloadRes res = new DnloadRes();
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
@@ -229,7 +230,7 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
     }
 
     @Override
-    protected DnloadRes fail(Dnload cmd,int code, String error) {
+    protected DnloadRes fail(DnloadCmd cmd, int code, String error) {
         DnloadRes res = new DnloadRes();
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
@@ -238,4 +239,13 @@ public class QLogProcessor extends GProcessor<Dnload, DnloadRes,LogResult> {
         return res;
     }
 
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/qlog";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return null;
+    }
 }

@@ -3,12 +3,12 @@ package com.neucore.neulink.rmsg;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.ArgCmd;
 
-public class FirwareUpgr extends ArgCmd {
+public class ApkUpgrCmd extends ArgCmd {
     @SerializedName("vinfo")
     private String vinfo;
 
 
-    public FirwareUpgr(){
+    public ApkUpgrCmd(){
         this.cmdStr = "upgrade";
     }
 

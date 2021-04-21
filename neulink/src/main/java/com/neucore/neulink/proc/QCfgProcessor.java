@@ -6,6 +6,8 @@ import com.neucore.neulink.cfg.CfgCmd;
 import com.neucore.neulink.cfg.CfgItem;
 import com.neucore.neulink.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DeviceUtils;
@@ -76,5 +78,15 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
         res.setCode(code);
         res.setMsg(message);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/qcfg";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getCfgListener();
     }
 }

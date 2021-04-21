@@ -76,7 +76,7 @@ public class SampleFaceCheckListener implements ICmdListener<QueryResult> {
          * card_ids key值不能变
          */
         datas.put("card_ids",cardIdStr);
-        result.setDatas(datas);
+        result.setData(datas);
         return result;
     }
 }
