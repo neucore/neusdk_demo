@@ -33,6 +33,7 @@ public class NeulinkService {
     private MqttService mqttService = null;
     private IMqttCallBack starMQTTCallBack;
     private Boolean inited = false;
+    private Register register = null;
     private NeulinkScheduledReport autoReporter = null;
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
@@ -49,11 +50,16 @@ public class NeulinkService {
         autoReporter = new NeulinkScheduledReport(context,this);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
-        init(serverUri,context);
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-        if(channel==1){
-            autoReporter.start();
+        if(channel==1){//http注册方式&上报方式
+            register.regist();
+            init(serverUri,context);
         }
+        else{//mqtt注册方式&上报方式
+            init(serverUri,context);
+            register.regist();
+        }
+        autoReporter.start();
     }
 
     private void init(String serverUri,Context context){
@@ -145,7 +151,7 @@ public class NeulinkService {
 
         Context context = ContextHolder.getInstance().getContext();
 
-        if (channel==0){
+        if (channel==0){//向下兼容
 
             Log.d(TAG,"upload2cloud with mqtt");
 
@@ -161,16 +167,14 @@ public class NeulinkService {
             mqttService.publish(payload,topStr, qos, false);
         }
         else{
-            /**
-             * 设备端2cloud
-             */
-            Log.d(TAG,"upload2cloud with http");
+
 
             /**
              * 设备注册：
              *
              */
             if(topStr.contains("msg/req/devinfo")){
+
                 /**
                  * HTTP机制
                  */
@@ -189,7 +193,7 @@ public class NeulinkService {
                  * 		"placecode": "test",
                  * 		"server": "mqtt.neucore.com",
                  * 		"port": 1883,
-                 * 	    "http.server":"https://data.neuapi.com"
+                 * 	    "http.server":"https://data.neuapi.com/v1/smrtlibs/neulink/upload2cloud"
                  *   }
                  * }
                  */
@@ -207,6 +211,10 @@ public class NeulinkService {
                 neulinkServer = zone.getUploadServer();
             }
             else {
+                /**
+                 * 设备端2cloud
+                 */
+                Log.d(TAG,"upload2cloud with http");
                 try {
                     topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
                     Log.d(TAG,topStr);
