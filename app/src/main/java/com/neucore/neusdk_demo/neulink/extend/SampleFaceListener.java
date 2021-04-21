@@ -16,8 +16,8 @@ import com.neucore.neulink.rrpc.KVPair;
 import com.neucore.neulink.rrpc.KVPair.KeyEnum;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 import com.neucore.neusdk_demo.db.LibManagerService;
+import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

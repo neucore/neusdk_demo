@@ -290,7 +290,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPayload(params);
             faceCmd.setImageDatas(images);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            ICmdListener<UpdateResult> listener = getListener();
             result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params,images);
         }
@@ -302,7 +302,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            ICmdListener<UpdateResult> listener = getListener();
             result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params);
         }
@@ -314,7 +314,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            ICmdListener<UpdateResult> listener = getListener();
             result = listener.doAction(event);
             //libManagerService.deleteFacelib(params);
         }
@@ -404,7 +404,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     }
 
     @Override
-    protected ICmdListener<UpdateResult<Map<String,Object>>> getListener() {
+    protected ICmdListener<UpdateResult> getListener() {
         return ListenerFactory.getInstance().getFaceListener();
     }
 
