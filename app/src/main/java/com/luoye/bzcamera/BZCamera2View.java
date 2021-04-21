@@ -191,6 +191,17 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                         break;
                     }
                 }
+            }else if (Constants.TYPE_6421_VER.equals(equip_type1)){
+                //竖屏6421板子
+
+                String cameraId = "0";
+                characteristics = manager.getCameraCharacteristics(cameraId);
+                fitCameraID = cameraId;
+                System.out.println("cameraIdList: "+fitCameraID);
+                Integer integer = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (null != integer && mCurrentCameraLensFacing == integer) {
+                    return;
+                }
             }
 
             if (null == characteristics) {
