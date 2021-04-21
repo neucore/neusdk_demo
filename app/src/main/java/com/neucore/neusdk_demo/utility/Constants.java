@@ -17,6 +17,7 @@ public class Constants {
     public static final int HAND_START = 10050;
 
     public static final String TYPE_64010 = "64010";
-    public static final String TYPE_6421 = "6421";
+    public static final String TYPE_6421 = "6421"; //默认横屏
+    public static final String TYPE_6421_VER = "6421_vertical"; //默认横屏
 
 }
