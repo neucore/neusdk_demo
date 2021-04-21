@@ -124,11 +124,22 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         public void onFinish() {
             TransferAdminsDialog transferAdminsDialog = new TransferAdminsDialog(SplashActivity.this);
             transferAdminsDialog.show();
-            transferAdminsDialog.setButtonCancelOnClick(new TransferAdminsDialog.CheckButtonCancelOnclick() {
+            transferAdminsDialog.setButtonCancelVerOnClick(new TransferAdminsDialog.CheckButtonCancelVerOnclick() {
                 @Override
                 public void onClick(View view) {
                     transferAdminsDialog.finish();
 
+                    //竖屏 6421板子 800x1280
+                    SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_6421_VER);
+                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    finish();
+                }
+            });
+            transferAdminsDialog.setButtonCancelOnClick(new TransferAdminsDialog.CheckButtonCancelOnclick() {
+                @Override
+                public void onClick(View view) {
+                    transferAdminsDialog.finish();
+                    //竖屏64010板子
                     //64010
                     SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
                     startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
@@ -140,6 +151,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                 public void onClick(View view) {
                     transferAdminsDialog.finish();
 
+                    //6421 横屏  1920x1080
                     //6421
                     SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE,Constants.TYPE_6421);
                     startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));

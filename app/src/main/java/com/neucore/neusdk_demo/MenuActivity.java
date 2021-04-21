@@ -272,6 +272,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     Toast.makeText(MyApplication.getContext(),"该板子不支持双摄像头",Toast.LENGTH_SHORT).show();
+                }else if (Constants.TYPE_6421_VER.equals(equip_type2)){
+                    //竖屏6421板子专属
+                    mHandler.sendEmptyMessage(START_ACTIVITY);
                 }
                 break;
             case R.id.ll_gesture_discern:   //手势检测+识别

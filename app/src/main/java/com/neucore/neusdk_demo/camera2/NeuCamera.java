@@ -29,6 +29,11 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.neucore.neulink.util.LogUtils;
+import com.neucore.neusdk_demo.R;
+import com.neucore.neusdk_demo.app.MyApplication;
+import com.neucore.neusdk_demo.utility.Constants;
+import com.neucore.neusdk_demo.utils.SPUtils;
+import com.neucore.neusdk_demo.utils.SharePrefConstant;
 import com.neucore.neusdk_demo.view.AutoFitTextureView;
 
 import java.util.ArrayList;
@@ -145,7 +150,15 @@ public class NeuCamera {
             }
 
             mPreviewSize = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height);
-            mImagerReaderSize = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), 480, 640);
+
+            String equip_type2 = (String) SPUtils.get(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_64010);
+            if (Constants.TYPE_64010.equals(equip_type2)){
+                //竖屏64010板子专属
+                mImagerReaderSize = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), 480, 640);
+            }else if (Constants.TYPE_6421_VER.equals(equip_type2)){
+                //竖屏6421板子专属
+                mImagerReaderSize = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), 300, 480);  //300x480    360x576
+            }
 
             int orientation = mContext.getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {

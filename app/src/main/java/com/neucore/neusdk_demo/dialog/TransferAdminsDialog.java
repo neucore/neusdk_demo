@@ -12,6 +12,7 @@ import com.neucore.neusdk_demo.R;
 public class TransferAdminsDialog extends Dialog {
 
     private CheckButtonCancelOnclick buttonCancleListener;
+    private CheckButtonCancelVerOnclick buttonCancleVerListener;
     private CheckButtonSureOnclick buttonSureListener;
 
     public TransferAdminsDialog(Context context) {
@@ -28,8 +29,15 @@ public class TransferAdminsDialog extends Dialog {
         setContentView(R.layout.dialog_transfer_admins);
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        TextView dialog_disconnect_6421_ver = (TextView) findViewById(R.id.dialog_disconnect_6421_ver);
         TextView dialog_disconnect_cancel = (TextView) findViewById(R.id.dialog_disconnect_cancel);
         TextView dialog_disconnect_sure = (TextView) findViewById(R.id.dialog_disconnect_sure);
+        dialog_disconnect_6421_ver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonCancleVerListener.onClick(v);
+            }
+        });
         dialog_disconnect_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +52,15 @@ public class TransferAdminsDialog extends Dialog {
             }
         });
 
+    }
+
+    //确定回调
+    public interface CheckButtonCancelVerOnclick {
+        void onClick(View view);
+    }
+
+    public void setButtonCancelVerOnClick(CheckButtonCancelVerOnclick buttonCancleVerListener) {
+        this.buttonCancleVerListener = buttonCancleVerListener;
     }
 
     //确定回调

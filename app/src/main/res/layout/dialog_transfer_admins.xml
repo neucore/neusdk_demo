@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="315dp"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:layout_marginTop="200dp"
         android:background="@drawable/button_white_round_bg15">
         <TextView
@@ -21,6 +21,18 @@
             android:layout_marginLeft="26dp"
             android:layout_marginTop="47dp"
             />
+
+        <TextView
+            android:id="@+id/dialog_disconnect_6421_ver"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="55dp"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:text="竖屏6421板子(800x1280)"
+            android:textColor="@color/black"
+            android:textSize="14dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:gravity="center"
-                android:text="竖屏64010板子(选这个)"
+                android:text="竖屏64010板(480x640)"
                 android:textColor="@color/black"
                 android:textSize="14dp"/>
             <TextView
