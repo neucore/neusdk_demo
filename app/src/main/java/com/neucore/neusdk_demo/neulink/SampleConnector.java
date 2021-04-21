@@ -64,7 +64,7 @@ public class SampleConnector {
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.105.254:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         ConfigContext.getInstance().setExtConfig(extConfig);
 
