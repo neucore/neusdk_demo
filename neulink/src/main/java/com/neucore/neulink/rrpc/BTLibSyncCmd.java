@@ -3,9 +3,9 @@ package com.neucore.neulink.rrpc;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.Cmd;
 
-public class BTLibSync extends Cmd {
+public class BTLibSyncCmd extends Cmd {
 
-    public BTLibSync(){
+    public BTLibSyncCmd(){
         cmdStr = "sync";
     }
 

@@ -5,12 +5,14 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.rrpc.BTLibSync;
+import com.neucore.neulink.rrpc.BTLibSyncCmd;
 import com.neucore.neulink.rrpc.BTLibSyncRes;
 import com.neucore.neulink.rrpc.FaceCmd;
 import com.neucore.neulink.rrpc.FaceData;
@@ -35,7 +37,7 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgResult> {
+public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPkgResult> {
 
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync",PUSH = "push";
     final private String OBJ_TYPE_FACE = "face";
@@ -48,7 +50,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public TLibPkgResult process(NeulinkTopicParser.Topic topic, BTLibSync cmd) {
+    public TLibPkgResult process(NeulinkTopicParser.Topic topic, BTLibSyncCmd cmd) {
         TLibPkgResult result = new TLibPkgResult();
 
         long pages = cmd.getPages();
@@ -109,11 +111,11 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
 
     }
 
-    public BTLibSync parser(String payload){
-        return (BTLibSync) JSonUtils.toObject(payload, BTLibSync.class);
+    public BTLibSyncCmd parser(String payload){
+        return (BTLibSyncCmd) JSonUtils.toObject(payload, BTLibSyncCmd.class);
     }
 
-    public BTLibSyncRes responseWrapper(BTLibSync cmd,TLibPkgResult result) {
+    public BTLibSyncRes responseWrapper(BTLibSyncCmd cmd, TLibPkgResult result) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
@@ -127,7 +129,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         return res;
     }
 
-    public BTLibSyncRes fail(BTLibSync cmd,String message) {
+    public BTLibSyncRes fail(BTLibSyncCmd cmd, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
@@ -140,7 +142,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         return res;
     }
 
-    public BTLibSyncRes fail(BTLibSync cmd,int code,String message) {
+    public BTLibSyncRes fail(BTLibSyncCmd cmd, int code, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
@@ -153,7 +155,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         return res;
     }
 
-    protected String[] process(long reqTime,BTLibSync cmd,long offset)throws Exception {
+    protected String[] process(long reqTime, BTLibSyncCmd cmd, long offset)throws Exception {
 
         if(OBJ_TYPE_FACE.equalsIgnoreCase(cmd.getObjtype())){
             return faceSync(reqTime,cmd,offset);
@@ -228,7 +230,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
 //        return params;
 //    }
 
-    protected String[] faceSync(long reqTime,BTLibSync cmd,long offset) throws Exception{
+    protected String[] faceSync(long reqTime, BTLibSyncCmd cmd, long offset) throws Exception{
         List failed = new ArrayList();
         //推送消息到达
         String jsonUrl = cmd.getDataUrl();
@@ -270,7 +272,7 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             throw e;
         }
         Map images = null;
-        UpdateResult result = null;
+        Result<Map<String,Object>> result = null;
         if(ADD.equalsIgnoreCase(cmd.getCmdStr())||
                 UPDATE.equalsIgnoreCase(cmd.getCmdStr())||
                 SYNC.equalsIgnoreCase(cmd.getCmdStr())){
@@ -288,9 +290,8 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             faceCmd.setPayload(params);
             faceCmd.setImageDatas(images);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-
-            result = ListenerFactory.getInstance().getFaceListener().doAction(event);
-
+            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params,images);
         }
         else if(PUSH.equalsIgnoreCase(cmd.getCmdStr())){
@@ -301,7 +302,8 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            result = ListenerFactory.getInstance().getFaceListener().doAction(event);
+            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params);
         }
         else if(DEL.equalsIgnoreCase(cmd.getCmdStr())){
@@ -312,11 +314,12 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            result = ListenerFactory.getInstance().getFaceListener().doAction(event);
+            ICmdListener<UpdateResult<Map<String,Object>>> listener = getListener();
+            result = listener.doAction(event);
             //libManagerService.deleteFacelib(params);
         }
         if(result!=null){
-            Map<String,Object> temp = result.getDatas();
+            Map<String,Object> temp = result.getData();
             if(temp!=null){
                 failed = (List)temp.remove("failed");
             }
@@ -393,6 +396,16 @@ public class BLibProcessor extends GProcessor<BTLibSync, BTLibSyncRes, TLibPkgRe
         }
 
         return imagesData;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/blib";
+    }
+
+    @Override
+    protected ICmdListener<UpdateResult<Map<String,Object>>> getListener() {
+        return ListenerFactory.getInstance().getFaceListener();
     }
 
     public static void main(String[] args) throws Exception{

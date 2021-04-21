@@ -2,6 +2,8 @@ package com.neucore.neulink.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.rmsg.ShellCmd;
@@ -68,5 +70,15 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
         res.setCode(code);
         res.setMsg(error);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/shell";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return null;
     }
 }

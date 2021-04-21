@@ -3,7 +3,7 @@ package com.neucore.neulink.rmsg.log;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.Cmd;
 
-public class LogUpload extends Cmd {
+public class LogUploadCmd extends Cmd {
     @SerializedName("dev_id")
     private String deviceId;
 

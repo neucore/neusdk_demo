@@ -4,19 +4,13 @@ import android.content.Context;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
-import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.msg.CPUInfo;
-import com.neucore.neulink.msg.DeviceInfo;
 import com.neucore.neulink.msg.DiskInfo;
 import com.neucore.neulink.msg.MemInfo;
-import com.neucore.neulink.msg.MiscInfo;
 import com.neucore.neulink.msg.SDInfo;
-import com.neucore.neulink.msg.SoftVInfo;
 import com.neucore.neulink.msg.Stat;
 import com.neucore.neulink.msg.Status;
-import com.neucore.neulink.rmsg.log.LogUpload;
-import com.neucore.neulink.util.AppUtils;
+import com.neucore.neulink.rmsg.log.LogUploadCmd;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.DoubleSerializer;
@@ -176,7 +170,7 @@ public class NeulinkScheduledReport {
                                 }
                             }
                         }
-                        LogUpload req = new LogUpload();
+                        LogUploadCmd req = new LogUploadCmd();
                         req.setDeviceId(DeviceUtils.getDeviceId(context));
                         req.setReqId(UUID.randomUUID().toString());
                         req.setMsg(sb.toString());

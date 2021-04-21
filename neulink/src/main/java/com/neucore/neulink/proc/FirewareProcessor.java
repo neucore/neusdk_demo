@@ -35,7 +35,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
             srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url);
-            ICmdListener listener = ListenerFactory.getInstance().getAPkListener();
+            ICmdListener listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"apk Listener does not implemention");
             }
@@ -92,5 +92,15 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
         res.setCode(code);
         res.setMsg(error);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/firmware";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getAPkListener();
     }
 }

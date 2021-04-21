@@ -4,22 +4,23 @@ import android.content.Context;
 
 import com.neucore.neulink.cfg.CfgItem;
 import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.rmsg.app.Debug;
+import com.neucore.neulink.rmsg.app.DebugCmd;
 import com.neucore.neulink.rmsg.app.DebugRes;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DebugProcessor extends GProcessor<Debug, DebugRes,String> {
+public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
 
     public DebugProcessor(Context context){
         super(context);
     }
     @Override
-    public String process(NeulinkTopicParser.Topic topic, Debug cmd) {
+    public String process(NeulinkTopicParser.Topic topic, DebugCmd cmd) {
         String[] cmds = null;
         Map<String, String> result = null;
         try {
@@ -41,11 +42,11 @@ public class DebugProcessor extends GProcessor<Debug, DebugRes,String> {
         }
     }
 
-    public Debug parser(String payload){
-        return (Debug) JSonUtils.toObject(payload, Debug.class);
+    public DebugCmd parser(String payload){
+        return (DebugCmd) JSonUtils.toObject(payload, DebugCmd.class);
     }
 
-    public DebugRes responseWrapper(Debug cmd, String result) {
+    public DebugRes responseWrapper(DebugCmd cmd, String result) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
@@ -54,7 +55,7 @@ public class DebugProcessor extends GProcessor<Debug, DebugRes,String> {
         return res;
     }
 
-    public DebugRes fail(Debug cmd,String message) {
+    public DebugRes fail(DebugCmd cmd, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
@@ -62,12 +63,22 @@ public class DebugProcessor extends GProcessor<Debug, DebugRes,String> {
         res.setMsg(message);
         return res;
     }
-    public DebugRes fail(Debug cmd,int code,String message) {
+    public DebugRes fail(DebugCmd cmd, int code, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
         res.setCode(code);
         res.setMsg(message);
         return res;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/debug";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return null;
     }
 }

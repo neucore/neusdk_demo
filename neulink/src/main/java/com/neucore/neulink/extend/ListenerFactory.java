@@ -2,33 +2,48 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
+import com.neucore.neulink.bak.BackupCmd;
+import com.neucore.neulink.cfg.CfgCmd;
+import com.neucore.neulink.cfg.CfgItem;
+import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.check.CheckCmd;
+import com.neucore.neulink.recv.RecoverCmd;
+import com.neucore.neulink.rmsg.AwakenCmd;
+import com.neucore.neulink.rmsg.ApkUpgrCmd;
+import com.neucore.neulink.rmsg.HibrateCmd;
+import com.neucore.neulink.rmsg.app.AlogUpgrCmd;
+import com.neucore.neulink.rrpc.FaceCmd;
+import com.neucore.neulink.rrpc.TLibQueryCmd;
 import com.neucore.neulink.service.device.IDeviceService;
 import com.neucore.neulink.service.device.DeviceServiceImpl;
 
+import java.util.Map;
+
 public class ListenerFactory {
     private String TAG = "ListenerFactory";
-    private ICmdListener alogListener = new ICmdListener<Result>() {
+
+    private ICmdListener<Result> alogListener = new ICmdListener<Result>() {
         @Override
         public Result doAction(NeulinkEvent event) {
             Log.i(TAG,"Algorithm upgrade need to by replace ");
             return new Result();
         }
     };
-    private ICmdListener apkListener = new ICmdListener() {
+    private ICmdListener<Result> apkListener = new ICmdListener<Result>() {
         @Override
         public Result doAction(NeulinkEvent event) {
             Log.i(TAG,"Application upgrade need to by replace ");
             return new Result();
         }
     };
-    private ICmdListener awakenListener = new ICmdListener() {
+    private ICmdListener<Result> awakenListener = new ICmdListener<Result>() {
         @Override
         public Result doAction(NeulinkEvent event) {
             Log.i(TAG,"device awaken implements need to by replace ");
             return new Result();
         }
     };
-    private ICmdListener hibrateListener = new ICmdListener() {
+    private ICmdListener<Result> hibrateListener = new ICmdListener<Result>() {
         @Override
         public Result doAction(NeulinkEvent event) {
             Log.i(TAG,"device hibrate implements need to by replace ");
@@ -36,7 +51,29 @@ public class ListenerFactory {
         }
     };
 
-    private ICmdListener<UpdateResult> faceListener = new ICmdListener<UpdateResult>() {
+    private ICmdListener<Result> cfgListener = new ICmdListener<Result>() {
+        public Result doAction(NeulinkEvent event) {
+            CfgCmd cmd = (CfgCmd) event.getSource();
+            CfgItem[] items = cmd.getData();
+            int size = items==null?0:items.length;
+
+            if ("add".equalsIgnoreCase(cmd.getCmdStr())) {
+                ConfigContext.getInstance().add(items);
+            }
+            else if("update".equalsIgnoreCase(cmd.getCmdStr())){
+                ConfigContext.getInstance().update(items);
+            }
+            else if("del".equalsIgnoreCase(cmd.getCmdStr())){
+                ConfigContext.getInstance().delete(items);
+            }
+            else if("sync".equalsIgnoreCase(cmd.getCmdStr())){
+                ConfigContext.getInstance().sync(items);
+            }
+            return new Result();
+        }
+    };
+
+    private ICmdListener<UpdateResult<Map<String,Object>>> faceListener = new ICmdListener<UpdateResult<Map<String,Object>>>() {
         @Override
         public UpdateResult doAction(NeulinkEvent event) {
             Log.i(TAG,"face process implements need to by replace ");
@@ -60,11 +97,11 @@ public class ListenerFactory {
         }
     };
 
-    private ICmdListener<QueryResult> backupListener = new ICmdListener<QueryResult>() {
+    private ICmdListener<QueryResult<Map<String,String>>> backupListener = new ICmdListener<QueryResult<Map<String,String>>>() {
         @Override
-        public QueryResult doAction(NeulinkEvent event) {
+        public QueryResult<Map<String,String>> doAction(NeulinkEvent event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new QueryResult();
+            return new QueryResult<Map<String, String>>();
         }
     };
 
@@ -82,7 +119,7 @@ public class ListenerFactory {
         return instance;
     }
 
-    public ICmdListener getAlogListener(){
+    public ICmdListener<Result> getAlogListener(){
         return alogListener;
     }
 
@@ -90,11 +127,19 @@ public class ListenerFactory {
         return apkListener;
     }
 
-    public ICmdListener getAwakenListener(){
+    public ICmdListener<Result> getAwakenListener(){
         return awakenListener;
     }
     public ICmdListener getHibrateListener(){
         return hibrateListener;
+    }
+
+    public ICmdListener<Result> getCfgListener() {
+        return cfgListener;
+    }
+
+    public void setCfgListener(ICmdListener cfgListener) {
+        this.cfgListener = cfgListener;
     }
 
     public void setAlogListener(ICmdListener alogListener) {
@@ -117,11 +162,11 @@ public class ListenerFactory {
         this.hibrateListener = hibrateListener;
     }
 
-    public ICmdListener<UpdateResult> getFaceListener() {
+    public ICmdListener<UpdateResult<Map<String,Object>>> getFaceListener() {
         return faceListener;
     }
 
-    public void setFaceListener(ICmdListener<UpdateResult> faceListener) {
+    public void setFaceListener(ICmdListener<UpdateResult<Map<String,Object>>> faceListener) {
         this.faceListener = faceListener;
     }
 
@@ -141,11 +186,11 @@ public class ListenerFactory {
         this.faceCheckListener = faceCheckListener;
     }
 
-    public ICmdListener<QueryResult> getBackupListener() {
+    public ICmdListener<QueryResult<Map<String,String>>> getBackupListener() {
         return backupListener;
     }
 
-    public void setBackupListener(ICmdListener<QueryResult> backupListener) {
+    public void setBackupListener(ICmdListener<QueryResult<Map<String,String>>> backupListener) {
         this.backupListener = backupListener;
     }
 

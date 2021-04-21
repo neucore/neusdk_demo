@@ -5,6 +5,8 @@ import android.content.Context;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.bak.BackupItem;
 import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeuLinkConstant;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -82,5 +84,15 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
         recoverCmdRes.setMsg(error);
         recoverCmdRes.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
         return recoverCmdRes;
+    }
+
+    @Override
+    protected String resTopic(){
+        return "rrpc/res/recover";
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return ListenerFactory.getInstance().getRecoverListener();
     }
 }

@@ -2,9 +2,9 @@ package com.neucore.neulink.rmsg.app;
 
 import com.neucore.neulink.impl.ArgCmd;
 
-public class Debug extends ArgCmd {
+public class DebugCmd extends ArgCmd {
 
-    public Debug(){
+    public DebugCmd(){
         cmdStr = "debug";
     }
 }

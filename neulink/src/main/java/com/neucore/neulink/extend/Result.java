@@ -1,9 +1,9 @@
 package com.neucore.neulink.extend;
 
-public class Result {
-    private int code;
-    private String message;
-
+public class Result<T> {
+    private int code=200;
+    private String message="success";
+    private T data;
     public int getCode() {
         return code;
     }
@@ -18,5 +18,13 @@ public class Result {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }

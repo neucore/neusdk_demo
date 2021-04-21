@@ -1,6 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.bak.BackupCmd;
 import com.neucore.neulink.bak.BackupItem;
 import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.extend.ICmdListener;
@@ -54,9 +55,9 @@ public class BackupActionListener implements ICmdListener<QueryResult>, NeuLinkC
          * 错误信息
          */
         result.setMessage("success");
-        Map<String,Object> datas = new HashMap<String,Object>();
+        Map<String,String> datas = new HashMap<String,String>();
         datas.put("url",backUrl);
-        result.setDatas(datas);
+        result.setData(datas);
         return result;
     }
 

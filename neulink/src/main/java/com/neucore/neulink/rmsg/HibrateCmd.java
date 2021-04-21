@@ -2,9 +2,9 @@ package com.neucore.neulink.rmsg;
 
 import com.neucore.neulink.impl.ArgCmd;
 
-public class Hibrate extends ArgCmd {
+public class HibrateCmd extends ArgCmd {
 
-    public Hibrate(){
+    public HibrateCmd(){
         this.cmdStr = "hibrate";
     }
 }

@@ -125,13 +125,13 @@ public class SampleFaceListener implements ICmdListener<UpdateResult> {
             libManagerService.deleteFacelibByReqTime(reqTime);//删除历史数据
         }
 
-        UpdateResult result = new UpdateResult();
+        UpdateResult<Map<String,Object>> result = new UpdateResult();
         result.setCode(200);
         result.setMessage("success");
         //返回失败的人脸ext_id 列表
         Map<String,Object> datas = new HashMap<String,Object>();
         datas.put("failed",failed);
-        result.setDatas(datas);
+        result.setData(datas);
 
         return result;
     }

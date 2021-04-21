@@ -13,7 +13,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,7 +26,6 @@ import com.luoye.bzcamera.BZCamera2View;
 import com.neucore.NeuSDK.NeuFaceQuality;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
-import com.neucore.NeuSDK.NeuHandClass1;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
@@ -43,7 +41,6 @@ import com.neucore.neusdk_demo.utils.NCModeSelectEvent;
 import com.neucore.neusdk_demo.utils.NeuHandInfo;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
-import com.neucore.neusdk_demo.utils.Size;
 import com.neucore.neusdk_demo.utils.Util;
 import com.neucore.neusdk_demo.view.CustomPoseSurfaceView;
 import com.neucore.neusdk_demo.view.CustomSurfaceView;
@@ -54,8 +51,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
@@ -67,9 +62,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static org.opencv.core.Core.flip;
-import static org.opencv.core.Core.transpose;
 
 
 public class Camera2Activity extends AppCompatActivity {
