@@ -245,6 +245,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }else if (Constants.TYPE_6421_VER.equals(equip_type0)){
+                    //竖屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }
                 break;
             case R.id.ll_one_camera_no_life: //单目非活体
@@ -259,6 +262,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }else if (Constants.TYPE_6421_VER.equals(equip_type1)){
+                    //竖屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }
                 break;
             case R.id.ll_two_camera_life:   //双目活体
@@ -290,6 +296,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }else if (Constants.TYPE_6421_VER.equals(equip_type3)){
+                    //竖屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }
                 break;
             case R.id.ll_pose_testing:  //Pose检测
@@ -305,6 +314,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }else if (Constants.TYPE_6421_VER.equals(equip_type4)){
+                    //竖屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }
                 break;
             case R.id.ll_background_fade:   //虚拟背景
@@ -328,6 +340,9 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
                     //6421横屏
                     //横屏6421板子专属
                     startActivity(new Intent(MenuActivity.this,Camera2Activity.class));
+                }else if (Constants.TYPE_6421_VER.equals(equip_type7)){
+                    //竖屏6421板子专属
+                    startActivity(new Intent(MenuActivity.this,Camera2PortraitActivity.class));
                 }
                 break;
             default:
