@@ -19,3 +19,13 @@
 0，在NeulinkPublisherFacde中实现
 
 1，在Apk应用中采用NeulinkService.getInstance().getPublisherFacde()获取消息发送接口进行进行消息发送;
+
+## 配置
+
+0，优先级【扩展配置>配置文件>框架默认配置】
+
+1,扩展配置使用方式：参考SampleConnector
+
+2，配置文件使用方式：参考ConfigContext的实现，这个实现可以通过云端管理
+
+3，默认配置：参考：ConfigContext内的defaultConfig【加密写死】
