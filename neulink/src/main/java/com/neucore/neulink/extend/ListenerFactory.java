@@ -73,7 +73,7 @@ public class ListenerFactory {
         }
     };
 
-    private ICmdListener<UpdateResult<Map<String,Object>>> faceListener = new ICmdListener<UpdateResult<Map<String,Object>>>() {
+    private ICmdListener<UpdateResult> faceListener = new ICmdListener<UpdateResult>() {
         @Override
         public UpdateResult doAction(NeulinkEvent event) {
             Log.i(TAG,"face process implements need to by replace ");
@@ -97,7 +97,7 @@ public class ListenerFactory {
         }
     };
 
-    private ICmdListener<QueryResult<Map<String,String>>> backupListener = new ICmdListener<QueryResult<Map<String,String>>>() {
+    private ICmdListener<QueryResult> backupListener = new ICmdListener<QueryResult>() {
         @Override
         public QueryResult<Map<String,String>> doAction(NeulinkEvent event) {
             Log.i(TAG,"face process implements need to by replace ");
@@ -162,11 +162,11 @@ public class ListenerFactory {
         this.hibrateListener = hibrateListener;
     }
 
-    public ICmdListener<UpdateResult<Map<String,Object>>> getFaceListener() {
+    public ICmdListener<UpdateResult> getFaceListener() {
         return faceListener;
     }
 
-    public void setFaceListener(ICmdListener<UpdateResult<Map<String,Object>>> faceListener) {
+    public void setFaceListener(ICmdListener<UpdateResult> faceListener) {
         this.faceListener = faceListener;
     }
 
@@ -186,11 +186,11 @@ public class ListenerFactory {
         this.faceCheckListener = faceCheckListener;
     }
 
-    public ICmdListener<QueryResult<Map<String,String>>> getBackupListener() {
+    public ICmdListener<QueryResult> getBackupListener() {
         return backupListener;
     }
 
-    public void setBackupListener(ICmdListener<QueryResult<Map<String,String>>> backupListener) {
+    public void setBackupListener(ICmdListener<QueryResult> backupListener) {
         this.backupListener = backupListener;
     }
 

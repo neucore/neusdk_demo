@@ -6,17 +6,23 @@ import android.content.Context;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.ApkUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.AwakenActionListener;
 import com.neucore.neusdk_demo.neulink.extend.BackupActionListener;
+import com.neucore.neusdk_demo.neulink.extend.CfgActionListener;
 import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
 import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
+
+import org.opencv.core.Mat;
+
+import java.util.Map;
 
 public class MyApplication extends Application
 {
@@ -79,7 +85,10 @@ public class MyApplication extends Application
 //                    return null;
 //                }
 //            });
-
+            /**
+             * 配置扩展
+             */
+            ListenerFactory.getInstance().setCfgListener(new CfgActionListener());
             /**
              * 人脸下发 扩展
              */
