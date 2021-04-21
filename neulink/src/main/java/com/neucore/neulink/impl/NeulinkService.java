@@ -47,6 +47,7 @@ public class NeulinkService {
     public void buildMqttService(String serverUri) {
         this.defaultServerUri = serverUri;
         Context context = ContextHolder.getInstance().getContext();
+        register = new Register(context,this);
         autoReporter = new NeulinkScheduledReport(context,this);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
