@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 
 public class FTPStorage implements IStorage {
 
@@ -42,11 +43,21 @@ public class FTPStorage implements IStorage {
         username = ConfigContext.getInstance().getConfig("FTP.UserName");
         password = ConfigContext.getInstance().getConfig("FTP.Password");
         bucketName = ConfigContext.getInstance().getConfig("FTP.BucketName");
+
+        int connectTimeOut = ConfigContext.getInstance().getConfig("connectTimeOut",15*1000);
+        int readTimeOut = ConfigContext.getInstance().getConfig("readTimeOut",15*1000);
+
         ftpClient = new FTPClient();
         //设置超时时间以毫秒为单位使用时，从数据连接读。
-        ftpClient.setDefaultTimeout(timeOut * 1000);
-        ftpClient.setConnectTimeout(timeOut * 1000);
-        ftpClient.setDataTimeout(timeOut * 1000);
+        try {
+            ftpClient.setSoTimeout(readTimeOut);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        ftpClient.setConnectTimeout(connectTimeOut);
+
+        ftpClient.setDataTimeout(readTimeOut);
+
         ftpClient.setControlEncoding("utf-8");
     }
 
