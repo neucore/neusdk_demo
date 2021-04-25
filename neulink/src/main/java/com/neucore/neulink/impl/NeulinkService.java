@@ -34,7 +34,7 @@ public class NeulinkService {
     private IMqttCallBack starMQTTCallBack;
     private Boolean inited = false;
     private Register register = null;
-    private NeulinkScheduledReport autoReporter = null;
+
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
     private String defaultServerUri,newServiceUri,registServer,neulinkServer;
@@ -47,23 +47,12 @@ public class NeulinkService {
     public void buildMqttService(String serverUri) {
         this.defaultServerUri = serverUri;
         Context context = ContextHolder.getInstance().getContext();
-        register = new Register(context,this);
-        autoReporter = new NeulinkScheduledReport(context,this);
+        register = new Register(context,this,serverUri);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-        if(channel==1){//http注册方式&上报方式
-            register.regist();
-            init(serverUri,context);
-        }
-        else{//mqtt注册方式&上报方式
-            init(serverUri,context);
-            register.regist();
-        }
-        autoReporter.start();
     }
 
-    private void init(String serverUri,Context context){
+    void init(String serverUri,Context context){
         synchronized (inited){
             if(!inited){
                 mqttService = new MqttService.Builder()
@@ -252,13 +241,6 @@ public class NeulinkService {
         @Override
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "onSuccess");
-            //连接成功
-            //建议在这里执行订阅逻辑
-            //如果cleanSession设置为false的话，不用每次启动app都订阅，第一次订阅后 后面只执行连接操作即可
-            int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-            if(channel==0){
-                autoReporter.start();
-            }
 
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectSuccess(arg0);

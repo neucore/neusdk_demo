@@ -27,9 +27,9 @@
         </activity>
         <activity android:name="com.neucore.neusdk_demo.MenuActivity"
             android:launchMode="singleTask">
-            <!--<intent-filter>
+            <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity android:name="com.neucore.neusdk_demo.DetectActivity"
             android:launchMode="singleTask"
@@ -60,6 +60,8 @@
             android:launchMode="singleTask"></activity>
         <!-- Mqtt Service -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <service android:name="com.neucore.neulink.impl.Register" />
         <!-- Log Service -->
         <service android:name="com.neucore.neulink.impl.LogService" />
 
