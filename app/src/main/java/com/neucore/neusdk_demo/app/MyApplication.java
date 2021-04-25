@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IUserService;
+import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.util.ContextHolder;
@@ -23,6 +24,7 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 import org.opencv.core.Mat;
 
 import java.util.Map;
+import java.util.Properties;
 
 public class MyApplication extends Application
 {
@@ -46,7 +48,18 @@ public class MyApplication extends Application
         /**
          * 集成Neulink
          */
-        SampleConnector register = new SampleConnector(this,callback,service);
+        Properties extConfig = new Properties();
+
+        /**
+         * 配置扩展: key可以参考ConfigContext内的定义
+         */
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
+        /**
+         * ⚠️注意；
+         */
+        //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
+        //extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");//设置http通道注册服务地址
+        SampleConnector register = new SampleConnector(this,callback,service,extConfig);
     }
 
     public static Context getContext(){
