@@ -1,5 +1,6 @@
 package com.neucore.neulink.service.storage;
 
+import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
@@ -20,7 +21,15 @@ public class OSSStorage implements IStorage {
         OSSCredentialProvider credentialProvider =
                 new OSSPlainTextAKSKCredentialProvider(ConfigContext.getInstance().getConfig("OSS.AccessKeyID") ,
                         ConfigContext.getInstance().getConfig("OSS.AccessKeySecret"));
-        return new OSSClient(ContextHolder.getInstance().getContext(), ConfigContext.getInstance().getConfig("OSS.EndPoint"), credentialProvider);
+        ClientConfiguration clientConfiguration = ClientConfiguration.getDefaultConf();
+
+        int connectTimeOut = ConfigContext.getInstance().getConfig("connectTimeOut",15*1000);
+        int readTimeOut = ConfigContext.getInstance().getConfig("readTimeOut",15*1000);
+
+        clientConfiguration.setConnectionTimeout(connectTimeOut);
+        clientConfiguration.setSocketTimeout(readTimeOut);
+
+        return new OSSClient(ContextHolder.getInstance().getContext(), ConfigContext.getInstance().getConfig("OSS.EndPoint"), credentialProvider, clientConfiguration);
     }
 
     /**
