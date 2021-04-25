@@ -65,13 +65,24 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
      * 用户人脸数据库服务
      */
     IUserService service = UserService.getInstance(this);
+    
     /**
-     * 集成Neulink
+     * 开始集成Neulink
      */
-     /**
-      * extConfig.setProperty(ConfigContext.REGIST_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道;默认
-      */
-    SampleConnector register = new SampleConnector(this,callback,service);
+     扩展配置集成
+    Properties extConfig = new Properties();
+    /**
+     * 配置扩展: key可以参考ConfigContext内的定义
+     */
+    extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
+    /**
+     * ⚠️注意；上报通道默认mqtt，如果需要http支持请在配置文件或者下列代码【外部扩展配置】的方式实现
+     * 取消下列备注
+     * 
+     */
+    //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
+    //extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");//end2cloud neulink 注册的http服务地址
+    SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 
     ```
     

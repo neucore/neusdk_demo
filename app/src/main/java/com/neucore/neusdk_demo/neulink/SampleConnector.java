@@ -61,11 +61,7 @@ public class SampleConnector {
          */
         userService.load();
         Log.i(TAG,"success load user info 2 mem");
-        /**
-         * 配置扩展: key可以参考ConfigContext内的定义
-         */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
-        //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
+
         ConfigContext.getInstance().setExtConfig(extConfig);
 
         /**
