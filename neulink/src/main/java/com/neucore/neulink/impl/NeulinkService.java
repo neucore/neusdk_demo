@@ -169,7 +169,7 @@ public class NeulinkService {
                  * HTTP机制
                  */
                 String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
-
+                Log.d(TAG,"registServer："+registServer);
                 String response = NeuHttpHelper.post(registServer,payload,10,60,3);
                 Log.d(TAG,"设备注册响应："+response);
 
@@ -225,8 +225,8 @@ public class NeulinkService {
     private String getStoreId(){
         return storeid;
     }
-    private int zoneid=0;
-    private int getZoneId(){
+    private String zoneid="0";
+    private String getZoneId(){
         return zoneid;
     }
     boolean isConnected(){

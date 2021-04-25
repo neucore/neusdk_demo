@@ -57,8 +57,8 @@ public class MyApplication extends Application
         /**
          * ⚠️注意；
          */
-        //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
-        //extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");//设置http通道注册服务地址
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
         SampleConnector register = new SampleConnector(this,callback,service,extConfig);
     }
 
