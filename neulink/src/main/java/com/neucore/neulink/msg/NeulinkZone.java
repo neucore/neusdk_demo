@@ -4,23 +4,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class NeulinkZone {
     @SerializedName("zoneid")
-    private int id;
+    private String id;
     @SerializedName("custid")
     private String custid;
     @SerializedName("storeid")
     private String storeid;
-    @SerializedName("mqtt_server")
+    @SerializedName("mqttServer")
     private String mqttServer;
-    @SerializedName("mqtt_port")
+    @SerializedName("mqttPort")
     private int mqttPort;
-    @SerializedName("upload_server")
+    @SerializedName("uploadServer")
     private String uploadServer="https://data.neuapi.com/neulink/upload2cloud";//默认值
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
