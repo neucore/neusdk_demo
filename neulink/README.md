@@ -8,11 +8,11 @@
 
 2，在xxxProcessor的process方法中处理，及集成外部扩展机制；具体可以参考ALogProcessor的实现
 
-3，定义xxxCmdListener实现ICmdListener
+3，在NeulinkProcessorFactory注册第一步的xxxProcessor的实现类
 
-4，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
+4，定义xxxCmdListener实现ICmdListener
 
-5，在NeulinkProcessorFactory注册第一步的xxxProcessor的实现类
+5，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
 
 ## 发送消息到云端
 
