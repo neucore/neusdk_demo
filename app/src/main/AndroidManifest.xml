@@ -60,8 +60,6 @@
             android:launchMode="singleTask"></activity>
         <!-- Mqtt Service -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-
-        <service android:name="com.neucore.neulink.impl.Register" />
         <!-- Log Service -->
         <service android:name="com.neucore.neulink.impl.LogService" />
 
