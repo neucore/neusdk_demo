@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.media.Image;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +12,6 @@ import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
 
-import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -27,18 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.opencv.core.Core.flip;
 import static org.opencv.core.Core.transpose;
 
-import com.neucore.neulink.app.Const;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.AppInfo;
-import com.neucore.neusdk_demo.utils.HelpUtil;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
 import com.neucore.neusdk_demo.utils.Size;
@@ -130,7 +125,7 @@ public class FaceProcessing extends Thread {
              */
 
             //for S905D3
-            String ModelFileName = "nb/S905D3/";
+            String ModelFileName = "nb/S905D3.bak/";
             String tmp_ModelFilepath = ModelFilepath + "S905D3/";
             File tmp_path = new File(tmp_ModelFilepath);
             if(! tmp_path.exists()){
