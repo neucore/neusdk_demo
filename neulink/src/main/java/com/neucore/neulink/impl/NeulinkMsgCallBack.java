@@ -33,7 +33,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
 
         IProcessor processor = NeulinkProcessorFactory.build(context,topic);
-
+        Log.d(TAG,"start topic:"+ topicStr+",message:"+message);
         try {
             if(processor!=null){
                 processor.execute(topic,message);
@@ -46,7 +46,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
             Log.e(TAG,"messageArrived",ex);
         }
         finally {
-            Log.d(TAG,"topic:"+ topicStr+",message:"+message);
+            Log.d(TAG,"finished topic:"+ topicStr+",message:"+message);
             RequestContext.remove();
         }
     }

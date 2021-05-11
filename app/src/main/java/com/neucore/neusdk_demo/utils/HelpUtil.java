@@ -15,7 +15,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Surface;
@@ -426,7 +425,7 @@ public class HelpUtil {
              */
 
             //for S905D3
-            String ModelFileName = "nb/S905D3/";
+            String ModelFileName = "nb/S905D3.bak/";
             String tmp_ModelFilepath = ModelFilepath + "S905D3/";
             File tmp_path = new File(tmp_ModelFilepath);
             if(! tmp_path.exists()){
