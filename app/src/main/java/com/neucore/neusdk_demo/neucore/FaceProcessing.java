@@ -125,7 +125,7 @@ public class FaceProcessing extends Thread {
              */
 
             //for S905D3
-            String ModelFileName = "nb/S905D3.bak/";
+            String ModelFileName = "nb/S905D3/";
             String tmp_ModelFilepath = ModelFilepath + "S905D3/";
             File tmp_path = new File(tmp_ModelFilepath);
             if(! tmp_path.exists()){
