@@ -35,6 +35,9 @@ public class ConfigContext {
     public final static String  UPLOAD_CHANNEL = "upload.channel";//0:mqtt;1:https【默认为mqtt】
     public final static String REGIST_SERVER = "regist.server";
 
+    public final static String DEVICE_TYPE = "device.type";
+
+
     private String TAG = "ConfigContext";
 
     private static ConfigContext configContext = new ConfigContext();

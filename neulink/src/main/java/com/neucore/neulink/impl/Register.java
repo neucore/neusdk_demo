@@ -16,6 +16,7 @@ import com.neucore.neulink.msg.MiscInfo;
 import com.neucore.neulink.msg.SoftVInfo;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.MacHelper;
 import com.neucore.neulink.util.JSonUtils;
 
 public class Register extends BroadcastReceiver {
@@ -60,13 +61,20 @@ public class Register extends BroadcastReceiver {
         catch (Exception ex){}
 
         DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setDeviceId(DeviceUtils.getDeviceId(context)+"@@"+ ListenerFactory.getInstance().getDeviceService().getSN());
-        deviceInfo.setMac(DeviceUtils.getMacAddress());
+        /**
+         * cpu_sn@@ext_sn@@device_type
+         */
+        String devId = DeviceUtils.getDeviceId(context)+"@@"+ ListenerFactory.getInstance().getDeviceService().getSN()+"@@"+ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+        deviceInfo.setDeviceId(devId);
+
+        String mac = MacHelper.getWifiMac(context);
+        deviceInfo.setMac(mac);
 
         deviceInfo.setTag(AppUtils.getVersionName(context));
         MiscInfo miscInfo = new MiscInfo();
         miscInfo.setLocalIp(DeviceUtils.getIpAddress(context));
         miscInfo.setDescription("Jeff@amlogic");
+
         deviceInfo.setMiscInfo(miscInfo);
 
         SoftVInfo vInfo = new SoftVInfo();
