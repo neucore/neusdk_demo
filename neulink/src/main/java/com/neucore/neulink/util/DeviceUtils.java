@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.msg.DiskInfo;
 import com.neucore.neulink.msg.SDInfo;
 
@@ -162,6 +163,7 @@ public class DeviceUtils {
 	protected static volatile UUID uuid;
 
 	public static String getDeviceId(Context context){
+		ConfigContext.getInstance().getConfig("idType",0);
 		return getCPUSN(context);
 	}
 
@@ -204,7 +206,7 @@ public class DeviceUtils {
 		BufferedReader bufferedReader = null;
 		FileReader fileReader = null;
 		try {
-			fileReader = new FileReader(new File("/sys/class/net/wlan0/address"));
+			fileReader = new FileReader(new File("/sys/class/net/eth0/device/net/eth0/address"));
 			bufferedReader = new BufferedReader(fileReader);
 			wifiAddress = bufferedReader.readLine();
 
@@ -226,7 +228,14 @@ public class DeviceUtils {
 			return wifiAddress;
 		}
 	}
+	public static String getNewMacAddr(Context context){
 
+		return null;
+	}
+
+	public static String getLocalMacAddressFromIp(){
+		return null;
+	}
 	public static String getIpAddress(Context context){
 		String hostIp = null;
 		try {
