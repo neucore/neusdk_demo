@@ -51,14 +51,13 @@ public class FTPStorage implements IStorage {
         //设置超时时间以毫秒为单位使用时，从数据连接读。
         try {
             ftpClient.setSoTimeout(readTimeOut);
+            ftpClient.setConnectTimeout(connectTimeOut);
+            ftpClient.setDataTimeout(readTimeOut);
+            ftpClient.setControlEncoding("utf-8");
         } catch (SocketException e) {
-            e.printStackTrace();
+            Log.e("FTP",e.getMessage());
         }
-        ftpClient.setConnectTimeout(connectTimeOut);
 
-        ftpClient.setDataTimeout(readTimeOut);
-
-        ftpClient.setControlEncoding("utf-8");
     }
 
     private boolean connect(){
