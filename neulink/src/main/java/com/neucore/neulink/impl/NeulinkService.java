@@ -22,6 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
@@ -152,7 +153,7 @@ public class NeulinkService {
             /**
              * MQTT机制
              */
-            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
             Log.d(TAG,topStr);
             mqttService.publish(payload,topStr, qos, false);
         }
@@ -170,7 +171,16 @@ public class NeulinkService {
                  */
                 String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
                 Log.d(TAG,"registServer："+registServer);
-                String response = NeuHttpHelper.post(registServer,payload,10,60,3);
+
+                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
+                Log.d(TAG,topStr);
+                String response = null;
+                try {
+                    String topic = URLEncoder.encode(topStr,"UTF-8");
+                    response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,10,60,3);
+                    Log.d(TAG,"设备注册响应："+response);
+                } catch (UnsupportedEncodingException e) {
+                }
                 Log.d(TAG,"设备注册响应："+response);
 
                 /**
@@ -206,7 +216,7 @@ public class NeulinkService {
                  */
                 Log.d(TAG,"upload2cloud with http");
                 try {
-                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,10,60,3);
