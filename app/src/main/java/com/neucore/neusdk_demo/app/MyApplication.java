@@ -58,7 +58,7 @@ public class MyApplication extends Application
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】
          */
-        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"0");//默认为客流机器
+        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
         /**
          * ⚠️注意；http 通道启用时打开
          */
