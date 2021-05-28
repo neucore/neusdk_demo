@@ -54,8 +54,10 @@ public class NeulinkService {
     }
 
     void init(String serverUri,Context context){
+
         synchronized (inited){
             if(!inited){
+
                 mqttService = new MqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
@@ -79,6 +81,7 @@ public class NeulinkService {
 
                 //this.connect();
                 mqttService.connect();
+                Log.d(TAG,"mqtt server："+serverUri + "， 连接成功");
                 inited = true;
             }
         }
