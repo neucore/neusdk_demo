@@ -152,7 +152,7 @@ public class NeulinkService {
             /**
              * MQTT机制
              */
-            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
             Log.d(TAG,topStr);
             mqttService.publish(payload,topStr, qos, false);
         }
@@ -206,7 +206,7 @@ public class NeulinkService {
                  */
                 Log.d(TAG,"upload2cloud with http");
                 try {
-                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId();
+                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,10,60,3);
