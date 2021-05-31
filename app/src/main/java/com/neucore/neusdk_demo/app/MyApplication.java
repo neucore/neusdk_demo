@@ -53,7 +53,7 @@ public class MyApplication extends Application
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】

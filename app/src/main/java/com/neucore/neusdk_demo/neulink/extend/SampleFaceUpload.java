@@ -1,5 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
+import android.util.Log;
+
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.faceupld.AIData;
@@ -24,13 +26,16 @@ public class SampleFaceUpload {
      */
     public void v10sample(){
 
-        String requestId = UUID.randomUUID().toString();
-        int index = 0;
-
-        String path = "/sdcard/twocamera/icon/1593399670069.jpg";//待上传的图片路径
         //图片上传【FTP】
         //调整配置Storage.Type=FTP
         IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
+        if(storage==null){
+            Log.e("Upload","存储对象创建失败");
+            return;
+        }
+        String requestId = UUID.randomUUID().toString();
+        int index = 0;
+        String path = "/sdcard/twocamera/icon/1593399670069.jpg";//待上传的图片路径
         //上传人脸图片至存储服务器上
         String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
 
