@@ -62,7 +62,7 @@ public class NeulinkScheduledReport {
 
         new Thread("status") {
             public void run() {
-                while (true) {
+                while (!service.getDestory() && true) {
 
                     Status status = new Status();
                     status.setDeviceId(DeviceUtils.getDeviceId(context));
@@ -89,7 +89,7 @@ public class NeulinkScheduledReport {
     private void stat(){
         new Thread("stat") {
             public void run() {
-                while (true) {
+                while (!service.getDestory() &&true) {
                     try {
                         Thread.sleep(1000 * 60);
                     } catch (Exception e) {
@@ -142,7 +142,7 @@ public class NeulinkScheduledReport {
 
         new Thread("CarshLoggerReport"){
             public void run() {
-                while (true) {
+                while (!service.getDestory() && true) {
 
                     try{
                         Thread.sleep(1000*60);

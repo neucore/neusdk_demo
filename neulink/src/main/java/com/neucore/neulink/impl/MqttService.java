@@ -8,6 +8,7 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class MqttService {
 
@@ -195,6 +196,14 @@ public class MqttService {
         }
     }
 
+    public void disconnect(){
+        try {
+            client.disconnect();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+        close();
+    }
     /**
      * 连接MQTT服务器
      */
