@@ -240,7 +240,7 @@ public class FTPStorage implements IStorage {
             if (!CreateDirecroty(ftpSavePath)) {
                 return flag;
             }
-            flag = ftpClient.storeFile(new String(ftpSaveFileName.getBytes("GBK"), "iso-8859-1"), inputStream);
+            flag = ftpClient.storeFile(new String(ftpSaveFileName.getBytes("UTF-8"), "iso-8859-1"), inputStream);
             inputStream.close();
             ftpClient.logout();
         } catch (Exception e) {
