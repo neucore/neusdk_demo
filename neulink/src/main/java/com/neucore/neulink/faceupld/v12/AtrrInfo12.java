@@ -1,11 +1,15 @@
-package com.neucore.neulink.faceupld;
+package com.neucore.neulink.faceupld.v12;
 
 import com.google.gson.annotations.SerializedName;
 
-@Deprecated
-public class AtrrInfo {
+public class AtrrInfo12 {
+
+    @SerializedName("is_valid")
+    private int isValid;
+
     @SerializedName("gender")
     private int gender;
+
     @SerializedName("has_hat")
     private int hasHat;
     @SerializedName("slide_face")
@@ -20,6 +24,14 @@ public class AtrrInfo {
     private int age;
     @SerializedName("emotion")
     private int emotion;
+
+    public int getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(int isValid) {
+        this.isValid = isValid;
+    }
 
     public int getGender() {
         return gender;

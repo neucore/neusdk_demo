@@ -2,6 +2,7 @@ package com.neucore.neulink.faceupld;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class AIData {
     @SerializedName("dir")
     private String dir;
