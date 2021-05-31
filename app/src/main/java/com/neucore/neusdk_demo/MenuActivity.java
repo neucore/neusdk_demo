@@ -8,8 +8,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.NeuSDK.NeuHand;
 import com.neucore.neulink.app.Const;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.neucore.FaceProcessing;
@@ -364,8 +362,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
     @Override
     protected void onDestroy() {
         Log.e(TAG, "onDestroy");
+        NeulinkService.getInstance().destroy();
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
+
     }
 
     @Override

@@ -35,6 +35,7 @@ public class NeulinkService {
     private IMqttCallBack starMQTTCallBack;
     private Boolean inited = false;
     private Register register = null;
+    private Boolean destroy = false;
 
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
@@ -54,8 +55,10 @@ public class NeulinkService {
     }
 
     void init(String serverUri,Context context){
+
         synchronized (inited){
             if(!inited){
+
                 mqttService = new MqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
@@ -79,6 +82,7 @@ public class NeulinkService {
 
                 //this.connect();
                 mqttService.connect();
+                Log.d(TAG,"mqtt server："+serverUri + "， 连接成功");
                 inited = true;
             }
         }
@@ -227,6 +231,17 @@ public class NeulinkService {
             }
         }
     }
+
+    public void destroy(){
+        mqttService.disconnect();
+        destroy = true;
+        Log.i(TAG,"断开Mqtt Service");
+    }
+
+    public Boolean getDestroy() {
+        return destroy;
+    }
+
     private String custid="notimpl";
     private String getCustId(){
         return custid;
