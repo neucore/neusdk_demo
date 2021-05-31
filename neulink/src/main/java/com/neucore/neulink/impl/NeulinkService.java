@@ -35,7 +35,7 @@ public class NeulinkService {
     private IMqttCallBack starMQTTCallBack;
     private Boolean inited = false;
     private Register register = null;
-    private Boolean destory = false;
+    private Boolean destroy = false;
 
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
@@ -232,14 +232,14 @@ public class NeulinkService {
         }
     }
 
-    public void diconnect(){
+    public void destroy(){
         mqttService.disconnect();
-        destory = true;
+        destroy = true;
         Log.i(TAG,"断开Mqtt Service");
     }
 
-    public Boolean getDestory() {
-        return destory;
+    public Boolean getDestroy() {
+        return destroy;
     }
 
     private String custid="notimpl";
