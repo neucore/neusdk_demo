@@ -85,7 +85,15 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 
     ```
-    
+
+## neulink服务退出
+
+```
+
+NeulinkService.getInstance().destroy();
+
+```
+
 ## 扩展实现（参考下列SampleXXXX）
     
     ```
