@@ -1,25 +1,29 @@
-package com.neucore.neulink.faceupld;
+package com.neucore.neulink.faceupld.v12;
 
 import com.google.gson.annotations.SerializedName;
 
-@Deprecated
-public class RecogInfo {
+public class RecogInfo12 {
     @SerializedName("recognized")
     private int recognized;
     @SerializedName("similarity_value")
     private String similarityValue;
-    @SerializedName("similarity_threshold")
-    private String similarityThreshold;
+
     @SerializedName("db_id")
     private String dbId;
     @SerializedName("ext_id")
     private String extId;
+
+    @SerializedName("level")
+    private int level;
     @SerializedName("name")
     private String name;
     @SerializedName("gender")
     private String gender;
     @SerializedName("birthday")
     private String birthday;
+
+    @SerializedName("feature_id")
+    private String featureId;
 
     public int getRecognized() {
         return recognized;
@@ -37,14 +41,6 @@ public class RecogInfo {
         this.similarityValue = similarityValue;
     }
 
-    public String getSimilarityThreshold() {
-        return similarityThreshold;
-    }
-
-    public void setSimilarityThreshold(String similarityThreshold) {
-        this.similarityThreshold = similarityThreshold;
-    }
-
     public String getDbId() {
         return dbId;
     }
@@ -59,6 +55,14 @@ public class RecogInfo {
 
     public void setExtId(String extId) {
         this.extId = extId;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public String getName() {
@@ -83,5 +87,13 @@ public class RecogInfo {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public String getFeatureId() {
+        return featureId;
+    }
+
+    public void setFeatureId(String featureId) {
+        this.featureId = featureId;
     }
 }
