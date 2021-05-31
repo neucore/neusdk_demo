@@ -3,6 +3,7 @@ package com.neucore.neulink.faceupld;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.ArgCmd;
 
+@Deprecated
 public class FaceUpload extends ArgCmd {
     @SerializedName("dev_id")
     private String deviceId;
