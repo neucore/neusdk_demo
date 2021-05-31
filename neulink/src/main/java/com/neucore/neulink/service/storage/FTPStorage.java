@@ -34,7 +34,7 @@ public class FTPStorage implements IStorage {
     //超时时间
     public int timeOut = 2;
     //被动模式开关 如果不开被动模式 有防火墙 可能会上传失败， 但被动模式需要ftp支持
-    public boolean enterLocalPassiveMode = false;
+    public boolean enterLocalPassiveMode = true;
 
     private FTPClient ftpClient = null;
 
@@ -49,15 +49,10 @@ public class FTPStorage implements IStorage {
 
         ftpClient = new FTPClient();
         //设置超时时间以毫秒为单位使用时，从数据连接读。
-        try {
-            ftpClient.setSoTimeout(readTimeOut);
-            ftpClient.setConnectTimeout(connectTimeOut);
-            ftpClient.setDataTimeout(readTimeOut);
-            ftpClient.setControlEncoding("utf-8");
-        } catch (SocketException e) {
-            Log.e("FTP",e.getMessage());
-        }
-
+        //ftpClient.enterLocalPassiveMode();
+        ftpClient.setConnectTimeout(connectTimeOut);
+        ftpClient.setDataTimeout(readTimeOut);
+        ftpClient.setControlEncoding("utf-8");
     }
 
     private boolean connect(){
