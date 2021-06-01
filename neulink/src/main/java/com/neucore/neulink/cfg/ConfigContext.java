@@ -44,6 +44,10 @@ public class ConfigContext {
     public final static String TOPIC_PARTITION = "Topic.Partition";
     public final static String LOG_LEVEL = "Log.Level";
 
+    public final static String CONN_TIME_OUT = "connectTimeOut";
+
+    public final static String READ_TIME_OUT = "readTimeOut";
+
     public final static String  UPLOAD_CHANNEL = "upload.channel";//0:mqtt;1:https【默认为mqtt】
 
     public final static String  MQTT_CHANNEL = "0";

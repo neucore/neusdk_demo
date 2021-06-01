@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 
+@Deprecated
 public class FTPStorage implements IStorage {
 
     private String server = "";

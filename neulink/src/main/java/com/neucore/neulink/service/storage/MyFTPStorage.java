@@ -33,8 +33,10 @@ public class MyFTPStorage implements IStorage {
         username = ConfigContext.getInstance().getConfig(ConfigContext.FTP_USER_NAME);
         password = ConfigContext.getInstance().getConfig(ConfigContext.FTP_PASSWORD);
         bucketName = ConfigContext.getInstance().getConfig(ConfigContext.FTP_BUCKET_NAME);
-        int connectTimeOut = ConfigContext.getInstance().getConfig("connectTimeOut",15*1000);
-        int readTimeOut = ConfigContext.getInstance().getConfig("readTimeOut",15*1000);
+
+        int connectTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.CONN_TIME_OUT,15*1000);
+
+        int readTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.READ_TIME_OUT,15*1000);
 
         FtpConfig config = new FtpConfig();
         config.setHost(server);
