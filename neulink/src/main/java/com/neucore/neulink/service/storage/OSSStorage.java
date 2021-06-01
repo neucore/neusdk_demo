@@ -23,8 +23,8 @@ public class OSSStorage implements IStorage {
                         ConfigContext.getInstance().getConfig("OSS.AccessKeySecret"));
         ClientConfiguration clientConfiguration = ClientConfiguration.getDefaultConf();
 
-        int connectTimeOut = ConfigContext.getInstance().getConfig("connectTimeOut",15*1000);
-        int readTimeOut = ConfigContext.getInstance().getConfig("readTimeOut",15*1000);
+        int connectTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.CONN_TIME_OUT,15*1000);
+        int readTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.READ_TIME_OUT,15*1000);
 
         clientConfiguration.setConnectionTimeout(connectTimeOut);
         clientConfiguration.setSocketTimeout(readTimeOut);
