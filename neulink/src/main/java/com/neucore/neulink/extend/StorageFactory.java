@@ -3,6 +3,7 @@ package com.neucore.neulink.extend;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.service.storage.FTPStorage;
+import com.neucore.neulink.service.storage.MyFTPStorage;
 import com.neucore.neulink.service.storage.OSSStorage;
 
 import java.util.Map;
@@ -10,24 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StorageFactory {
 
-
-    public final static String STORAGE_OSS = "OSS";
-
-    public final static String STORAGE_FTP = "FTP";
-
-    public final static String STORAGE_AWS = "AWS";
-
     private static Map<String,IStorage> storages = new ConcurrentHashMap<String, IStorage>();
 
     public static IStorage getInstance(){
 
         synchronized (StorageFactory.class){
             String type = ConfigContext.getInstance().getConfig("Storage.Type","OSS");
-            if(STORAGE_OSS.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
+            if(ConfigContext.STORAGE_OSS.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
                 storages.put(type.toUpperCase(),new OSSStorage());
             }
-            else if (STORAGE_FTP.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
-                storages.put(type.toUpperCase(),new FTPStorage());
+            else if (ConfigContext.STORAGE_FTP.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
+                storages.put(type.toUpperCase(),new MyFTPStorage());
+            }
+            else if (ConfigContext.STORAGE_MYFTP.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
+                storages.put(type.toUpperCase(),new MyFTPStorage());
             }
 //            else if (STORAGE_AWS.equalsIgnoreCase(type) && !storages.containsKey(type.toUpperCase())){
 //                storages.put(type.toUpperCase(),new AwsStorage());

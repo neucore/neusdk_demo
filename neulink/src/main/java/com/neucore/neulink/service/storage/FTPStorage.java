@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 
+@Deprecated
 public class FTPStorage implements IStorage {
 
     private String server = "";
@@ -224,7 +225,6 @@ public class FTPStorage implements IStorage {
     private boolean uploadFile(String ftpSavePath, String ftpSaveFileName, InputStream inputStream) {
         boolean flag = false;
         try {
-            connect();
             //第一次进来,将上传路径设置成相对路径
             if (ftpSavePath.startsWith("/")) {
                 ftpSavePath = ftpSavePath.substring(1);
@@ -244,6 +244,7 @@ public class FTPStorage implements IStorage {
             inputStream.close();
             ftpClient.logout();
         } catch (Exception e) {
+            e.printStackTrace();
             Log.e(e.getMessage(), e+"");
         } finally {
             if (ftpClient.isConnected()) {
@@ -281,7 +282,7 @@ public class FTPStorage implements IStorage {
             end = directory.indexOf("/", start);
             while (true) {
                 Log.e("FTP","所在的目录 :" + ftpClient.printWorkingDirectory());
-                String subDirectory = new String(remote.substring(start, end).getBytes("GBK"), "iso-8859-1");
+                String subDirectory = new String(remote.substring(start, end).getBytes("UTF-8"), "iso-8859-1");
                 if (!existFile(subDirectory)) {
                     if (makeDirectory(subDirectory)) {
                         if (!changeWorkingDirectory(subDirectory)) {
