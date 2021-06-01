@@ -183,13 +183,9 @@ public class MyApplication extends Application
 
             /**
              * 人脸上报
+             * 启用
              */
-            //new SampleFaceUpload().v10sample();
-
-            /**
-             * 人脸上报
-             */
-            //new SampleFaceUpload().v11sample();
+            //new SampleFaceUpload().v12sample();
         }
     };
 }
