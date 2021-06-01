@@ -12,4 +12,6 @@ public interface NeuLinkConstant {
 
     String V1$1 = "v1.1";
 
+    String V1$2 = "v1.2";
+
 }
