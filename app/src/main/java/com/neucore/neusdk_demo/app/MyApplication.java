@@ -4,9 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
@@ -20,11 +22,13 @@ import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
+import com.neucore.neusdk_demo.neulink.extend.SampleFaceUpload;
 
 import org.opencv.core.Mat;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 public class MyApplication extends Application
 {
@@ -53,18 +57,46 @@ public class MyApplication extends Application
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
+
+        /**
+         * FTP 实现
+         */
+        extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
+
+        extConfig.setProperty(ConfigContext.FTP_SERVER,"47.118.59.46");
         /**
          * ⚠️注意；http 通道启用时打开
          */
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         //extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
         SampleConnector register = new SampleConnector(this,callback,service,extConfig);
+        /**
+         * FTP 测试
+         */
+        new Thread(){
+            public void run(){
+                while (true){
+                    String requestId = UUID.randomUUID().toString();
+                    int index = 0;
+                    String path = "/sdcard/twocamera/photo/1.jpg";//待上传的图片路径
+                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
+                    //上传人脸图片至存储服务器上
+                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
+                    System.out.println(urlStr);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     public static Context getContext(){
