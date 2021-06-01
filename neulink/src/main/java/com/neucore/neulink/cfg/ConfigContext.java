@@ -19,6 +19,18 @@ import java.util.Properties;
 
 public class ConfigContext {
 
+    public final static String STORAGE_OSS = "OSS";
+
+    /**
+     * 过期
+     * @deprecated
+     */
+    public final static String STORAGE_FTP = "FTP";
+
+    public final static String STORAGE_MYFTP = "MyFTP";
+
+    public final static String STORAGE_AWS = "AWS";
+
     public final static String MQTT_SERVER = "MQTT-Server";
     public final static String STORAGE_TYPE = "Storage.Type";
     public final static String OSS_END_POINT = "OSS.EndPoint";
@@ -33,6 +45,11 @@ public class ConfigContext {
     public final static String LOG_LEVEL = "Log.Level";
 
     public final static String  UPLOAD_CHANNEL = "upload.channel";//0:mqtt;1:https【默认为mqtt】
+
+    public final static String  MQTT_CHANNEL = "0";
+
+    public final static String HTTP_CHANNEL = "1";
+
     public final static String REGIST_SERVER = "regist.server";
 
     public final static String DEVICE_TYPE = "device.type";
