@@ -200,15 +200,23 @@ public class SampleFaceUpload {
 
         FaceUpload12 faceUpload12 = new FaceUpload12();
 
+        faceUpload12.setPosition("In01");
+        faceUpload12.setChannel(0);
+        faceUpload12.setTimestamp(1592309303);
+        faceUpload12.setModule("face");
+        faceUpload12.setType(1);
+
         AIData12 aiData12 = new AIData12();
-        aiData12.setAtrrFlag(1);
+        aiData12.setDir("290b1000010e1200000337304e424e50/20200624/073828_71");
         aiData12.setBackground("background.jpg");
+
         aiData12.setDetectFlag(1);
         aiData12.setAtrrFlag(1);
         aiData12.setKeypointsFlag(1);
         aiData12.setRrFlag(1);
         aiData12.setRecogFlag(1);
         aiData12.setLive_flag(1);
+
         int faceNum = 1;
         aiData12.setFaceNum(faceNum);
 
@@ -229,6 +237,7 @@ public class SampleFaceUpload {
             faceRect12.setPointX(10);
             faceRect12.setWidth(100);
             faceRect12.setHeight(100);
+
             detectInfo12.setFaceRect12(faceRect12);
             detectInfo12.setIsAlive(1);
             detectInfo12.setTrackId(1);
@@ -240,7 +249,7 @@ public class SampleFaceUpload {
             recogInfo12.setRecognized(1);
             recogInfo12.setSimilarityValue("0.5736");
             recogInfo12.setDbId("72");
-            recogInfo12.setExtId("44034704");
+            recogInfo12.setExtId("1,44034704");//人脸下发时的exitId
             recogInfo12.setLevel(1);
             recogInfo12.setName("aoqi");
             recogInfo12.setGender("0");
