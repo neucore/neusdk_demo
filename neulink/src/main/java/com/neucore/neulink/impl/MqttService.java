@@ -10,6 +10,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class MqttService {
 
     private final String TAG = "MqttService";
@@ -189,8 +191,10 @@ public class MqttService {
      */
     public void close() {
         try {
-            client.unregisterResources();
-            client.close();
+            if(!ObjectUtil.isEmpty(client)){
+                client.unregisterResources();
+                client.close();
+            }
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
@@ -198,11 +202,13 @@ public class MqttService {
 
     public void disconnect(){
         try {
-            client.disconnect();
+            if(!ObjectUtil.isEmpty(client)){
+                client.disconnect();
+                close();
+            }
         } catch (MqttException e) {
             e.printStackTrace();
         }
-        close();
     }
     /**
      * 连接MQTT服务器

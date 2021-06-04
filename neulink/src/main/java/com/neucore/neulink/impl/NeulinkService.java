@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class NeulinkService {
 
     private static NeulinkService instance = new NeulinkService();
@@ -233,9 +235,11 @@ public class NeulinkService {
     }
 
     public void destroy(){
-        mqttService.disconnect();
-        destroy = true;
-        Log.i(TAG,"断开Mqtt Service");
+        if(!ObjectUtil.isEmpty(mqttService)){
+            mqttService.disconnect();
+            destroy = true;
+            Log.i(TAG,"断开Mqtt Service");
+        }
     }
 
     public Boolean getDestroy() {
