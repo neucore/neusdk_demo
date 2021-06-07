@@ -14,11 +14,12 @@ public abstract class AbsStorage {
      * @param deviceId
      * @return bucketName/appName/yyyy/mm/weekOfMonth/dayOfWeek/deviceId
      */
-    public String getDateFolder(String appName,String deviceId) {
+    protected String getDateFolder(String appName,String deviceId) {
 
         String[] retVal = new String[7];
 
         Calendar calendar = Calendar.getInstance();
+
         retVal[0] = getBucketName();
 
         retVal[1] = appName;
@@ -38,67 +39,7 @@ public abstract class AbsStorage {
         return String.format("%s/%s/%s/%s/%s/%s/%s",retVal,deviceId);
     }
 
-    /**
-     *
-     * @param requestId
-     * @return
-     */
-    public String getObjectBakKey(String requestId){
-
-        String path = getDateFolder("backups",getDeviceId());
-
-        return String.format("%s/%s",path,requestId);
-    }
-
-    /**
-     *
-     * @param requestId
-     * @return
-     */
-    public String getObjectQDataKey(String requestId){
-
-        String path = getDateFolder("qdatas",getDeviceId());
-
-        return String.format("%s/%s",path,requestId);
-    }
-
-    /**
-     *
-     * @param requestId
-     * @return
-     */
-    public String getObjectLogKey(String requestId){
-
-        String path = getDateFolder("logs",getDeviceId());
-
-        return String.format("%s/%s",path,requestId);
-    }
-
-    /**
-     *
-     * @param requestId
-     * @return backup/date/device_id/req_no/indexNum.json
-     */
-    public String getObjectImageKey(String requestId){
-
-        String path = getDateFolder("images",getDeviceId());
-
-        return String.format("%s/%s",path,requestId);
-    }
-
-    /**
-     *
-     * @param requestId
-     * @return datas/date/device_id/req_no/indexNum.json
-     */
-    public String getObjectDataKey(String requestId) {
-
-        String path = getDateFolder("datas",getDeviceId());
-
-        return String.format("%s/%s",path, requestId);
-    }
-
-    private String getDeviceId(){
+    protected String getDeviceId(){
         return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
     }
 
@@ -107,7 +48,7 @@ public abstract class AbsStorage {
      * @param path
      * @return xx.zip
      */
-    public String getName(String path){
+    protected String getName(String path){
         int idx = path.lastIndexOf("/");
         String name = path;
         if(idx!=-1){
@@ -118,39 +59,44 @@ public abstract class AbsStorage {
 
     public String uploadBak(String path, String requestId, int index) {
 
-        String name = getName(path);
-
-        String ftpSavePath = getObjectBakKey(requestId);
-
-        return uploadFile(ftpSavePath,name,path);
+        return upload("bkups",path,requestId,index);
     }
 
     public String uploadQData(String path, String requestId, int index) {
 
-        String name = getName(path);
-
-        String ftpSavePath = getObjectQDataKey(requestId);
-
-        return uploadFile(ftpSavePath,name,path);
+        return upload("qdatas",path,requestId,index);
     }
 
     public String uploadLog(String path, String requestId, int index) {
 
-        String name = getName(path);
-
-        String ftpSavePath = getObjectLogKey(requestId);
-
-        return uploadFile(ftpSavePath,name,path);
+        return upload("rlogs",path,requestId,index);
     }
 
     public String uploadImage(String path, String requestId, int index) {
 
+        return upload("images",path,requestId,index);
+    }
+
+    public String upload(String appName,String path, String requestId, int index) {
+
         String name = getName(path);
 
-        String ftpSavePath = getObjectImageKey(requestId);
+        String ftpSavePath = getObjectKey(appName,requestId);
 
         return uploadFile(ftpSavePath,name,path);
 
+    }
+
+    /**
+     * @param appName
+     * @param requestId
+     * @return datas/date/device_id/req_no/indexNum.json
+     */
+    protected String getObjectKey(String appName,String requestId) {
+
+        String path = getDateFolder(appName,getDeviceId());
+
+        return String.format("%s/%s",path, requestId);
     }
 
     protected abstract String uploadFile(String ftpSavePath, String ftpSaveFileName, String originFileName);
