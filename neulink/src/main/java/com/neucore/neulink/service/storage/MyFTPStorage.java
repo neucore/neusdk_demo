@@ -60,9 +60,14 @@ public class MyFTPStorage implements IStorage {
 
         String ftpSavePath = getObjectBakKey(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()),requestId,index,"");
 
-        uploadFile(bucketName+"/"+ftpSavePath,name,path);
+        boolean successed = uploadFile(bucketName+"/"+ftpSavePath,name,path);
 
-        return ftpSavePath+"/"+name;
+        if(successed){
+            return ftpSavePath+"/"+name;
+        }
+        else{
+            return null;
+        }
     }
 
     private String getObjectBakKey(String deviceId,String requestId,int index,String sufix){
@@ -80,9 +85,14 @@ public class MyFTPStorage implements IStorage {
 
         String ftpSavePath = getObjectQDataKey(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()),requestId,index,"");
 
-        uploadFile(bucketName+"/"+ftpSavePath,name,path);
+        boolean successed = uploadFile(bucketName+"/"+ftpSavePath,name,path);
 
-        return ftpSavePath+"/"+name;
+        if(successed){
+            return ftpSavePath+"/"+name;
+        }
+        else{
+            return null;
+        }
     }
 
     private String getObjectQDataKey(String deviceId,String requestId,int index,String sufix){
@@ -100,9 +110,15 @@ public class MyFTPStorage implements IStorage {
 
         String ftpSavePath = getObjectLogKey(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()),requestId,index,"");
 
-        uploadFile(bucketName+"/"+ftpSavePath,name,path);
 
-        return ftpSavePath+"/"+name;
+        boolean successed = uploadFile(bucketName+"/"+ftpSavePath,name,path);
+
+        if(successed){
+            return ftpSavePath+"/"+name;
+        }
+        else{
+            return null;
+        }
     }
     private String getObjectLogKey(String deviceId,String requestId,int index,String sufix){
         String dateString = DatesUtil.getDateString();
@@ -119,9 +135,14 @@ public class MyFTPStorage implements IStorage {
 
         String ftpSavePath = getObjectImageKey(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()),requestId,index,"");
 
-        uploadFile(bucketName+"/"+ftpSavePath,name,path);
+        boolean successed = uploadFile(bucketName+"/"+ftpSavePath,name,path);
 
-        return ftpSavePath+"/"+name;
+        if(successed){
+            return ftpSavePath+"/"+name;
+        }
+        else{
+            return null;
+        }
     }
 
     /**
