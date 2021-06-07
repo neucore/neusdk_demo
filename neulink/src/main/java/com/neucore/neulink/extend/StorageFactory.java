@@ -2,7 +2,6 @@ package com.neucore.neulink.extend;
 
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.service.storage.FTPStorage;
 import com.neucore.neulink.service.storage.MyFTPStorage;
 import com.neucore.neulink.service.storage.OSSStorage;
 
