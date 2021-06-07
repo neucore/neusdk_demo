@@ -1,6 +1,5 @@
 package com.neucore.neulink.service.storage;
 
-import com.neucore.neulink.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -8,7 +7,7 @@ import java.util.Calendar;
 
 public abstract class AbsStorage {
 
-    String bucketName = ConfigContext.getInstance().getConfig(ConfigContext.FTP_BUCKET_NAME);
+
     /**
      *
      * @param appName
@@ -20,7 +19,7 @@ public abstract class AbsStorage {
         String[] retVal = new String[7];
 
         Calendar calendar = Calendar.getInstance();
-        retVal[0] = bucketName;
+        retVal[0] = getBucketName();
 
         retVal[1] = appName;
 
@@ -155,4 +154,6 @@ public abstract class AbsStorage {
     }
 
     protected abstract String uploadFile(String ftpSavePath, String ftpSaveFileName, String originFileName);
+
+    protected abstract String getBucketName();
 }

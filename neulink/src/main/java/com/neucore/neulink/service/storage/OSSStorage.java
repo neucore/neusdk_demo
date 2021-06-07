@@ -70,4 +70,9 @@ public class OSSStorage extends AbsStorage implements IStorage {
         }
         return null;
     }
+
+    @Override
+    protected String getBucketName() {
+        return ConfigContext.getInstance().getConfig(ConfigContext.OSS_BUCKET_NAME);
+    }
 }
