@@ -76,4 +76,9 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
             return null;
         }
     }
+
+    @Override
+    protected String getBucketName() {
+        return ConfigContext.getInstance().getConfig(ConfigContext.FTP_BUCKET_NAME);
+    }
 }
