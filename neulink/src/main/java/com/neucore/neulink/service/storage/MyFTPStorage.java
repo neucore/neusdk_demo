@@ -18,6 +18,8 @@ import cn.hutool.extra.ftp.FtpMode;
 
 public class MyFTPStorage implements IStorage {
 
+    private String TAG = "MyFTPStorage";
+
     private String server = "";
 
     //ftp登录账号
@@ -170,10 +172,10 @@ public class MyFTPStorage implements IStorage {
         try {
             FileInputStream inputStream = new FileInputStream(new File(originFileName));
             flag = ftp.upload(ftpSavePath, ftpSaveFileName, inputStream);
-
         } catch (Exception e) {
-            Log.e("------------>", e.getMessage() + "  " + e);
+            Log.e(TAG, e.getMessage() + "  " + e);
         }
+        Log.i(TAG,"uploadFile: "+flag);
         return flag;
     }
 }
