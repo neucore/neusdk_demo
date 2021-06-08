@@ -1,8 +1,6 @@
 package com.neucore.neulink.rmsg;
 
-import com.neucore.neulink.impl.ArgCmd;
-
-public class RebootCmd extends ArgCmd {
+public class RebootCmd extends ShellCmd {
 
     public RebootCmd(){
         cmdStr = "reboot";

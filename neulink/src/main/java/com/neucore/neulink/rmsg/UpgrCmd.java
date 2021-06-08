@@ -1,12 +1,9 @@
-package com.neucore.neulink.upd;
+package com.neucore.neulink.rmsg;
 
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.ArgCmd;
 
-import java.io.File;
-
-public class UgrdeCmd extends ArgCmd {
-
+public class UpgrCmd extends ArgCmd {
     @SerializedName("vinfo")
     private String vinfo;
 
@@ -16,7 +13,9 @@ public class UgrdeCmd extends ArgCmd {
     @SerializedName("md5")
     private String md5;
 
-    private File localFile;
+    public UpgrCmd(){
+        this.cmdStr = "upgrade";
+    }
 
     public String getVinfo() {
         return vinfo;
@@ -40,13 +39,5 @@ public class UgrdeCmd extends ArgCmd {
 
     public void setMd5(String md5) {
         this.md5 = md5;
-    }
-
-    public File getLocalFile() {
-        return localFile;
-    }
-
-    public void setLocalFile(File localFile) {
-        this.localFile = localFile;
     }
 }
