@@ -166,15 +166,15 @@ public class MyApplication extends Application
             /**
              * 算法升级 扩展
              */
-            ListenerFactory.getInstance().setHibrateListener(new AlogUpgrdActionListener());
+            ListenerFactory.getInstance().setAlogListener(new AlogUpgrdActionListener());
 
             /**
              * APK 升级扩展
              */
-            ListenerFactory.getInstance().setHibrateListener(new ApkUpgrdActionListener());
+            ListenerFactory.getInstance().setApkListener(new ApkUpgrdActionListener());
 
             /**
-             *
+             * 备份实现
              */
             ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
 
