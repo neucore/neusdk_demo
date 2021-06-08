@@ -153,14 +153,17 @@ public class NeuHttpHelper{
 		if(toDir==null){
 			toDir = new File(DeviceUtils.getTmpPath(context));
 		}
-
+		String pathStr = toDir+File.separator+reqId+File.separator;
+		File path = new File(pathStr);
+		path.mkdirs();
 		String fileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);
-
-		new File(toDir+File.separator+reqId+File.separator).mkdirs();
-		fileName = toDir+File.separator+reqId+File.separator+fileName;
-		Log.d(TAG,"下载文件:"+fileName);
-		tmpFile = new File(fileName);
-		tmpFile.createNewFile();
+		int index = fileName.indexOf(".");
+		if(index!=-1){
+			String prefix = fileName.substring(0,index);
+			String suffix = fileName.substring(index+1);
+			tmpFile = File.createTempFile(prefix,suffix,path);
+			tmpFile.deleteOnExit();
+		}
 		Log.d(TAG,"本地文件名："+tmpFile.getAbsolutePath());
 
 		Response response = null;
