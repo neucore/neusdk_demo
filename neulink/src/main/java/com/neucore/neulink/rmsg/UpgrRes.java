@@ -3,12 +3,12 @@ package com.neucore.neulink.rmsg;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.CmdRes;
 
-public class FirwareUpgrRes extends CmdRes {
+public class UpgrRes extends CmdRes {
 
     @SerializedName("vinfo")
     private String vinfo;
 
-    public FirwareUpgrRes(){
+    public UpgrRes(){
         this.cmdStr = "upgrade";
     }
 
