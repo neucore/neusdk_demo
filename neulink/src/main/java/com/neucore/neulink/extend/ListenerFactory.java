@@ -2,18 +2,9 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
-import com.neucore.neulink.bak.BackupCmd;
 import com.neucore.neulink.cfg.CfgCmd;
 import com.neucore.neulink.cfg.CfgItem;
 import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.check.CheckCmd;
-import com.neucore.neulink.recv.RecoverCmd;
-import com.neucore.neulink.rmsg.AwakenCmd;
-import com.neucore.neulink.rmsg.ApkUpgrCmd;
-import com.neucore.neulink.rmsg.HibrateCmd;
-import com.neucore.neulink.rmsg.app.AlogUpgrCmd;
-import com.neucore.neulink.rrpc.FaceCmd;
-import com.neucore.neulink.rrpc.TLibQueryCmd;
 import com.neucore.neulink.service.device.IDeviceService;
 import com.neucore.neulink.service.device.DeviceServiceImpl;
 
