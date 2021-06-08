@@ -9,6 +9,7 @@ import com.neucore.neulink.msg.NeulinkZone;
 import com.neucore.neulink.msg.ResRegist;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
@@ -22,6 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
@@ -86,6 +88,7 @@ public class NeulinkService {
                 mqttService.connect();
                 Log.d(TAG,"mqtt server："+serverUri + "， 连接成功");
                 inited = true;
+                new HouseKeeping().start();
             }
         }
     }
@@ -341,5 +344,30 @@ public class NeulinkService {
             // 失去连接，重连
         }
     };
+
+    class HouseKeeping extends Thread{
+        public void run(){
+            while (!destroy){
+                String tempDir = DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext());
+                File[] files = new File(tempDir).listFiles();
+                /**
+                 * 三小时之前的数据
+                 */
+                long time = System.currentTimeMillis()-3*60*60*1000;
+                if(files!=null){
+                    for (File file:files) {
+                        if(file.lastModified()>=time){
+                            file.delete();
+                            Log.i(TAG,file.getAbsolutePath()+"清除掉");
+                        }
+                    }
+                }
+                try {
+                    Thread.currentThread().sleep(60*60*1000);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
 
 }
