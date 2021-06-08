@@ -26,8 +26,8 @@ public class ArgCmd extends Cmd{
             for (String arg:args) {
                 int idx = arg.indexOf("=");
                 if(idx!=-1){
-                    String key = arg.substring(0,idx-1);
-                    String value = arg.substring(idx);
+                    String key = arg.substring(0,idx);
+                    String value = arg.substring(idx+1);
                     map.put(key,value);
                 }
                 else{
