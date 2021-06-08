@@ -11,6 +11,7 @@ import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.upd.UgrdeCmd;
 import com.neucore.neulink.upd.UgrdeCmdRes;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
@@ -50,8 +51,9 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             throw new RuntimeException(ex);
         }
         finally {
-            if(srcFile==null){
-                srcFile.delete();
+
+            if(srcFile!=null){
+                FileUtils.delete(srcFile.getAbsolutePath());
             }
         }
     }
