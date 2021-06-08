@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.faceupld.FaceInfo;
@@ -9,6 +10,8 @@ import com.neucore.neulink.faceupld.v12.FaceRect12;
 import com.neucore.neulink.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
+
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * sdk应用信息上报接口：主要包括车牌上报、体温上报、人脸信息上报
@@ -109,18 +112,31 @@ public class NeulinkPublisherFacde {
      * @param info 人脸识别信息
      */
     public void upldFaceInfo$1$2(String url, FaceUpload12 info){
+        if(!ObjectUtil.isEmpty(url)){
+            int index = url.lastIndexOf("/");
+            if(index!=-1){
+                String dir =url.substring(0,index);
+                if(!ObjectUtil.isEmpty(dir)){
+                    info.setDeviceId(DeviceUtils.getDeviceId(context));
 
-        int index = url.lastIndexOf("/");
-        String dir =url.substring(0,index);
+                    if (info.getAiData()!=null){
+                        info.getAiData().setDir(dir);
+                    }
 
-        info.setDeviceId(DeviceUtils.getDeviceId(context));
-
-        if (info.getAiData()!=null){
-            info.getAiData().setDir(dir);
+                    String payload = JSonUtils.toString(info);
+                    String topic = "upld/req/faceinfo/"+info.getDeviceId();
+                    service.publishMessage(topic, IProcessor.V1$2, payload, 0);
+                }
+                else{
+                    Log.i(TAG,String.format("url=%s",url));
+                }
+            }
+            else {
+                Log.i(TAG,String.format("url=%s",url));
+            }
         }
-
-        String payload = JSonUtils.toString(info);
-        String topic = "upld/req/faceinfo/"+info.getDeviceId();
-        service.publishMessage(topic, IProcessor.V1$2, payload, 0);
+        else {
+            Log.i(TAG,"url为空");
+        }
     }
 }

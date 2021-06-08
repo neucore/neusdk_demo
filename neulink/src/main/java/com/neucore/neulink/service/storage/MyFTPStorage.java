@@ -61,10 +61,11 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
     @Override
     protected String uploadFile(String savePath, String saveFileName, String originFileName){
         boolean successed = false;
-        String url = savePath+"/"+saveFileName;
+        String url = null;
         try {
             FileInputStream inputStream = new FileInputStream(new File(originFileName));
             successed = ftp.upload(savePath, saveFileName, inputStream);
+            url = savePath+"/"+saveFileName;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage() + "  " + e);
         }
