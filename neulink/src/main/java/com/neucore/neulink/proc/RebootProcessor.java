@@ -6,16 +6,17 @@ import android.os.PowerManager;
 
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.ArgCmd;
-import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.rmsg.RebootCmd;
+import com.neucore.neulink.rmsg.RebootRes;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.ShellExecutor;
 
 import java.util.Map;
 
-public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String>> {
+public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,String>> {
 
     private PowerManager pm =null;
     PowerManager.WakeLock wakeLock = null;
@@ -25,7 +26,7 @@ public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
         super(context);
     }
     @Override
-    public Map<String,String> process(NeulinkTopicParser.Topic topic, ArgCmd cmd) {
+    public Map<String,String> process(NeulinkTopicParser.Topic topic, RebootCmd cmd) {
         try {
             return ShellExecutor.run(this.getContext(), cmd.toArrays());
         }
@@ -35,13 +36,13 @@ public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
     }
 
     @Override
-    public ArgCmd parser(String payload) {
-        return (ArgCmd) JSonUtils.toObject(payload, ArgCmd.class);
+    public RebootCmd parser(String payload) {
+        return (RebootCmd) JSonUtils.toObject(payload, ArgCmd.class);
     }
 
     @Override
-    protected CmdRes responseWrapper(ArgCmd cmd, Map<String, String> result) {
-        CmdRes res = new CmdRes();
+    protected RebootRes responseWrapper(RebootCmd cmd, Map<String, String> result) {
+        RebootRes res = new RebootRes();
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(200);
@@ -50,8 +51,8 @@ public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
     }
 
     @Override
-    protected CmdRes fail(ArgCmd cmd, String error) {
-        CmdRes res = new CmdRes();
+    protected RebootRes fail(RebootCmd cmd, String error) {
+        RebootRes res = new RebootRes();
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(500);
@@ -60,8 +61,8 @@ public class RebootProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
     }
 
     @Override
-    protected CmdRes fail(ArgCmd cmd,int code, String error) {
-        CmdRes res = new CmdRes();
+    protected RebootRes fail(RebootCmd cmd,int code, String error) {
+        RebootRes res = new RebootRes();
         res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);

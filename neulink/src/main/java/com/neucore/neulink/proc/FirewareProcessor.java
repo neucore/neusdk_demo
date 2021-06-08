@@ -39,7 +39,8 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             if(listener==null){
                 throw new NeulinkException(404,"apk Listener does not implemention");
             }
-            listener.doAction(new NeulinkEvent(srcFile));
+            cmd.setLocalFile(srcFile);
+            listener.doAction(new NeulinkEvent(cmd));
             return "success";
         }
         catch (NeulinkException ex){
