@@ -22,13 +22,17 @@ public class ArgCmd extends Cmd{
         Map<String,String> map = new HashMap<>();
         String[] args = getArgs();
         if(args!=null&&args.length>0){
+            int i = 0;
             for (String arg:args) {
-                String[] kv = arg.split("=");
-                if(kv.length>1){
-                    map.put(kv[0],kv[1]);
+                int idx = arg.indexOf("=");
+                if(idx!=-1){
+                    String key = arg.substring(0,idx-1);
+                    String value = arg.substring(idx);
+                    map.put(key,value);
                 }
                 else{
-                    map.put(kv[0],kv[0]);
+                    map.put(String.valueOf(i),arg);
+                    i++;
                 }
             }
         }
