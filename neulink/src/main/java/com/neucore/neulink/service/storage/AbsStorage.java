@@ -14,7 +14,7 @@ public abstract class AbsStorage {
      * @param deviceId
      * @return bucketName/appName/yyyy/mm/weekOfMonth/dayOfWeek/deviceId
      */
-    protected String getDateFolder(String appName,String deviceId) {
+    protected String getDateFolder(String appName,String deviceId,String requestId) {
 
         //String[] retVal = new String[7];
 
@@ -28,7 +28,7 @@ public abstract class AbsStorage {
 
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        return String.format("%s/%s/%s/%s/%s/%s/%s",getBucketName(),appName,year,month,week,day,deviceId);
+        return String.format("%s/%s/%s/%s/%s/%s/%s/%s",getBucketName(),appName,year,month,week,day,deviceId,requestId);
     }
 
     protected String getDeviceId(){
@@ -73,22 +73,10 @@ public abstract class AbsStorage {
 
         String name = getName(path);
 
-        String ftpSavePath = getObjectKey(appName,requestId);
+        String ftpSavePath = getDateFolder(appName,requestId,requestId);
 
         return uploadFile(ftpSavePath,name,path);
 
-    }
-
-    /**
-     * @param appName
-     * @param requestId
-     * @return datas/date/device_id/req_no/indexNum.json
-     */
-    protected String getObjectKey(String appName,String requestId) {
-
-        String path = getDateFolder(appName,getDeviceId());
-
-        return String.format("%s/%s",path, requestId);
     }
 
     protected abstract String uploadFile(String ftpSavePath, String ftpSaveFileName, String originFileName);
