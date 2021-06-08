@@ -25,8 +25,8 @@ public class OSSStorage extends AbsStorage implements IStorage {
 
     private static OSS getOSSClient() {
         OSSCredentialProvider credentialProvider =
-                new OSSPlainTextAKSKCredentialProvider(ConfigContext.getInstance().getConfig("OSS.AccessKeyID") ,
-                        ConfigContext.getInstance().getConfig("OSS.AccessKeySecret"));
+                new OSSPlainTextAKSKCredentialProvider(ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_ID) ,
+                        ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_SECRET));
         ClientConfiguration clientConfiguration = ClientConfiguration.getDefaultConf();
 
         int connectTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.CONN_TIME_OUT,15*1000);
@@ -35,7 +35,7 @@ public class OSSStorage extends AbsStorage implements IStorage {
         clientConfiguration.setConnectionTimeout(connectTimeOut);
         clientConfiguration.setSocketTimeout(readTimeOut);
 
-        return new OSSClient(ContextHolder.getInstance().getContext(), ConfigContext.getInstance().getConfig("OSS.EndPoint"), credentialProvider, clientConfiguration);
+        return new OSSClient(ContextHolder.getInstance().getContext(), ConfigContext.getInstance().getConfig(ConfigContext.OSS_END_POINT), credentialProvider, clientConfiguration);
     }
 
     /**
@@ -53,14 +53,14 @@ public class OSSStorage extends AbsStorage implements IStorage {
             String objectKey = savePath + "/" + saveFileName;
 
             PutObjectRequest request =
-                    new PutObjectRequest(ConfigContext.getInstance().getConfig("OSS.BucketName"),
+                    new PutObjectRequest(ConfigContext.getInstance().getConfig(ConfigContext.OSS_BUCKET_NAME),
                             objectKey, originFileName);
             //得到client
             OSS client = getOSSClient();
             //上传获取结果
             PutObjectResult result = client.putObject(request);
             //获取可访问的url
-            String url = client.presignPublicObjectURL(ConfigContext.getInstance().getConfig("OSS.BucketName"), objectKey);
+            String url = client.presignPublicObjectURL(ConfigContext.getInstance().getConfig(ConfigContext.OSS_BUCKET_NAME), objectKey);
             //格式打印输出
             //MyLog.e(String.format("PublicObjectURL:%s", url));
             return url;
