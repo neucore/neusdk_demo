@@ -16,27 +16,19 @@ public abstract class AbsStorage {
      */
     protected String getDateFolder(String appName,String deviceId) {
 
-        String[] retVal = new String[7];
+        //String[] retVal = new String[7];
 
         Calendar calendar = Calendar.getInstance();
 
-        retVal[0] = getBucketName();
-
-        retVal[1] = appName;
-
         int year = calendar.get(Calendar.YEAR);
-        retVal[2] = String.valueOf(year);
 
         int month = calendar.get(Calendar.MONTH)+1;
-        retVal[3] = String.valueOf(month);
 
         int week = calendar.get(Calendar.WEEK_OF_MONTH);
-        retVal[4] = String.valueOf(week);
 
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-        retVal[5] = String.valueOf(day);
 
-        return String.format("%s/%s/%s/%s/%s/%s/%s",retVal,deviceId);
+        return String.format("%s/%s/%s/%s/%s/%s/%s",getBucketName(),appName,year,month,week,day,deviceId);
     }
 
     protected String getDeviceId(){

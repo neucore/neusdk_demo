@@ -79,24 +79,26 @@ public class MyApplication extends Application
         /**
          * FTP 测试
          */
-//        new Thread(){
-//            public void run(){
-//                while (true){
-//                    String requestId = UUID.randomUUID().toString();
-//                    int index = 0;
-//                    String path = "/sdcard/twocamera/photo/1.jpg";//待上传的图片路径
-//                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
-//                    //上传人脸图片至存储服务器上
-//                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
-//                    System.out.println(urlStr);
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }.start();
+        new Thread(){
+            public void run(){
+                int count = 0;
+                while (count<10){
+                    String requestId = UUID.randomUUID().toString();
+                    int index = 0;
+                    String path = "/sdcard/twocamera/photo/1593339437914.jpg";//待上传的图片路径
+                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
+                    //上传人脸图片至存储服务器上
+                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
+                    System.out.println(urlStr);
+                    count++;
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     public static Context getContext(){
