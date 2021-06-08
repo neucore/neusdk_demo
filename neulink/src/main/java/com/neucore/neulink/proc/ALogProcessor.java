@@ -43,7 +43,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
             throw new RuntimeException(ex);
         }
         finally {
-            if(srcFile==null){
+            if(srcFile!=null){
                 srcFile.delete();
             }
         }
