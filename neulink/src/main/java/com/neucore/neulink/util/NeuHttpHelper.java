@@ -159,8 +159,8 @@ public class NeuHttpHelper{
 		String fileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);
 		int index = fileName.indexOf(".");
 		if(index!=-1){
-			String prefix = fileName.substring(0,index);
-			String suffix = fileName.substring(index+1);
+			String prefix = "neutemp-";
+			String suffix = fileName.substring(index);
 			tmpFile = File.createTempFile(prefix,suffix,path);
 			tmpFile.deleteOnExit();
 		}
