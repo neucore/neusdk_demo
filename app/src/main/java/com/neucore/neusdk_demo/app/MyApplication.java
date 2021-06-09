@@ -6,10 +6,9 @@ import android.content.Context;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
-import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.StorageFactory;
-import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
@@ -22,11 +21,7 @@ import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
-import com.neucore.neusdk_demo.neulink.extend.SampleFaceUpload;
 
-import org.opencv.core.Mat;
-
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 

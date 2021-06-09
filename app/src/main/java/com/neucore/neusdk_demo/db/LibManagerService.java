@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.neucore.neusdk_demo.db.bean.LicNumber;
 import com.neucore.neusdk_demo.db.bean.User;
-import com.neucore.neulink.rrpc.FaceData;
+import com.neucore.neulink.cmd.rrpc.FaceData;
 
 import java.util.ArrayList;
 import java.util.List;

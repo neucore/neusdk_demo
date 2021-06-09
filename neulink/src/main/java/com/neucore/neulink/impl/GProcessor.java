@@ -5,20 +5,13 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.bak.BackupCmd;
 import com.neucore.neulink.extend.ICmdListener;
-import com.neucore.neulink.extend.ListenerFactory;
-import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
-import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> implements IProcessor {
 

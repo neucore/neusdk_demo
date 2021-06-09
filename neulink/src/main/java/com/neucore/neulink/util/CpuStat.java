@@ -3,8 +3,6 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.upd.TrafficUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
