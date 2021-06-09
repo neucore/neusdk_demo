@@ -41,6 +41,13 @@ public class ListenerFactory {
             return new Result();
         }
     };
+    private ICmdListener<Result> reserveListener = new ICmdListener<Result>() {
+        @Override
+        public Result doAction(NeulinkEvent event) {
+            Log.i(TAG,"device reserve implements need to by replace ");
+            return new Result();
+        }
+    };
 
     private ICmdListener<Result> cfgListener = new ICmdListener<Result>() {
         public Result doAction(NeulinkEvent event) {
@@ -121,9 +128,6 @@ public class ListenerFactory {
     public ICmdListener<Result> getAwakenListener(){
         return awakenListener;
     }
-    public ICmdListener getHibrateListener(){
-        return hibrateListener;
-    }
 
     public ICmdListener<Result> getCfgListener() {
         return cfgListener;
@@ -149,8 +153,20 @@ public class ListenerFactory {
         this.awakenListener = awakenListener;
     }
 
+    public ICmdListener getHibrateListener(){
+        return hibrateListener;
+    }
+
     public void setHibrateListener(ICmdListener hibrateListener) {
         this.hibrateListener = hibrateListener;
+    }
+
+    public ICmdListener getReserveListener(){
+        return reserveListener;
+    }
+
+    public void setReserveListener(ICmdListener reserveListener) {
+        this.reserveListener = reserveListener;
     }
 
     public ICmdListener<UpdateResult> getFaceListener() {
