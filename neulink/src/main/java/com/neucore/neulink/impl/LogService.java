@@ -21,7 +21,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.DeviceUtils;
 
 import java.io.BufferedReader;

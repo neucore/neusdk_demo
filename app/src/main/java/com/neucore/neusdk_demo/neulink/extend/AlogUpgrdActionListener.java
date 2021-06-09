@@ -3,7 +3,6 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.rmsg.AdjustCmd;
 
 import java.io.File;
 
