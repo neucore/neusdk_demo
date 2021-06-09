@@ -1,15 +1,14 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.bak.BackupCmd;
-import com.neucore.neulink.bak.BackupItem;
-import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.cmd.bak.BackupItem;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryResult;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeuLinkConstant;
-import com.neucore.neulink.recv.RecoverCmd;
+import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;

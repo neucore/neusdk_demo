@@ -2,11 +2,11 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
-import com.neucore.neulink.cfg.CfgCmd;
-import com.neucore.neulink.cfg.CfgItem;
-import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.service.device.IDeviceService;
-import com.neucore.neulink.service.device.DeviceServiceImpl;
+import com.neucore.neulink.cmd.cfg.CfgCmd;
+import com.neucore.neulink.cmd.cfg.CfgItem;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.service.device.IDeviceService;
+import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 
 import java.util.Map;
 

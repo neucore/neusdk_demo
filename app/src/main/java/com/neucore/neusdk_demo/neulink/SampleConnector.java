@@ -12,11 +12,10 @@ import android.util.Log;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
-import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.LogService;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.util.Properties;
 

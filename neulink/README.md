@@ -4,7 +4,9 @@
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$cpu_sn/#、rrpc/req/$cpu_sn/#、upld/res/$cpu_sn/#】订阅;
 
-1，实现IProcessor接口，放到com.neucore.neulink.proc包内，eg：xxxProcessor
+1，实现payload的pojo对象，放到
+
+1，实现IProcessor接口，放到com.neucore.neulink.impl.proc包内，eg：xxxProcessor
 
 2，在xxxProcessor的process方法中处理，及集成外部扩展机制；具体可以参考ALogProcessor的实现
 
