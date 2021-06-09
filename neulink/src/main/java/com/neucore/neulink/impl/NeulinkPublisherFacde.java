@@ -4,13 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.faceupld.FaceInfo;
-import com.neucore.neulink.faceupld.FaceUpload;
-import com.neucore.neulink.faceupld.v12.FaceRect12;
-import com.neucore.neulink.faceupld.v12.FaceUpload12;
-import com.neucore.neulink.lic.LicUpldCmd;
-import com.neucore.neulink.tmptr.FaceTemp;
-import com.neucore.neulink.tmptr.FaceTempCmd;
+import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
+import com.neucore.neulink.cmd.lic.LicUpldCmd;
+import com.neucore.neulink.cmd.tmptr.FaceTemp;
+import com.neucore.neulink.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 

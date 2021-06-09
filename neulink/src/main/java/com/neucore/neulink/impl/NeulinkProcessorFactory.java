@@ -3,21 +3,21 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.proc.ALogProcessor;
-import com.neucore.neulink.proc.AwakenProcessor;
-import com.neucore.neulink.proc.BLibProcessor;
-import com.neucore.neulink.proc.BackupProcessor;
-import com.neucore.neulink.proc.CfgProcessor;
-import com.neucore.neulink.proc.CheckProcessor;
-import com.neucore.neulink.proc.DebugProcessor;
-import com.neucore.neulink.proc.FirewareProcessor;
-import com.neucore.neulink.proc.HibrateProcessor;
-import com.neucore.neulink.proc.QCfgProcessor;
-import com.neucore.neulink.proc.QLibProcessor;
-import com.neucore.neulink.proc.QLogProcessor;
-import com.neucore.neulink.proc.RebootProcessor;
-import com.neucore.neulink.proc.RecoverProcessor;
-import com.neucore.neulink.proc.ShellProcessor;
+import com.neucore.neulink.impl.proc.ALogProcessor;
+import com.neucore.neulink.impl.proc.AwakenProcessor;
+import com.neucore.neulink.impl.proc.BLibProcessor;
+import com.neucore.neulink.impl.proc.BackupProcessor;
+import com.neucore.neulink.impl.proc.CfgProcessor;
+import com.neucore.neulink.impl.proc.CheckProcessor;
+import com.neucore.neulink.impl.proc.DebugProcessor;
+import com.neucore.neulink.impl.proc.FirewareProcessor;
+import com.neucore.neulink.impl.proc.HibrateProcessor;
+import com.neucore.neulink.impl.proc.QCfgProcessor;
+import com.neucore.neulink.impl.proc.QLibProcessor;
+import com.neucore.neulink.impl.proc.QLogProcessor;
+import com.neucore.neulink.impl.proc.RebootProcessor;
+import com.neucore.neulink.impl.proc.RecoverProcessor;
+import com.neucore.neulink.impl.proc.ShellProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 

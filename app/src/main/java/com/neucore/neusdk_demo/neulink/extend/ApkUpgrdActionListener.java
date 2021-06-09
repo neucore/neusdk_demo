@@ -3,7 +3,7 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.upd.UgrdeCmd;
+import com.neucore.neulink.cmd.upd.UgrdeCmd;
 
 import java.io.File;
 import java.util.Map;

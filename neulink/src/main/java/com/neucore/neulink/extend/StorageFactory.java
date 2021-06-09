@@ -1,9 +1,9 @@
 package com.neucore.neulink.extend;
 
 import com.neucore.neulink.IStorage;
-import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.service.storage.MyFTPStorage;
-import com.neucore.neulink.service.storage.OSSStorage;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.service.storage.MyFTPStorage;
+import com.neucore.neulink.impl.service.storage.OSSStorage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

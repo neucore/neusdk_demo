@@ -13,9 +13,9 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.msg.DiskInfo;
-import com.neucore.neulink.msg.SDInfo;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.cmd.msg.DiskInfo;
+import com.neucore.neulink.cmd.msg.SDInfo;
 
 import java.io.BufferedReader;
 import java.io.File;

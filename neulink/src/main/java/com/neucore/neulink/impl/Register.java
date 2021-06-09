@@ -9,11 +9,11 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.cfg.ConfigContext;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
-import com.neucore.neulink.msg.DeviceInfo;
-import com.neucore.neulink.msg.MiscInfo;
-import com.neucore.neulink.msg.SoftVInfo;
+import com.neucore.neulink.cmd.msg.DeviceInfo;
+import com.neucore.neulink.cmd.msg.MiscInfo;
+import com.neucore.neulink.cmd.msg.SoftVInfo;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.MacHelper;
