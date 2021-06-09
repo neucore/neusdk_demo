@@ -17,6 +17,7 @@ import com.neucore.neulink.proc.QLibProcessor;
 import com.neucore.neulink.proc.QLogProcessor;
 import com.neucore.neulink.proc.RebootProcessor;
 import com.neucore.neulink.proc.RecoverProcessor;
+import com.neucore.neulink.proc.ReserveProcessor;
 import com.neucore.neulink.proc.ShellProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,6 +100,9 @@ public class NeulinkProcessorFactory {
         }
         else if("check".equalsIgnoreCase(topic.getBiz())){//数据校验处理器
             processors.put(topic.getBiz(),new CheckProcessor(context));
+        }
+        else if("reserve".equalsIgnoreCase(topic.getBiz())){//数据校验处理器
+            processors.put(topic.getBiz(),new ReserveProcessor(context));
         }
         return processors.get(topic.getBiz());
 
