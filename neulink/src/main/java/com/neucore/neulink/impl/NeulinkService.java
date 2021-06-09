@@ -4,12 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.cfg.ConfigContext;
-import com.neucore.neulink.msg.NeulinkZone;
-import com.neucore.neulink.msg.ResRegist;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.cmd.msg.NeulinkZone;
+import com.neucore.neulink.cmd.msg.ResRegist;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
