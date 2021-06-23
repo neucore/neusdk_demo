@@ -39,7 +39,7 @@ public class SampleFaceUpload {
         String requestId = UUID.randomUUID().toString();
         int index = 0;
 
-        String path = "/sdcard/twocamera/icon/1593399670069.jpg";//待上传的图片路径
+        String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
         //图片上传【FTP】
         //调整配置Storage.Type=FTP
         IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]

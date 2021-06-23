@@ -73,7 +73,7 @@ public abstract class AbsStorage {
 
         String name = getName(path);
 
-        String ftpSavePath = getDateFolder(appName,requestId,requestId);
+        String ftpSavePath = getDateFolder(appName,getDeviceId(),requestId);
 
         return uploadFile(ftpSavePath,name,path);
 

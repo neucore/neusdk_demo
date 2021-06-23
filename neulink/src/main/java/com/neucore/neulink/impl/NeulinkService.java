@@ -7,6 +7,7 @@ import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
+import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -43,6 +44,7 @@ public class NeulinkService {
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
     private String defaultServerUri,newServiceUri,registServer,neulinkServer;
+    private UdpReceiveAndtcpSend udpReceiveAndtcpSend;
     public static NeulinkService getInstance(){
         return instance;
     }
@@ -52,6 +54,7 @@ public class NeulinkService {
     public void buildMqttService(String serverUri) {
         this.defaultServerUri = serverUri;
         Context context = ContextHolder.getInstance().getContext();
+        udpReceiveAndtcpSend = new UdpReceiveAndtcpSend();
         register = new Register(context,this,serverUri);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
@@ -61,7 +64,7 @@ public class NeulinkService {
 
         synchronized (inited){
             if(!inited){
-
+                udpReceiveAndtcpSend.start();
                 mqttService = new MqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)

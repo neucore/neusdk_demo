@@ -3,19 +3,22 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.cmd.rmsg.UpgrRes;
+import com.neucore.neulink.cmd.upd.UgrdeCmd;
+import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.cmd.upd.UgrdeCmd;
-import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
 import com.neucore.neulink.impl.service.resume.DownloadProgressListener;
 import com.neucore.neulink.impl.service.resume.FileDownloader;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
@@ -25,27 +28,36 @@ import java.util.Map;
 /**
  * NeuSDK升级/或者固件升级
  */
-public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> {
+public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> {
 
-    public FirewareProcessor(Context context){
+    public FirewareProcessorResume(Context context){
         super(context);
     }
     @Override
-    public String process(NeulinkTopicParser.Topic topic, UgrdeCmd cmd) {
+    public String process(final NeulinkTopicParser.Topic topic, UgrdeCmd cmd) {
         String[] cmds = null;
         Map<String, String> result = null;
         File srcFile = null;
         try {
-            String upgrade_url = cmd.getUrl();
+            final String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
 
-            srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url);
-
+            final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId()), 3);
+            downloader.download(new DownloadProgressListener() {
+                @Override
+                public void onDownloadSize(int size) {
+                    long total = downloader.getFileSize();
+                    int progress = (int) (size/total);
+                    String payload = null;
+                    String md5 = MD5Utils.getInstance().getMD5String(payload);
+                    String resTopic = String.format("rrpc/res/",topic.getBiz());
+                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),progress);
+                }
+            });
             ICmdListener listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"apk Listener does not implemention");
             }
-
             cmd.setLocalFile(srcFile);
             listener.doAction(new NeulinkEvent(cmd));
             return "success";

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'org.greenrobot.greendao'//添加
+apply plugin: 'org.greenrobot.greendao'//添加
 apply plugin: 'android-aspectjx'
 
 android {
@@ -29,10 +29,10 @@ android {
     }
 
 }
-//greendao {
-//    schemaVersion 7
-//    daoPackage 'com.neucore.greendao.gen'
-//}
+greendao {
+    schemaVersion 2
+    daoPackage 'com.neucore.neulink.impl.service.file.dao'
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.qianwen:update-app:3.5.2'//实现自我更新
     implementation 'commons-net:commons-net:3.8.0'
     implementation 'cn.hutool:hutool-all:5.6.0'
+    implementation 'org.greenrobot:greendao:3.3.0' // add library
 }
 
 task makeJar(type: Copy) {
