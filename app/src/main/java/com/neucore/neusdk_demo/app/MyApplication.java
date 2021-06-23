@@ -80,7 +80,7 @@ public class MyApplication extends Application
         new Thread(){
             public void run(){
                 int count = 0;
-                while (true){
+                while (count<10){
                     String requestId = UUID.randomUUID().toString();
                     int index = 0;
                     String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
