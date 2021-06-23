@@ -11,6 +11,7 @@ import com.neucore.neulink.impl.proc.CfgProcessor;
 import com.neucore.neulink.impl.proc.CheckProcessor;
 import com.neucore.neulink.impl.proc.DebugProcessor;
 import com.neucore.neulink.impl.proc.FirewareProcessor;
+import com.neucore.neulink.impl.proc.FirewareProcessorResume;
 import com.neucore.neulink.impl.proc.HibrateProcessor;
 import com.neucore.neulink.impl.proc.QCfgProcessor;
 import com.neucore.neulink.impl.proc.QLibProcessor;
@@ -60,6 +61,9 @@ public class NeulinkProcessorFactory {
         }
         else if("firmware".equalsIgnoreCase(topic.getBiz())){//设备固件升级
             processors.put(topic.getBiz(),new FirewareProcessor(context));
+        }
+        else if("firmwareresume".equalsIgnoreCase(topic.getBiz())){//设备固件升级
+            processors.put(topic.getBiz(),new FirewareProcessorResume(context));
         }
         else if("hibrate".equalsIgnoreCase(topic.getBiz())){//设备休眠
             processors.put(topic.getBiz(),new HibrateProcessor(context));

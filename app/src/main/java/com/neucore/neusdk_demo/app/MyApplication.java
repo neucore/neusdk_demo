@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
@@ -24,6 +25,8 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 
 import java.util.Properties;
 import java.util.UUID;
+
+import freemarker.template.ObjectWrapperAndUnwrapper;
 
 public class MyApplication extends Application
 {
@@ -55,7 +58,7 @@ public class MyApplication extends Application
         extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
-         * 设备类型【0:客流机；1:门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】
+         * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
 
@@ -77,21 +80,25 @@ public class MyApplication extends Application
         new Thread(){
             public void run(){
                 int count = 0;
-                while (count<10){
+                while (true){
                     String requestId = UUID.randomUUID().toString();
                     int index = 0;
-                    String path = "/sdcard/twocamera/photo/1593339437914.jpg";//待上传的图片路径
+                    String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
                     IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
                     //上传人脸图片至存储服务器上
                     String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
-                    System.out.println(urlStr);
+                    if(urlStr==null){
+                        break;
+                    }
+                    Log.i(TAG,String.format("上传成功 url=%s, count=%s",count,urlStr));
                     count++;
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                Log.i(TAG,"上传失败 count: "+count);
             }
         }.start();
     }

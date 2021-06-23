@@ -1,7 +1,10 @@
 package com.neucore.neusdk_demo.neulink;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,12 +12,17 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IOnNetStatusListener;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.LogService;
 import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.NetBroadcastReceiver;
+import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Properties;
@@ -68,6 +76,10 @@ public class SampleConnector {
          */
         new LogServiceThread().start();
 
+        NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
+        NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
+        registerReceiver(netBroadcastReceiver);
+
         /**
          * 初始化MQTT
          */
@@ -75,7 +87,15 @@ public class SampleConnector {
         final NeulinkService service = deviceMqttServiceInit();
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
-
+    /**
+     * 网络恢复事件侦听器
+     * @param receiver
+     */
+    private void registerReceiver(BroadcastReceiver receiver) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        LocalBroadcastManager.getInstance(ContextHolder.getInstance().getContext()).registerReceiver(receiver, filter);
+    }
     Handler tHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
