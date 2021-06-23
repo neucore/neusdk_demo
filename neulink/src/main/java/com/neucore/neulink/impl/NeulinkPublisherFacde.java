@@ -6,6 +6,7 @@ import android.util.Log;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.cmd.lic.LicUpldCmd;
+import com.neucore.neulink.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.cmd.tmptr.FaceTemp;
 import com.neucore.neulink.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.util.DeviceUtils;
@@ -59,6 +60,21 @@ public class NeulinkPublisherFacde {
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
         service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+    }
+
+    /**
+     * 上报下载进度
+     * @param topic
+     * @param progress
+     */
+    public void upldDownloadProgress(String topic,String reqId,int progress){
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(200);
+        upgrRes.setMsg("升级下载中");
+        upgrRes.setProgress(progress);
+        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        String payload = JSonUtils.toString(upgrRes);
+        service.publishMessage(topic,IProcessor.V1$0,reqId,payload,0);
     }
 
     /**
