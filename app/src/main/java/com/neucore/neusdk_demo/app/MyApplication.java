@@ -24,6 +24,7 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 
 import java.util.Properties;
+import java.util.Random;
 import java.util.UUID;
 
 import freemarker.template.ObjectWrapperAndUnwrapper;
@@ -80,7 +81,7 @@ public class MyApplication extends Application
         new Thread(){
             public void run(){
                 int count = 0;
-                while (count<10){
+                while (true){
                     String requestId = UUID.randomUUID().toString();
                     int index = 0;
                     String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
@@ -93,7 +94,12 @@ public class MyApplication extends Application
                     Log.i(TAG,String.format("上传成功 url=%s, count=%s",count,urlStr));
                     count++;
                     try {
-                        Thread.sleep(100);
+                        int time = 0;
+                        while(time==0){
+                            time = Double.valueOf(Math.random()*10).intValue();
+                        }
+                        Log.i(TAG,"Sleep: "+(time)+" 分钟");
+                        Thread.sleep(time*60*1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

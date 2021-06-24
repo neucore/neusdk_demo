@@ -59,11 +59,12 @@ public class FileService {
 
     public void save(String path,  Map<Integer, Long> thids){
 
-        int[] thid = new int[thids.size()];
+        Integer[] thid = new Integer[thids.size()];
+        thids.keySet().toArray(thid);
         for (int th:thid) {
             FileInfo fileInfo = new FileInfo();
             fileInfo.setUrl(path);
-            long pos = thids.get(th);
+            Long pos = thids.get(th);
             fileInfo.setThid(th);
             fileInfo.setProcessed(pos);
             session.getFileInfoDao().insertOrReplace(fileInfo);

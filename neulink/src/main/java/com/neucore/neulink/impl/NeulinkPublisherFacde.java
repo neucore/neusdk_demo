@@ -67,7 +67,7 @@ public class NeulinkPublisherFacde {
      * @param topic
      * @param progress
      */
-    public void upldDownloadProgress(String topic,String reqId,int progress){
+    public void upldDownloadProgress(String topic,String reqId,String progress){
         UpgrRes upgrRes = new UpgrRes();
         upgrRes.setCode(200);
         upgrRes.setMsg("升级下载中");
