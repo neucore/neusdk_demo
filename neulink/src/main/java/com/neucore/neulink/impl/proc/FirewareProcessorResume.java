@@ -3,7 +3,6 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
@@ -18,13 +17,10 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.MD5Utils;
-import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Map;
 
 /**
@@ -122,6 +118,6 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getAPkListener();
+        return ListenerFactory.getInstance().getFireware$ApkListener();
     }
 }
