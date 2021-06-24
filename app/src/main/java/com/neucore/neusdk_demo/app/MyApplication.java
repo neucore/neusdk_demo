@@ -24,10 +24,7 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 
 import java.util.Properties;
-import java.util.Random;
 import java.util.UUID;
-
-import freemarker.template.ObjectWrapperAndUnwrapper;
 
 public class MyApplication extends Application
 {
@@ -177,9 +174,9 @@ public class MyApplication extends Application
             ListenerFactory.getInstance().setAlogListener(new AlogUpgrdActionListener());
 
             /**
-             * APK 升级扩展
+             * 固件$APK 升级扩展
              */
-            ListenerFactory.getInstance().setApkListener(new ApkUpgrdActionListener());
+            ListenerFactory.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
 
             /**
              * 备份实现

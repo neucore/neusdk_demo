@@ -232,6 +232,30 @@ SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 
 参考下列代码SampleFaceUpload.java
 
+## cpu_sn收集服务
+
+需要在AndroidManifest.xml中添加下列配置
+
+```
+<uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="28" />
+
+    <!--允许应用程序改变网络状态-->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+
+    <!--允许应用程序改变WIFI连接状态-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <!--允许应用程序访问有关的网络信息-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!--允许应用程序访问WIFI网卡的网络信息-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <!--允许应用程序完全使用网络-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+```
 
 # 联系
 任何技术或商务问题，请发送邮件至 support@neucore.com
