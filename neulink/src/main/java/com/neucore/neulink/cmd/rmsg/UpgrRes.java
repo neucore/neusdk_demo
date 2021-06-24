@@ -9,7 +9,7 @@ public class UpgrRes extends CmdRes {
     private String vinfo;
 
     @SerializedName("progress")
-    private Integer progress;
+    private String progress;
 
     public UpgrRes(){
         this.cmdStr = "upgrade";
@@ -23,11 +23,11 @@ public class UpgrRes extends CmdRes {
         this.vinfo = vinfo;
     }
 
-    public Integer getProgress() {
+    public String getProgress() {
         return progress;
     }
 
-    public void setProgress(Integer progress) {
+    public void setProgress(String progress) {
         this.progress = progress;
     }
 }

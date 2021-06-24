@@ -23,6 +23,8 @@ import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Map;
 
 /**
@@ -41,15 +43,13 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         try {
             final String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
-
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId()), 3);
             downloader.download(new DownloadProgressListener() {
                 @Override
                 public void onDownloadSize(int size) {
                     long total = downloader.getFileSize();
-                    int progress = (int) (size/total);
-                    String payload = null;
-                    String md5 = MD5Utils.getInstance().getMD5String(payload);
+                    DecimalFormat formater = new DecimalFormat("##.0");
+                    String progress = formater.format(size*1.0/total*1.0*100);
                     String resTopic = String.format("rrpc/res/",topic.getBiz());
                     NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),progress);
                 }

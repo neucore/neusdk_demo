@@ -195,7 +195,7 @@ public class FileDownloader {
             fileService.delete(this.downloadUrl);
         } catch (Exception e) {
             print(e.toString());
-            throw new Exception("file download fail");
+            throw e;
         }
         return this.downloadSize;
     }
