@@ -10,9 +10,6 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
-import com.neucore.neulink.impl.service.resume.DownloadProgressListener;
-import com.neucore.neulink.impl.service.resume.FileDownloader;
-import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -110,6 +107,6 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getAPkListener();
+        return ListenerFactory.getInstance().getFireware$ApkListener();
     }
 }

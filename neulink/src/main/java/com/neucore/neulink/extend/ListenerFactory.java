@@ -20,7 +20,7 @@ public class ListenerFactory {
             return new Result();
         }
     };
-    private ICmdListener<Result> apkListener = new ICmdListener<Result>() {
+    private ICmdListener<Result> fireware$ApkListener = new ICmdListener<Result>() {
         @Override
         public Result doAction(NeulinkEvent event) {
             Log.i(TAG,"Application upgrade need to by replace ");
@@ -121,10 +121,6 @@ public class ListenerFactory {
         return alogListener;
     }
 
-    public ICmdListener getAPkListener(){
-        return apkListener;
-    }
-
     public ICmdListener<Result> getAwakenListener(){
         return awakenListener;
     }
@@ -141,12 +137,12 @@ public class ListenerFactory {
         this.alogListener = alogListener;
     }
 
-    public ICmdListener getApkListener() {
-        return apkListener;
+    public ICmdListener getFireware$ApkListener() {
+        return fireware$ApkListener;
     }
 
-    public void setApkListener(ICmdListener apkListener) {
-        this.apkListener = apkListener;
+    public void setFireware$ApkListener(ICmdListener fireware$ApkListener) {
+        this.fireware$ApkListener = fireware$ApkListener;
     }
 
     public void setAwakenListener(ICmdListener awakenListener) {
