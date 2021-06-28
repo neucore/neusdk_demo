@@ -7,9 +7,11 @@ import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 /**
  * NeuSDK升级/或者固件升级
+ * @deprecated
  */
 public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> {
 
@@ -36,7 +39,14 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
 
-            srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url);
+            String storeDir = DeviceUtils.getNeucoreSDDir(ContextHolder.getInstance().getContext());
+
+            srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url,new File(storeDir));
+            /**
+             * 新增上报下载进度
+             */
+            String resTopic = String.format("rrpc/res/",topic.getBiz());
+            NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),"100");
 
             ICmdListener listener = getListener();
             if(listener==null){

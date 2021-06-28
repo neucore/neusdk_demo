@@ -39,7 +39,8 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         try {
             final String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
-            final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId()), 3);
+            String storeDir = DeviceUtils.getNeucoreSDDir(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId();
+            final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 3);
             downloader.download(new DownloadProgressListener() {
                 @Override
                 public void onDownloadSize(int size) {

@@ -47,6 +47,10 @@ public class DeviceUtils {
 		return path;
 	}
 
+	public static String getNeucoreSDDir(Context context){
+		return Environment.getExternalStorageDirectory() + File.separator+ "neucore";
+	}
+
 	public static String getFilesDir(Context context){
 		String path =  context.getFilesDir().getPath()+File.separator+"neucore";
 		new File(path).mkdirs();
