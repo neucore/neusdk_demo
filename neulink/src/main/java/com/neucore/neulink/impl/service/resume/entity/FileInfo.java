@@ -4,21 +4,20 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 
-import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity(nameInDb = "dldfile",indexes = {@Index(value = "url,thid",unique = true)})
 public class FileInfo {
 
-    @Id
-    private long id;
+    @Id(autoincrement = true)
+    private Long id;
     private String url;
     private Integer thid;
     private long processed;
     private int status;
 
-    @Generated(hash = 602957643)
-    public FileInfo(long id, String url, Integer thid, long processed, int status) {
+    @Generated(hash = 865454488)
+    public FileInfo(Long id, String url, Integer thid, long processed, int status) {
         this.id = id;
         this.url = url;
         this.thid = thid;
@@ -54,11 +53,11 @@ public class FileInfo {
         this.processed = processed;
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
