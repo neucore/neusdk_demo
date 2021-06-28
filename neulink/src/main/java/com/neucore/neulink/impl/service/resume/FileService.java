@@ -38,7 +38,7 @@ public class FileService {
         fileInfo.setUrl(url);
         fileInfo.setThid(thid);
         fileInfo.setProcessed(pos);
-        session.getFileInfoDao().update(fileInfo);
+        session.getFileInfoDao().insertOrReplace(fileInfo);
     }
 
     public Map<Integer, Long> getData(String path){

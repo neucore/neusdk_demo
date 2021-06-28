@@ -89,9 +89,9 @@ public class FileDownloader {
             if(!fileSaveDir.exists()) fileSaveDir.mkdirs();
             this.threads = new DownloadThread[threadNum];
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5*1000);
+            conn.setConnectTimeout(15*1000);
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
+            conn.setRequestProperty("Accept", "image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-img, */*");
             conn.setRequestProperty("Accept-Language", "zh-CN");
             conn.setRequestProperty("Referer", downloadUrl);
             conn.setRequestProperty("Charset", "UTF-8");
@@ -107,6 +107,7 @@ public class FileDownloader {
 
                 String filename = getFileName(conn);//获取文件名称
                 this.saveFile = new File(fileSaveDir, filename);//构建保存文件
+                Log.i(TAG,"开始下载到："+saveFile.getAbsolutePath());
                 Map<Integer, Long> logdata = fileService.getData(downloadUrl);//获取下载记录
                 if(logdata.size()>0){//如果存在下载记录
                     for(Map.Entry<Integer, Long> entry : logdata.entrySet())
@@ -124,6 +125,7 @@ public class FileDownloader {
                 throw new RuntimeException("server no response "+code);
             }
         } catch (Exception e) {
+            Log.e(TAG,"下载失败",e);
             print(e.toString());
             throw new RuntimeException(e);
         }
@@ -176,6 +178,8 @@ public class FileDownloader {
                 }
             }
             this.fileService.save(this.downloadUrl, this.data);
+
+
             boolean notFinish = true;//下载未完成
             while (notFinish) {// 循环判断所有线程是否完成下载
                 Thread.sleep(900);

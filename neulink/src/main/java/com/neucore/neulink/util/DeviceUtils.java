@@ -42,19 +42,25 @@ public class DeviceUtils {
 
 
 	public static String getExternalFilesDir(Context context){
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath() +File.separator+"neucore";
+		String path = context.getExternalFilesDir(null).getPath() +File.separator+"neucore";
+		new File(path).mkdirs();
+		return path;
+	}
+
+	public static String getFilesDir(Context context){
+		String path =  context.getFilesDir().getPath()+File.separator+"neucore";
 		new File(path).mkdirs();
 		return path;
 	}
 
 	public static String getExternalCacheDir(Context context){
-		String path =  Environment.getDownloadCacheDirectory().getAbsolutePath()+File.separator+"neucore";
+		String path =   context.getExternalCacheDir().getPath() +File.separator+"neucore";
 		new File(path).mkdirs();
 		return path;
 	}
 
 	public static String getCacheDir(Context context){
-		String path =   getExternalCacheDir(context);
+		String path =   context.getCacheDir().getPath()+File.separator+"neucore";
 		new File(path).mkdirs();
 		return path;
 	}
@@ -80,12 +86,6 @@ public class DeviceUtils {
 		else{
 			path = getExternalCacheDir(context);
 		}
-		new File(path).mkdirs();
-		return path;
-	}
-
-	public static String getFilesDir(Context context){
-		String path =  getCachePath(context)+File.separator+"files";
 		new File(path).mkdirs();
 		return path;
 	}

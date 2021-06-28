@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
@@ -38,6 +39,7 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         File srcFile = null;
         try {
             final String upgrade_url = cmd.getUrl();
+            Log.i(TAG,"开始下载："+upgrade_url);
             String md5 = cmd.getMd5();
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId();
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 3);
@@ -47,10 +49,12 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
                     long total = downloader.getFileSize();
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
-                    String resTopic = String.format("rrpc/res/",topic.getBiz());
+                    String resTopic = String.format("rrpc/res",topic.getBiz());
+                    Log.i(TAG,"progress: "+progress);
                     NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),progress);
                 }
             });
+            Log.i(TAG,"成功下载完成："+downloader.getFileSize());
             ICmdListener listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"apk Listener does not implemention");

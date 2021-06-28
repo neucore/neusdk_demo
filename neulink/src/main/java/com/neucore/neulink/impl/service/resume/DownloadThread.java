@@ -47,21 +47,22 @@ public class DownloadThread extends Thread {
 
                 InputStream inStream = http.getInputStream();
                 byte[] buffer = new byte[1024];
-                int offset = 0;
+                int readed = 0;
                 print("Thread " + this.threadId + " start download from position "+ startPos);
                 RandomAccessFile threadfile = new RandomAccessFile(this.saveFile, "rwd");
                 threadfile.seek(startPos);
-                while ((offset = inStream.read(buffer, 0, 1024)) != -1) {
-                    threadfile.write(buffer, 0, offset);
-                    downLength += offset;
+                while ((readed = inStream.read(buffer, 0, buffer.length)) != -1) {
+                    threadfile.write(buffer, 0, readed);
+                    downLength += readed;
                     downloader.update(this.threadId, downLength);
-                    downloader.append(offset);
+                    downloader.append(readed);
                 }
                 threadfile.close();
                 inStream.close();
                 print("Thread " + this.threadId + " download finish");
                 this.finish = true;
             } catch (Exception e) {
+                Log.e(TAG,"Thread "+ this.threadId + " 下载失败",e);
                 this.downLength = -1;
                 print("Thread "+ this.threadId+ ":"+ e);
             }
