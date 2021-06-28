@@ -30,7 +30,7 @@ android {
 
 }
 greendao {
-    schemaVersion 2
+    schemaVersion 1
     daoPackage 'com.neucore.neulink.impl.service.file.dao'
 }
 dependencies {

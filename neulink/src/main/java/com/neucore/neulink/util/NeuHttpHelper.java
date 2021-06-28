@@ -33,10 +33,17 @@ public class NeuHttpHelper{
 
 	private static String TAG = "NeuHttpHelper";
 
-	private static OkHttpClient client = new OkHttpClient.Builder()
-			.connectTimeout(10, TimeUnit.SECONDS)//设置连接超时时间
-			.readTimeout(60, TimeUnit.SECONDS)//设置读取超时时间
-			.build();
+	private static OkHttpClient getClient(){
+		return getClient(5,5);
+	}
+	private static OkHttpClient getClient(int connTimeout,int readTimeout){
+		OkHttpClient okHttpClient = new OkHttpClient.Builder()
+				.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
+				.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
+				.writeTimeout(readTimeout,TimeUnit.MINUTES)
+				.build();
+		return okHttpClient;
+	}
 
 	private static Request createRequest(String fileUrl){
 		//第二步构建Request对象
@@ -71,7 +78,7 @@ public class NeuHttpHelper{
 		int code = 200;
 		while(trys<=tryNum){
 			try {
-				response = client.newCall(createRequest(fileUrl)).execute();
+				response = getClient().newCall(createRequest(fileUrl)).execute();
 				code = response.code();
 				if(code!=200){
 					throw new RuntimeException(fileUrl+",下载失败 with code="+code);
@@ -169,10 +176,7 @@ public class NeuHttpHelper{
 		Response response = null;
 		int trys = 1;
 
-		OkHttpClient client = new OkHttpClient.Builder()
-				.connectTimeout(connTime, TimeUnit.SECONDS)//设置连接超时时间
-				.readTimeout(execTime, TimeUnit.SECONDS)//设置读取超时时间
-				.build();
+		OkHttpClient client = getClient(connTime,execTime);
 		int code = 200;
 		while(trys<=tryNum){
 			try{
@@ -193,7 +197,7 @@ public class NeuHttpHelper{
 				break;
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"下载"+fileUrl+"文件失败：",ex);
+				Log.e(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}
@@ -231,10 +235,7 @@ public class NeuHttpHelper{
 		InputStream is = null;
 
 		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = new OkHttpClient.Builder()
-				.connectTimeout(connTime, TimeUnit.SECONDS)//设置连接超时时间
-				.readTimeout(execTime, TimeUnit.SECONDS)//设置读取超时时间
-				.build();
+		OkHttpClient client = getClient(connTime,execTime);
 		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
 		Request request = new Request.Builder()
 				.url(url)
@@ -280,11 +281,7 @@ public class NeuHttpHelper{
 	private static Gson gson = new Gson();
 	public static void main(String[] args){
 
-		OkHttpClient okHttpClient  = new OkHttpClient.Builder()
-				.connectTimeout(10, TimeUnit.SECONDS)
-				.writeTimeout(10,TimeUnit.SECONDS)
-				.readTimeout(20, TimeUnit.SECONDS)
-				.build();
+		OkHttpClient okHttpClient  = getClient();
 		String img = "aaaa.jpg";
 
 		String base64 = null;
