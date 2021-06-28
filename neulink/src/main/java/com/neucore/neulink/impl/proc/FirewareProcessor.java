@@ -39,7 +39,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
 
-            String storeDir = DeviceUtils.getNeucoreSDDir(ContextHolder.getInstance().getContext());
+            String storeDir = DeviceUtils.getExternalFilesDir(ContextHolder.getInstance().getContext());
 
             srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url,new File(storeDir));
             /**
