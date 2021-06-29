@@ -71,10 +71,6 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
             throw new RuntimeException(ex);
         }
         finally {
-
-            if(srcFile!=null){
-                FileUtils.delete(srcFile.getAbsolutePath());
-            }
         }
     }
 

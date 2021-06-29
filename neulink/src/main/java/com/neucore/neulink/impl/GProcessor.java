@@ -189,6 +189,9 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
         NeulinkService.getInstance().publishMessage(resTopic,topic.getVersion(),topic.getReqId(),result,topic.getQos());
     }
 
+    public void clean(){
+
+    }
 
     /**
      * 命令消息到达是日志状态默认为处理中，只有无法响应的请求【eg:reboot】消息到达是日志记录的状态是成功
