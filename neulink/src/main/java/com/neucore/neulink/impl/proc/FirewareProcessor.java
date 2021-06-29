@@ -64,10 +64,6 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             throw new RuntimeException(ex);
         }
         finally {
-
-            if(srcFile!=null){
-                FileUtils.delete(srcFile.getAbsolutePath());
-            }
         }
     }
 
