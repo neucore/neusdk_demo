@@ -75,9 +75,11 @@ public class FileService {
             session.getFileInfoDao().insertOrReplace(fileInfo);
         }
     }
+
     public void delete(String path){
-        FileInfo fileInfo = new FileInfo();
-        fileInfo.setUrl(path);
-        session.delete(fileInfo);
+
+        QueryBuilder queryBuilder = session.getFileInfoDao().queryBuilder();
+        List<FileInfo> fileInfoList = queryBuilder.where(FileInfoDao.Properties.Url.eq(path)).list();
+        session.getFileInfoDao().deleteInTx(fileInfoList);
     }
 }

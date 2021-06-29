@@ -55,6 +55,7 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
                 }
             });
             Log.i(TAG,"成功下载完成："+downloader.getFileSize());
+            Log.i(TAG,"存储位置: "+downloader.getSaveFile().getAbsolutePath());
             ICmdListener listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"apk Listener does not implemention");
