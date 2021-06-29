@@ -1,4 +1,4 @@
-package com.neucore.neulink.proc;
+package com.neucore.neulink.impl.proc;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
