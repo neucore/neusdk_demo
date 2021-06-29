@@ -41,12 +41,13 @@ public class DownloadThread extends Thread {
                 http.setRequestProperty("Charset", "UTF-8");
                 long startPos = block * (threadId - 1) + downLength;//开始位置
                 int endPos = block * threadId -1;//结束位置
+                Log.i(TAG,"线程 "+ threadId + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
                 http.setRequestProperty("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
                 http.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.2; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)");
                 http.setRequestProperty("Connection", "Keep-Alive");
 
                 InputStream inStream = http.getInputStream();
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[2048];
                 int readed = 0;
                 print("Thread " + this.threadId + " start download from position "+ startPos);
                 RandomAccessFile threadfile = new RandomAccessFile(this.saveFile, "rwd");

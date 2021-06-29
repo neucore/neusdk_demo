@@ -109,6 +109,7 @@ public class FileDownloader {
                 this.saveFile = new File(fileSaveDir, filename);//构建保存文件
                 Log.i(TAG,"开始下载到："+saveFile.getAbsolutePath());
                 Map<Integer, Long> logdata = fileService.getData(downloadUrl);//获取下载记录
+                Log.i(TAG,"历史下载记录 "+logdata);
                 if(logdata.size()>0){//如果存在下载记录
                     for(Map.Entry<Integer, Long> entry : logdata.entrySet())
                         data.put(entry.getKey(), entry.getValue());//把各条线程已经下载的数据长度放入data中

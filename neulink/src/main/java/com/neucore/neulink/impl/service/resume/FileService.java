@@ -41,6 +41,11 @@ public class FileService {
         session.getFileInfoDao().insertOrReplace(fileInfo);
     }
 
+    /**
+     * 历史下载记录
+     * @param path
+     * @return
+     */
     public Map<Integer, Long> getData(String path){
         QueryBuilder queryBuilder = session.getFileInfoDao().queryBuilder();
         List<FileInfo> fileInfoList = queryBuilder.where(FileInfoDao.Properties.Url.eq(path)).list();
