@@ -233,4 +233,8 @@ public class FileDownloader {
     private static void print(String msg){
         Log.i(TAG, msg);
     }
+
+    public File getSaveFile() {
+        return saveFile;
+    }
 }
