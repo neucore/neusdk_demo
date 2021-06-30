@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.ICmdListener;
@@ -38,7 +39,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
         try {
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
-
+            Log.i(TAG,"开始下载："+upgrade_url);
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext());
 
             srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url,new File(storeDir));
