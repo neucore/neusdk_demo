@@ -45,7 +45,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             /**
              * 新增上报下载进度
              */
-            String resTopic = String.format("rrpc/res/",topic.getBiz());
+            String resTopic = String.format("rrpc/res/%s",topic.getBiz());
             NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),"100");
 
             ICmdListener listener = getListener();
