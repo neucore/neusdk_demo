@@ -240,7 +240,7 @@ public class NeulinkService {
     }
 
     public void destroy(){
-        if(!ObjectUtil.isEmpty(mqttService)){
+        if(!destroy && !ObjectUtil.isEmpty(mqttService)){
             mqttService.disconnect();
             destroy = true;
             Log.i(TAG,"断开Mqtt Service");

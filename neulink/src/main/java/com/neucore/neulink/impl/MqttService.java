@@ -30,6 +30,8 @@ public class MqttService {
     private boolean retained = false;
     //客户端掉线后是否清楚客户端session
     private boolean cleanSession = false;
+    private boolean close = false;
+    private boolean disconnect = false;
     private boolean autoReconnect = true;
     private MqttCallback mqttCallback = null;
     private IMqttActionListener mqttActionListener;
@@ -191,9 +193,11 @@ public class MqttService {
      */
     public void close() {
         try {
-            if(!ObjectUtil.isEmpty(client)){
+            if(!close && !ObjectUtil.isEmpty(client)){
                 client.unregisterResources();
                 client.close();
+                close = true;
+                Log.i(TAG,"MQTT Closed");
             }
         } catch (Exception e) {
             Log.e(TAG, e.toString());
@@ -202,9 +206,11 @@ public class MqttService {
 
     public void disconnect(){
         try {
-            if(!ObjectUtil.isEmpty(client)){
+            if(!disconnect && !ObjectUtil.isEmpty(client)){
                 client.disconnect();
                 close();
+                disconnect = true;
+                Log.i(TAG,"MQTT Disconnect");
             }
         } catch (MqttException e) {
             e.printStackTrace();
