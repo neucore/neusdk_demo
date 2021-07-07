@@ -22,6 +22,9 @@ public class DeviceInfo {
     @SerializedName("cpumd")
     private String cpuMode;
 
+    @SerializedName("npumd")
+    private String npuMode;
+
     @SerializedName("fun_list")
     private String funList[];
 
@@ -63,6 +66,14 @@ public class DeviceInfo {
 
     public void setCpuMode(String cpuMode) {
         this.cpuMode = cpuMode;
+    }
+
+    public String getNpuMode() {
+        return npuMode;
+    }
+
+    public void setNpuMode(String npuMode) {
+        this.npuMode = npuMode;
     }
 
     public String getMac() {

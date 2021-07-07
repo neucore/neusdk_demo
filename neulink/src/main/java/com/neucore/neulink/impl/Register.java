@@ -46,6 +46,7 @@ public class Register extends BroadcastReceiver {
     private void registerReceiver(BroadcastReceiver receiver) {
         IntentFilter filter = new IntentFilter();
         filter.addAction("MqttService.callbackToActivity.v0");
+        filter.addAction(Intent.ACTION_BOOT_COMPLETED);
         LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
     }
     /**
@@ -87,6 +88,7 @@ public class Register extends BroadcastReceiver {
         deviceInfo.setSoftVInfo(vInfo);
 
         deviceInfo.setCpuMode(android.os.Build.CPU_ABI);
+        deviceInfo.setNpuMode(DeviceUtils.getNpuMode(context));
 
         String[] funList = {"face"};//人脸识别
         deviceInfo.setFunList(funList);

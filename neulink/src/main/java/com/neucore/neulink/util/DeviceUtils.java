@@ -18,8 +18,10 @@ import com.neucore.neulink.cmd.msg.DiskInfo;
 import com.neucore.neulink.cmd.msg.SDInfo;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -199,6 +201,53 @@ public class DeviceUtils {
 			Log.e(TAG, e.getMessage(), e);
 		}
 		return cpuAddress;
+	}
+
+	public static String getNpuMode(Context context){
+		String str = "", strNPU = "", npuVersion = "0000000000000000";
+		try{
+			String dir = getCacheDir(context);
+			File file = new File(dir+File.separator+"npu");
+			if(file.exists()){
+				BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+				npuVersion = bufferedReader.readLine();
+				bufferedReader.close();
+			}
+			else{
+				Process pp = Runtime.getRuntime().exec("dmesg | grep -i 'Galcore version'");
+				InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+				LineNumberReader input = new LineNumberReader(ir);
+				//查找CPU序列号
+				for (int i = 1; i < 100; i++) {
+					str = input.readLine();
+					if (str != null) {
+						//查找到序列号所在行
+						if (str.indexOf(" version ") > -1) {
+							//提取序列号
+							strNPU = str.substring(str.indexOf(":") + 9,
+									str.length());
+							//去空格
+							npuVersion = strNPU.trim();
+							break;
+						}
+					} else {
+						//文件结尾
+						break;
+					}
+				}
+				if(!"0000000000000000".equals(npuVersion)){
+					BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+					bufferedWriter.write(npuVersion);
+					bufferedWriter.flush();
+					bufferedWriter.close();
+				}
+			}
+
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+		}
+		return npuVersion;
 	}
 
 	public static String getMacAddress() {
