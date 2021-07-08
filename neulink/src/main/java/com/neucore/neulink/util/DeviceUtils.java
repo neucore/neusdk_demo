@@ -251,41 +251,9 @@ public class DeviceUtils {
 	}
 
 	public static String getMacAddress() {
-
-		String wifiAddress = null;
-		BufferedReader bufferedReader = null;
-		FileReader fileReader = null;
-		try {
-			fileReader = new FileReader(new File("/sys/class/net/eth0/device/net/eth0/address"));
-			bufferedReader = new BufferedReader(fileReader);
-			wifiAddress = bufferedReader.readLine();
-
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage(), e);
-		} finally {
-			if (fileReader != null) {
-				try {
-					fileReader.close();
-				} catch (IOException ex) {
-				}
-				if (bufferedReader != null) {
-					try {
-						bufferedReader.close();
-					} catch (IOException ex) {
-					}
-				}
-			}
-			return wifiAddress;
-		}
-	}
-	public static String getNewMacAddr(Context context){
-
-		return null;
+		return MacHelper.getWifiMac(ContextHolder.getInstance().getContext());
 	}
 
-	public static String getLocalMacAddressFromIp(){
-		return null;
-	}
 	public static String getIpAddress(Context context){
 		String hostIp = null;
 		try {
