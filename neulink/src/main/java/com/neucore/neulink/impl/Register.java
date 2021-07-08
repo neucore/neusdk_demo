@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -87,7 +88,7 @@ public class Register extends BroadcastReceiver {
         vInfo.setAlogVersion("1.0");
         deviceInfo.setSoftVInfo(vInfo);
 
-        deviceInfo.setCpuMode(android.os.Build.CPU_ABI);
+        deviceInfo.setCpuMode(Build.MODEL);
         deviceInfo.setNpuMode(DeviceUtils.getNpuMode(context));
 
         String[] funList = {"face"};//人脸识别
