@@ -64,17 +64,17 @@ public class NeulinkPublisherFacde {
 
     /**
      * 上报下载进度
-     * @param topic
+     * @param topicPrefix eg：rrpc/res/xxx
      * @param progress
      */
-    public void upldDownloadProgress(String topic,String reqId,String progress){
+    public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
         UpgrRes upgrRes = new UpgrRes();
         upgrRes.setCode(200);
         upgrRes.setMsg("升级下载中");
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
         String payload = JSonUtils.toString(upgrRes);
-        service.publishMessage(topic,IProcessor.V1$0,reqId,payload,0);
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
 
     /**
