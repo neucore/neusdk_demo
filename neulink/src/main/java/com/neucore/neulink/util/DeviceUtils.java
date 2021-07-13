@@ -42,31 +42,44 @@ public class DeviceUtils {
 	public static final int SDCARD_TYPE = 0;			//当前的日志记录类型为存储在SD卡下面
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
 
-//Environment.getExternalStorageDirectory()
+	private static String getFileRoot(Context context) {
+		if (Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
+			return Environment.getExternalStorageDirectory().getAbsolutePath();
+//			File external = context.getExternalFilesDir(null);
+//			if (external != null) {
+//				return external.getAbsolutePath();
+//			}
+		}
+		return context.getFilesDir().getAbsolutePath();
+	}
+
+	private static String getNeucore(Context context){
+		String path = getFileRoot(context);
+		return mkidrs(path,"neucore");
+	}
+
+	private static String mkidrs(String path,String sub){
+		File file = new File(path, sub);
+		file.mkdirs();
+		return file.getAbsolutePath();
+	}
+
 	public static String getExternalFilesDir(Context context){
-		String path = Environment.getExternalStorageDirectory().getPath() +File.separator+"neucore";
-		new File(path).mkdirs();
-		return path;
+		return getNeucore(context);
 	}
 
 	public static String getFilesDir(Context context){
-		String path =  Environment.getExternalStorageDirectory().getPath()+File.separator+"neucore";
-		new File(path).mkdirs();
-		return path;
+		return getNeucore(context);
 	}
 
 	public static String getExternalCacheDir(Context context){
-		String path =   Environment.getExternalStorageDirectory().getPath() +File.separator+"neucore";
-		new File(path).mkdirs();
-		return path;
+		return getNeucore(context);
 	}
 
 	public static String getCacheDir(Context context){
-		String path =   Environment.getExternalStorageDirectory().getPath()+File.separator+"neucore";
-		new File(path).mkdirs();
-		return path;
+		return getNeucore(context);
 	}
-
 
 	private static String getFilesPath(Context context){
 		int type = getStoreType();
@@ -93,27 +106,23 @@ public class DeviceUtils {
 	}
 
 	public static String getTmpPath(Context context){
-		String path = getCachePath(context)+File.separator+"tmp";
-		new File(path).mkdirs();
-		return path;
+		String path = getCachePath(context);
+		return mkidrs(path,"temp");
 	}
 
 	public static String getLogPath(Context context){
-		String path = getCachePath(context)+File.separator+"logs";
-		new File(path).mkdirs();
-		return path;
+		String path = getCachePath(context);
+		return mkidrs(path,"logs");
 	}
 
 	public static String getDBPath(Context context){
-		String path = getFilesPath(context)+File.separator+"databases";
-		new File(path).mkdirs();
-		return path;
+		String path = getFilesPath(context);
+		return mkidrs(path,"databases");
 	}
 
 	public static String getConfigPath(Context context){
-		String path = getFilesPath(context)+File.separator+"config";
-		new File(path).mkdirs();
-		return path;
+		String path = getFilesPath(context);
+		return mkidrs(path,"config");
 	}
 
 	/**
