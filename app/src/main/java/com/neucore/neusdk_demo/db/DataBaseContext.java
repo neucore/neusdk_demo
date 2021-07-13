@@ -35,12 +35,10 @@ public class DataBaseContext extends ContextWrapper {
             path=dirPath+File.separator+name;
         }
         File dbFile = new File(path);
-        if(!dbFile.exists()){
-            try {
-                dbFile.createNewFile();
-            } catch (IOException e) {
-                Log.e(TAG,"getDatabasePath",e);
-            }
+        try {
+            dbFile.createNewFile();
+        } catch (IOException e) {
+            Log.e(TAG,"getDatabasePath",e);
         }
 
         return dbFile;

@@ -47,8 +47,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
+    }
+
+    signingConfigs {
+
+        config {
+            File strFile = new File("../Keystore/amlogic.keystore")
+            storeFile file(strFile)
+            storePassword "android1234"
+            keyAlias "amlogic"
+            keyPassword "android1234"
+        }
 
     }
+
     aaptOptions {
         cruncherEnabled = false
         useNewCruncher = false
