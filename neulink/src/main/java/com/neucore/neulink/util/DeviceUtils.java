@@ -25,12 +25,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.lang.reflect.Method;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.UUID;
+
+import cn.hutool.core.util.StrUtil;
 
 /**
  *
@@ -46,16 +49,18 @@ public class DeviceUtils {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
 			return Environment.getExternalStorageDirectory().getAbsolutePath();
-//			File external = context.getExternalFilesDir(null);
-//			if (external != null) {
-//				return external.getAbsolutePath();
-//			}
 		}
 		return context.getFilesDir().getAbsolutePath();
 	}
 
+	public static String getAppFilesDir(Context context){
+		String path = context.getExternalFilesDir(null).getPath() +File.separator+"neucore";
+		new File(path).mkdirs();
+		return path;
+	}
+
 	private static String getNeucore(Context context){
-		String path = getFileRoot(context);
+		String path = getAppFilesDir(context);
 		return mkidrs(path,"neucore");
 	}
 
@@ -329,5 +334,19 @@ public class DeviceUtils {
 
 	public static boolean isSDCardExit(){
 		return Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+	}
+
+	public static String getSystemProperties(String key, String def) {
+		try {
+			Method systemProperties_get = Class.forName("android.os.SystemProperties").getMethod("get", String.class);
+			String ret = (String) systemProperties_get.invoke(null, key);
+			Log.d(TAG, key + "= " + ret);
+			if (ret != null && !StrUtil.isEmpty(ret)){
+				return ret;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return def;
 	}
 }

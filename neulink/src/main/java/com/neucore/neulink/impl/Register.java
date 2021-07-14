@@ -82,8 +82,17 @@ public class Register extends BroadcastReceiver {
         SoftVInfo vInfo = new SoftVInfo();
 
         vInfo.setOsName(android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT);
-        vInfo.setOsVersion(android.os.Build.VERSION.RELEASE);
-        vInfo.setReportName("NeuSDK");
+        /**
+         * 固件版本
+         */
+        vInfo.setOsVersion(DeviceUtils.getSystemProperties("ro.product.releaseversion","V0.0.0"));
+        /**
+         * apk名称
+         */
+        vInfo.setReportName(AppUtils.getApkName(context));
+        /**
+         * apk版本信息
+         */
         vInfo.setReportVersion(AppUtils.getVersionName(context));
         vInfo.setAlogVersion("1.0");
         deviceInfo.setSoftVInfo(vInfo);
