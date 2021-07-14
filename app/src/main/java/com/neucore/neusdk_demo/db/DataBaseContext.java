@@ -36,7 +36,9 @@ public class DataBaseContext extends ContextWrapper {
         }
         File dbFile = new File(path);
         try {
-            dbFile.createNewFile();
+            if(!dbFile.exists()){
+                dbFile.createNewFile();
+            }
         } catch (IOException e) {
             Log.e(TAG,"getDatabasePath",e);
         }
