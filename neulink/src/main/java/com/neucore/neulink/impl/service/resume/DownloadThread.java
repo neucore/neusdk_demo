@@ -26,6 +26,7 @@ public class DownloadThread extends Thread {
         this.downloader = downloader;
         this.threadId = threadId;
         this.downLength = downLength;
+        Log.i(TAG,String.format("threadId=%s, block=%s, downLength=%s",threadId,block,downLength));
     }
 
     @Override
@@ -56,12 +57,15 @@ public class DownloadThread extends Thread {
                     threadfile.write(buffer, 0, readed);
                     downLength += readed;
                     downloader.update(this.threadId, downLength);
+                    /**
+                     * 更新下载进度
+                     */
                     downloader.append(readed);
                 }
+                this.finish = true;
+                print("Thread " + this.threadId + " download finish");
                 threadfile.close();
                 inStream.close();
-                print("Thread " + this.threadId + " download finish");
-                this.finish = true;
             } catch (Exception e) {
                 Log.e(TAG,"Thread "+ this.threadId + " 下载失败",e);
                 this.downLength = -1;
