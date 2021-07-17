@@ -66,6 +66,10 @@ public class FileDownloader {
      */
     protected synchronized void append(int size) {
         downloadSize += size;
+        if(downloadSize>=fileSize){
+            Log.i(TAG,String.format("fileSize=%s, downloadSize=%s",fileSize,downloadSize));
+            downloadSize = fileSize;
+        }
     }
     /**
      * 更新指定线程最后下载的位置
@@ -108,6 +112,9 @@ public class FileDownloader {
                 String filename = getFileName(conn);//获取文件名称
                 this.saveFile = new File(fileSaveDir, filename);//构建保存文件
                 Log.i(TAG,"开始下载到："+saveFile.getAbsolutePath());
+                /**
+                 * 获取历史下载进度
+                 */
                 Map<Integer, Long> logdata = fileService.getData(downloadUrl);//获取下载记录
                 Log.i(TAG,"历史下载记录 "+logdata);
                 if(logdata.size()>0){//如果存在下载记录
@@ -131,24 +138,6 @@ public class FileDownloader {
             throw new RuntimeException(e);
         }
     }
-    /**
-     * 获取文件名
-     */
-    private String getFileName(HttpURLConnection conn) {
-        String filename = this.downloadUrl.substring(this.downloadUrl.lastIndexOf('/') + 1);
-        if(filename==null || "".equals(filename.trim())){//如果获取不到文件名称
-            for (int i = 0;; i++) {
-                String mine = conn.getHeaderField(i);
-                if (mine == null) break;
-                if("content-disposition".equals(conn.getHeaderFieldKey(i).toLowerCase())){
-                    Matcher m = Pattern.compile(".*filename=(.*)").matcher(mine.toLowerCase());
-                    if(m.find()) return m.group(1);
-                }
-            }
-            filename = UUID.randomUUID()+ ".tmp";//默认取一个文件名
-        }
-        return filename;
-    }
 
     /**
      *  开始下载文件
@@ -159,7 +148,9 @@ public class FileDownloader {
     public int download(DownloadProgressListener listener) throws Exception{
         try {
             RandomAccessFile randOut = new RandomAccessFile(this.saveFile, "rw");
-            if(this.fileSize>0) randOut.setLength(this.fileSize);
+            if(this.fileSize>0) {
+                randOut.setLength(this.fileSize);
+            }
             randOut.close();
             URL url = new URL(this.downloadUrl);
             if(this.data.size() != this.threads.length){
@@ -169,6 +160,9 @@ public class FileDownloader {
                 }
             }
             for (int i = 0; i < this.threads.length; i++) {//开启线程进行下载
+                /**
+                 * 历史下载长度
+                 */
                 long downLength = this.data.get(i+1);
                 if(downLength < this.block && this.downloadSize<this.fileSize){//判断线程是否已经完成下载,否则继续下载
                     this.threads[i] = new DownloadThread(this, url, this.saveFile, this.block, this.data.get(i+1), i+1);
@@ -195,7 +189,12 @@ public class FileDownloader {
                         }
                     }
                 }
-                if(listener!=null) listener.onDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
+                if(listener!=null) {
+                    /**
+                     * 保证上报100%
+                     */
+                    listener.onDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
+                }
             }
             fileService.delete(this.downloadUrl);
         } catch (Exception e) {
@@ -203,6 +202,25 @@ public class FileDownloader {
             throw e;
         }
         return this.downloadSize;
+    }
+
+    /**
+     * 获取文件名
+     */
+    private String getFileName(HttpURLConnection conn) {
+        String filename = this.downloadUrl.substring(this.downloadUrl.lastIndexOf('/') + 1);
+        if(filename==null || "".equals(filename.trim())){//如果获取不到文件名称
+            for (int i = 0;; i++) {
+                String mine = conn.getHeaderField(i);
+                if (mine == null) break;
+                if("content-disposition".equals(conn.getHeaderFieldKey(i).toLowerCase())){
+                    Matcher m = Pattern.compile(".*filename=(.*)").matcher(mine.toLowerCase());
+                    if(m.find()) return m.group(1);
+                }
+            }
+            filename = UUID.randomUUID()+ ".tmp";//默认取一个文件名
+        }
+        return filename;
     }
     /**
      * 获取Http响应头字段
