@@ -192,7 +192,8 @@ public class FileDownloader {
                  */
                 long downLength = this.data.get(i+1);
                 if(downLength < this.block && this.downloadSize<this.fileSize){//判断线程是否已经完成下载,否则继续下载
-                    this.threads[i] = new DownloadThread(this, downloadUrl, this.saveFile, this.block, this.data.get(i+1), i+1);
+                    long downloaded = this.data.get(i+1);
+                    this.threads[i] = new DownloadThread(this, downloadUrl, this.saveFile, this.block,downloaded , i+1);
                     this.threads[i].setPriority(7);
                     this.threads[i].start();
                 }else{
