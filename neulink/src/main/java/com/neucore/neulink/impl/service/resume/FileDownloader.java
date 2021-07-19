@@ -202,14 +202,18 @@ public class FileDownloader {
             }
             this.fileService.save(this.downloadUrl, this.data);
 
-
+            boolean notError = true;
             boolean notFinish = true;//下载未完成
-            while (notFinish) {// 循环判断所有线程是否完成下载
+            while (notFinish && notError) {// 循环判断所有线程是否完成下载
                 Thread.sleep(900);
                 notFinish = false;//假定全部线程下载完成
+                notError = false;//假设全部遇到错误
                 for (int i = 0; i < this.threads.length; i++){
                     if (this.threads[i] != null && !this.threads[i].isFinish()) {//如果发现线程未完成下载
                         notFinish = true;//设置标志为下载没有完成
+                        if(!this.threads[i].isError()){
+                            notError = true;
+                        }
                         if(this.threads[i].getDownLength() == -1){//如果下载失败,再重新下载
                             this.threads[i] = new DownloadThread(this, downloadUrl, this.saveFile, this.block, this.data.get(i+1), i+1);
                             this.threads[i].setPriority(7);
@@ -221,10 +225,22 @@ public class FileDownloader {
                     /**
                      * 保证上报100%
                      */
-                    listener.onDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
+                    if(notError){
+                        listener.onDownloadSize(this.downloadSize);//通知目前已经下载完成的数据长度
+                    }
                 }
             }
-            fileService.delete(this.downloadUrl);
+            boolean finshed = true;
+            for (int i = 0; i < this.threads.length; i++){
+                if(!this.threads[i].isFinish()){
+                    finshed = false;
+                    break;
+                }
+            }
+            if(finshed){
+                fileService.delete(this.downloadUrl);
+            }
+
         } catch (Exception e) {
             print(e.toString());
             throw e;

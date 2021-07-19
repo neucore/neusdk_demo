@@ -20,7 +20,7 @@ public class DownloadThread extends Thread {
     /* 下载开始位置  */
     private int threadId = -1;
     private long downLength;
-    private boolean finish = false;
+    private boolean finish = false,error = false;
     private FileDownloader downloader;
 
     public DownloadThread(FileDownloader downloader, String downUrl, File saveFile, long block, long downLength, int threadId) {
@@ -76,6 +76,7 @@ public class DownloadThread extends Thread {
                 Log.e(TAG,"Thread "+ this.threadId + " 下载失败",e);
                 this.downLength = -1;
                 print("Thread "+ this.threadId+ ":"+ e);
+                this.error = true;
             }
         }
     }
@@ -88,6 +89,10 @@ public class DownloadThread extends Thread {
      */
     public boolean isFinish() {
         return finish;
+    }
+
+    public boolean isError(){
+        return error;
     }
     /**
      * 已经下载的内容大小
