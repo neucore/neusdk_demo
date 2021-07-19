@@ -45,7 +45,7 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 6);
             downloader.download(new DownloadProgressListener() {
                 @Override
-                public void onDownloadSize(int size) {
+                public void onDownloadSize(long size) {
                     long total = downloader.getFileSize();
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
