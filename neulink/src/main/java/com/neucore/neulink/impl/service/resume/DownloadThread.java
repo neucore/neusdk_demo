@@ -41,7 +41,7 @@ public class DownloadThread extends Thread {
             int trys = 1;
             while(trys<=3){
                 try {
-                    Log.i(TAG,String.format("trys=%s",trys));
+                    Log.i(TAG,String.format("Thread=%s, trys=%s",this.threadId,trys));
                     download();
                     break;
                 } catch (Exception e) {
@@ -52,6 +52,10 @@ public class DownloadThread extends Thread {
                         this.error = true;
                     }
                     else {
+                        try {
+                            Thread.sleep(5000);
+                        }
+                        catch (Exception ex){}
                         trys++;
                     }
                 }
