@@ -30,7 +30,15 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     }
 
     public void execute(NeulinkTopicParser.Topic topic, String payload) {
+
         payload = auth(topic,payload);
+
+        String resTopic = String.format("rrpc/res/%s",topic.getBiz());
+        /**
+         * 发送响应消息给到服务端
+         */
+        NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
+
         //检查当前请求是否已经已经到达过
         synchronized (lock){
 //            Message msg = query(topic.getReqId());

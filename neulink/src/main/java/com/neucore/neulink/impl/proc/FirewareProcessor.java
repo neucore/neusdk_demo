@@ -40,11 +40,6 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
             Log.i(TAG,"开始下载："+upgrade_url);
-            String resTopic = String.format("rrpc/res/%s",topic.getBiz());
-            /**
-             * 发送响应消息给到服务端
-             */
-            NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
 
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext());
 
@@ -52,7 +47,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             /**
              * 新增上报下载进度
              */
-
+            String resTopic = String.format("rrpc/res/%s",topic.getBiz());
             NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),"100");
 
             ICmdListener listener = getListener();
