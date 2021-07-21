@@ -70,13 +70,28 @@ public class NeulinkPublisherFacde {
     public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
         UpgrRes upgrRes = new UpgrRes();
         upgrRes.setCode(200);
-        upgrRes.setMsg("升级下载中");
+        upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
         String payload = JSonUtils.toString(upgrRes);
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
 
+    /**
+     *
+     * @param topicPrefix
+     * @param reqId
+     * @param mode
+     */
+    public void upldResponse(String topicPrefix,String reqId,String mode){
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(200);
+        upgrRes.setMsg("消息已经接收");
+        upgrRes.setCmdStr(mode);
+        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        String payload = JSonUtils.toString(upgrRes);
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
+    }
     /**
      * 人脸上报
      * 1.2版本协议

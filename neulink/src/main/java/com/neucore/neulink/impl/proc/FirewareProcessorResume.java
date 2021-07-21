@@ -38,9 +38,15 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         Map<String, String> result = null;
         File srcFile = null;
         try {
+
             final String upgrade_url = cmd.getUrl();
             Log.i(TAG,"开始下载："+upgrade_url);
+            final String resTopic = String.format("rrpc/res/%s",topic.getBiz());
             String md5 = cmd.getMd5();
+            /**
+             * 发送响应消息给到服务端
+             */
+            NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId();
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 6);
             downloader.download(new DownloadProgressListener() {
@@ -49,7 +55,7 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
                     long total = downloader.getFileSize();
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
-                    String resTopic = String.format("rrpc/res/%s",topic.getBiz());
+
                     Log.i(TAG,topic.getReqId()+ " progress: "+progress);
                     NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,topic.getReqId(),progress);
                 }
