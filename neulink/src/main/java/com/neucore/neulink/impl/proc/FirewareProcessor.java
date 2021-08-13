@@ -42,8 +42,10 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
             Log.i(TAG,"开始下载："+upgrade_url);
 
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext());
-
-            srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url,new File(storeDir));
+            /**
+             * 单线程
+             */
+            srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), upgrade_url+"&osooso=debug",new File(storeDir));
             /**
              * 新增上报下载进度
              */
