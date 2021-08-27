@@ -28,6 +28,9 @@ public class DeviceInfo {
     @SerializedName("fun_list")
     private String funList[];
 
+    @SerializedName("sku_token")
+    private String skuToken;
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -82,6 +85,15 @@ public class DeviceInfo {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+
+    public String getSkuToken() {
+        return skuToken;
+    }
+
+    public void setSkuToken(String skuToken) {
+        this.skuToken = skuToken;
     }
 
     public String[] getFunList() {

@@ -20,6 +20,8 @@ import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.MacHelper;
 import com.neucore.neulink.util.JSonUtils;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class Register extends BroadcastReceiver {
 
     private String TAG = "Register";
@@ -102,6 +104,7 @@ public class Register extends BroadcastReceiver {
 
         String[] funList = {"face"};//人脸识别
         deviceInfo.setFunList(funList);
+        deviceInfo.setSkuToken(DeviceUtils.getSkuToken());
 
         String payload = JSonUtils.toString(deviceInfo);
         String devinfo_topic = "msg/req/devinfo";

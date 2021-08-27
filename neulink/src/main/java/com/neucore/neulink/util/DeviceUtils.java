@@ -20,6 +20,7 @@ import com.neucore.neulink.cmd.msg.SDInfo;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -348,5 +350,42 @@ public class DeviceUtils {
 			e.printStackTrace();
 		}
 		return def;
+	}
+
+	private static String OrgFilepath = "/storage/emulated/0/neucore/";
+	public static String getSkuToken(){
+		String line = null;
+		File config = new File(OrgFilepath+"license.conf");
+		if(config.exists()){
+			BufferedReader bufferedReader = null;
+			try {
+				int index = 0;
+				bufferedReader = new BufferedReader(new FileReader(config));
+				while (index < 2) {
+					index++;
+					line = bufferedReader.readLine();
+					if(index==2){
+						int idx = -1;
+						if((idx=line.indexOf("="))!=-1){
+							line = line.substring(idx+1);
+						}
+						break;
+					}
+				}
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+			}
+			finally {
+				if(bufferedReader!=null){
+					try {
+						bufferedReader.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+		Log.d(TAG, "SkuToken="+line);
+		return line;
 	}
 }
