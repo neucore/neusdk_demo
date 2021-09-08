@@ -9,11 +9,11 @@ public class NeulinkZone {
     private String custid;
     @SerializedName("storeid")
     private String storeid;
-    @SerializedName("mqttServer")
+    @SerializedName("mqtt_server")
     private String mqttServer;
-    @SerializedName("mqttPort")
+    @SerializedName("mqtt_port")
     private int mqttPort;
-    @SerializedName("uploadServer")
+    @SerializedName("upload_server")
     private String uploadServer="https://data.neuapi.com/neulink/upload2cloud";//默认值
 
     public String getId() {
