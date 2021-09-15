@@ -76,6 +76,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
         long i=offset;
         String[] failed = null;
         for(;i<pages+1;i++){
+            Log.d(TAG,"开始进入人脸offset:"+i+"下载");
             result.setOffset(i);
             try {
 
@@ -88,9 +89,11 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
                     rsl = JSonUtils.toString(res);
                     resLstRsl2Cloud(topic, rsl);
                 }
+                Log.d(TAG,"成功完成人脸offset:"+i+"下载");
                 //updatePkg(msg.getId(),i, Message.STATUS_SUCCESS, "success");
             }
             catch (Throwable ex){
+                Log.d(TAG,"人脸offset:"+i+"下载失败",ex);
                 Log.e(TAG,"process",ex);
                 result.setCode(500);
                 result.setMsg(ex.getMessage());
