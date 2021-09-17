@@ -81,11 +81,6 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/qcfg";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getCfgListener();
     }

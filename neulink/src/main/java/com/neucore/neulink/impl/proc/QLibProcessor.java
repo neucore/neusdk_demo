@@ -96,11 +96,6 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/qlib";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getFaceQueryListener();
     }

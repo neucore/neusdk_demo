@@ -66,11 +66,6 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/cfg";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getCfgListener();
     }

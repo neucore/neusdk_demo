@@ -402,11 +402,6 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/blib";
-    }
-
-    @Override
     protected ICmdListener<UpdateResult> getListener() {
         return ListenerFactory.getInstance().getFaceListener();
     }

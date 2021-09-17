@@ -87,11 +87,6 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/recover";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getRecoverListener();
     }

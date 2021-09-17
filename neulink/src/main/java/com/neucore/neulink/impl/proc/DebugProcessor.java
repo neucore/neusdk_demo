@@ -73,11 +73,6 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/debug";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

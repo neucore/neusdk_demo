@@ -73,11 +73,6 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/shell";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

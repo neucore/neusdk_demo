@@ -43,11 +43,6 @@ public class RsvctrlProcessor extends GProcessor<RsvctrlSynCmd, RsvctrlSynCmdRes
     }
 
     @Override
-    protected String resTopic() {
-        return null;
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

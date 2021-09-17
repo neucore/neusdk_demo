@@ -19,6 +19,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     private Context context;
     //protected MessageDaoUtils messageDaoUtils;
     protected Object lock = new Object();
+    protected NeulinkTopicParser.Topic topic;
 
     public GProcessor(Context context) {
         this.context = context;
@@ -31,9 +32,11 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
 
     public void execute(NeulinkTopicParser.Topic topic, String payload) {
 
+        this.topic = topic;
+
         payload = auth(topic,payload);
 
-        String resTopic = String.format("rrpc/res/%s",topic.getBiz());
+        String resTopic = resTopic();
         /**
          * 发送响应消息给到服务端
          */
@@ -201,6 +204,10 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
 
     }
 
+    protected String resTopic(){
+        return topic.getPrefix()+"/res/"+biz();
+    }
+
     /**
      * 命令消息到达是日志状态默认为处理中，只有无法响应的请求【eg:reboot】消息到达是日志记录的状态是成功
      *
@@ -231,7 +238,9 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
 
     protected abstract Res fail(Req t,int code, String error);
 
-    protected abstract String resTopic();
+    protected String biz(){
+        return topic.getBiz();
+    }
 
     protected abstract ICmdListener getListener();
 }
