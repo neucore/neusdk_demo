@@ -1,4 +1,54 @@
 package com.neucore.neulink.impl.proc;
 
-public class SceneProcessor {
+import android.content.Context;
+
+import com.neucore.neulink.cmd.rrpc.SceneSyncCmd;
+import com.neucore.neulink.cmd.rrpc.SceneSyncCmdRes;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.util.JSonUtils;
+
+/**
+ * 场景感应下发
+ */
+public class SceneProcessor extends GProcessor<SceneSyncCmd, SceneSyncCmdRes,String> {
+    public SceneProcessor(Context context) {
+        super(context);
+    }
+
+    @Override
+    public String process(NeulinkTopicParser.Topic topic, SceneSyncCmd payload) {
+        return "待实现";
+    }
+
+    @Override
+    public SceneSyncCmd parser(String payload) {
+        return (SceneSyncCmd) JSonUtils.toObject(payload, SceneSyncCmd.class);
+    }
+
+    @Override
+    protected SceneSyncCmdRes responseWrapper(SceneSyncCmd t, String result) {
+        return null;
+    }
+
+    @Override
+    protected SceneSyncCmdRes fail(SceneSyncCmd t, String error) {
+        return null;
+    }
+
+    @Override
+    protected SceneSyncCmdRes fail(SceneSyncCmd t, int code, String error) {
+        return null;
+    }
+
+    @Override
+    protected String resTopic() {
+        return null;
+    }
+
+    @Override
+    protected ICmdListener getListener() {
+        return null;
+    }
 }
