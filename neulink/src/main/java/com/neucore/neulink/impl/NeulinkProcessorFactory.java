@@ -13,11 +13,14 @@ import com.neucore.neulink.impl.proc.DebugProcessor;
 import com.neucore.neulink.impl.proc.FirewareProcessor;
 import com.neucore.neulink.impl.proc.FirewareProcessorResume;
 import com.neucore.neulink.impl.proc.HibrateProcessor;
+import com.neucore.neulink.impl.proc.PanelctrlProcessor;
 import com.neucore.neulink.impl.proc.QCfgProcessor;
 import com.neucore.neulink.impl.proc.QLibProcessor;
 import com.neucore.neulink.impl.proc.QLogProcessor;
 import com.neucore.neulink.impl.proc.RebootProcessor;
 import com.neucore.neulink.impl.proc.RecoverProcessor;
+import com.neucore.neulink.impl.proc.RsvctrlProcessor;
+import com.neucore.neulink.impl.proc.SceneProcessor;
 import com.neucore.neulink.impl.proc.ShellProcessor;
 import com.neucore.neulink.impl.proc.ReserveProcessor;
 
@@ -105,10 +108,18 @@ public class NeulinkProcessorFactory {
         else if("check".equalsIgnoreCase(topic.getBiz())){//数据校验处理器
             processors.put(topic.getBiz(),new CheckProcessor(context));
         }
-        else if("reserve".equalsIgnoreCase(topic.getBiz())){//数据校验处理器
+        else if("reserve".equalsIgnoreCase(topic.getBiz())){//预约
             processors.put(topic.getBiz(),new ReserveProcessor(context));
         }
+        else if("rsvctrl".equalsIgnoreCase(topic.getBiz())){//预约控制
+            processors.put(topic.getBiz(),new RsvctrlProcessor(context));
+        }
+        else if("panelctrl".equalsIgnoreCase(topic.getBiz())){//面板控制
+            processors.put(topic.getBiz(),new PanelctrlProcessor(context));
+        }
+        else if("scene".equalsIgnoreCase(topic.getBiz())){//感应控制
+            processors.put(topic.getBiz(),new SceneProcessor(context));
+        }
         return processors.get(topic.getBiz());
-
     }
 }

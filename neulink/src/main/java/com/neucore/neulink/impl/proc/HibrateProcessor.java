@@ -78,11 +78,6 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     }
 
     @Override
-    protected String resTopic(){
-        return "rmsg/res/hibrate";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getHibrateListener();
     }

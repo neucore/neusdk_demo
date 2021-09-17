@@ -240,11 +240,6 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/qlog";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

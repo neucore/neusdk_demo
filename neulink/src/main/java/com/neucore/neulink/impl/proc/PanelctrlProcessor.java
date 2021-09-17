@@ -44,11 +44,6 @@ public class PanelctrlProcessor extends GProcessor<PanelCtrlSyncCmd, PanelCtrlSy
     }
 
     @Override
-    protected String resTopic() {
-        return null;
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

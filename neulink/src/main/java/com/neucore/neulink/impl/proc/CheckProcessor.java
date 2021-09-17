@@ -65,11 +65,6 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/check";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getFaceCheckListener();
     }

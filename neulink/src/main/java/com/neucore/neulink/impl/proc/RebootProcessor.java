@@ -69,10 +69,6 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
         res.setMsg(error);
         return res;
     }
-    @Override
-    protected String resTopic(){//不需要响应
-        return null;
-    }
 
     @Override
     protected ICmdListener getListener() {

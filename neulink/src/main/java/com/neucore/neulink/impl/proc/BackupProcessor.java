@@ -72,11 +72,6 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/backup";
-    }
-
-    @Override
     protected ICmdListener<QueryResult> getListener() {
         return ListenerFactory.getInstance().getBackupListener();
     }

@@ -82,11 +82,6 @@ public class AwakenProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String
     }
 
     @Override
-    protected String resTopic(){
-        return "rmsg/res/awaken";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getAwakenListener();
     }

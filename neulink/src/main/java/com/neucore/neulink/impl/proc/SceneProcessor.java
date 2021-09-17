@@ -43,11 +43,6 @@ public class SceneProcessor extends GProcessor<SceneSyncCmd, SceneSyncCmdRes,Str
     }
 
     @Override
-    protected String resTopic() {
-        return null;
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }

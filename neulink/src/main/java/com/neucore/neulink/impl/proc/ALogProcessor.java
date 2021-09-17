@@ -79,8 +79,8 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/alog";
+    protected String biz() {
+        return "alog";
     }
 
     @Override

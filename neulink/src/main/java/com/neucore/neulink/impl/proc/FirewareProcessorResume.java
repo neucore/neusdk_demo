@@ -120,11 +120,6 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/firmware";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getFireware$ApkListener();
     }

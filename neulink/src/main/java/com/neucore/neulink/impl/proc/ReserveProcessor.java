@@ -87,11 +87,6 @@ public class ReserveProcessor extends GProcessor<ReserveSyncCmd, CmdRes,Map<Stri
     }
 
     @Override
-    protected String resTopic(){
-        return "rrpc/res/reserve";
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getReserveListener();
     }

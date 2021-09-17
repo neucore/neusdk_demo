@@ -43,11 +43,6 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    protected String resTopic() {
-        return null;
-    }
-
-    @Override
     protected ICmdListener getListener() {
         return null;
     }
