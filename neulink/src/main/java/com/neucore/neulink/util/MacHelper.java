@@ -104,7 +104,7 @@ public class MacHelper {
         if(wifiMac==null||wifiMac.trim().length()==0){
             wifiMac = ifconfig("eth0");
         }
-         return wifiMac;
+        return wifiMac;
     }
 
     private static String ifconfig(String name){
@@ -154,6 +154,46 @@ public class MacHelper {
         return info.getMacAddress();
     }
 
+
+    public static String getEthernetMac() {
+
+        try {
+            Process pp = Runtime.getRuntime().exec("ifconfig eth0");
+            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            String readLine = "";
+
+            String mac = "";
+
+            for (; null != readLine;) {
+                readLine = input.readLine();
+                //Log.d(TAG, "readLine= " + readLine);
+                if (readLine != null ) {
+                    String infoStr = readLine.trim();
+                    Log.d(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
+                    if(readLine.contains("HWaddr")){
+
+                        if(infoStr != null){
+                            infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
+                            String[] values = infoStr.split(" ");
+                            for (String str: values){
+                                if (str != null && !str.isEmpty() && str.contains(":")){
+                                    mac = str;
+                                    Log.d(TAG, "getEthernetMac Mac= " + mac);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return mac;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public static String[] getEthernetInfoFromIfconfig() {
 
