@@ -70,8 +70,11 @@ public class Register extends BroadcastReceiver {
          */
         String devId = DeviceUtils.getDeviceId(context)+"@@"+ ListenerFactory.getInstance().getDeviceService().getSN()+"@@"+ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
         deviceInfo.setDeviceId(devId);
+        String mac = MacHelper.getEthernetMac();
+        if(ObjectUtil.isEmpty(mac)){
+            mac = MacHelper.getWifiMac(context);
+        }
 
-        String mac = MacHelper.getWifiMac(context);
         deviceInfo.setMac(mac);
 
         deviceInfo.setTag(AppUtils.getVersionName(context));
