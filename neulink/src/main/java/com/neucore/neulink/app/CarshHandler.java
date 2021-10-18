@@ -18,7 +18,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 
 public class CarshHandler implements UncaughtExceptionHandler {
-	private String TAG = "CarshHandler";
+	private String TAG = NeulinkConst.TAG_PREFIX+"CarshHandler";
 	private static CarshHandler mCrashHandler;
 	private UncaughtExceptionHandler mDefaultHandler;
 	Context context;
@@ -74,7 +74,7 @@ public class CarshHandler implements UncaughtExceptionHandler {
 			String result = writer.toString();
 			sb.append(result);
 			LogUtils.e("error"+result);
-			String path = DeviceUtils.getLogPath(context) +File.separator+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(System.currentTimeMillis()) + Const.LOG_CARSH;
+			String path = DeviceUtils.getLogPath(context) +File.separator+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(System.currentTimeMillis()) + NeulinkConst.LOG_CARSH;
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File dir = new File(path);
 				if (!dir.getParentFile().exists()) {
@@ -98,7 +98,7 @@ public class CarshHandler implements UncaughtExceptionHandler {
 			@Override
 			public boolean accept(File pathname) {
 				String name = pathname.getName();
-				if(name.indexOf(Const.LOG_CARSH)!=-1){
+				if(name.indexOf(NeulinkConst.LOG_CARSH)!=-1){
 					return true;
 				}
 				return false;

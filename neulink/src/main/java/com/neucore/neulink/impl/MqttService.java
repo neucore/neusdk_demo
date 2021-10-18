@@ -3,6 +3,8 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -14,7 +16,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class MqttService {
 
-    private final String TAG = "MqttService";
+    private final String TAG = NeulinkConst.TAG_PREFIX+"MqttService";
     private boolean canDoConnect = true;
 
     private MqttAndroidClient client;

@@ -10,12 +10,13 @@ import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvide
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.neucore.neulink.IStorage;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
 
 public class OSSStorage extends AbsStorage implements IStorage {
 
-    private String TAG = "OSSStorage";
+    private String TAG = NeulinkConst.TAG_PREFIX+"OSSStorage";
 
     private static OSS getOSSClient() {
         OSSCredentialProvider credentialProvider =

@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.DeviceUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -13,7 +14,7 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
  * 终端消费者
  */
 public class NeulinkSubscriberFacde {
-    private String TAG = "SubscriberFacde";
+    private String TAG = NeulinkConst.TAG_PREFIX+"SubscriberFacde";
 
     private Context context;
     private NeulinkService service;

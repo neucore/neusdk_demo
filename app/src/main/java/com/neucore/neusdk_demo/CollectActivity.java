@@ -47,7 +47,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neusdk_demo.db.bean.User;
 import com.neucore.neusdk_demo.neucore.FaceProcessing;
 import com.neucore.neusdk_demo.utils.FileAccess;
@@ -96,15 +96,15 @@ public class CollectActivity extends AppCompatActivity {
                         Toast.makeText(CollectActivity.this,"请先采集人脸",Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    path=Const.picPath+System.currentTimeMillis()+".jpg";
-                    if(!new File(Const.picPath).exists())new File(Const.picPath).mkdirs();
+                    path= NeulinkConst.picPath+System.currentTimeMillis()+".jpg";
+                    if(!new File(NeulinkConst.picPath).exists())new File(NeulinkConst.picPath).mkdirs();
 //                    FileUtils.getFileFromBytes(data,path);
                     if(b!=null){
                         try {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             byte[] data2 = baos.toByteArray();
-                            FileAccess.writeFileSdcard(Const.picPath,path,data2);
+                            FileAccess.writeFileSdcard(NeulinkConst.picPath,path,data2);
                             b.recycle();
                         }catch (Exception e){
                             e.printStackTrace();

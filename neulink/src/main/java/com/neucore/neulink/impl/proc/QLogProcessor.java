@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.GProcessor;
@@ -148,7 +148,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
             @Override
             public boolean accept(File pathname) {
                 String name = pathname.getName();
-                if(name.indexOf(Const.LOG_CARSH)==-1){
+                if(name.indexOf(NeulinkConst.LOG_CARSH)==-1){
                     return false;
                 }
                 try {

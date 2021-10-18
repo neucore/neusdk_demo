@@ -21,6 +21,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -52,7 +53,7 @@ import java.util.List;
  *
  */
 public class LogService extends Service {
-    private static final String TAG = "LogService";
+    private static final String TAG = NeulinkConst.TAG_PREFIX+"LogService";
 
     private static final int MEMORY_LOG_FILE_MAX_SIZE = 10 * 1024 * 1024;			//内存中日志文件最大值，10M
     private static final int MEMORY_LOG_FILE_MONITOR_INTERVAL = 10 * 60 * 1000;		//内存中的日志文件大小监控时间间隔，10分钟

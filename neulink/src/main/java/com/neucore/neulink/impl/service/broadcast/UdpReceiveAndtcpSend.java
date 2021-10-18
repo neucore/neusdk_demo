@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.service.broadcast;
 
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -15,7 +16,7 @@ import java.net.MulticastSocket;
 import java.net.Socket;
 
 public class UdpReceiveAndtcpSend extends  Thread {
-    private String TAG = "UdpReceiveAndtcpSend";
+    private String TAG = NeulinkConst.TAG_PREFIX+"UdpReceiveAndtcpSend";
     private MulticastSocket ms = null;
     private DatagramPacket dp = null;
     private Socket socket = null;

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import okhttp3.OkHttpClient;
@@ -38,7 +39,7 @@ import okhttp3.Response;
  }
  */
 public class FileDownloader {
-    private static final String TAG = "FileDownloader";
+    private static final String TAG = NeulinkConst.TAG_PREFIX+"FileDownloader";
     private Context context;
     private FileService fileService = FileService.getInstance();
     /* 已下载文件长度 */

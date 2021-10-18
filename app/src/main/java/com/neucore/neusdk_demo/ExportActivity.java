@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neusdk_demo.db.bean.Record;
 import com.neucore.neusdk_demo.db.bean.User;
 import com.neucore.neusdk_demo.db.RecordDaoUtils;
@@ -148,8 +148,8 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
      * @param datas
      */
     private void exportExcel(String tableName,List<User> datas) {
-        if(!new File(Const.fileExport).exists())new File(Const.fileExport).mkdirs();
-        ExcelUtils excelUtils = ExcelUtils.getInstance().create(Const.fileExport, tableName);
+        if(!new File(NeulinkConst.fileExport).exists())new File(NeulinkConst.fileExport).mkdirs();
+        ExcelUtils excelUtils = ExcelUtils.getInstance().create(NeulinkConst.fileExport, tableName);
         List<Object> javaBeans=new ArrayList<>();
         for (int i=0;i<datas.size();i++) {
             User user=datas.get(i);
@@ -167,10 +167,10 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
         } catch (WriteException e) {
             Log.e(TAG,"exportExcel",e);
         }
-        MediaScannerConnection.scanFile(this, new String[] { Const.fileExport+tableName+".xls" }, null, null);
+        MediaScannerConnection.scanFile(this, new String[] { NeulinkConst.fileExport+tableName+".xls" }, null, null);
         Message msg= new Message();
         msg.what=0;
-        msg.obj= Const.fileExport+tableName+".xls";
+        msg.obj= NeulinkConst.fileExport+tableName+".xls";
         handler.sendMessage(msg);
     }
     /**
@@ -180,8 +180,8 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
      */
     private void exportRecordExcel(String tableName,List<Record> datas) {
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm");
-        if(!new File(Const.fileExport).exists())new File(Const.fileExport).mkdirs();
-        ExcelUtils excelUtils = ExcelUtils.getInstance().create(Const.fileExport, tableName);
+        if(!new File(NeulinkConst.fileExport).exists())new File(NeulinkConst.fileExport).mkdirs();
+        ExcelUtils excelUtils = ExcelUtils.getInstance().create(NeulinkConst.fileExport, tableName);
         List<Object> javaBeans=new ArrayList<>();
         for (int i=0;i<datas.size();i++) {
             Record record=datas.get(i);
@@ -215,7 +215,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
         }
         Message msg= new Message();
         msg.what=0;
-        msg.obj= Const.fileExport+tableName+".xls";
+        msg.obj= NeulinkConst.fileExport+tableName+".xls";
         handler.sendMessage(msg);
     }
     private Handler handler=new Handler(){

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neusdk_demo.db.RecordDaoUtils;
 import com.neucore.neusdk_demo.db.UserDaoUtils;
 import com.neucore.neusdk_demo.utils.CleanMessageUtil;
@@ -47,7 +47,7 @@ public class DataManagerActivity extends AppCompatActivity implements Permission
             switch (v.getId()){
                 case R.id.ll_data_user:
                     if(!mRecordDaoUtils.deleteAll())Toast.makeText(DataManagerActivity.this, "删除考勤记录失败", Toast.LENGTH_SHORT).show();
-                    if(!CleanMessageUtil.deleteDir(new File(Const.filePath))) Toast.makeText(DataManagerActivity.this, "删除本地数据失败", Toast.LENGTH_SHORT).show();
+                    if(!CleanMessageUtil.deleteDir(new File(NeulinkConst.filePath))) Toast.makeText(DataManagerActivity.this, "删除本地数据失败", Toast.LENGTH_SHORT).show();
                     if(!mUserDaoUtils.deleteAll()) Toast.makeText(DataManagerActivity.this, "删除用户数据失败", Toast.LENGTH_SHORT).show();
                     Toast.makeText(DataManagerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     break;
@@ -58,7 +58,7 @@ public class DataManagerActivity extends AppCompatActivity implements Permission
                         Toast.makeText(DataManagerActivity.this, "删除考勤记录失败", Toast.LENGTH_SHORT).show();
                     }                    break;
                 case R.id.ll_data_data:
-                    if(CleanMessageUtil.deleteDir(new File(Const.photoPath))) {
+                    if(CleanMessageUtil.deleteDir(new File(NeulinkConst.photoPath))) {
                         Toast.makeText(DataManagerActivity.this, "删除抓拍照片成功", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(DataManagerActivity.this, "删除抓拍照片失败", Toast.LENGTH_SHORT).show();

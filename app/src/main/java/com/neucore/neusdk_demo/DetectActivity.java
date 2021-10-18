@@ -43,7 +43,7 @@ import com.neucore.NeuSDK.NeuHandClass1;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.camera2.NeuCameraUtil;
 import com.neucore.neusdk_demo.db.RecordDaoUtils;
@@ -120,11 +120,11 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    String path = Const.photoPath + new Date().getTime() + ".jpg";
-                    if (!new File(Const.photoPath).exists()) new File(Const.photoPath).mkdirs();
+                    String path = NeulinkConst.photoPath + new Date().getTime() + ".jpg";
+                    if (!new File(NeulinkConst.photoPath).exists()) new File(NeulinkConst.photoPath).mkdirs();
 //                    FileUtils.getFileFromBytes(data,path);
                     if (data != null)
-                        FileAccess.writeFileSdcard(Const.photoPath, path, data);
+                        FileAccess.writeFileSdcard(NeulinkConst.photoPath, path, data);
                     Record record = new Record(null, user.getName(), user.getCardId(),
                             user.getUserId(), path, new Date().getTime(), user.getOrg(), 0, 0, 0);
                     boolean b = mRecordDaoUtils.insertRecord(record);
