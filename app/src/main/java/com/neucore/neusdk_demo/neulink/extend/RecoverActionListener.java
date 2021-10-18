@@ -1,18 +1,18 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupItem;
+import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.impl.NeuLinkConstant;
-import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.io.IOException;
 
-public class RecoverActionListener implements ICmdListener<Result>, NeuLinkConstant {
+public class RecoverActionListener implements ICmdListener<Result>, NeulinkConst {
     @Override
     public Result doAction(NeulinkEvent event) {
         /**

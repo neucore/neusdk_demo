@@ -2,6 +2,7 @@ package com.neucore.neulink.extend;
 
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.CfgCmd;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
@@ -11,7 +12,7 @@ import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 import java.util.Map;
 
 public class ListenerFactory {
-    private String TAG = "ListenerFactory";
+    private String TAG = NeulinkConst.TAG_PREFIX+"ListenerFactory";
 
     private ICmdListener<Result> alogListener = new ICmdListener<Result>() {
         @Override

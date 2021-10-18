@@ -12,6 +12,7 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
+import com.neucore.neulink.util.NetworkHelper;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;

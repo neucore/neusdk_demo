@@ -11,10 +11,12 @@ import java.util.Map;
 
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import okhttp3.Response;
 
 public class DownloadThread extends Thread {
-    private static final String TAG = "DownloadThread";
+    private static final String TAG = NeulinkConst.TAG_PREFIX+"DownloadThread";
     private File saveFile;
     private String downUrl;
     private long block;

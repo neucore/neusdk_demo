@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.cmd.lic.LicUpldCmd;
 import com.neucore.neulink.cmd.rmsg.UpgrRes;
@@ -19,7 +20,7 @@ import cn.hutool.core.util.ObjectUtil;
  */
 public class NeulinkPublisherFacde {
 
-    private String TAG = "PublisherFacde";
+    private String TAG = NeulinkConst.TAG_PREFIX+"PublisherFacde";
 
     private static Context context;
     private static NeulinkService service;

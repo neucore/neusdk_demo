@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.neulink.app.Const;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neusdk_demo.app.MyApplication;
@@ -178,8 +178,8 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!new File(Const.filePath).exists()){
-                    new File(Const.filePath).mkdirs();
+                if(!new File(NeulinkConst.filePath).exists()){
+                    new File(NeulinkConst.filePath).mkdirs();
                 }
                 HelpUtil.createFileNB();
                 //初始化拷贝nb文件

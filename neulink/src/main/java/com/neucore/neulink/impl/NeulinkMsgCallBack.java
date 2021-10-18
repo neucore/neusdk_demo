@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.RequestContext;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 public class NeulinkMsgCallBack implements IMqttCallBack {
 
-    private String TAG = "EasyMqttCallBack";
+    private String TAG = NeulinkConst.TAG_PREFIX+"EasyMqttCallBack";
 
     private Context context;
     private NeulinkService service;

@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupCmd;
 import com.neucore.neulink.cmd.bak.BackupCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
@@ -10,14 +11,13 @@ import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryResult;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.NeuLinkConstant;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> implements NeuLinkConstant {
+public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> implements NeulinkConst {
 
     public BackupProcessor(Context context) {
         super(context);

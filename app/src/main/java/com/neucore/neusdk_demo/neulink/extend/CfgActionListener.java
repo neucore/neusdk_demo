@@ -1,14 +1,14 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.CfgCmd;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.impl.NeuLinkConstant;
 
-public class CfgActionListener implements ICmdListener<Result>, NeuLinkConstant {
+public class CfgActionListener implements ICmdListener<Result>, NeulinkConst {
     @Override
     public Result doAction(NeulinkEvent event) {
         CfgCmd cmd = (CfgCmd) event.getSource();

@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.service.storage;
 import android.util.Log;
 
 import com.neucore.neulink.IStorage;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import cn.hutool.extra.ftp.FtpMode;
 
 public class MyFTPStorage extends AbsStorage implements IStorage {
 
-    private String TAG = "MyFTPStorage";
+    private String TAG = NeulinkConst.TAG_PREFIX+"MyFTPStorage";
 
     private String server = "";
 

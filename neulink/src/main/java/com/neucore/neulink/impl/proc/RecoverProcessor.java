@@ -3,22 +3,22 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.cmd.recv.RecoverCmd;
+import com.neucore.neulink.cmd.recv.RecoverCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.NeuLinkConstant;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.cmd.recv.RecoverCmd;
-import com.neucore.neulink.cmd.recv.RecoverCmdRes;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.io.IOException;
 
-public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,String> implements NeuLinkConstant {
+public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,String> implements NeulinkConst {
 
     public RecoverProcessor(Context context) {
         super(context);

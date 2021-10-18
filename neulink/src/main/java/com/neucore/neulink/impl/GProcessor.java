@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.JSonUtils;
@@ -15,7 +16,7 @@ import java.io.PrintStream;
 
 public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> implements IProcessor {
 
-    protected String TAG = this.getClass().getSimpleName();
+    protected String TAG = NeulinkConst.TAG_PREFIX+this.getClass().getSimpleName();
     private Context context;
     //protected MessageDaoUtils messageDaoUtils;
     protected Object lock = new Object();
