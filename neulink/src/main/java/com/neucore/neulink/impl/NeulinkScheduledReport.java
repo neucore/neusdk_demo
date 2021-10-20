@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
@@ -30,6 +31,7 @@ public class NeulinkScheduledReport {
     private  Context context;
     private  NeulinkService service;
     private Boolean started = false;
+    private String TAG = "NeulinkScheduledReport";
 
     public NeulinkScheduledReport(Context context, NeulinkService service) {
         this.context = context;
@@ -58,14 +60,17 @@ public class NeulinkScheduledReport {
         new Thread("status") {
             public void run() {
                 while (!service.getDestroy() && true) {
+                    try {
+                        Status status = new Status();
+                        status.setDeviceId(DeviceUtils.getDeviceId(context));
 
-                    Status status = new Status();
-                    status.setDeviceId(DeviceUtils.getDeviceId(context));
-
-                    String payload = JSonUtils.toString(status);
-                    String topic = "msg/req/status";
-                    service.publishMessage(topic, IProcessor.V1$0, payload, 0);
-
+                        String payload = JSonUtils.toString(status);
+                        String topic = "msg/req/status";
+                        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                    }
+                    catch(Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                     try {
                         Thread.sleep(1000 * 30);
                     } catch (Exception e) {
@@ -89,41 +94,44 @@ public class NeulinkScheduledReport {
                         Thread.sleep(1000 * 60);
                     } catch (Exception e) {
                     }
-
-                    Stat stat = new Stat();
-
-                    stat.setDeviceId(DeviceUtils.getDeviceId(context));
-
-                    CPUInfo cpuInfo = new CPUInfo();
-
-                    cpuInfo.setUsed(CpuStat.getCpuUsed());
-                    float temp = 0f;
                     try {
-                        temp = Float.parseFloat(CpuStat.getCpuTemp());
+                        Stat stat = new Stat();
+
+                        stat.setDeviceId(DeviceUtils.getDeviceId(context));
+
+                        CPUInfo cpuInfo = new CPUInfo();
+
+                        cpuInfo.setUsed(CpuStat.getCpuUsed());
+                        float temp = 0f;
+                        try {
+                            temp = Float.parseFloat(CpuStat.getCpuTemp());
+                        } catch (Exception ex) {
+                        }
+                        cpuInfo.setTemp(temp);
+
+                        stat.setCpu(cpuInfo);
+
+                        MemInfo memInfo = new MemInfo();
+
+                        long total = MemoryUtils.getTotalMemory();
+                        long free = MemoryUtils.getFreeMemorySize(context);
+                        memInfo.setTotal(total);
+                        memInfo.setUsed(total - free);
+                        stat.setMem(memInfo);
+
+                        DiskInfo diskInfo = DeviceUtils.readSystem();
+                        stat.setDisk(diskInfo);
+
+                        SDInfo sdInfo = DeviceUtils.readSD();
+
+                        stat.setSdInfo(sdInfo);
+
+                        String payload = JSonUtils.toString(stat, Double.class, new DoubleSerializer(2));
+                        String topic = "msg/req/stat";
+                        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                    }catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
                     }
-                    catch (Exception ex){}
-                    cpuInfo.setTemp(temp);
-
-                    stat.setCpu(cpuInfo);
-
-                    MemInfo memInfo = new MemInfo();
-
-                    long total = MemoryUtils.getTotalMemory();
-                    long free = MemoryUtils.getFreeMemorySize(context);
-                    memInfo.setTotal(total);
-                    memInfo.setUsed(total-free);
-                    stat.setMem(memInfo);
-
-                    DiskInfo diskInfo = DeviceUtils.readSystem();
-                    stat.setDisk(diskInfo);
-
-                    SDInfo sdInfo = DeviceUtils.readSD();
-
-                    stat.setSdInfo(sdInfo);
-
-                    String payload = JSonUtils.toString(stat,Double.class,new DoubleSerializer(2));
-                    String topic = "msg/req/stat";
-                    service.publishMessage(topic, IProcessor.V1$0, payload, 0);
                 }
             }
         }.start();
@@ -143,42 +151,46 @@ public class NeulinkScheduledReport {
                         Thread.sleep(1000*60);
                     }
                     catch (Exception ex){}
-                    File[] logfiles = CarshHandler.getIntance().getFiles();
-                    int len = logfiles==null?0:logfiles.length;
-                    StringBuffer sb = new StringBuffer();
-                    for(int i=0;i<len;i++){
-                        File tmp = logfiles[i];
-                        int readed = 0;
-                        byte[] buffer = new byte[1024];
-                        FileInputStream fileInputStream = null;
-                        String name = null;
-                        try {
-                            fileInputStream = new FileInputStream(tmp);
-                            while ((readed=fileInputStream.read(buffer))!=-1) {
-                                sb.append(new String(buffer,0,readed));
-                            }
-                            name = tmp.getName();
-                            tmp.delete();
-                        }
-                        catch (Throwable ex){
-                        }
-                        finally {
-                            if(fileInputStream!=null){
-                                try {
-                                    fileInputStream.close();
-                                } catch (IOException e) {
+                    try {
+                        File[] logfiles = CarshHandler.getIntance().getFiles();
+                        int len = logfiles == null ? 0 : logfiles.length;
+                        StringBuffer sb = new StringBuffer();
+                        for (int i = 0; i < len; i++) {
+                            File tmp = logfiles[i];
+                            int readed = 0;
+                            byte[] buffer = new byte[1024];
+                            FileInputStream fileInputStream = null;
+                            String name = null;
+                            try {
+                                fileInputStream = new FileInputStream(tmp);
+                                while ((readed = fileInputStream.read(buffer)) != -1) {
+                                    sb.append(new String(buffer, 0, readed));
+                                }
+                                name = tmp.getName();
+                                tmp.delete();
+                            } catch (Throwable ex) {
+                                Log.e(TAG, ex.getMessage());
+                            } finally {
+                                if (fileInputStream != null) {
+                                    try {
+                                        fileInputStream.close();
+                                    } catch (IOException e) {
+                                    }
                                 }
                             }
+                            LogUploadCmd req = new LogUploadCmd();
+                            req.setDeviceId(DeviceUtils.getDeviceId(context));
+                            req.setReqId(UUID.randomUUID().toString());
+                            req.setMsg(sb.toString());
+                            int index = name.lastIndexOf(".");
+                            req.setTime(name.substring(0, index));
+                            String payload = JSonUtils.toString(req);
+                            String topic = "upld/req/rlog";
+                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
                         }
-                        LogUploadCmd req = new LogUploadCmd();
-                        req.setDeviceId(DeviceUtils.getDeviceId(context));
-                        req.setReqId(UUID.randomUUID().toString());
-                        req.setMsg(sb.toString());
-                        int index = name.lastIndexOf(".");
-                        req.setTime(name.substring(0,index));
-                        String payload = JSonUtils.toString(req);
-                        String topic = "upld/req/rlog";
-                        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
                     }
                 }
             }
