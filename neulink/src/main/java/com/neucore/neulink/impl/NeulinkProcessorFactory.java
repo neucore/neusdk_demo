@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.proc.ALogProcessor;
@@ -26,10 +27,13 @@ import com.neucore.neulink.impl.proc.ReserveProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+
 public class NeulinkProcessorFactory {
 
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
-
+    private static String TAG = "NeulinkProcessorFactory";
     /**
      *
      * 设备重启 rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
@@ -119,6 +123,17 @@ public class NeulinkProcessorFactory {
         }
         else if("scene".equalsIgnoreCase(topic.getBiz())){//感应控制
             processors.put(topic.getBiz(),new SceneProcessor(context));
+        }
+        else{
+            String biz = StrUtil.upperFirst(topic.getBiz());
+            try {
+                Class cls = Class.forName("com.neucore.neulink.extend.impl." + biz + "Processor");
+                GProcessor processor = (GProcessor) cls.newInstance();
+                processors.put(topic.getBiz(),processor);
+            }
+            catch (Exception ex){
+                Log.e(TAG,ex.getMessage());
+            }
         }
         return processors.get(topic.getBiz());
     }

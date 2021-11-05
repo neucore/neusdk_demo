@@ -9,6 +9,7 @@ import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
@@ -19,6 +20,7 @@ import com.neucore.neusdk_demo.neulink.extend.BackupActionListener;
 import com.neucore.neusdk_demo.neulink.extend.CfgActionListener;
 import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
 import com.neucore.neusdk_demo.neulink.SampleConnector;
+import com.neucore.neusdk_demo.neulink.extend.MessageServiceImpl;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
@@ -193,6 +195,11 @@ public class MyApplication extends Application
              * 启用
              */
             //new SampleFaceUpload().v12sample();
+
+            /**
+             * neulink消息线性处理存储服务
+             */
+            ServiceFactory.getInstance().setMessageService(new MessageServiceImpl(getContext()));
         }
     };
 }

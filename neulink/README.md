@@ -10,7 +10,13 @@
 
 2，在xxxProcessor的process方法中处理，及集成外部扩展机制；具体可以参考ALogProcessor的实现
 
-3，在NeulinkProcessorFactory注册第一步的xxxProcessor的实现类
+3，在NeulinkProcessorFactory注册第一步的xxxProcessor的实现类 
+
+3.1 或者 新增一个XXXProcessor继承实现GProcessor放图到【com.neucore.neulink.extend.impl包内】；同时XXX就是topic第四段；
+
+eg：重启处理器
+topic：rmsg/req/${dev_id}/reboot/v1.0/${req_no}[/${md5}]；
+processor：包名com.neucore.neulink.extend.impl；类命名为RebootProcessor;
 
 4，定义xxxCmdListener实现ICmdListener
 
