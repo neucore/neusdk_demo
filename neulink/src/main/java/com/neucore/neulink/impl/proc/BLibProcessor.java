@@ -5,12 +5,15 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.IMessage;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rrpc.BTLibSyncCmd;
 import com.neucore.neulink.cmd.rrpc.BTLibSyncRes;
@@ -34,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.util.ObjectUtil;
+
 /**
  * 目标库处理器
  */
@@ -42,8 +47,6 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync",PUSH = "push";
     final private String OBJ_TYPE_FACE = "face";
     private String libDir;
-
-    private Object lock = new Object();
 
     public BLibProcessor(Context context){
         super(context);
@@ -57,16 +60,20 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
 
         long offset = cmd.getOffset();
 
-//        long lastOffset = msg.getOffset();
+        Long lastOffset = null;
 
-        //Log.i(TAG,"pages="+pages+",offset="+offset+",MsgOffset="+lastOffset+",PkgStatus="+msg.getPkgStatus());
+        if(ObjectUtil.isNotEmpty(msg)){
+            Log.i(TAG,"pages="+pages+",offset="+offset+",MsgOffset="+lastOffset+",PkgStatus="+msg.getPkgStatus());
 
-//        if(Message.STATUS_FAIL.equalsIgnoreCase(msg.getPkgStatus())){
-//            offset = msg.getOffset();
-//        }
-//        else if(Message.STATUS_SUCCESS.equalsIgnoreCase(msg.getStatus()) ){
-//            offset = lastOffset+1;
-//        }
+            lastOffset = msg.getOffset();
+
+            if(IMessage.STATUS_FAIL.equalsIgnoreCase(msg.getPkgStatus())){
+                offset = cmd.getOffset();
+            }
+            else if(IMessage.STATUS_SUCCESS.equalsIgnoreCase(msg.getStatus()) ){
+                offset = lastOffset+1;
+            }
+        }
 
         result.setTotal(cmd.getTotal());
         result.setPages(pages);
@@ -90,14 +97,18 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
                     resLstRsl2Cloud(topic, rsl);
                 }
                 Log.d(TAG,"成功完成人脸offset:"+i+"下载");
-                //updatePkg(msg.getId(),i, Message.STATUS_SUCCESS, "success");
+                if(ObjectUtil.isNotEmpty(msg)){
+                    updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, "success");
+                }
             }
             catch (Throwable ex){
                 Log.d(TAG,"人脸offset:"+i+"下载失败",ex);
                 Log.e(TAG,"process",ex);
                 result.setCode(500);
                 result.setMsg(ex.getMessage());
-                //updatePkg(msg.getId(),i, Message.STATUS_FAIL, ex.getMessage());
+                if(ObjectUtil.isNotEmpty(msg)){
+                    updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
+                }
                 return result;
             }
         }

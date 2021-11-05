@@ -1,6 +1,7 @@
 package com.neucore.neusdk_demo.db.bean;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.impl.IMessage;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -8,11 +9,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 
 @Entity
-public class Message {
+public class Message implements IMessage {
 
-    public final static String STATUS_PROCESS = "运行中";
-    public final static String STATUS_SUCCESS = "成功";
-    public final static String STATUS_FAIL = "失败";
     @SerializedName("id")
     @Id(autoincrement = true)
     private Long id;
