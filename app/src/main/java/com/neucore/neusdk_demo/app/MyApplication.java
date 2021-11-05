@@ -20,7 +20,7 @@ import com.neucore.neusdk_demo.neulink.extend.BackupActionListener;
 import com.neucore.neusdk_demo.neulink.extend.CfgActionListener;
 import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
 import com.neucore.neusdk_demo.neulink.SampleConnector;
-import com.neucore.neusdk_demo.neulink.extend.MessageServiceImpl;
+import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
@@ -199,7 +199,7 @@ public class MyApplication extends Application
             /**
              * neulink消息线性处理存储服务
              */
-            ServiceFactory.getInstance().setMessageService(new MessageServiceImpl(getContext()));
+            ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
         }
     };
 }

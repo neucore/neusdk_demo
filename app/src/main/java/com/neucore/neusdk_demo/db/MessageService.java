@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.neulink.extend;
+package com.neucore.neusdk_demo.db;
 
 import android.content.Context;
 
@@ -6,15 +6,14 @@ import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.impl.IMessage;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DatesUtil;
-import com.neucore.neusdk_demo.db.MessageDaoUtils;
 import com.neucore.neusdk_demo.db.bean.Message;
 
 import java.util.List;
 
-public class MessageServiceImpl implements IMessageService {
+public class MessageService implements IMessageService {
     private MessageDaoUtils messageDaoUtils;
 
-    public MessageServiceImpl(Context context){
+    public MessageService(Context context){
         messageDaoUtils = new MessageDaoUtils(context);
     }
 
