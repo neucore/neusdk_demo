@@ -154,6 +154,11 @@ NeulinkService.getInstance().destroy();
              * 人脸上报
              */
             //new SampleFaceUpload().v11sample();
+            
+            /**
+             * neulink消息线性处理存储服务
+             */
+            ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
         }
     };
     ```
