@@ -4,19 +4,13 @@
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$cpu_sn/#、rrpc/req/$cpu_sn/#、upld/res/$cpu_sn/#】订阅;
 
-1，实现payload的pojo对象，放到
+1，实现payload的pojo对象
 
-1，实现IProcessor接口，放到com.neucore.neulink.impl.proc包内，eg：xxxProcessor
+2，新增一个XXXProcessor继承实现GProcessor；并到【com.neucore.neulink.extend.impl包内】；同时XXX就是topic第四段；且首字母大写
 
-2，在xxxProcessor的process方法中处理，及集成外部扩展机制；具体可以参考ALogProcessor的实现
-
-3，在NeulinkProcessorFactory注册第一步的xxxProcessor的实现类 
-
-3.1 或者 新增一个XXXProcessor继承实现GProcessor放图到【com.neucore.neulink.extend.impl包内】；同时XXX就是topic第四段；
-
-eg：重启处理器
-topic：rmsg/req/${dev_id}/reboot/v1.0/${req_no}[/${md5}]；
-processor：包名com.neucore.neulink.extend.impl；类命名为RebootProcessor;
+eg：授权处理器
+topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
+processor：包名com.neucore.neulink.extend.impl；类命名为AuthProcessor;
 
 4，定义xxxCmdListener实现ICmdListener
 
