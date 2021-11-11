@@ -18,11 +18,6 @@ public class RsvctrlProcessor extends GProcessor<RsvctrlSynCmd, RsvctrlSynCmdRes
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, RsvctrlSynCmd payload) {
-        return "待实现";
-    }
-
-    @Override
     public RsvctrlSynCmd parser(String payload) {
         return (RsvctrlSynCmd) JSonUtils.toObject(payload, RsvctrlSynCmd.class);
     }
@@ -39,11 +34,6 @@ public class RsvctrlProcessor extends GProcessor<RsvctrlSynCmd, RsvctrlSynCmdRes
 
     @Override
     protected RsvctrlSynCmdRes fail(RsvctrlSynCmd t, int code, String error) {
-        return null;
-    }
-
-    @Override
-    protected ICmdListener getListener() {
         return null;
     }
 }

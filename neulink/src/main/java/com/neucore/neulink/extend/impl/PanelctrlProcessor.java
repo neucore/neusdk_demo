@@ -19,11 +19,6 @@ public class PanelctrlProcessor extends GProcessor<PanelCtrlSyncCmd, PanelCtrlSy
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, PanelCtrlSyncCmd payload) {
-        return "待实现";
-    }
-
-    @Override
     public PanelCtrlSyncCmd parser(String payload) {
         return (PanelCtrlSyncCmd) JSonUtils.toObject(payload, PanelCtrlSyncCmd.class);
     }
@@ -43,8 +38,4 @@ public class PanelctrlProcessor extends GProcessor<PanelCtrlSyncCmd, PanelCtrlSy
         return null;
     }
 
-    @Override
-    protected ICmdListener getListener() {
-        return null;
-    }
 }

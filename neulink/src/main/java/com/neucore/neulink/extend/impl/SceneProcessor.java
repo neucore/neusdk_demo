@@ -18,11 +18,6 @@ public class SceneProcessor extends GProcessor<SceneSyncCmd, SceneSyncCmdRes,Str
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, SceneSyncCmd payload) {
-        return "待实现";
-    }
-
-    @Override
     public SceneSyncCmd parser(String payload) {
         return (SceneSyncCmd) JSonUtils.toObject(payload, SceneSyncCmd.class);
     }
@@ -39,11 +34,6 @@ public class SceneProcessor extends GProcessor<SceneSyncCmd, SceneSyncCmdRes,Str
 
     @Override
     protected SceneSyncCmdRes fail(SceneSyncCmd t, int code, String error) {
-        return null;
-    }
-
-    @Override
-    protected ICmdListener getListener() {
         return null;
     }
 }
