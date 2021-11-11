@@ -9,6 +9,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
@@ -17,7 +18,9 @@ import com.neucore.neulink.util.MD5Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -39,7 +42,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
         return context;
     }
 
-    public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    final public void execute(NeulinkTopicParser.Topic topic, String payload) {
 
         this.topic = topic;
 
@@ -101,6 +104,30 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
                 String jsonStr = JSonUtils.toString(res);
                 resLstRsl2Cloud(topic, jsonStr);
             }
+        }
+    }
+
+    /**
+     * 默认实现
+     * @param topic
+     * @param cmd
+     * @return
+     */
+    public T process(NeulinkTopicParser.Topic topic, Req cmd) {
+        try {
+
+            ICmdListener<T> listener = getListener();
+            if(listener==null){
+                throw new NeulinkException(404,"awaken Listener does not implemention");
+            }
+            T result = listener.doAction(new NeulinkEvent(cmd));
+            return result;
+        }
+        catch (NeulinkException ex){
+            throw ex;
+        }
+        catch (Throwable ex){
+            throw new RuntimeException(ex);
         }
     }
 
@@ -221,14 +248,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     protected String getStatus() {
         return IMessage.STATUS_PROCESS;
     }
-
-    /**
-     * neulink协议处理
-     * @param topic
-     * @param payload
-     * @return
-     */
-    public abstract T process(NeulinkTopicParser.Topic topic, Req payload);
 
     /**
      * 解析处理

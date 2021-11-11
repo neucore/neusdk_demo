@@ -135,7 +135,7 @@ public class ListenerFactory {
         this.cfgListener = cfgListener;
     }
 
-    public void setAlogListener(ICmdListener alogListener) {
+    public void setAlogListener(String auth, ICmdListener alogListener) {
         this.alogListener = alogListener;
     }
 

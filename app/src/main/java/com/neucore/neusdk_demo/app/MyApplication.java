@@ -175,7 +175,7 @@ public class MyApplication extends Application
             /**
              * 算法升级 扩展
              */
-            ListenerFactory.getInstance().setAlogListener(new AlogUpgrdActionListener());
+            ListenerFactory.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
 
             /**
              * 固件$APK 升级扩展
@@ -217,6 +217,12 @@ public class MyApplication extends Application
              *             });
              *
              */
+            ListenerFactory.getInstance().setAlogListener("auth",new ICmdListener<String>(){
+                @Override
+                public String doAction(NeulinkEvent event) {
+                    return "hello";
+                }
+            });
         }
     };
 }

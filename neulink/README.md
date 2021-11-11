@@ -12,6 +12,72 @@ eg：授权处理器
 topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.impl；类命名为AuthProcessor;
 
+```
+package com.neucore.neulink.extend.impl;
+
+import android.content.Context;
+
+import com.neucore.neulink.cmd.rrpc.AuthSyncCmd;
+import com.neucore.neulink.cmd.rrpc.AuthSyncCmdRes;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.JSonUtils;
+
+/**
+ * 设备授权下发
+ * AuthSyncCmd:请求对象，
+ * AuthSyncCmdRes：响应对象
+ * String:actionListener的返回类型
+ */
+public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+    public AuthProcessor(Context context) {
+        super(context);
+    }
+
+    @Override
+    public AuthSyncCmd parser(String payload) {
+        return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
+    }
+
+    @Override
+    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setCmdStr(t.getCmdStr());
+        res.setCode(200);
+        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setData(result);
+        res.setMsg("成功");
+        return res;
+    }
+
+    @Override
+    protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setCmdStr(t.getCmdStr());
+        res.setCode(500);
+        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setData(error);
+        res.setMsg("失败");
+        return res;
+    }
+
+    @Override
+    protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setCmdStr(t.getCmdStr());
+        res.setCode(code);
+        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setData(error);
+        res.setMsg("失败");
+        return res;
+    }
+}
+
+
+```
+
 4，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
 5，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
@@ -25,7 +91,7 @@ ListenerFactory.getInstance().setListener("auth", new ICmdListener() {
            /**
             * 业务逻辑实现
             */
-          return null;
+          return "返回XXXProcess实现类的返回值的类型";
       }
   });
 ```

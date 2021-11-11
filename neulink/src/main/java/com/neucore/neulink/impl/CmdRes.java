@@ -2,7 +2,7 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CmdRes {
+public class CmdRes<T> {
 
     @SerializedName("mode")
     protected String cmdStr;
@@ -15,6 +15,9 @@ public class CmdRes {
 
     @SerializedName("dev_id")
     private String deviceId;
+
+    @SerializedName("data")
+    private T data;
 
     public String getCmdStr() {
         return cmdStr;
@@ -46,5 +49,13 @@ public class CmdRes {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }
