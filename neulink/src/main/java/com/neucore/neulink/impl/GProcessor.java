@@ -267,7 +267,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     }
 
     protected ICmdListener getListener(){
-        return ListenerFactory.getInstance().getListener(biz());
+        return ListenerFactory.getInstance().getExtendListener(biz());
     }
 }
 

@@ -206,10 +206,10 @@ public class MyApplication extends Application
             /**
              * 扩展其他Listener实现【auth】
              * XXX就是topic第四段；且首字母大写
-             * eg:topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
-             * 用auth替换下面的xxx;
+             * eg:topic：rrpc/req/${dev_id}/xxx/v1.0/${req_no}[/${md5}]；
              *
-             * ListenerFactory.getInstance().setListener("auth", new ICmdListener() {
+             *
+             * ListenerFactory.getInstance().setListener("xxx", new ICmdListener() {
              *                 @Override
              *                 public Object doAction(NeulinkEvent event) {
              *                     return null;
@@ -217,7 +217,7 @@ public class MyApplication extends Application
              *             });
              *
              */
-            ListenerFactory.getInstance().setAlogListener("auth",new ICmdListener<String>(){
+            ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
                 @Override
                 public String doAction(NeulinkEvent event) {
                     return "hello";

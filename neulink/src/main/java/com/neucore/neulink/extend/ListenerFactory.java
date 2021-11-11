@@ -208,11 +208,11 @@ public class ListenerFactory {
     }
 
     private Map<String,ICmdListener> listenerMap = new HashMap<>();
-    public ICmdListener getListener(String cmd){
+    public ICmdListener getExtendListener(String cmd){
         return listenerMap.get(cmd.toLowerCase());
     }
 
-    public void setListener(String cmd,ICmdListener listener){
+    public void setExtendListener(String cmd, ICmdListener listener){
         listenerMap.put(cmd.toLowerCase(),listener);
     }
 
