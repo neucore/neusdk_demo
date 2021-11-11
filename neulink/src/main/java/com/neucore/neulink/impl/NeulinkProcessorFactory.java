@@ -23,6 +23,7 @@ import com.neucore.neulink.impl.proc.ShellProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 public class NeulinkProcessorFactory {
@@ -56,68 +57,79 @@ public class NeulinkProcessorFactory {
      * 温度信息上报响应 upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
      */
     public synchronized static IProcessor build(Context context,NeulinkTopicParser.Topic topic){
-        if(processors.containsKey(topic.getBiz())){
-            return processors.get(topic.getBiz());
+        String biz = topic.getBiz().toLowerCase();
+        if(processors.containsKey(biz)){
+            return processors.get(biz);
         }
-        if("reboot".equalsIgnoreCase(topic.getBiz())){//设备重启
-            processors.put(topic.getBiz(),new RebootProcessor(context));
+        if("reboot".equalsIgnoreCase(biz)){//设备重启
+            processors.put(biz,new RebootProcessor(context));
         }
-        else if("firmware".equalsIgnoreCase(topic.getBiz())){//设备固件升级
-            processors.put(topic.getBiz(),new FirewareProcessor(context));
+        else if("firmware".equalsIgnoreCase(biz)){//设备固件升级
+            processors.put(biz,new FirewareProcessor(context));
         }
-        else if("firmwareresume".equalsIgnoreCase(topic.getBiz())){//设备固件升级
-            processors.put(topic.getBiz(),new FirewareProcessorResume(context));
+        else if("firmwareresume".equalsIgnoreCase(biz)){//设备固件升级
+            processors.put(biz,new FirewareProcessorResume(context));
         }
-        else if("hibrate".equalsIgnoreCase(topic.getBiz())){//设备休眠
-            processors.put(topic.getBiz(),new HibrateProcessor(context));
+        else if("hibrate".equalsIgnoreCase(biz)){//设备休眠
+            processors.put(biz,new HibrateProcessor(context));
         }
-        else if("awaken".equalsIgnoreCase(topic.getBiz())){//设备唤醒
-            processors.put(topic.getBiz(),new AwakenProcessor(context));
+        else if("awaken".equalsIgnoreCase(biz)){//设备唤醒
+            processors.put(biz,new AwakenProcessor(context));
         }
-        else if("debug".equalsIgnoreCase(topic.getBiz())){//Shell命令处理器
-            processors.put(topic.getBiz(),new DebugProcessor(context));
+        else if("debug".equalsIgnoreCase(biz)){//Shell命令处理器
+            processors.put(biz,new DebugProcessor(context));
         }
-        else if("shell".equalsIgnoreCase(topic.getBiz())){//Shell命令处理器
-            processors.put(topic.getBiz(),new ShellProcessor(context));
+        else if("shell".equalsIgnoreCase(biz)){//Shell命令处理器
+            processors.put(biz,new ShellProcessor(context));
         }
-        else if("alog".equalsIgnoreCase(topic.getBiz())){//算法升级处理器
-            processors.put(topic.getBiz(), new ALogProcessor(context));
+        else if("alog".equalsIgnoreCase(biz)){//算法升级处理器
+            processors.put(biz, new ALogProcessor(context));
         }
-        else if("qlog".equalsIgnoreCase(topic.getBiz())){//日志请求处理器
-            processors.put(topic.getBiz(), new QLogProcessor(context));
+        else if("qlog".equalsIgnoreCase(biz)){//日志请求处理器
+            processors.put(biz, new QLogProcessor(context));
         }
-        else if("blib".equalsIgnoreCase(topic.getBiz())){//目标库批量处理器
-            processors.put(topic.getBiz(),new BLibProcessor(context));
+        else if("blib".equalsIgnoreCase(biz)){//目标库批量处理器
+            processors.put(biz,new BLibProcessor(context));
         }
-        else if("qlib".equalsIgnoreCase(topic.getBiz())){//目标库单记录处理器
-            processors.put(topic.getBiz(),new QLibProcessor(context));
+        else if("qlib".equalsIgnoreCase(biz)){//目标库单记录处理器
+            processors.put(biz,new QLibProcessor(context));
         }
-        else if("cfg".equalsIgnoreCase(topic.getBiz())){//配置管理处理器
-            processors.put(topic.getBiz(),new CfgProcessor(context));
+        else if("cfg".equalsIgnoreCase(biz)){//配置管理处理器
+            processors.put(biz,new CfgProcessor(context));
         }
-        else if("qcfg".equalsIgnoreCase(topic.getBiz())){//配置管理处理器
-            processors.put(topic.getBiz(),new QCfgProcessor(context));
+        else if("qcfg".equalsIgnoreCase(biz)){//配置管理处理器
+            processors.put(biz,new QCfgProcessor(context));
         }
-        else if("backup".equalsIgnoreCase(topic.getBiz())){//备份处理器
-            processors.put(topic.getBiz(),new BackupProcessor(context));
+        else if("backup".equalsIgnoreCase(biz)){//备份处理器
+            processors.put(biz,new BackupProcessor(context));
         }
-        else if("recover".equalsIgnoreCase(topic.getBiz())){//备份恢复处理器
-            processors.put(topic.getBiz(),new RecoverProcessor(context));
+        else if("recover".equalsIgnoreCase(biz)){//备份恢复处理器
+            processors.put(biz,new RecoverProcessor(context));
         }
-        else if("check".equalsIgnoreCase(topic.getBiz())){//数据校验处理器
-            processors.put(topic.getBiz(),new CheckProcessor(context));
+        else if("check".equalsIgnoreCase(biz)){//数据校验处理器
+            processors.put(biz,new CheckProcessor(context));
         }
-        else{
-            String biz = StrUtil.upperFirst(topic.getBiz());
+        IProcessor processor = processors.get(biz);
+        if(ObjectUtil.isNotEmpty(processor)){
+            String upperFirst = StrUtil.upperFirst(biz);
             try {
-                Class cls = Class.forName("com.neucore.neulink.extend.impl." + biz + "Processor");
-                IProcessor processor = (IProcessor) cls.newInstance();
-                processors.put(topic.getBiz(),processor);
+                Class cls = Class.forName("com.neucore.neulink.extend.impl." + upperFirst + "Processor");
+                processor = (IProcessor) cls.newInstance();
+                processors.put(biz,processor);
             }
             catch (Exception ex){
                 Log.e(TAG,ex.getMessage());
             }
         }
-        return processors.get(topic.getBiz());
+        return processor;
+    }
+
+    /**
+     * 注册扩展处理器
+     * @param biz
+     * @param processor
+     */
+    public static void regist(String biz,IProcessor processor){
+        processors.put(biz.toLowerCase(),processor);
     }
 }

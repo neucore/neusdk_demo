@@ -103,6 +103,24 @@ NeulinkService.getInstance().destroy();
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
+            
+            /**
+             * 其他自定义Processor注册
+             */
+            NeulinkProcessorFactory.regist("auth",new AuthProcessor());
+            /**
+             * 其他自定义Listener注册
+             */
+            ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
+                @Override
+                public String doAction(NeulinkEvent event) {
+                    /**
+                     * 该返回值类型对应命令响应结构的data元素的内容；
+                     */
+                    return "hello";
+                }
+            });
+                        
             /**
              * 人脸下发 扩展
              */
