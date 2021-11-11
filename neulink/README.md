@@ -32,6 +32,11 @@ import com.neucore.neulink.util.JSonUtils;
  * String:actionListener的返回类型
  */
 public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+
+    public AuthProcessor(){
+        this(ContextHolder.getInstance().getContext());
+    }
+
     public AuthProcessor(Context context) {
         super(context);
     }
@@ -82,7 +87,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 
 5，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
 
-6,Listener注册
+6,其他Listener扩展注册
 
 ```
 ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){

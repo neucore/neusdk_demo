@@ -7,6 +7,7 @@ import com.neucore.neulink.cmd.rrpc.AuthSyncCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -17,6 +18,11 @@ import com.neucore.neulink.util.JSonUtils;
  * String:actionListener的返回类型
  */
 public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+
+    public AuthProcessor(){
+        this(ContextHolder.getInstance().getContext());
+    }
+
     public AuthProcessor(Context context) {
         super(context);
     }
