@@ -8,7 +8,9 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.util.ContextHolder;
@@ -58,7 +60,7 @@ public class MyApplication extends Application
         extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
-         * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备】
+         * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
 
@@ -200,6 +202,21 @@ public class MyApplication extends Application
              * neulink消息线性处理存储服务
              */
             ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
+
+            /**
+             * 扩展其他Listener实现【auth】
+             * XXX就是topic第四段；且首字母大写
+             * eg:topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
+             * 用auth替换下面的xxx;
+             *
+             * ListenerFactory.getInstance().setListener("auth", new ICmdListener() {
+             *                 @Override
+             *                 public Object doAction(NeulinkEvent event) {
+             *                     return null;
+             *                 }
+             *             });
+             *
+             */
         }
     };
 }

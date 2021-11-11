@@ -12,9 +12,23 @@ eg：授权处理器
 topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.impl；类命名为AuthProcessor;
 
-4，定义xxxCmdListener实现ICmdListener
+4，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
 5，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
+
+6,Listener注册
+
+```
+ListenerFactory.getInstance().setListener("auth", new ICmdListener() {
+     @Override
+      public Object doAction(NeulinkEvent event) {
+           /**
+            * 业务逻辑实现
+            */
+          return null;
+      }
+  });
+```
 
 ## 发送消息到云端
 

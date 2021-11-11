@@ -8,6 +8,7 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
@@ -246,6 +247,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
         return topic.getBiz();
     }
 
-    protected abstract ICmdListener getListener();
+    protected ICmdListener getListener(){
+        return ListenerFactory.getInstance().getListener(biz());
+    }
 }
 
