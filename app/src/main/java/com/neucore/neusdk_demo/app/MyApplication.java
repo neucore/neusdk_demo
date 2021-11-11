@@ -13,6 +13,8 @@ import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
+import com.neucore.neulink.extend.impl.AuthProcessor;
+import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
@@ -146,6 +148,11 @@ public class MyApplication extends Application
 //                    return null;
 //                }
 //            });
+            /**
+             * 自定义Processor注册
+             */
+            NeulinkProcessorFactory.regist("auth",new AuthProcessor());
+
             /**
              * 配置扩展
              */

@@ -6,7 +6,7 @@
 
 1，实现payload的pojo对象
 
-2，新增一个XXXProcessor继承实现GProcessor；并到【com.neucore.neulink.extend.impl包内】；同时XXX就是topic第四段；且首字母大写
+2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
 topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
@@ -81,6 +81,13 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 }
 
 
+```
+
+3，Processor注册；
+
+```
+
+NeulinkProcessorFactory.regist("auth",new AuthProcessor());
 ```
 
 4，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
