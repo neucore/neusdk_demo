@@ -9,6 +9,7 @@ import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ListenerFactory {
@@ -204,6 +205,15 @@ public class ListenerFactory {
 
     public void setRecoverListener(ICmdListener<QueryResult> recoverListener) {
         this.recoverListener = recoverListener;
+    }
+
+    private Map<String,ICmdListener> listenerMap = new HashMap<>();
+    public ICmdListener getListener(String cmd){
+        return listenerMap.get(cmd.toLowerCase());
+    }
+
+    public void setListener(String cmd,ICmdListener listener){
+        listenerMap.put(cmd.toLowerCase(),listener);
     }
 
     public IDeviceService getDeviceService() {
