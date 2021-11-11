@@ -85,15 +85,15 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 6,Listener注册
 
 ```
-ListenerFactory.getInstance().setListener("auth", new ICmdListener() {
-     @Override
-      public Object doAction(NeulinkEvent event) {
-           /**
-            * 业务逻辑实现
-            */
-          return "返回XXXProcess实现类的返回值的类型";
-      }
-  });
+ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
+                @Override
+                public String doAction(NeulinkEvent event) {
+                    /**
+                     * 该返回值类型对应命令响应结构的data元素的内容；
+                     */
+                    return "hello";
+                }
+            });
 ```
 
 ## 发送消息到云端

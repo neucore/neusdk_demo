@@ -209,10 +209,10 @@ public class MyApplication extends Application
              * eg:topic：rrpc/req/${dev_id}/xxx/v1.0/${req_no}[/${md5}]；
              *
              *
-             * ListenerFactory.getInstance().setListener("xxx", new ICmdListener() {
+             * ListenerFactory.getInstance().setListener("xxx", new ICmdListener<String>() {
              *                 @Override
-             *                 public Object doAction(NeulinkEvent event) {
-             *                     return null;
+             *                 public String doAction(NeulinkEvent event) {
+             *                     return "hello";
              *                 }
              *             });
              *
@@ -220,6 +220,9 @@ public class MyApplication extends Application
             ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
                 @Override
                 public String doAction(NeulinkEvent event) {
+                    /**
+                     * 该返回值类型对应命令响应结构的data元素的内容；
+                     */
                     return "hello";
                 }
             });
