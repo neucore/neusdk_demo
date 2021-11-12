@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.proc.ALogProcessor;
 import com.neucore.neulink.impl.proc.AwakenProcessor;
 import com.neucore.neulink.impl.proc.BLibProcessor;
@@ -128,8 +130,20 @@ public class NeulinkProcessorFactory {
      * 注册扩展处理器
      * @param biz
      * @param processor
+     * @deprecated
      */
     public static void regist(String biz,IProcessor processor){
         processors.put(biz.toLowerCase(),processor);
+    }
+
+    /**
+     * 其他处理器注册
+     * @param biz
+     * @param processor
+     * @param cmdListener
+     */
+    public static void regist(String biz, IProcessor processor, ICmdListener cmdListener){
+        processors.put(biz.toLowerCase(),processor);
+        ListenerFactory.getInstance().setExtendListener(biz,cmdListener);
     }
 }
