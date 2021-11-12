@@ -83,30 +83,17 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 
 ```
 
-3，Processor注册；
+3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
 ```
-
-NeulinkProcessorFactory.regist("auth",new AuthProcessor());
+ICmdListener listener = new AuthCmdListener();
 ```
 
-4，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
-
-5，在ListenerFactory中实现默认xxxCmdListener，具体可以参考cfgListener的实现；
-
-6,其他Listener扩展注册
-
-```
-ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
-                @Override
-                public String doAction(NeulinkEvent event) {
-                    /**
-                     * 该返回值类型对应命令响应结构的data元素的内容；
-                     */
-                    return "hello";
-                }
-            });
-```
+4,其他Processor注册；
+  
+  ```
+  NeulinkProcessorFactory.regist("auth",new AuthProcessor(),listener);
+  ```
 
 ## 发送消息到云端
 
