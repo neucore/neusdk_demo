@@ -13,12 +13,12 @@ topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.impl；类命名为AuthProcessor;
 
 ```
-package com.neucore.neulink.extend.impl;
+package com.xxx.neulink.extend.impl;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmd;
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmdRes;
+import com.xxx.neulink.cmd.rrpc.AuthSyncCmd;
+import com.xxx.neulink.cmd.rrpc.AuthSyncCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -46,6 +46,12 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
         return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
     }
 
+    /**
+     *
+     * @param t 同步请求
+     * @param result listener.doAction 的返回值即响应协议的data部分
+     * @return
+     */
     @Override
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
@@ -87,6 +93,8 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 
 ```
 ICmdListener listener = new AuthCmdListener();
+备注：切记！！！
+上面listener 的doAction 返回值是 响应协议的data部分
 ```
 
 4,其他Processor注册；
