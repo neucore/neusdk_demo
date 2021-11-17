@@ -32,6 +32,12 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
         return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
     }
 
+    /**
+     *
+     * @param t 同步请求
+     * @param result listener.doAction 的返回值
+     * @return
+     */
     @Override
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
