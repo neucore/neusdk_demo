@@ -43,15 +43,16 @@ public class SampleConnector {
         this.callback = callback;
         this.userService = service;
         this.extConfig = extConfig;
-        this.callback.onCallBack();
+
+        init();
+    }
+    private void init(){
+
         /**
          * 注册扩展实现
          */
         Log.i(TAG,"success regist extend implmention");
-        init();
-    }
-
-    private void init(){
+        this.callback.onCallBack();
 
         /**
          * 集成Neulink
