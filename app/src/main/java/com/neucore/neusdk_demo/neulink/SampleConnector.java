@@ -51,8 +51,14 @@ public class SampleConnector {
         /**
          * 注册扩展实现
          */
-        Log.i(TAG,"success regist extend implmention");
-        this.callback.onCallBack();
+
+        if(callback!=null){
+            this.callback.onCallBack();
+            Log.i(TAG,"success regist extend implmention");
+        }
+        else{
+            Log.i(TAG,"success regist 默认 implmention");
+        }
 
         /**
          * 集成Neulink
