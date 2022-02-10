@@ -1,9 +1,7 @@
-package com.neucore.neulink.extend.impl;
+package com.neucore.neusdk_demo.neulink.extend.hello;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmd;
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmdRes;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -11,11 +9,11 @@ import com.neucore.neulink.util.JSonUtils;
 
 /**
  * 设备授权下发
- * AuthSyncCmd:请求对象，
- * AuthSyncCmdRes：响应对象
+ * HelloCmd:请求对象，
+ * HelloCmdRes：响应对象
  * String:actionListener的返回类型
  */
-public class HelloProcessor extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
 
     public HelloProcessor(){
         this(ContextHolder.getInstance().getContext());
@@ -26,8 +24,8 @@ public class HelloProcessor extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    public AuthSyncCmd parser(String payload) {
-        return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
+    public HelloCmd parser(String payload) {
+        return (HelloCmd) JSonUtils.toObject(payload, HelloCmd.class);
     }
 
     /**
@@ -37,8 +35,8 @@ public class HelloProcessor extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
      * @return
      */
     @Override
-    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes responseWrapper(HelloCmd t, String result) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
@@ -48,8 +46,8 @@ public class HelloProcessor extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes fail(HelloCmd t, String error) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
@@ -59,8 +57,8 @@ public class HelloProcessor extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes fail(HelloCmd t, int code, String error) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
