@@ -64,52 +64,52 @@ public class NeulinkProcessorFactory {
             return processors.get(biz);
         }
         if("reboot".equalsIgnoreCase(biz)){//设备重启
-            processors.put(biz,new RebootProcessor(context));
+            regist(biz,new RebootProcessor(context));
         }
         else if("firmware".equalsIgnoreCase(biz)){//设备固件升级
-            processors.put(biz,new FirewareProcessor(context));
+            regist(biz,new FirewareProcessor(context));
         }
         else if("firmwareresume".equalsIgnoreCase(biz)){//设备固件升级
-            processors.put(biz,new FirewareProcessorResume(context));
+            regist(biz,new FirewareProcessorResume(context));
         }
         else if("hibrate".equalsIgnoreCase(biz)){//设备休眠
-            processors.put(biz,new HibrateProcessor(context));
+            regist(biz,new HibrateProcessor(context));
         }
         else if("awaken".equalsIgnoreCase(biz)){//设备唤醒
-            processors.put(biz,new AwakenProcessor(context));
+            regist(biz,new AwakenProcessor(context));
         }
         else if("debug".equalsIgnoreCase(biz)){//Shell命令处理器
-            processors.put(biz,new DebugProcessor(context));
+            regist(biz,new DebugProcessor(context));
         }
         else if("shell".equalsIgnoreCase(biz)){//Shell命令处理器
-            processors.put(biz,new ShellProcessor(context));
+            regist(biz,new ShellProcessor(context));
         }
         else if("alog".equalsIgnoreCase(biz)){//算法升级处理器
-            processors.put(biz, new ALogProcessor(context));
+            regist(biz, new ALogProcessor(context));
         }
         else if("qlog".equalsIgnoreCase(biz)){//日志请求处理器
-            processors.put(biz, new QLogProcessor(context));
+            regist(biz, new QLogProcessor(context));
         }
         else if("blib".equalsIgnoreCase(biz)){//目标库批量处理器
-            processors.put(biz,new BLibProcessor(context));
+            regist(biz,new BLibProcessor(context));
         }
         else if("qlib".equalsIgnoreCase(biz)){//目标库单记录处理器
-            processors.put(biz,new QLibProcessor(context));
+            regist(biz,new QLibProcessor(context));
         }
         else if("cfg".equalsIgnoreCase(biz)){//配置管理处理器
-            processors.put(biz,new CfgProcessor(context));
+            regist(biz,new CfgProcessor(context));
         }
         else if("qcfg".equalsIgnoreCase(biz)){//配置管理处理器
-            processors.put(biz,new QCfgProcessor(context));
+            regist(biz,new QCfgProcessor(context));
         }
         else if("backup".equalsIgnoreCase(biz)){//备份处理器
-            processors.put(biz,new BackupProcessor(context));
+            regist(biz,new BackupProcessor(context));
         }
         else if("recover".equalsIgnoreCase(biz)){//备份恢复处理器
-            processors.put(biz,new RecoverProcessor(context));
+            regist(biz,new RecoverProcessor(context));
         }
         else if("check".equalsIgnoreCase(biz)){//数据校验处理器
-            processors.put(biz,new CheckProcessor(context));
+            regist(biz,new CheckProcessor(context));
         }
         IProcessor processor = processors.get(biz);
         if(ObjectUtil.isNotEmpty(processor)){
@@ -117,7 +117,7 @@ public class NeulinkProcessorFactory {
             try {
                 Class cls = Class.forName("com.neucore.neulink.extend.impl." + upperFirst + "Processor");
                 processor = (IProcessor) cls.newInstance();
-                processors.put(biz,processor);
+                regist(biz,processor);
             }
             catch (Exception ex){
                 Log.e(TAG,ex.getMessage());
