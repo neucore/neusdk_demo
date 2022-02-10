@@ -8,27 +8,25 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
-import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
-import com.neucore.neulink.extend.impl.AuthProcessor;
-import com.neucore.neulink.extend.impl.HelloProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.db.UserService;
+import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.ApkUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.AwakenActionListener;
 import com.neucore.neusdk_demo.neulink.extend.BackupActionListener;
 import com.neucore.neusdk_demo.neulink.extend.CfgActionListener;
 import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
-import com.neucore.neusdk_demo.neulink.SampleConnector;
-import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
+import com.neucore.neusdk_demo.neulink.extend.hello.HelloCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 
 import java.util.Properties;
 import java.util.UUID;
@@ -224,15 +222,7 @@ public class MyApplication extends Application
             /**
              * 自定义Processor注册
              */
-            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new ICmdListener<String>(){
-                @Override
-                public String doAction(NeulinkEvent event) {
-                    /**
-                     * 该返回值类型对应命令响应结构的data元素的内容；
-                     */
-                    return "hello";
-                }
-            });
+            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
         }
     };
 }
