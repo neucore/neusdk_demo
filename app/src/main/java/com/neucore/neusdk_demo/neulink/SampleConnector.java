@@ -43,12 +43,12 @@ public class SampleConnector {
         this.callback = callback;
         this.userService = service;
         this.extConfig = extConfig;
-        init();
         this.callback.onCallBack();
         /**
          * 注册扩展实现
          */
         Log.i(TAG,"success regist extend implmention");
+        init();
     }
 
     private void init(){
@@ -84,7 +84,7 @@ public class SampleConnector {
          * 初始化MQTT
          */
         long start = System.currentTimeMillis();
-        final NeulinkService service = deviceMqttServiceInit();
+        deviceMqttServiceInit();
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
     /**

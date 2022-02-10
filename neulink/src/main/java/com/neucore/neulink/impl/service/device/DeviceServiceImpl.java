@@ -13,9 +13,4 @@ public class DeviceServiceImpl implements IDeviceService {
          */
         return DeviceUtils.getCPUSN(ContextHolder.getInstance().getContext());
     }
-
-    @Override
-    public void regist() {
-
-    }
 }

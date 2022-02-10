@@ -14,6 +14,7 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.extend.impl.AuthProcessor;
+import com.neucore.neulink.extend.impl.HelloProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.UserService;
@@ -134,7 +135,7 @@ public class MyApplication extends Application
         public void onCallBack() {
 
 //            /**
-//             * 设备序列号生成器；主要是为了扩展支持自己不想建立云服务，想使用neucore云服务
+//             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
 //             */
 //            ListenerFactory.getInstance().setDeviceService(new IDeviceService() {
 //                /**
@@ -148,10 +149,6 @@ public class MyApplication extends Application
 //                    return null;
 //                }
 //            });
-            /**
-             * 自定义Processor注册
-             */
-            NeulinkProcessorFactory.regist("auth",new AuthProcessor());
 
             /**
              * 配置扩展
@@ -211,12 +208,12 @@ public class MyApplication extends Application
             ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
 
             /**
-             * 扩展其他Listener实现【auth】
+             * 扩展其他Listener实现【hello】
              * XXX就是topic第四段；且首字母大写
              * eg:topic：rrpc/req/${dev_id}/xxx/v1.0/${req_no}[/${md5}]；
              *
              *
-             * ListenerFactory.getInstance().setListener("xxx", new ICmdListener<String>() {
+             * ListenerFactory.getInstance().setListener("xxx", XxxProcessor,new ICmdListener<String>() {
              *                 @Override
              *                 public String doAction(NeulinkEvent event) {
              *                     return "hello";
@@ -224,7 +221,10 @@ public class MyApplication extends Application
              *             });
              *
              */
-            ListenerFactory.getInstance().setExtendListener("xxx",new ICmdListener<String>(){
+            /**
+             * 自定义Processor注册
+             */
+            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new ICmdListener<String>(){
                 @Override
                 public String doAction(NeulinkEvent event) {
                     /**

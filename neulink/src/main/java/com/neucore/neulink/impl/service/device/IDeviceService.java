@@ -6,6 +6,4 @@ public interface IDeviceService {
      * @return
      */
     String getSN();
-
-    void regist();
 }

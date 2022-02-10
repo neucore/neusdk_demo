@@ -1,6 +1,6 @@
 # neulink 开发使用手册
 
-## 订阅云端消息
+## 集成开发
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$cpu_sn/#、rrpc/req/$cpu_sn/#、upld/res/$cpu_sn/#】订阅;
 
@@ -97,7 +97,7 @@ ICmdListener listener = new AuthCmdListener();
 上面listener 的doAction 返回值是 响应协议的data部分
 ```
 
-4,其他Processor注册；
+4,AuthProcessor注册；
   
   ```
   NeulinkProcessorFactory.regist("auth",new AuthProcessor(),listener);
