@@ -12,7 +12,6 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
-import com.neucore.neulink.util.NetworkHelper;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -24,10 +23,12 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -39,6 +40,7 @@ public class NeulinkService {
     private MqttService mqttService = null;
     private IMqttCallBack starMQTTCallBack;
     private Boolean inited = false;
+    private Boolean connected = false;
     private Register register = null;
     private Boolean destroy = false;
 
@@ -80,7 +82,7 @@ public class NeulinkService {
                         //设置发布和订阅回调接口
                         .mqttCallback(mqttCallback)
                         //设置连接或者发布动作侦听器
-                        .mqttActionListener(mqttActionListener)
+                        //.mqttActionListener(mqttActionListener)
                         //设置消息侦听器
                         //.mqttMessageListener(messageListener)
                         //构建出EasyMqttService 建议用application的context
@@ -89,7 +91,6 @@ public class NeulinkService {
 
                 //this.connect();
                 mqttService.connect();
-                Log.d(TAG,"mqtt server："+serverUri + "， 连接成功");
                 inited = true;
                 new HouseKeeping().start();
             }
@@ -240,6 +241,20 @@ public class NeulinkService {
         }
     }
 
+    public void publishConnect(Integer flg){
+        Context context = ContextHolder.getInstance().getContext();
+        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+    }
+
+    public void publishDisConnect(Integer flg){
+        Context context = ContextHolder.getInstance().getContext();
+        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/DISCONNECT", 1, true);
+//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+    }
+
     public void destroy(){
         if(!destroy && !ObjectUtil.isEmpty(mqttService)){
             mqttService.disconnect();
@@ -268,6 +283,7 @@ public class NeulinkService {
         return true;//mqttService.isConnected();
     }
 
+    private ReentrantLock reentrantLock = new ReentrantLock();
     /**
      * MQTT是否连接成功
      */
@@ -275,7 +291,6 @@ public class NeulinkService {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-            Log.i(TAG, "onSuccess");
 
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectSuccess(arg0);
@@ -298,13 +313,17 @@ public class NeulinkService {
 
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
-
-            subscriberFacde.subAll();
-
-            if(reconnect){
-                Log.d(TAG,"Server:"+ serverURI+",reconnect:"+reconnect);
+            try {
+                reentrantLock.lock();
+                if(reconnect){
+                    subscriberFacde.subAll();
+                    publishConnect(1);
+                    Log.d(TAG, "Server:" + defaultServerUri + " ,connectComplete reconnect:" + reconnect);
+                }
             }
-
+            finally {
+                reentrantLock.unlock();
+            }
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectComplete(reconnect, serverURI);
             }
@@ -334,16 +353,17 @@ public class NeulinkService {
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.deliveryComplete(arg0);
             }
-
         }
 
         @Override
         public void connectionLost(Throwable arg0) {
+
             Log.i(TAG, "connectionLost");
+            connected = false;
+            publishDisConnect(1);
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectionLost(arg0);
             }
-
             // 失去连接，重连
         }
     };

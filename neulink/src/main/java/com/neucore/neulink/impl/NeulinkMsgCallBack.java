@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class NeulinkMsgCallBack implements IMqttCallBack {
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"EasyMqttCallBack";
+    private String TAG = NeulinkConst.TAG_PREFIX+"MsgCallBack";
 
     private Context context;
     private NeulinkService service;
