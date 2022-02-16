@@ -63,7 +63,7 @@ public class NeulinkScheduledReport {
             public void run() {
 
                 while (!service.getDestroy() && true) {
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.cust.status","false"))){
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.status","false"))){
                         try {
                             Status status = new Status();
                             status.setDeviceId(DeviceUtils.getDeviceId(context));
@@ -99,7 +99,7 @@ public class NeulinkScheduledReport {
         new Thread("stat") {
             public void run() {
                 while (!service.getDestroy() &&true) {
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.cust.stat","false"))){
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.stat","false"))){
                         try {
                             Stat stat = new Stat();
 
