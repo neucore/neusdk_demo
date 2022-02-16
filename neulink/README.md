@@ -9,16 +9,13 @@
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
-topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
-processor：包名com.neucore.neulink.extend.impl；类命名为AuthProcessor;
+topic：rrpc/req/${dev_id}/Hello/v1.0/${req_no}[/${md5}]；
+processor：包名com.neucore.neulink.extend.impl；类命名为HelloProcessor;
 
 ```
-package com.xxx.neulink.extend.impl;
 
 import android.content.Context;
 
-import com.xxx.neulink.cmd.rrpc.AuthSyncCmd;
-import com.xxx.neulink.cmd.rrpc.AuthSyncCmdRes;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -27,23 +24,23 @@ import com.neucore.neulink.util.JSonUtils;
 
 /**
  * 设备授权下发
- * AuthSyncCmd:请求对象，
- * AuthSyncCmdRes：响应对象
+ * HelloCmd:请求对象，
+ * HelloCmdRes：响应对象
  * String:actionListener的返回类型
  */
-public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
 
-    public AuthProcessor(){
+    public HelloProcessor(){
         this(ContextHolder.getInstance().getContext());
     }
 
-    public AuthProcessor(Context context) {
+    public HelloProcessor(Context context) {
         super(context);
     }
 
     @Override
-    public AuthSyncCmd parser(String payload) {
-        return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
+    public HelloCmd parser(String payload) {
+        return (HelloCmd) JSonUtils.toObject(payload, HelloCmd.class);
     }
 
     /**
@@ -53,8 +50,8 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
      * @return
      */
     @Override
-    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes responseWrapper(HelloCmd t, String result) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
@@ -64,8 +61,8 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes fail(HelloCmd t, String error) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
@@ -75,8 +72,8 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
     }
 
     @Override
-    protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
-        AuthSyncCmdRes res = new AuthSyncCmdRes();
+    protected HelloCmdRes fail(HelloCmd t, int code, String error) {
+        HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
         res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
@@ -89,18 +86,18 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
 
 ```
 
-3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
+3，定义xxxCmdListener实现ICmdListener;eg:HelloCmdListener
 
 ```
-ICmdListener listener = new AuthCmdListener();
+ICmdListener helloListener = new HelloCmdListener();
 备注：切记！！！
 上面listener 的doAction 返回值是 响应协议的data部分
 ```
 
-4,AuthProcessor注册；
+4,HelloProcessor注册；
   
   ```
-  NeulinkProcessorFactory.regist("auth",new AuthProcessor(),listener);
+  NeulinkProcessorFactory.regist("Hello",new HelloProcessor(),helloListener);
   ```
 
 ## 发送消息到云端

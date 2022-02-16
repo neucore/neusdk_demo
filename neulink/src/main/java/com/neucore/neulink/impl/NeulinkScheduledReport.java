@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.CPUInfo;
 import com.neucore.neulink.cmd.msg.DiskInfo;
 import com.neucore.neulink.cmd.msg.MemInfo;
@@ -41,6 +42,7 @@ public class NeulinkScheduledReport {
     void start(){
         synchronized (started){
             if(!started){
+
                 status();
                 stat();
                 lgUpld();
@@ -53,23 +55,26 @@ public class NeulinkScheduledReport {
      */
     private void status() {
         try {
-            Thread.sleep(15);
+            Thread.sleep(1000 * 30);
         }
         catch (Exception ex){}
 
         new Thread("status") {
             public void run() {
-                while (!service.getDestroy() && true) {
-                    try {
-                        Status status = new Status();
-                        status.setDeviceId(DeviceUtils.getDeviceId(context));
 
-                        String payload = JSonUtils.toString(status);
-                        String topic = "msg/req/status";
-                        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
-                    }
-                    catch(Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                while (!service.getDestroy() && true) {
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.cust.status","false"))){
+                        try {
+                            Status status = new Status();
+                            status.setDeviceId(DeviceUtils.getDeviceId(context));
+
+                            String payload = JSonUtils.toString(status);
+                            String topic = "msg/req/status";
+                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                        }
+                        catch(Exception ex){
+                            Log.e(TAG,ex.getMessage());
+                        }
                     }
                     try {
                         Thread.sleep(1000 * 30);
@@ -87,50 +92,56 @@ public class NeulinkScheduledReport {
      * msg/req/stat/v1.0/${req_no}[/${md5}], qos=0
      */
     private void stat(){
+        try {
+            Thread.sleep(1000 * 30);
+        }
+        catch (Exception ex){}
         new Thread("stat") {
             public void run() {
                 while (!service.getDestroy() &&true) {
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.cust.stat","false"))){
+                        try {
+                            Stat stat = new Stat();
+
+                            stat.setDeviceId(DeviceUtils.getDeviceId(context));
+
+                            CPUInfo cpuInfo = new CPUInfo();
+
+                            cpuInfo.setUsed(CpuStat.getCpuUsed());
+                            float temp = 0f;
+                            try {
+                                temp = Float.parseFloat(CpuStat.getCpuTemp());
+                            } catch (Exception ex) {
+                            }
+                            cpuInfo.setTemp(temp);
+
+                            stat.setCpu(cpuInfo);
+
+                            MemInfo memInfo = new MemInfo();
+
+                            long total = MemoryUtils.getTotalMemory();
+                            long free = MemoryUtils.getFreeMemorySize(context);
+                            memInfo.setTotal(total);
+                            memInfo.setUsed(total - free);
+                            stat.setMem(memInfo);
+
+                            DiskInfo diskInfo = DeviceUtils.readSystem();
+                            stat.setDisk(diskInfo);
+
+                            SDInfo sdInfo = DeviceUtils.readSD();
+
+                            stat.setSdInfo(sdInfo);
+
+                            String payload = JSonUtils.toString(stat, Double.class, new DoubleSerializer(2));
+                            String topic = "msg/req/stat";
+                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                        }catch (Exception ex){
+                            Log.e(TAG,ex.getMessage());
+                        }
+                    }
                     try {
                         Thread.sleep(1000 * 60);
                     } catch (Exception e) {
-                    }
-                    try {
-                        Stat stat = new Stat();
-
-                        stat.setDeviceId(DeviceUtils.getDeviceId(context));
-
-                        CPUInfo cpuInfo = new CPUInfo();
-
-                        cpuInfo.setUsed(CpuStat.getCpuUsed());
-                        float temp = 0f;
-                        try {
-                            temp = Float.parseFloat(CpuStat.getCpuTemp());
-                        } catch (Exception ex) {
-                        }
-                        cpuInfo.setTemp(temp);
-
-                        stat.setCpu(cpuInfo);
-
-                        MemInfo memInfo = new MemInfo();
-
-                        long total = MemoryUtils.getTotalMemory();
-                        long free = MemoryUtils.getFreeMemorySize(context);
-                        memInfo.setTotal(total);
-                        memInfo.setUsed(total - free);
-                        stat.setMem(memInfo);
-
-                        DiskInfo diskInfo = DeviceUtils.readSystem();
-                        stat.setDisk(diskInfo);
-
-                        SDInfo sdInfo = DeviceUtils.readSD();
-
-                        stat.setSdInfo(sdInfo);
-
-                        String payload = JSonUtils.toString(stat, Double.class, new DoubleSerializer(2));
-                        String topic = "msg/req/stat";
-                        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
-                    }catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
                     }
                 }
             }

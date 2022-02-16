@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.cmd.cfg.ConfigContext;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -28,7 +29,7 @@ public class MqttService {
     private String passWord = "password";
     private String clientId = "";
     private int timeOut = 10;
-    private int keepAliveInterval = 20;
+    private int keepAliveInterval = 60;
     private boolean retained = false;
     //客户端掉线后是否清楚客户端session
     private boolean cleanSession = false;
@@ -188,6 +189,10 @@ public class MqttService {
         // 密码
         conOpt.setPassword(passWord.toCharArray());
         conOpt.setAutomaticReconnect(autoReconnect);
+        // 监控Client的状态 $share/{ShareName}/{filter}
+        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        conOpt.setWill("$EDC/"+sccperId+"/"+clientId+"/MQTT/LWT","1".getBytes(),1,true);
+//        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
     }
 
     /**
