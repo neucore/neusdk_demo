@@ -144,6 +144,10 @@ public class NeulinkService {
      * @param qos
      */
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
+        publishMessage(topicPrefix,version,reqId,payload,qos,false);
+    }
+
+    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
 //        int deviceIdBKDRHash = HashAlgorithms.SDBMHash(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()));
@@ -168,7 +172,7 @@ public class NeulinkService {
              */
             topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
             Log.d(TAG,topStr);
-            mqttService.publish(payload,topStr, qos, false);
+            mqttService.publish(payload,topStr, qos, retained);
         }
         else{
 
@@ -243,9 +247,12 @@ public class NeulinkService {
 
     public void publishConnect(Integer flg){
         Context context = ContextHolder.getInstance().getContext();
+
         String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
         mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        String topic = "msg/req/status";
+//        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
     }
 
     public void publishDisConnect(Integer flg){
@@ -253,6 +260,9 @@ public class NeulinkService {
         String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
         mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/DISCONNECT", 1, true);
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        String topic = "msg/req/status";
+//        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
+
     }
 
     public void destroy(){
@@ -269,6 +279,10 @@ public class NeulinkService {
 
     private String custid="notimpl";
     private String getCustId(){
+        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        if(ObjectUtil.isNotEmpty(sccperId)){
+            return sccperId;
+        }
         return custid;
     }
     private String storeid="notimpl";
