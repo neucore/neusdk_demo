@@ -191,7 +191,7 @@ public class MqttService {
         conOpt.setAutomaticReconnect(autoReconnect);
         // 监控Client的状态 $share/{ShareName}/{filter}
         String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-        conOpt.setWill("$EDC/"+sccperId+"/"+clientId+"/MQTT/LWT","1".getBytes(),1,true);
+        conOpt.setWill("MQTT/LWT/v1.0/"+sccperId+"/"+clientId,"{\"status\":-1}".getBytes(),1,true);
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
     }
 
