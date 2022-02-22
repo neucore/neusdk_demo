@@ -64,7 +64,10 @@ public class MyApplication extends Application
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
-
+        /**
+         * 设置设备端2Cloud的通信通道；默认为mqtt
+         */
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         /**
          * FTP 实现
          */

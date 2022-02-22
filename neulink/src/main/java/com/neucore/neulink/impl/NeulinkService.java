@@ -248,21 +248,22 @@ public class NeulinkService {
     public void publishConnect(Integer flg){
         Context context = ContextHolder.getInstance().getContext();
 
-        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
+        publishMessage("MQTT/CONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":1}",1,true);
     }
 
     public void publishDisConnect(Integer flg){
-        Context context = ContextHolder.getInstance().getContext();
-        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/DISCONNECT", 1, true);
+//        Context context = ContextHolder.getInstance().getContext();
+//        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/DISCONNECT", 1, true);
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
-
+        publishMessage("MQTT/DISCONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":0}",1,true);
     }
 
     public void destroy(){
