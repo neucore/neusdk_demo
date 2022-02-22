@@ -1,6 +1,22 @@
 # neulink 开发使用手册
 
-## 集成开发
+## 集成机制
+
+neulink集成参考MyApplication
+
+## 安全登录
+
+ILoginCallback loginCallback = new ILoginCallback() {
+        @Override
+        public String login() {
+            /**
+             * 实现登录返回token
+             */
+            return null;
+        }
+    };
+
+## 扩展开发
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$cpu_sn/#、rrpc/req/$cpu_sn/#、upld/res/$cpu_sn/#】订阅;
 
@@ -110,7 +126,7 @@ ICmdListener helloListener = new HelloCmdListener();
 
 0，优先级【扩展配置>配置文件>框架默认配置】
 
-1,扩展配置使用方式：参考SampleConnector
+1,扩展配置使用方式：参考MyApplication
 
 2，配置文件使用方式：参考ConfigContext的实现，这个实现可以通过云端管理
 
