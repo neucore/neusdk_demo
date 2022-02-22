@@ -1,6 +1,8 @@
 package com.neucore.neulink.extend;
 
 import com.neucore.neulink.IMessageService;
+import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
+import com.neucore.neulink.impl.service.device.IDeviceService;
 
 public class ServiceFactory {
 
@@ -17,4 +19,14 @@ public class ServiceFactory {
     public IMessageService getMessageService() {
         return messageService;
     }
+
+    public IDeviceService getDeviceService() {
+        return deviceService;
+    }
+
+    public void setDeviceService(IDeviceService deviceService) {
+        this.deviceService = deviceService;
+    }
+
+    private IDeviceService deviceService = new DeviceServiceImpl();
 }

@@ -2,6 +2,10 @@ package com.neucore.neulink.cmd.msg;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class DeviceInfo {
 
     @SerializedName("dev_id")
@@ -30,6 +34,9 @@ public class DeviceInfo {
 
     @SerializedName("sku_token")
     private String skuToken;
+
+    @SerializedName("attrs")
+    private List<Map<String,String>> attrs = new ArrayList();
 
     public String getDeviceId() {
         return deviceId;
@@ -102,5 +109,13 @@ public class DeviceInfo {
 
     public void setFunList(String[] funList) {
         this.funList = funList;
+    }
+
+    public List<Map<String, String>> getAttrs() {
+        return attrs;
+    }
+
+    public void setAttrs(List<Map<String, String>> attrs) {
+        this.attrs = attrs;
     }
 }

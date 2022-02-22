@@ -8,13 +8,16 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.extend.ILoginCallback;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
+import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
@@ -160,21 +163,26 @@ public class MyApplication extends Application
         @Override
         public void onCallBack() {
 
-//            /**
-//             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
-//             */
-//            ListenerFactory.getInstance().setDeviceService(new IDeviceService() {
-//                /**
-//                 * 这个主要是为了支持非neucore生产的硬件；
-//                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-//                 * @return
-//                 */
-//                @Override
-//                public String getSN() {
-//                    //@TODO 必须实现
-//                    return null;
-//                }
-//            });
+            /**
+             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
+             */
+            ListenerFactory.getInstance().setDeviceService(new IDeviceService() {
+                /**
+                 * 这个主要是为了支持非neucore生产的硬件；
+                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
+                 * @return
+                 */
+                @Override
+                public String getExtSN() {
+                    return DeviceUtils.getCPUSN(getContext());
+                }
+                public DeviceInfo getInfo(){
+                    /**
+                     * @TODO 可以实现
+                     */
+                    return null;
+                }
+            });
 
             /**
              * 配置扩展
