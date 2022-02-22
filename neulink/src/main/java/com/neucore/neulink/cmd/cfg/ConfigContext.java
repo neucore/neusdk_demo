@@ -54,6 +54,10 @@ public class ConfigContext {
 
     public final static String HTTP_CHANNEL = "1";
 
+    public final static String USERNAME = "login.username";
+
+    public final static String PASSWORD = "login.password";
+
     public final static String REGIST_SERVER = "regist.server";
 
     public final static String DEVICE_TYPE = "device.type";
