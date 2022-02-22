@@ -216,14 +216,4 @@ public class ListenerFactory {
         listenerMap.put(cmd.toLowerCase(),listener);
     }
 
-    public IDeviceService getDeviceService() {
-        return deviceService;
-    }
-
-    public void setDeviceService(IDeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
-
-    private IDeviceService deviceService = new DeviceServiceImpl();
-
 }

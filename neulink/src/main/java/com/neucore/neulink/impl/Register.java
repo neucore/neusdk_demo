@@ -15,6 +15,8 @@ import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.MiscInfo;
 import com.neucore.neulink.cmd.msg.SoftVInfo;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -103,51 +105,54 @@ public class Register extends BroadcastReceiver {
             Thread.sleep(15);
         }
         catch (Exception ex){}
+        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+        DeviceInfo deviceInfo = deviceService.getInfo();
+        if(deviceInfo==null){
+            deviceInfo = new DeviceInfo();
+            /**
+             * cpu_sn@@ext_sn@@device_type
+             */
+            String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+            deviceInfo.setDeviceId(devId);
+            String mac = MacHelper.getEthernetMac();
+            if(ObjectUtil.isEmpty(mac)){
+                mac = MacHelper.getWifiMac(context);
+            }
 
-        DeviceInfo deviceInfo = new DeviceInfo();
-        /**
-         * cpu_sn@@ext_sn@@device_type
-         */
-        String devId = DeviceUtils.getDeviceId(context)+"@@"+ ListenerFactory.getInstance().getDeviceService().getSN()+"@@"+ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
-        deviceInfo.setDeviceId(devId);
-        String mac = MacHelper.getEthernetMac();
-        if(ObjectUtil.isEmpty(mac)){
-            mac = MacHelper.getWifiMac(context);
+            deviceInfo.setMac(mac);
+
+            deviceInfo.setTag(AppUtils.getVersionName(context));
+            MiscInfo miscInfo = new MiscInfo();
+            miscInfo.setLocalIp(DeviceUtils.getIpAddress(context));
+            miscInfo.setDescription("Jeff@amlogic");
+
+            deviceInfo.setMiscInfo(miscInfo);
+
+            SoftVInfo vInfo = new SoftVInfo();
+
+            vInfo.setOsName(android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT);
+            /**
+             * 固件版本
+             */
+            vInfo.setOsVersion(DeviceUtils.getSystemProperties("ro.product.releaseversion","V0.0.0"));
+            /**
+             * apk名称
+             */
+            vInfo.setReportName(AppUtils.getApkName(context));
+            /**
+             * apk版本信息
+             */
+            vInfo.setReportVersion(AppUtils.getVersionName(context));
+            vInfo.setAlogVersion("1.0");
+            deviceInfo.setSoftVInfo(vInfo);
+
+            deviceInfo.setCpuMode(Build.MODEL);
+            deviceInfo.setNpuMode(DeviceUtils.getNpuMode(context));
+
+            String[] funList = {"face"};//人脸识别
+            deviceInfo.setFunList(funList);
+            deviceInfo.setSkuToken(DeviceUtils.getSkuToken());
         }
-
-        deviceInfo.setMac(mac);
-
-        deviceInfo.setTag(AppUtils.getVersionName(context));
-        MiscInfo miscInfo = new MiscInfo();
-        miscInfo.setLocalIp(DeviceUtils.getIpAddress(context));
-        miscInfo.setDescription("Jeff@amlogic");
-
-        deviceInfo.setMiscInfo(miscInfo);
-
-        SoftVInfo vInfo = new SoftVInfo();
-
-        vInfo.setOsName(android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT);
-        /**
-         * 固件版本
-         */
-        vInfo.setOsVersion(DeviceUtils.getSystemProperties("ro.product.releaseversion","V0.0.0"));
-        /**
-         * apk名称
-         */
-        vInfo.setReportName(AppUtils.getApkName(context));
-        /**
-         * apk版本信息
-         */
-        vInfo.setReportVersion(AppUtils.getVersionName(context));
-        vInfo.setAlogVersion("1.0");
-        deviceInfo.setSoftVInfo(vInfo);
-
-        deviceInfo.setCpuMode(Build.MODEL);
-        deviceInfo.setNpuMode(DeviceUtils.getNpuMode(context));
-
-        String[] funList = {"face"};//人脸识别
-        deviceInfo.setFunList(funList);
-        deviceInfo.setSkuToken(DeviceUtils.getSkuToken());
 
         String payload = JSonUtils.toString(deviceInfo);
         String devinfo_topic = "msg/req/devinfo";

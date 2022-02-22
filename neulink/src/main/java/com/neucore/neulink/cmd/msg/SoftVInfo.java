@@ -19,6 +19,10 @@ public class SoftVInfo {
         return osName;
     }
 
+    /**
+     * 固件名称
+     * @param osName
+     */
     public void setOsName(String osName) {
         this.osName = osName;
     }
@@ -27,6 +31,10 @@ public class SoftVInfo {
         return osVersion;
     }
 
+    /**
+     * 固件版本
+     * @param osVersion
+     */
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
     }
