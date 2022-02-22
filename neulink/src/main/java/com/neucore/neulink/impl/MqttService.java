@@ -185,9 +185,9 @@ public class MqttService {
         // 心跳包发送间隔，单位：秒
         conOpt.setKeepAliveInterval(keepAliveInterval);
         // 用户名
-        conOpt.setUserName(userName);
+        conOpt.setUserName(ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"));
         // 密码
-        conOpt.setPassword(passWord.toCharArray());
+        conOpt.setPassword(ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password").toCharArray());
         conOpt.setAutomaticReconnect(autoReconnect);
         // 监控Client的状态 $share/{ShareName}/{filter}
         String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");

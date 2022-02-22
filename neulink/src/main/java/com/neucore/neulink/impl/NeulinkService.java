@@ -7,6 +7,7 @@ import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
+import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -27,10 +28,13 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.util.ObjectUtil;
+import okhttp3.Headers;
 
 public class NeulinkService {
 
@@ -236,7 +240,10 @@ public class NeulinkService {
                     topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
-                    String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,10,60,3);
+                    String token = NeulinkSecurity.getInstance().getToken();
+                    Map<String,String> params = new HashMap<>();
+                    params.put("Authorization","Bearer "+token);
+                    String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
                     Log.d(TAG,"设备upload2cloud响应："+response);
                 } catch (Exception e) {
                     Log.d(TAG,"upload2cloud error with: "+e.getMessage());

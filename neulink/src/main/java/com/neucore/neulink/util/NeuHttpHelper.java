@@ -18,11 +18,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.core.util.ObjectUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -241,6 +244,68 @@ public class NeuHttpHelper{
 				.url(url)
 				.post(requestBody)
 				.build();
+		while(trys<=tryNum){
+			try {
+				response = client.newCall(request).execute();
+				code = response.code();
+				if (code != 200) {
+					throw new RuntimeException(url + ",失败 with code=" + code);
+				}
+				String responseData = response.body().string();
+				return responseData;
+			}
+			catch (IOException ex){
+				Log.e(TAG,"第"+trys+"下载"+url+"失败：",ex);
+				if(trys==tryNum) {
+					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+				}
+				trys++;
+				continue;
+			}
+			catch (NeulinkException ex){
+				throw ex;
+			}
+			catch (RuntimeException ex){
+				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+				}
+				catch (IOException ex){}
+			}
+		}
+		throw new RuntimeException(url + ",失败 with code=" + code);
+	}
+
+	public static String post(String url, String json, Map<String,String> headers, int connTime, int execTime, int tryNum){
+
+		Response response = null;
+		int trys = 1;
+		int code = 200;
+		InputStream is = null;
+
+		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+		OkHttpClient client = getClient(connTime,execTime);
+		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
+		Request request = null;
+		if(ObjectUtil.isNotEmpty(headers)){
+			Headers headers_ = Headers.of(headers);
+			request = new Request.Builder()
+					.url(url)
+					.headers(headers_)
+					.post(requestBody)
+					.build();
+		}
+		else{
+			request = new Request.Builder()
+					.url(url)
+					.post(requestBody)
+					.build();
+		}
 		while(trys<=tryNum){
 			try {
 				response = client.newCall(request).execute();

@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.neulink;
+package com.neucore.neulink.extend;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -15,13 +15,12 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.IExtendCallback;
-import com.neucore.neulink.IOnNetStatusListener;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.LogService;
-import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NetBroadcastReceiver;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.util.ContextHolder;
 
@@ -31,22 +30,35 @@ public class SampleConnector {
     private String TAG = "SampleConnector";
     private Application application;
     private IUserService userService;
+    private ILoginCallback loginCallback;
     private IExtendCallback callback;
     private Properties extConfig;
 
+    @Deprecated
     public SampleConnector(Application application, IExtendCallback callback, IUserService service){
         this(application,callback,service,new Properties());
     }
 
+    @Deprecated
     public SampleConnector(Application application, IExtendCallback callback, IUserService service, Properties extConfig){
+        this(application,service,extConfig,null,callback);
+    }
+
+    public SampleConnector(Application application, IUserService service, Properties extConfig, ILoginCallback loginCallback, IExtendCallback callback){
+        this.loginCallback = loginCallback;
         this.application = application;
         this.callback = callback;
         this.userService = service;
         this.extConfig = extConfig;
-
         init();
     }
+
     private void init(){
+
+        if(loginCallback!=null){
+            String token = loginCallback.login();
+            NeulinkSecurity.getInstance().setToken(token);
+        }
 
         /**
          * 注册扩展实现
@@ -131,7 +143,7 @@ public class SampleConnector {
 
     private NeulinkService deviceMqttServiceInit(){
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }

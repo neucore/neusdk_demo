@@ -8,14 +8,15 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.extend.ILoginCallback;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.db.UserService;
-import com.neucore.neusdk_demo.neulink.SampleConnector;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.ApkUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.AwakenActionListener;
@@ -54,6 +55,15 @@ public class MyApplication extends Application
          * 集成Neulink
          */
         Properties extConfig = new Properties();
+        /**
+         * 设置登录用户名密码
+         */
+        extConfig.setProperty(ConfigContext.USERNAME,"admin");
+        extConfig.setProperty(ConfigContext.PASSWORD,"password");
+
+
+
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
 
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
@@ -69,6 +79,10 @@ public class MyApplication extends Application
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         /**
+         * 设置设备注册服务地址
+         */
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
+        /**
          * FTP 实现
          */
         extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
@@ -79,7 +93,7 @@ public class MyApplication extends Application
          */
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         //extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
-        SampleConnector register = new SampleConnector(this,callback,service,extConfig);
+        SampleConnector register = new SampleConnector(this,service,extConfig,loginCallback,callback);
         /**
          * FTP 测试
          */
@@ -127,7 +141,18 @@ public class MyApplication extends Application
     public static void setThreadAlive(int alive) {
         MyApplication.threadAlive = alive;
     }
-
+    /**
+     * 登录loginCallback
+     */
+    ILoginCallback loginCallback = new ILoginCallback() {
+        @Override
+        public String login() {
+            /**
+             * 实现登录返回token
+             */
+            return null;
+        }
+    };
     /**
      * 外部扩展
      */
