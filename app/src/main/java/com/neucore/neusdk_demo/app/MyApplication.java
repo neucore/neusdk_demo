@@ -166,7 +166,7 @@ public class MyApplication extends Application
             /**
              * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
              */
-            ListenerFactory.getInstance().setDeviceService(new IDeviceService() {
+            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
                 /**
                  * 这个主要是为了支持非neucore生产的硬件；
                  * 规则：必须客户代码开头：这个从neucore云注册开通后获取

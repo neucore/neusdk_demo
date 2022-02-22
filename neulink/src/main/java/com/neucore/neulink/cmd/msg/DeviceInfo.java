@@ -35,6 +35,9 @@ public class DeviceInfo {
     @SerializedName("sku_token")
     private String skuToken;
 
+    @SerializedName("subapps")
+    private List<SoftVInfo> subApps = new ArrayList<>();
+
     @SerializedName("attrs")
     private List<Map<String,String>> attrs = new ArrayList();
 
@@ -42,6 +45,10 @@ public class DeviceInfo {
         return deviceId;
     }
 
+    /**
+     * deviceId = cpusn@@extSn@@deviceType
+     * @param deviceId
+     */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
@@ -109,6 +116,14 @@ public class DeviceInfo {
 
     public void setFunList(String[] funList) {
         this.funList = funList;
+    }
+
+    public List<SoftVInfo> getSubApps() {
+        return subApps;
+    }
+
+    public void setSubApps(List<SoftVInfo> subApps) {
+        this.subApps = subApps;
     }
 
     public List<Map<String, String>> getAttrs() {
