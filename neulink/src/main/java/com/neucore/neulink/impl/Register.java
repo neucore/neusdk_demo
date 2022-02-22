@@ -17,6 +17,8 @@ import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NetworkHelper;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class Register extends BroadcastReceiver {
 
     private String TAG = "NeulinkRegister";
@@ -99,7 +101,9 @@ public class Register extends BroadcastReceiver {
         catch (Exception ex){}
         IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
         DeviceInfo deviceInfo = deviceService.getInfo();
-
+        if(ObjectUtil.isEmpty(deviceInfo)){
+            throw new RuntimeException("设备服务 getInfo没有实现。。。");
+        }
         String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
         deviceInfo.setDeviceId(devId);
 

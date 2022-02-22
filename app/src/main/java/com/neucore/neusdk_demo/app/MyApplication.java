@@ -166,23 +166,23 @@ public class MyApplication extends Application
             /**
              * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
              */
-            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
-                /**
-                 * 这个主要是为了支持非neucore生产的硬件；
-                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-                 * @return
-                 */
-                @Override
-                public String getExtSN() {
-                    return DeviceUtils.getCPUSN(getContext());
-                }
-                public DeviceInfo getInfo(){
-                    /**
-                     * @TODO 可以实现
-                     */
-                    return null;
-                }
-            });
+//            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
+//                /**
+//                 * 这个主要是为了支持非neucore生产的硬件；
+//                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
+//                 * @return
+//                 */
+//                @Override
+//                public String getExtSN() {
+//                    return DeviceUtils.getCPUSN(getContext());
+//                }
+//                public DeviceInfo getInfo(){
+//                    /**
+//                     * @TODO 可以实现
+//                     */
+//                    return null;
+//                }
+//            });
 
             /**
              * 配置扩展
