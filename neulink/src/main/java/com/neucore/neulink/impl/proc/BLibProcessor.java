@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
@@ -132,7 +131,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes responseWrapper(BTLibSyncCmd cmd, TLibPkgResult result) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(result.getCode());
         res.setMsg(result.getMsg());
         res.setObjtype(cmd.getObjtype());
@@ -146,7 +145,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes fail(BTLibSyncCmd cmd, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(500);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());
@@ -159,7 +158,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes fail(BTLibSyncCmd cmd, int code, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());

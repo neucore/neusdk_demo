@@ -13,7 +13,6 @@ import com.neucore.neulink.extend.QueryResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -43,7 +42,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     @Override
     protected BackupCmdRes responseWrapper(BackupCmd cmd, String result) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(200);
         cmdRes.setMsg("success");
@@ -55,7 +54,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(500);
         cmdRes.setMsg(error);
@@ -65,7 +64,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, int code, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(code);
         cmdRes.setMsg(error);

@@ -13,7 +13,6 @@ import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
@@ -62,7 +61,7 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(200);
         recoverCmdRes.setMsg("success");
-        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         return recoverCmdRes;
     }
 
@@ -73,7 +72,7 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(500);
         recoverCmdRes.setMsg(error);
-        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         return recoverCmdRes;
     }
 
@@ -83,7 +82,7 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(code);
         recoverCmdRes.setMsg(error);
-        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         return recoverCmdRes;
     }
 

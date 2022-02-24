@@ -104,7 +104,7 @@ public class Register extends BroadcastReceiver {
         if(ObjectUtil.isEmpty(deviceInfo)){
             throw new RuntimeException("设备服务 getInfo没有实现。。。");
         }
-        String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+        String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
         deviceInfo.setDeviceId(devId);
 
         String payload = JSonUtils.toString(deviceInfo);

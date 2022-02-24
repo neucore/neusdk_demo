@@ -8,7 +8,6 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.ShellCmd;
 import com.neucore.neulink.cmd.rmsg.ShellCmdRes;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.ShellExecutor;
 
@@ -45,7 +44,7 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
     protected ShellCmdRes responseWrapper(ShellCmd cmd, Map<String, String> result) {
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(200);
         res.setMsg("success");
         res.setStdout(result.get("stdout"));
@@ -57,7 +56,7 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
     protected ShellCmdRes fail(ShellCmd cmd, String error) {
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(500);
         res.setMsg(error);
         return res;
@@ -67,7 +66,7 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
     protected ShellCmdRes fail(ShellCmd cmd,int code, String error) {
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(error);
         return res;

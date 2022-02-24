@@ -11,7 +11,6 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.RebootCmd;
 import com.neucore.neulink.cmd.rmsg.RebootRes;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.ShellExecutor;
 
@@ -44,7 +43,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes responseWrapper(RebootCmd cmd, Map<String, String> result) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(200);
         res.setMsg("success");
@@ -54,7 +53,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes fail(RebootCmd cmd, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(500);
         res.setMsg(error);
@@ -64,7 +63,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes fail(RebootCmd cmd,int code, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(error);

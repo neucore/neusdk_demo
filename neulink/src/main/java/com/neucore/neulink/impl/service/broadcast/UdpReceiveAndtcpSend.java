@@ -7,7 +7,6 @@ import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -79,7 +78,7 @@ public class UdpReceiveAndtcpSend extends  Thread {
 
                     try {
                         socket = new Socket(target_ip, 6788);
-                        String devId = ServiceFactory.getInstance().getDeviceService().getSN();
+                        String devId = ServiceFactory.getInstance().getDeviceService().getExtSN();
                         BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                         writer.write(devId);
                         writer.flush();
