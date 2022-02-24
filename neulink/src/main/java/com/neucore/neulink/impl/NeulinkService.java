@@ -24,7 +24,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,7 +33,6 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.util.ObjectUtil;
-import okhttp3.Headers;
 
 public class NeulinkService {
 
@@ -260,7 +258,10 @@ public class NeulinkService {
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
-        publishMessage("MQTT/CONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":1}",1,true);
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
+        if("true".equalsIgnoreCase(manualReport)){
+            publishMessage("MQTT/CONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":1}",1,true);
+        }
     }
 
     public void publishDisConnect(Integer flg){
@@ -270,7 +271,10 @@ public class NeulinkService {
 //        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
-        publishMessage("MQTT/DISCONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":0}",1,true);
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
+        if("true".equalsIgnoreCase(manualReport)){
+            publishMessage("MQTT/DISCONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":0}",1,true);
+        }
     }
 
     public void destroy(){

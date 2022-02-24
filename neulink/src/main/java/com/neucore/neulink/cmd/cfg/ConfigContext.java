@@ -54,6 +54,8 @@ public class ConfigContext {
 
     public final static String HTTP_CHANNEL = "1";
 
+    public final static String STATUS_MANUAL_REPORT = "status.manual.report";
+
     public final static String USERNAME = "login.username";
 
     public final static String PASSWORD = "login.password";
