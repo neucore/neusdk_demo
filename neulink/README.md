@@ -58,7 +58,7 @@ NeulinkService.getInstance().destroy();
 
 ## 扩展
 
-## 扩展-安全登录
+## 扩展-HTTP安全登录
 
 ILoginCallback loginCallback = new ILoginCallback() {
         @Override
