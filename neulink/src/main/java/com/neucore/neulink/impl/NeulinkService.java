@@ -8,6 +8,7 @@ import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
 import com.neucore.neulink.extend.NeulinkSecurity;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -76,7 +77,7 @@ public class NeulinkService {
                         //设置不清除回话session 可收到服务器之前发出的推送消息
                         .cleanSession(false)
                         //唯一标示 保证每个设备都唯一就可以 建议 imei
-                        .clientId(DeviceUtils.getDeviceId(context))
+                        .clientId(ServiceFactory.getInstance().getDeviceService().getSN())
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         .serverUrl(serverUri)
                         //心跳包默认的发送间隔
@@ -172,7 +173,7 @@ public class NeulinkService {
             /**
              * MQTT机制
              */
-            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
+            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getSN();
             Log.d(TAG,topStr);
             mqttService.publish(payload,topStr, qos, retained);
         }
@@ -191,7 +192,7 @@ public class NeulinkService {
                 String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
                 Log.d(TAG,"registServer："+registServer);
 
-                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
+                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getSN();
                 Log.d(TAG,topStr);
                 String response = null;
                 try {
@@ -235,7 +236,7 @@ public class NeulinkService {
                  */
                 Log.d(TAG,"upload2cloud with http");
                 try {
-                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+DeviceUtils.getDeviceId(context);
+                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getSN();
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     String token = NeulinkSecurity.getInstance().getToken();
@@ -254,8 +255,8 @@ public class NeulinkService {
         Context context = ContextHolder.getInstance().getContext();
 
 //        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
-//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
+//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
@@ -267,8 +268,8 @@ public class NeulinkService {
     public void publishDisConnect(Integer flg){
 //        Context context = ContextHolder.getInstance().getContext();
 //        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/DISCONNECT", 1, true);
-//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+DeviceUtils.getDeviceId(context)+"/MQTT/CONNECT", 1, true);
+//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/DISCONNECT", 1, true);
+//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");

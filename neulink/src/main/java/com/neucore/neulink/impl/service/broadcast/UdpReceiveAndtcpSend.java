@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.service.broadcast;
 import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -78,7 +79,7 @@ public class UdpReceiveAndtcpSend extends  Thread {
 
                     try {
                         socket = new Socket(target_ip, 6788);
-                        String devId = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+                        String devId = ServiceFactory.getInstance().getDeviceService().getSN();
                         BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                         writer.write(devId);
                         writer.flush();

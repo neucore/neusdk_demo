@@ -10,6 +10,7 @@ import com.neucore.neulink.cmd.lic.LicUpldCmd;
 import com.neucore.neulink.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.cmd.tmptr.FaceTemp;
 import com.neucore.neulink.cmd.tmptr.FaceTempCmd;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -39,7 +40,7 @@ public class NeulinkPublisherFacde {
         req.setNum(num);
         req.setColor(color);
         req.setImageUrl(imageUrl);
-        req.setDeviceId(DeviceUtils.getDeviceId(context));
+        req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         req.setCmpCode(cmpCode);
         req.setLocationCode(locationCode);
         req.setPosition(position);
@@ -55,7 +56,7 @@ public class NeulinkPublisherFacde {
      */
     public void upldFacetmp(FaceTemp[] data){
         FaceTempCmd req = new FaceTempCmd();
-        req.setDeviceId(DeviceUtils.getDeviceId(context));
+        req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         req.setData(data);
 
         String payload = JSonUtils.toString(req);
@@ -73,7 +74,7 @@ public class NeulinkPublisherFacde {
         upgrRes.setCode(200);
         upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
-        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         String payload = JSonUtils.toString(upgrRes);
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
@@ -89,7 +90,7 @@ public class NeulinkPublisherFacde {
         upgrRes.setCode(200);
         upgrRes.setMsg("消息已经接收");
         upgrRes.setCmdStr(mode);
-        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         String payload = JSonUtils.toString(upgrRes);
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
@@ -105,7 +106,7 @@ public class NeulinkPublisherFacde {
             if(index!=-1){
                 String dir =url.substring(0,index);
                 if(!ObjectUtil.isEmpty(dir)){
-                    info.setDeviceId(DeviceUtils.getDeviceId(context));
+                    info.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
 
                     if (info.getAiData()!=null){
                         info.getAiData().setDir(dir);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -43,7 +44,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes responseWrapper(RebootCmd cmd, Map<String, String> result) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(200);
         res.setMsg("success");
@@ -53,7 +54,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes fail(RebootCmd cmd, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(500);
         res.setMsg(error);
@@ -63,7 +64,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     @Override
     protected RebootRes fail(RebootCmd cmd,int code, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(error);

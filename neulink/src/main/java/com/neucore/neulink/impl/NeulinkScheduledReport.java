@@ -13,6 +13,7 @@ import com.neucore.neulink.cmd.msg.SDInfo;
 import com.neucore.neulink.cmd.msg.Stat;
 import com.neucore.neulink.cmd.msg.Status;
 import com.neucore.neulink.cmd.rmsg.log.LogUploadCmd;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.DoubleSerializer;
@@ -66,7 +67,7 @@ public class NeulinkScheduledReport {
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.status","false"))){
                         try {
                             Status status = new Status();
-                            status.setDeviceId(DeviceUtils.getDeviceId(context));
+                            status.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
 
                             String payload = JSonUtils.toString(status);
                             String topic = "msg/req/status";
@@ -103,7 +104,7 @@ public class NeulinkScheduledReport {
                         try {
                             Stat stat = new Stat();
 
-                            stat.setDeviceId(DeviceUtils.getDeviceId(context));
+                            stat.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
 
                             CPUInfo cpuInfo = new CPUInfo();
 
@@ -190,7 +191,7 @@ public class NeulinkScheduledReport {
                                 }
                             }
                             LogUploadCmd req = new LogUploadCmd();
-                            req.setDeviceId(DeviceUtils.getDeviceId(context));
+                            req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
                             req.setReqId(UUID.randomUUID().toString());
                             req.setMsg(sb.toString());
                             int index = name.lastIndexOf(".");

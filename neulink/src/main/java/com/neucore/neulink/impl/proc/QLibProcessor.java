@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rrpc.QResult;
@@ -63,7 +64,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
     @Override
     protected TLQueryRes responseWrapper(TLibQueryCmd t, QResult result) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setObjtype(t.getObjtype());
         res.setCode(200);
         res.setMsg("success");
@@ -78,7 +79,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
     @Override
     protected TLQueryRes fail(TLibQueryCmd t, String error) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setObjtype(t.getObjtype());
         res.setCode(500);
         res.setMsg(error);
@@ -88,7 +89,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
     @Override
     protected TLQueryRes fail(TLibQueryCmd t,int code, String error) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setObjtype(t.getObjtype());
         res.setCode(code);
         res.setMsg(error);
