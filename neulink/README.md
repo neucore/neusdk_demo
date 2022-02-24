@@ -95,14 +95,14 @@ ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
 
 ## 扩展-业务
 
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$cpu_sn/#、rrpc/req/$cpu_sn/#、upld/res/$cpu_sn/#】订阅;
+0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$ext_sn/#、rrpc/req/$ext_sn/#、upld/res/$ext_sn/#】订阅;
 
 1，实现payload的pojo对象
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
-topic：rrpc/req/${dev_id}/Hello/v1.0/${req_no}[/${md5}]；
+topic：rrpc/req/${ext_sn}/Hello/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.impl；类命名为HelloProcessor;
 
 ```
@@ -147,7 +147,7 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(result);
         res.setMsg("成功");
         return res;
@@ -158,7 +158,7 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
@@ -169,7 +169,7 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
