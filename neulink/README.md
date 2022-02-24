@@ -58,6 +58,8 @@ NeulinkService.getInstance().destroy();
 
 ## 扩展
 
+参照：MyApplication内installSDK()方法；
+
 ## 扩展-HTTP安全登录
 
 ILoginCallback loginCallback = new ILoginCallback() {
@@ -70,39 +72,16 @@ ILoginCallback loginCallback = new ILoginCallback() {
         }
     };
 
-## 扩展-设备服务
+## 扩展-通用业务开发
 
-```
-ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
-    /**
-     * 这个主要是为了支持非neucore生产的硬件；
-     * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-     * @return
-     */
-    @Override
-    public String getExtSN() {
-        return DeviceUtils.getCPUSN(getContext());
-    }
-    public DeviceInfo getInfo(){
-        /**
-         * @TODO 需要实现
-         */
-        return null;
-    }
-});
-
-```
-
-## 扩展-业务
-
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/$ext_sn/#、rrpc/req/$ext_sn/#、upld/res/$ext_sn/#】订阅;
+0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
 1，实现payload的pojo对象
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
-topic：rrpc/req/${ext_sn}/Hello/v1.0/${req_no}[/${md5}]；
+topic：rrpc/req/${dev_id}/Hello/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.impl；类命名为HelloProcessor;
 
 ```
@@ -180,18 +159,111 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
 ```
 
 3，定义xxxCmdListener实现ICmdListener;eg:HelloCmdListener
-
-```
-ICmdListener helloListener = new HelloCmdListener();
 备注：切记！！！
 上面listener 的doAction 返回值是 响应协议的data部分
+
+```
+package com.neucore.neusdk_demo.neulink.extend.hello;
+
+import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.NeulinkEvent;
+
+public class HelloCmdListener implements ICmdListener<String> {
+    @Override
+    public String doAction(NeulinkEvent event) {
+        return "hello";
+    }
+}
 ```
 
-4,HelloProcessor注册；
-  
-  ```
-  NeulinkProcessorFactory.regist("Hello",new HelloProcessor(),helloListener);
-  ```
+
+## 扩展-集成
+
+```
+    /**
+     * 外部扩展
+     */
+    IExtendCallback callback = new IExtendCallback() {
+        @Override
+        public void onCallBack() {
+
+            /**
+             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
+             */
+            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
+                /**
+                 * 这个主要是为了支持非neucore生产的硬件；
+                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
+                 * @return
+                 */
+                @Override
+                public String getExtSN() {
+                    /
+                    return DeviceUtils.getCPUSN(getContext());
+                }
+                public DeviceInfo getInfo(){
+                    /**
+                     * @TODO 需要实现
+                     */
+                    return null;
+                }
+            });
+
+            /**
+             * 配置扩展
+             */
+            ListenerFactory.getInstance().setCfgListener(new CfgActionListener());
+            /**
+             * 人脸下发 扩展
+             */
+            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+            /**
+             * 人脸比对 扩展
+             */
+            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            /**
+             * 人脸查询 扩展
+             */
+            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+
+            /**
+             * 唤醒 扩展
+             */
+            ListenerFactory.getInstance().setAwakenListener(new AwakenActionListener());
+            /**
+             * 休眠 扩展
+             */
+            ListenerFactory.getInstance().setHibrateListener(new HibrateActionListener());
+
+            /**
+             * 算法升级 扩展
+             */
+            ListenerFactory.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
+
+            /**
+             * 固件$APK 扩展
+             */
+            ListenerFactory.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
+
+            /**
+             * 备份现 扩展
+             */
+            ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
+
+            /**
+             * neulink消息线性处理存储服务
+             */
+            ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
+
+            /**
+             * 自定义Processor注册
+             */
+            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
+        }
+    };
+
+```
+
 
 ## 发送消息到云端
 
@@ -282,3 +354,8 @@ SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 ## 人脸识别上报
 
 参考下列代码SampleFaceUpload.java
+
+
+## 通用图片&文件上传
+
+StorageFactory.getInstance().uploadBak("/sdcard/twocamera/icon/1593399670069.jpg", UUID.randomUUID().toString(),1);

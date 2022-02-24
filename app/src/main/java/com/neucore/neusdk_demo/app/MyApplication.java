@@ -49,6 +49,50 @@ public class MyApplication extends Application
         super.onCreate();
 
         instance=this;
+        /**
+         * 集成SDK
+         */
+        installSDK();
+
+        /**
+         * FTP 测试
+         */
+        new Thread(){
+            public void run(){
+                int count = 0;
+                while (true){
+                    String requestId = UUID.randomUUID().toString();
+                    int index = 0;
+                    String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
+                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
+                    //上传人脸图片至存储服务器上
+                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
+                    if(urlStr==null){
+                        break;
+                    }
+                    Log.i(TAG,String.format("上传成功 url=%s, count=%s",count,urlStr));
+                    count++;
+                    try {
+                        int time = 0;
+                        while(time==0){
+                            time = Double.valueOf(Math.random()*10).intValue();
+                        }
+                        Log.i(TAG,"Sleep: "+(time)+" 分钟");
+                        Thread.sleep(time*60*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i(TAG,"上传失败 count: "+count);
+            }
+        }.start();
+    }
+
+    /**
+     * 集成SDK
+     */
+    private void installSDK(){
+
         ContextHolder.getInstance().setContext(this);
         /**
          * 用户人脸数据库服务
@@ -97,38 +141,6 @@ public class MyApplication extends Application
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         //extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
         SampleConnector register = new SampleConnector(this,service,extConfig,loginCallback,callback);
-        /**
-         * FTP 测试
-         */
-        new Thread(){
-            public void run(){
-                int count = 0;
-                while (true){
-                    String requestId = UUID.randomUUID().toString();
-                    int index = 0;
-                    String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
-                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
-                    //上传人脸图片至存储服务器上
-                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
-                    if(urlStr==null){
-                        break;
-                    }
-                    Log.i(TAG,String.format("上传成功 url=%s, count=%s",count,urlStr));
-                    count++;
-                    try {
-                        int time = 0;
-                        while(time==0){
-                            time = Double.valueOf(Math.random()*10).intValue();
-                        }
-                        Log.i(TAG,"Sleep: "+(time)+" 分钟");
-                        Thread.sleep(time*60*1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.i(TAG,"上传失败 count: "+count);
-            }
-        }.start();
     }
 
     public static Context getContext(){
@@ -166,23 +178,26 @@ public class MyApplication extends Application
             /**
              * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
              */
-//            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
-//                /**
-//                 * 这个主要是为了支持非neucore生产的硬件；
-//                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-//                 * @return
-//                 */
-//                @Override
-//                public String getExtSN() {
-//                    return DeviceUtils.getCPUSN(getContext());
-//                }
-//                public DeviceInfo getInfo(){
-//                    /**
-//                     * @TODO 可以实现
-//                     */
-//                    return null;
-//                }
-//            });
+            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
+                /**
+                 * 这个主要是为了支持非neucore生产的硬件；
+                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
+                 * @return
+                 */
+                @Override
+                public String getExtSN() {
+                    /**
+                     * 默认实现，可以替换
+                     */
+                    return DeviceUtils.getCPUSN(getContext());
+                }
+                public DeviceInfo getInfo(){
+                    /**
+                     * @TODO 可以实现
+                     */
+                    return null;
+                }
+            });
 
             /**
              * 配置扩展
