@@ -10,7 +10,6 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.app.DebugCmd;
 import com.neucore.neulink.cmd.rmsg.app.DebugRes;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -50,7 +49,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
     public DebugRes responseWrapper(DebugCmd cmd, String result) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(200);
         res.setMsg("success");
         return res;
@@ -59,7 +58,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
     public DebugRes fail(DebugCmd cmd, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(500);
         res.setMsg(message);
         return res;
@@ -67,7 +66,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
     public DebugRes fail(DebugCmd cmd, int code, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(message);
         return res;

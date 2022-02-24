@@ -208,7 +208,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
         DnloadRes res = new DnloadRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(200);
         res.setMsg("success");
 

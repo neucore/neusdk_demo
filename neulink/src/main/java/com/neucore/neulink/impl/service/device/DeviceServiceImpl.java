@@ -16,7 +16,7 @@ import cn.hutool.core.util.ObjectUtil;
 public class DeviceServiceImpl implements IDeviceService {
 
     @Override
-    public String getSN() {
+    public String getExtSN() {
         /**
          * 默认实现
          * 每台设备固定不变【必须和设备出厂时的设备序列号一致，当不一致的时候设备将无法使用neucore云管理设备】

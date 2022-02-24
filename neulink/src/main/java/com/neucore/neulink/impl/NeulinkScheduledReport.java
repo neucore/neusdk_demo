@@ -67,7 +67,7 @@ public class NeulinkScheduledReport {
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.status","false"))){
                         try {
                             Status status = new Status();
-                            status.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+                            status.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
 
                             String payload = JSonUtils.toString(status);
                             String topic = "msg/req/status";
@@ -104,7 +104,7 @@ public class NeulinkScheduledReport {
                         try {
                             Stat stat = new Stat();
 
-                            stat.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+                            stat.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
 
                             CPUInfo cpuInfo = new CPUInfo();
 
@@ -191,7 +191,7 @@ public class NeulinkScheduledReport {
                                 }
                             }
                             LogUploadCmd req = new LogUploadCmd();
-                            req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+                            req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
                             req.setReqId(UUID.randomUUID().toString());
                             req.setMsg(sb.toString());
                             int index = name.lastIndexOf(".");

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ServiceFactory;
-import com.neucore.neulink.util.DeviceUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -48,7 +47,7 @@ public class NeulinkSubscriberFacde {
      */
     public void subRmsg(){
 
-        String sys_ctrl_topic = "rmsg/req/" + ServiceFactory.getInstance().getDeviceService().getSN() + "/#";
+        String sys_ctrl_topic = "rmsg/req/" + ServiceFactory.getInstance().getDeviceService().getExtSN() + "/#";
 
         service.subscribeToTopic(sys_ctrl_topic, 0,messageListener);
     }
@@ -69,7 +68,7 @@ public class NeulinkSubscriberFacde {
      */
     public void subRrpc(){
 
-        String sys_ctrl_topic = "rrpc/req/" + ServiceFactory.getInstance().getDeviceService().getSN() + "/#";
+        String sys_ctrl_topic = "rrpc/req/" + ServiceFactory.getInstance().getDeviceService().getExtSN() + "/#";
 
         service.subscribeToTopic(sys_ctrl_topic, 0,messageListener);
     }
@@ -80,7 +79,7 @@ public class NeulinkSubscriberFacde {
      */
     public void subUpld(){
 
-        String sys_ctrl_topic = "upld/res/" + ServiceFactory.getInstance().getDeviceService().getSN() + "/#";
+        String sys_ctrl_topic = "upld/res/" + ServiceFactory.getInstance().getDeviceService().getExtSN() + "/#";
 
         service.subscribeToTopic(sys_ctrl_topic, 0, messageListener);
     }

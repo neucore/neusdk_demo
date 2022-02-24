@@ -15,7 +15,6 @@ import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
@@ -85,7 +84,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
     protected UgrdeCmdRes responseWrapper(UgrdeCmd cmd, String result) {
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(200);
         res.setMsg("success");
         return res;
@@ -95,7 +94,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
     protected UgrdeCmdRes fail(UgrdeCmd cmd, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(500);
         res.setMsg(error);
         return res;
@@ -105,7 +104,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
     protected UgrdeCmdRes fail(UgrdeCmd cmd,int code, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(error);
         return res;
