@@ -56,10 +56,6 @@ NeulinkService.getInstance().destroy();
 
 ```
 
-## 扩展
-
-参照：MyApplication内installSDK()方法；
-
 ## 扩展-HTTP安全登录
 
 ILoginCallback loginCallback = new ILoginCallback() {
@@ -178,6 +174,8 @@ public class HelloCmdListener implements ICmdListener<String> {
 
 
 ## 扩展-集成
+
+参照：MyApplication内installSDK()方法；
 
 ```
     /**

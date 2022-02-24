@@ -241,35 +241,10 @@ public class MyApplication extends Application
             ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
 
             /**
-             * 图片&文件上传
-             */
-            //StorageFactory.getInstance().uploadBak("/sdcard/twocamera/icon/1593399670069.jpg", UUID.randomUUID().toString(),1);
-
-            /**
-             * 人脸上报
-             * 启用
-             */
-            //new SampleFaceUpload().v12sample();
-
-            /**
              * neulink消息线性处理存储服务
              */
             ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
 
-            /**
-             * 扩展其他Listener实现【hello】
-             * XXX就是topic第四段；且首字母大写
-             * eg:topic：rrpc/req/${dev_id}/xxx/v1.0/${req_no}[/${md5}]；
-             *
-             *
-             * ListenerFactory.getInstance().setListener("xxx", XxxProcessor,new ICmdListener<String>() {
-             *                 @Override
-             *                 public String doAction(NeulinkEvent event) {
-             *                     return "hello";
-             *                 }
-             *             });
-             *
-             */
             /**
              * 自定义Processor注册
              */
