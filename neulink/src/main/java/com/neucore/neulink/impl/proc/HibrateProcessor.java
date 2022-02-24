@@ -8,6 +8,7 @@ import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.GProcessor;
@@ -50,7 +51,7 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     @Override
     protected CmdRes responseWrapper(ArgCmd cmd, Map<String, String> result) {
         CmdRes res = new CmdRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(200);
         res.setMsg("success");
@@ -60,7 +61,7 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     @Override
     protected CmdRes fail(ArgCmd cmd, String error) {
         CmdRes res = new CmdRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(500);
         res.setMsg(error);
@@ -70,7 +71,7 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     @Override
     protected CmdRes fail(ArgCmd cmd,int code, String error) {
         CmdRes res = new CmdRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(error);

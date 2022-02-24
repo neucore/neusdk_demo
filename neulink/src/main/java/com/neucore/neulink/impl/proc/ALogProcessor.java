@@ -6,6 +6,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
@@ -54,7 +55,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
 
     public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, String result) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(200);
         res.setMsg(result);
         res.setVinfo(cmd.getVinfo());
@@ -63,7 +64,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
 
     public AlogUpgrRes fail(AlogUpgrCmd cmd, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(500);
         res.setMsg(message);
         res.setVinfo(cmd.getVinfo());
@@ -71,7 +72,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
     }
     public AlogUpgrRes fail(AlogUpgrCmd cmd, int code, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(code);
         res.setMsg(message);
         res.setVinfo(cmd.getVinfo());

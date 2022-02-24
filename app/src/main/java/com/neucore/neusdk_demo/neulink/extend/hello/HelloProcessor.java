@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.hello;
 
 import android.content.Context;
 
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -39,7 +40,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(result);
         res.setMsg("成功");
         return res;
@@ -50,7 +51,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
@@ -61,7 +62,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setData(error);
         res.setMsg("失败");
         return res;

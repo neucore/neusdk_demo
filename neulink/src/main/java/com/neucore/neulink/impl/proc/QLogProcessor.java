@@ -7,6 +7,7 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -95,7 +96,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
 //                messageList.toArray(msgArray);
 //                File localFile = store(topic,"logs",i,msgArray);
 //                String md5 = MD5Utils.getInstance().getMD5File(localFile.getAbsolutePath());
-//                String url = StorageFactory.getInstance().uploadLog(localFile.getAbsolutePath(),DeviceUtils.getDeviceId(getContext()), RequestContext.getId(),(i+1));
+//                String url = StorageFactory.getInstance().uploadLog(localFile.getAbsolutePath(),ServiceFactory.getInstance().getDeviceService().getSN(), RequestContext.getId(),(i+1));
 //                md5s.add(md5);
 //                urls.add(url);
 //                localFile.delete();
@@ -207,7 +208,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
         DnloadRes res = new DnloadRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
-        res.setDeviceId(DeviceUtils.getDeviceId(getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(200);
         res.setMsg("success");
 

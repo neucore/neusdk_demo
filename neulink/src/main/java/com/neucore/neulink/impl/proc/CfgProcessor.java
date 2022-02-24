@@ -8,6 +8,7 @@ import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DeviceUtils;
@@ -41,7 +42,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
     public CfgCmdRes responseWrapper(CfgCmd cmd,String result) {
         CfgCmdRes res = new CfgCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(200);
         res.setMsg(result);
         return res;
@@ -50,7 +51,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
     public CfgCmdRes fail(CfgCmd cmd,String message) {
         CfgCmdRes res = new CfgCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(500);
         res.setMsg(message);
         return res;
@@ -59,7 +60,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
     public CfgCmdRes fail(CfgCmd cmd,int code,String message) {
         CfgCmdRes res = new CfgCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(DeviceUtils.getDeviceId(this.getContext()));
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
         res.setCode(code);
         res.setMsg(message);
         return res;
