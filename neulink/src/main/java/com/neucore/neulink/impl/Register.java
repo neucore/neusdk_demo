@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -21,7 +22,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class Register extends BroadcastReceiver {
 
-    private String TAG = "NeulinkRegister";
+    private String TAG = NeulinkConst.TAG_PREFIX+"Register";
     private Context context;
     private  NeulinkService service;
     private NeulinkScheduledReport autoReporter = null;
@@ -29,6 +30,9 @@ public class Register extends BroadcastReceiver {
     private boolean mqttServiceReady =false;
     private boolean networkReady = false;
     private boolean initRegistService = false;
+    private boolean registed=false;
+    private boolean registCalled = false;
+
     private String serviceUrl;
     private final NetworkHelper networkHelper = NetworkHelper.getInstance();
 
@@ -63,7 +67,7 @@ public class Register extends BroadcastReceiver {
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
         if(networkReady){
             if(channel==0 && !initMqttService ){//http注册方式&上报方式
-                Log.d(TAG,"start mqtt register");
+                Log.d(TAG,"try mqtt register");
                 service.init(serviceUrl,context);
                 initMqttService = true;
             }
@@ -75,8 +79,15 @@ public class Register extends BroadcastReceiver {
            || (channel ==1
                 && networkReady
                 && !initRegistService)){
-            Log.d(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
-            regist();
+
+            service.init(serviceUrl,context);
+
+            Log.d(TAG,"try "+(channel==0?"mqtt":"http")+ " register");
+            if(!registCalled){
+                registCalled = true;
+                regist();
+            }
+
             autoReporter.start();
             initRegistService = true;
         }
@@ -92,24 +103,35 @@ public class Register extends BroadcastReceiver {
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
      */
     void regist() {
-        /**
-         * 确保有license的设备先激活，后注册
-         */
-        try {
-            Thread.sleep(15);
-        }
-        catch (Exception ex){}
-        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
-        DeviceInfo deviceInfo = deviceService.getInfo();
-        if(ObjectUtil.isEmpty(deviceInfo)){
-            throw new RuntimeException("设备服务 getInfo没有实现。。。");
-        }
-        String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
-        deviceInfo.setDeviceId(devId);
+        new Thread(){
+            public void run(){
+                while(!registed){
+                    Log.i(TAG,"MQTT SuccessedLogin: "+service.getSuccessedLogin());
+                    if(!service.getSuccessedLogin()){
+                        service.connect();
+                    }
+                    if(service.getSuccessedLogin()){
+                        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+                        DeviceInfo deviceInfo = deviceService.getInfo();
+                        if(ObjectUtil.isEmpty(deviceInfo)){
+                            throw new RuntimeException("设备服务 getInfo没有实现。。。");
+                        }
+                        String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+                        deviceInfo.setDeviceId(devId);
 
-        String payload = JSonUtils.toString(deviceInfo);
-        String devinfo_topic = "msg/req/devinfo";
-        service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+                        String payload = JSonUtils.toString(deviceInfo);
+                        String devinfo_topic = "msg/req/devinfo";
+                        service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+                        registed = true;
+                    }
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }.start();
+
     }
 
     private static final String Action_Name="com.intel.unit.Clipy";

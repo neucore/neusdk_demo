@@ -17,6 +17,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.LogService;
 import com.neucore.neulink.impl.NetBroadcastReceiver;
@@ -27,12 +28,13 @@ import com.neucore.neulink.util.ContextHolder;
 import java.util.Properties;
 
 public class SampleConnector {
-    private String TAG = "SampleConnector";
+    private String TAG = NeulinkConst.TAG_PREFIX+"SampleConnector";
     private Application application;
     private IUserService userService;
     private ILoginCallback loginCallback;
     private IExtendCallback callback;
     private Properties extConfig;
+    private Handler tHandler;
 
     @Deprecated
     public SampleConnector(Application application, IExtendCallback callback, IUserService service){
@@ -77,6 +79,34 @@ public class SampleConnector {
          */
         ContextHolder.getInstance().setContext(application);
 
+        /**
+         * 异步开启LogService
+         */
+        if(tHandler==null){
+            tHandler = new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    Intent intent = new Intent(application, LogService.class);
+                    Log.i(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
+                    Log.i(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        Log.i(TAG,"startForegroundService");
+                        application.startForegroundService(intent);
+                    } else {
+                        Log.i(TAG,"startService");
+                        application.startService(intent);
+                    }
+                    Log.i(TAG,"success startLogService");
+                    return true;
+                }
+            });
+        }
+
+        LogServiceThread logServiceThread = new LogServiceThread();
+
+        logServiceThread.start();
+
+
         //处理初始化应用carsh
         CarshHandler crashHandler = CarshHandler.getIntance();
         crashHandler.init();
@@ -89,11 +119,6 @@ public class SampleConnector {
         Log.i(TAG,"success load user info 2 mem");
 
         ConfigContext.getInstance().setExtConfig(extConfig);
-
-        /**
-         * 异步开启LogService
-         */
-        new LogServiceThread().start();
 
         NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
         NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
@@ -115,25 +140,10 @@ public class SampleConnector {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         LocalBroadcastManager.getInstance(ContextHolder.getInstance().getContext()).registerReceiver(receiver, filter);
     }
-    Handler tHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            Intent intent = new Intent(application, LogService.class);
-            Log.i(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
-            Log.i(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.i(TAG,"startForegroundService");
-                application.startForegroundService(intent);
-            } else {
-                Log.i(TAG,"startService");
-                application.startService(intent);
-            }
-            Log.i(TAG,"success startLogService");
-            return true;
-        }
-    });
 
     class LogServiceThread extends Thread {
+        public LogServiceThread(){
+        }
         public void run() {
             Looper.prepare();
             tHandler.sendEmptyMessage(1);

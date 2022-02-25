@@ -9,9 +9,11 @@ import com.neucore.neulink.cmd.cfg.ConfigContext;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -20,7 +22,7 @@ public class MqttService {
     private final String TAG = NeulinkConst.TAG_PREFIX+"MqttService";
     private boolean canDoConnect = true;
 
-    private MqttAndroidClient client;
+    private MqttAsyncClient client;
     private MqttConnectOptions conOpt;
 
     private Context context;
@@ -166,33 +168,40 @@ public class MqttService {
      *
      * @return
      */
-    public MqttAndroidClient getMqttClient() {
+    public MqttAsyncClient getMqttClient() {
         return client;
     }
 
 
     private void init() {
         // 服务器地址（协议+地址+端口号）
-        client = new MqttAndroidClient(context, serverUrl, clientId, MqttAndroidClient.Ack.AUTO_ACK);
-        // 设置MQTT监听并且接受消息
-        client.setCallback(mqttCallback);
+        MemoryPersistence memoryPersistence = new MemoryPersistence();
+        try {
+            Log.i(TAG,String.format("init ClientId: %s",clientId));
+            client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
+            // 设置MQTT监听并且接受消息
+            client.setCallback(mqttCallback);
 
-        conOpt = new MqttConnectOptions();
-        // 清除缓存
-        conOpt.setCleanSession(cleanSession);
-        // 设置超时时间，单位：秒
-        conOpt.setConnectionTimeout(timeOut);
-        // 心跳包发送间隔，单位：秒
-        conOpt.setKeepAliveInterval(keepAliveInterval);
-        // 用户名
-        conOpt.setUserName(ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"));
-        // 密码
-        conOpt.setPassword(ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password").toCharArray());
-        conOpt.setAutomaticReconnect(autoReconnect);
-        // 监控Client的状态 $share/{ShareName}/{filter}
-        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-        conOpt.setWill("MQTT/LWT/v1.0/"+sccperId+"/"+clientId,"{\"status\":-1}".getBytes(),1,true);
+            conOpt = new MqttConnectOptions();
+            // 清除缓存
+            conOpt.setCleanSession(cleanSession);
+            // 设置超时时间，单位：秒
+            conOpt.setConnectionTimeout(timeOut);
+            // 心跳包发送间隔，单位：秒
+            conOpt.setKeepAliveInterval(keepAliveInterval);
+            // 用户名
+            conOpt.setUserName(ConfigContext.getInstance().getConfig(ConfigContext.USERNAME, "admin"));
+            // 密码
+            conOpt.setPassword(ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD, "password").toCharArray());
+            conOpt.setAutomaticReconnect(autoReconnect);
+            // 监控Client的状态 $share/{ShareName}/{filter}
+            String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
+            conOpt.setWill("MQTT/LWT/v1.0/" + sccperId + "/" + clientId, "{\"status\":-1}".getBytes(), 1, true);
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
+        }
+        catch (MqttException ex){
+            Log.e(TAG,"MQTT Init failed",ex);
+        }
     }
 
     /**
@@ -201,7 +210,7 @@ public class MqttService {
     public void close() {
         try {
             if(!close && !ObjectUtil.isEmpty(client)){
-                client.unregisterResources();
+//                client.unregisterResources();
                 client.close();
                 close = true;
                 Log.i(TAG,"MQTT Closed");
@@ -229,7 +238,9 @@ public class MqttService {
     public void connect() {
         if (canDoConnect && !client.isConnected()) {
             try {
+                Log.i(TAG,String.format("connect by %s",clientId));
                 client.connect(conOpt, null, mqttActionListener);
+                Log.i(TAG,"connected");
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }

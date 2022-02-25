@@ -55,7 +55,7 @@ public class DownloadThread extends Thread {
                     }
                     else {
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(3000);
                         }
                         catch (Exception ex){}
                         trys++;
