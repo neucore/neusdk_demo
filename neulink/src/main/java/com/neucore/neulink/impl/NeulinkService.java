@@ -318,7 +318,7 @@ public class NeulinkService {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-
+            Log.i(TAG, "onSuccess ");
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectSuccess(arg0);
             }
@@ -341,6 +341,7 @@ public class NeulinkService {
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
             try {
+                Log.i(TAG, "connectComplete ");
                 reentrantLock.lock();
                 if(reconnect){
                     subscriberFacde.subAll();
