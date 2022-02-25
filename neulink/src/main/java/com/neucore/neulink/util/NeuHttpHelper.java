@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +35,7 @@ import okhttp3.Response;
 
 public class NeuHttpHelper{
 
-	private static String TAG = "NeuHttpHelper";
+	private static String TAG = NeulinkConst.TAG_PREFIX+"NeuHttpHelper";
 
 	private static OkHttpClient getClient(){
 		return getClient(5,5);

@@ -6,6 +6,8 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.NetworkInterface;
@@ -16,7 +18,7 @@ import static android.os.Build.VERSION.SDK_INT;
 
 public class MacHelper {
 
-    private static String TAG = "MacHelper";
+    private static String TAG = NeulinkConst.TAG_PREFIX+"MacHelper";
 
 
     /**

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.EnDecUtil;
@@ -65,7 +66,7 @@ public class ConfigContext {
     public final static String DEVICE_TYPE = "device.type";
 
 
-    private String TAG = "ConfigContext";
+    private String TAG = NeulinkConst.TAG_PREFIX+"ConfigContext";
 
     private static ConfigContext configContext = new ConfigContext();
 

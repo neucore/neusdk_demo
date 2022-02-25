@@ -11,11 +11,13 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import java.util.ArrayList;
 
 public class NetworkHelper {
 
-    private static String TAG = "NetworkHelper";
+    private static String TAG = NeulinkConst.TAG_PREFIX+"NetworkHelper";
 
     public interface Listener {
         void onConnectivityChange(boolean connect);

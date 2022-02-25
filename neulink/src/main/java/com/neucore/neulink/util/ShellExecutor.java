@@ -3,6 +3,8 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -12,7 +14,7 @@ import java.util.Map;
 
 public class ShellExecutor {
 
-    private static String TAG = "ShellExecutor";
+    private static String TAG = NeulinkConst.TAG_PREFIX+"ShellExecutor";
     /**
      *
      * @param context

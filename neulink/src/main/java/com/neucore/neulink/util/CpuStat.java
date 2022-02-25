@@ -3,6 +3,8 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class CpuStat {
 
-    private static String TAG = "CpuStat";
+    private static String TAG = NeulinkConst.TAG_PREFIX+"CpuStat";
 
     /** CPU信息文件的路径 */
     public static final String CPUC_INFO_PATH = "/proc/cpuinfo";

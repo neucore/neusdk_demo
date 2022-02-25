@@ -16,6 +16,8 @@ import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;

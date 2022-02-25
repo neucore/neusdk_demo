@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.CPUInfo;
 import com.neucore.neulink.cmd.msg.DiskInfo;
@@ -33,7 +34,7 @@ public class NeulinkScheduledReport {
     private  Context context;
     private  NeulinkService service;
     private Boolean started = false;
-    private String TAG = "NeulinkScheduledReport";
+    private String TAG = NeulinkConst.TAG_PREFIX+"ScheduledReport";
 
     public NeulinkScheduledReport(Context context, NeulinkService service) {
         this.context = context;
@@ -55,15 +56,16 @@ public class NeulinkScheduledReport {
      * msg/req/status/${req_no}/v1.0[/${md5}], qos=0
      */
     private void status() {
-        try {
-            Thread.sleep(1000 * 30);
-        }
-        catch (Exception ex){}
+
 
         new Thread("status") {
             public void run() {
 
                 while (!service.getDestroy() && true) {
+                    try {
+                        Thread.sleep(1000 * 30);
+                    }
+                    catch (Exception ex){}
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.status","false"))){
                         try {
                             Status status = new Status();
@@ -77,10 +79,6 @@ public class NeulinkScheduledReport {
                             Log.e(TAG,ex.getMessage());
                         }
                     }
-                    try {
-                        Thread.sleep(1000 * 30);
-                    } catch (Exception e) {
-                    }
                 }
             }
 
@@ -93,13 +91,13 @@ public class NeulinkScheduledReport {
      * msg/req/stat/v1.0/${req_no}[/${md5}], qos=0
      */
     private void stat(){
-        try {
-            Thread.sleep(1000 * 30);
-        }
-        catch (Exception ex){}
         new Thread("stat") {
             public void run() {
                 while (!service.getDestroy() &&true) {
+                    try {
+                        Thread.sleep(1000 * 30);
+                    }
+                    catch (Exception ex){}
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.stat","false"))){
                         try {
                             Stat stat = new Stat();
@@ -139,10 +137,6 @@ public class NeulinkScheduledReport {
                         }catch (Exception ex){
                             Log.e(TAG,ex.getMessage());
                         }
-                    }
-                    try {
-                        Thread.sleep(1000 * 60);
-                    } catch (Exception e) {
                     }
                 }
             }

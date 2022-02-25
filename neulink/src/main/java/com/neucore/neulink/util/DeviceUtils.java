@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DiskInfo;
 import com.neucore.neulink.cmd.msg.SDInfo;
@@ -43,7 +44,7 @@ import cn.hutool.core.util.StrUtil;
  */
 public class DeviceUtils {
 
-	private static String TAG = "DeviceUtils";
+	private static String TAG = NeulinkConst.TAG_PREFIX+"DeviceUtils";
 	public static final int SDCARD_TYPE = 0;			//当前的日志记录类型为存储在SD卡下面
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
 

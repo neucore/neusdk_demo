@@ -54,39 +54,6 @@ public class MyApplication extends Application
          * 集成SDK
          */
         installSDK();
-
-        /**
-         * FTP 测试
-         */
-        new Thread(){
-            public void run(){
-                int count = 0;
-                while (true){
-                    String requestId = UUID.randomUUID().toString();
-                    int index = 0;
-                    String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
-                    IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
-                    //上传人脸图片至存储服务器上
-                    String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
-                    if(urlStr==null){
-                        break;
-                    }
-                    Log.i(TAG,String.format("上传成功 url=%s, count=%s",count,urlStr));
-                    count++;
-                    try {
-                        int time = 0;
-                        while(time==0){
-                            time = Double.valueOf(Math.random()*10).intValue();
-                        }
-                        Log.i(TAG,"Sleep: "+(time)+" 分钟");
-                        Thread.sleep(time*60*1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.i(TAG,"上传失败 count: "+count);
-            }
-        }.start();
     }
 
     /**

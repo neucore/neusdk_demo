@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -31,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 
 @SuppressLint({ "NewApi", "DefaultLocale" })
 public class FileUtils {
-	private static String TAG = "FileUtils";
+	private static String TAG = NeulinkConst.TAG_PREFIX+"FileUtils";
 	// 获取当前目录下所有的mp4文件
 	public static Vector<String> GetVideoFileName(String fileAbsolutePath) {
 		Vector<String> vecFile = new Vector<String>();

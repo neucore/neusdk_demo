@@ -89,7 +89,7 @@ public class NeulinkSubscriberFacde {
      */
     private IMqttMessageListener messageListener = new IMqttMessageListener(){
 
-        private String TAG = "IMqttMessageListener";
+        private String TAG = NeulinkConst.TAG_PREFIX+"IMqttMessageListener";
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
 

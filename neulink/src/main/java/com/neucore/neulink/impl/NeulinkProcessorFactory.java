@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.proc.ALogProcessor;
@@ -31,7 +32,7 @@ import cn.hutool.core.util.StrUtil;
 public class NeulinkProcessorFactory {
 
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
-    private static String TAG = "NeulinkProcessorFactory";
+    private static String TAG = NeulinkConst.TAG_PREFIX+"ProcessorFactory";
     /**
      *
      * 设备重启 rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
