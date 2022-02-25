@@ -15,6 +15,7 @@ import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
+import com.neucore.neulink.impl.service.device.DeviceInfoBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -108,14 +109,10 @@ public class MyApplication extends Application
         extConfig.setProperty(ConfigContext.USERNAME,"admin");
         extConfig.setProperty(ConfigContext.PASSWORD,"password");
 
-
-
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
-
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://47.118.59.46:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.83:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
@@ -195,7 +192,7 @@ public class MyApplication extends Application
                     /**
                      * @TODO 可以实现
                      */
-                    return null;
+                    return DeviceInfoBuilder.getInstance().build();
                 }
             });
 
