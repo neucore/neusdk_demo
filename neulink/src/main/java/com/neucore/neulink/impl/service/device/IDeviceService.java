@@ -9,5 +9,6 @@ public interface IDeviceService {
      */
     String getExtSN();
 
+
     DeviceInfo getInfo();
 }
