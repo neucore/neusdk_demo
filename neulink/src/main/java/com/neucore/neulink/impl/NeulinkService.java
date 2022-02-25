@@ -61,19 +61,18 @@ public class NeulinkService {
     public void buildMqttService(String serverUri) {
         this.defaultServerUri = serverUri;
         Context context = ContextHolder.getInstance().getContext();
-        udpReceiveAndtcpSend = new UdpReceiveAndtcpSend();
         starMQTTCallBack = new NeulinkMsgCallBack(context,this);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
         register = new Register(context,this,serverUri);
+        udpReceiveAndtcpSend = new UdpReceiveAndtcpSend();
+        udpReceiveAndtcpSend.start();
     }
 
     void init(String serverUri,Context context){
 
         synchronized (inited){
             if(!inited){
-
-                udpReceiveAndtcpSend.start();
                 mqttService = new MqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
@@ -199,7 +198,6 @@ public class NeulinkService {
                 try {
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,10,60,3);
-                    Log.d(TAG,"设备注册响应："+response);
                 } catch (UnsupportedEncodingException e) {
                 }
                 Log.d(TAG,"设备注册响应："+response);
@@ -223,8 +221,8 @@ public class NeulinkService {
                 custid = zone.getCustid();
                 storeid = zone.getStoreid();
                 zoneid = zone.getId();
-                newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
-                init(newServiceUri,context);
+//                newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
+//                init(newServiceUri,context);
                 /**
                  * upload.server 默认值
                  * https://data.neuapi.com/neulink/upload2cloud
@@ -329,7 +327,6 @@ public class NeulinkService {
 
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
-            Log.e(TAG, "onFailure ",arg1);
             if (starMQTTCallBack != null) {
                 starMQTTCallBack.connectFailed(arg0, arg1);
             }

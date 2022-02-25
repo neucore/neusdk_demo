@@ -76,7 +76,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
     @Override
     public void connectFailed(IMqttToken arg0, Throwable arg1) {
         //连接失败
-        Log.e(TAG,"connectFailed",arg1);
+        Log.e(TAG,"connectFailed: "+arg1.getMessage());
     }
 
 }
