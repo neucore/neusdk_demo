@@ -8,6 +8,7 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
+import com.neucore.neulink.extend.ILoginCallback;
 import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
@@ -45,8 +46,9 @@ public class NeulinkService {
 
     private MqttService mqttService = null;
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
+    private ILoginCallback loginCallback;
     private Boolean inited = false;
-    private Boolean successedLogin = false;
+    private Boolean mqttConnSuccessed = false;
     private Register register = null;
     private Boolean destroy = false;
 
@@ -109,7 +111,7 @@ public class NeulinkService {
      * 连接Mqtt服务器
      */
     void connect() {
-        if(!successedLogin){
+        if(!mqttConnSuccessed){
             mqttService.connect();
         }
     }
@@ -118,6 +120,10 @@ public class NeulinkService {
         if(mqttCallBack!=null){
             this.mqttCallBacks.add(mqttCallBack);
         }
+    }
+
+    public void setLoginCallback(ILoginCallback loginCallback) {
+        this.loginCallback = loginCallback;
     }
 
     /**
@@ -153,7 +159,7 @@ public class NeulinkService {
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
         publishMessage(topicPrefix,version,reqId,payload,qos,false);
     }
-
+    private Long lastlogin = null;
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
@@ -183,6 +189,22 @@ public class NeulinkService {
         }
         else{
 
+            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
+            if(loginCallback!=null){
+                Long current = System.currentTimeMillis()/1000L;
+                Long timeout = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_SESSION_TIMEOUT,30*60*1000L);
+                if(lastlogin==null||lastlogin+timeout<current){
+                    String token = loginCallback.login();
+                    NeulinkSecurity.getInstance().setToken(token);
+                }
+                lastlogin = current;
+            }
+
+            String token = NeulinkSecurity.getInstance().getToken();
+            Map<String,String> params = new HashMap<>();
+            if(token!=null){
+                params.put("Authorization","Bearer "+token);
+            }
 
             /**
              * 设备注册：
@@ -201,9 +223,10 @@ public class NeulinkService {
                 String response = null;
                 try {
                     String topic = URLEncoder.encode(topStr,"UTF-8");
-                    response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,10,60,3);
+                    response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,3);
                 } catch (UnsupportedEncodingException e) {
                 }
+
                 Log.d(TAG,"设备注册响应："+response);
 
                 /**
@@ -242,9 +265,7 @@ public class NeulinkService {
                     topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
                     Log.d(TAG,topStr);
                     String topic = URLEncoder.encode(topStr,"UTF-8");
-                    String token = NeulinkSecurity.getInstance().getToken();
-                    Map<String,String> params = new HashMap<>();
-                    params.put("Authorization","Bearer "+token);
+
                     String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
                     Log.d(TAG,"设备upload2cloud响应："+response);
                 } catch (Exception e) {
@@ -310,8 +331,8 @@ public class NeulinkService {
         return zoneid;
     }
 
-    boolean getSuccessedLogin(){
-        return successedLogin;
+    boolean getMqttConnSuccessed(){
+        return mqttConnSuccessed;
     }
 
     private ReentrantLock reentrantLock = new ReentrantLock();
@@ -323,7 +344,7 @@ public class NeulinkService {
         @Override
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "onSuccess ");
-            successedLogin = true;
+            mqttConnSuccessed = true;
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     callback.connectSuccess(arg0);
@@ -349,7 +370,7 @@ public class NeulinkService {
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
             try {
-                successedLogin = true;
+                mqttConnSuccessed = true;
                 Log.i(TAG, "connectComplete ");
                 reentrantLock.lock();
                 if(reconnect){
@@ -404,7 +425,7 @@ public class NeulinkService {
         public void connectionLost(Throwable arg0) {
 
             Log.i(TAG, "connectionLost");
-            successedLogin = false;
+            mqttConnSuccessed = false;
             publishDisConnect(1);
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
