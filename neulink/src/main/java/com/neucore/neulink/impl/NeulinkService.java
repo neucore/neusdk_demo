@@ -159,7 +159,7 @@ public class NeulinkService {
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
         publishMessage(topicPrefix,version,reqId,payload,qos,false);
     }
-    private Long lastlogin = null;
+
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
@@ -191,18 +191,19 @@ public class NeulinkService {
 
             ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
             if(loginCallback!=null){
-                Long current = System.currentTimeMillis()/1000L;
-                Long timeout = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_SESSION_TIMEOUT,30*60*1000L);
-                if(lastlogin==null||lastlogin+timeout<current){
+                if(NeulinkSecurity.getInstance().getToken()==null){
                     String token = loginCallback.login();
                     NeulinkSecurity.getInstance().setToken(token);
                 }
-                lastlogin = current;
             }
 
             String token = NeulinkSecurity.getInstance().getToken();
             Map<String,String> params = new HashMap<>();
             if(token!=null){
+                int index = token.indexOf(" ");
+                if(index!=-1){
+                    token = token.substring(index+1);
+                }
                 params.put("Authorization","Bearer "+token);
             }
 
