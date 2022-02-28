@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
@@ -32,6 +33,9 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.Properties;
 import java.util.UUID;
@@ -65,7 +69,7 @@ public class MyApplication extends Application
         /**
          * 用户人脸数据库服务
          */
-        IUserService service = UserService.getInstance(this);
+        IUserService userService = UserService.getInstance(this);
         /**
          * 集成Neulink
          */
@@ -92,7 +96,7 @@ public class MyApplication extends Application
         /**
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/v1/device/regist");
         /**
          * FTP 实现
          */
@@ -104,8 +108,36 @@ public class MyApplication extends Application
          */
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
         //extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
-        SampleConnector register = new SampleConnector(this,service,extConfig,loginCallback,callback);
+        SampleConnector connector = new SampleConnector(this,extConfig);
+
+        /**
+         * http登录授权回调
+         */
+        connector.setLoginCallback(loginCallback);
+        /**
+         * 设备服务
+         */
+        connector.setDeviceService(deviceService);
+        /**
+         * 扩展回调
+         */
+        connector.setExtendCallback(callback);
+        /**
+         * mqtt回调
+         */
+        connector.setMqttCallBack(mqttCallBack);
+
+        /**
+         * 用户人脸数据库服务
+         */
+        connector.setUserService(userService);
+        /**
+         * 开始连接
+         */
+        connector.start();
     }
+
+
 
     public static Context getContext(){
         return instance.getApplicationContext();
@@ -120,6 +152,53 @@ public class MyApplication extends Application
     public static void setThreadAlive(int alive) {
         MyApplication.threadAlive = alive;
     }
+
+    IMqttCallBack mqttCallBack = new IMqttCallBack() {
+        @Override
+        public void connectComplete(boolean reconnect, String serverURI) {
+
+        }
+
+        @Override
+        public void messageArrived(String topic, String message, int qos) throws Exception {
+
+        }
+
+        @Override
+        public void connectionLost(Throwable arg0) {
+
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken arg0) {
+
+        }
+
+        @Override
+        public void connectSuccess(IMqttToken arg0) {
+
+        }
+
+        @Override
+        public void connectFailed(IMqttToken arg0, Throwable arg1) {
+
+        }
+    };
+    /**
+     *
+     */
+    IDeviceService deviceService = new IDeviceService() {
+        @Override
+        public String getExtSN() {
+            return DeviceUtils.getCPUSN(getContext());
+        }
+
+        @Override
+        public DeviceInfo getInfo() {
+            return DeviceInfoBuilder.getInstance().build();
+        }
+    };
+
     /**
      * 登录loginCallback
      */
@@ -132,36 +211,13 @@ public class MyApplication extends Application
             return null;
         }
     };
+
     /**
      * 外部扩展
      */
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
-
-            /**
-             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
-             */
-            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
-                /**
-                 * 这个主要是为了支持非neucore生产的硬件；
-                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-                 * @return
-                 */
-                @Override
-                public String getExtSN() {
-                    /**
-                     * 默认实现，可以替换
-                     */
-                    return DeviceUtils.getCPUSN(getContext());
-                }
-                public DeviceInfo getInfo(){
-                    /**
-                     * @TODO 可以实现
-                     */
-                    return DeviceInfoBuilder.getInstance().build();
-                }
-            });
 
             /**
              * 配置扩展
