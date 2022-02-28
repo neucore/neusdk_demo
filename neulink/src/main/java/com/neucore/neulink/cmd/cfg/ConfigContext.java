@@ -65,6 +65,7 @@ public class ConfigContext {
 
     public final static String DEVICE_TYPE = "device.type";
 
+    public final static String HTTP_SESSION_TIMEOUT = "http.session.timeout";
 
     private String TAG = NeulinkConst.TAG_PREFIX+"ConfigContext";
 

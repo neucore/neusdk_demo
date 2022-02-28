@@ -35,7 +35,9 @@ public class SampleConnector {
     private Application application;
     private NeulinkService neulinkService;
     private IUserService userService;
+    private IMessageService messageService;
     private ILoginCallback loginCallback;
+    private IDeviceService deviceService;
     private IMqttCallBack mqttCallBack;
     private IExtendCallback extendCallback;
     private Properties extConfig;
@@ -85,11 +87,11 @@ public class SampleConnector {
     }
 
     public void setDeviceService(IDeviceService deviceService){
-        ServiceFactory.getInstance().setDeviceService(deviceService);
+        this.deviceService = deviceService;
     }
 
     public void setMessageService(IMessageService messageService){
-        ServiceFactory.getInstance().setMessageService(messageService);
+        this.messageService = messageService;
     }
 
     /**
@@ -98,17 +100,16 @@ public class SampleConnector {
      */
     public void start(){
         if(!started){
+            ServiceFactory.getInstance().setLoginCallback(loginCallback);
+            ServiceFactory.getInstance().setUserService(userService);
+            ServiceFactory.getInstance().setDeviceService(deviceService);
+            ServiceFactory.getInstance().setMessageService(messageService);
             init();
         }
         started = true;
     }
 
     private void init(){
-
-        if(loginCallback!=null){
-            String token = loginCallback.login();
-            NeulinkSecurity.getInstance().setToken(token);
-        }
 
         /**
          * 注册扩展实现
@@ -161,8 +162,10 @@ public class SampleConnector {
         /**
          * 加载人脸到内存
          */
-        userService.load();
-        Log.i(TAG,"success load user info 2 mem");
+        if(ServiceFactory.getInstance().getUserService()!=null){
+            ServiceFactory.getInstance().getUserService().load();
+            Log.i(TAG,"success load user info 2 mem");
+        }
 
         ConfigContext.getInstance().setExtConfig(extConfig);
 

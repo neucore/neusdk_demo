@@ -106,11 +106,11 @@ public class Register extends BroadcastReceiver {
         new Thread(){
             public void run(){
                 while(!registed){
-                    Log.i(TAG,"MQTT SuccessedLogin: "+service.getSuccessedLogin());
-                    if(!service.getSuccessedLogin()){
+                    Log.i(TAG,"MQTT MqttConnSuccessed: "+service.getMqttConnSuccessed());
+                    if(!service.getMqttConnSuccessed()){
                         service.connect();
                     }
-                    if(service.getSuccessedLogin()){
+                    if(service.getMqttConnSuccessed()){
                         IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
                         if(ObjectUtil.isEmpty(deviceInfo)){

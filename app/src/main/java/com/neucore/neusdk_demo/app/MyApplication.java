@@ -94,6 +94,10 @@ public class MyApplication extends Application
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         /**
+         * 30分钟
+         */
+        extConfig.setProperty(ConfigContext.HTTP_SESSION_TIMEOUT,String.valueOf(30*60*1000L));
+        /**
          * 设置设备注册服务地址
          */
         extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
@@ -103,6 +107,8 @@ public class MyApplication extends Application
         extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
 
         extConfig.setProperty(ConfigContext.FTP_SERVER,"47.118.59.46");
+
+
         /**
          * ⚠️注意；http 通道启用时打开
          */
