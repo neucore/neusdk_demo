@@ -102,10 +102,6 @@ public class NeulinkSubscriberFacde {
             Log.i(TAG, detailLog);
 
             Log.i(TAG, "messageArrived:" + msgContent);
-
-            if (service.getStarMQTTCallBack() != null) {
-                service.getStarMQTTCallBack().messageArrived(topic, msgContent, receivedMessage.getQos());
-            }
         }
     };
 }

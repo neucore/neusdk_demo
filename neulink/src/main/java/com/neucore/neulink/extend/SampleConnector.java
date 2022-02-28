@@ -15,6 +15,8 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IMessageService;
+import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.app.NeulinkConst;
@@ -23,6 +25,7 @@ import com.neucore.neulink.impl.LogService;
 import com.neucore.neulink.impl.NetBroadcastReceiver;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
+import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Properties;
@@ -30,11 +33,14 @@ import java.util.Properties;
 public class SampleConnector {
     private String TAG = NeulinkConst.TAG_PREFIX+"SampleConnector";
     private Application application;
+    private NeulinkService neulinkService;
     private IUserService userService;
     private ILoginCallback loginCallback;
-    private IExtendCallback callback;
+    private IMqttCallBack mqttCallBack;
+    private IExtendCallback extendCallback;
     private Properties extConfig;
     private Handler tHandler;
+    private Boolean started = false;
 
     @Deprecated
     public SampleConnector(Application application, IExtendCallback callback, IUserService service){
@@ -46,13 +52,55 @@ public class SampleConnector {
         this(application,service,extConfig,null,callback);
     }
 
+    @Deprecated
     public SampleConnector(Application application, IUserService service, Properties extConfig, ILoginCallback loginCallback, IExtendCallback callback){
         this.loginCallback = loginCallback;
         this.application = application;
-        this.callback = callback;
+        this.extendCallback = callback;
         this.userService = service;
         this.extConfig = extConfig;
-        init();
+        start();
+    }
+
+    public SampleConnector(Application application,Properties extConfig){
+        this.application = application;
+        this.extConfig = extConfig;
+    }
+
+
+    public void setLoginCallback(ILoginCallback loginCallback) {
+        this.loginCallback = loginCallback;
+    }
+
+    public void setMqttCallBack(IMqttCallBack mqttCallBack) {
+        this.mqttCallBack = mqttCallBack;
+    }
+
+    public void setExtendCallback(IExtendCallback callback) {
+        this.extendCallback = callback;
+    }
+
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
+    public void setDeviceService(IDeviceService deviceService){
+        ServiceFactory.getInstance().setDeviceService(deviceService);
+    }
+
+    public void setMessageService(IMessageService messageService){
+        ServiceFactory.getInstance().setMessageService(messageService);
+    }
+
+    /**
+     * 必须先设置相关属性，然后再调用start
+     * 不然不起效果
+     */
+    public void start(){
+        if(!started){
+            init();
+        }
+        started = true;
     }
 
     private void init(){
@@ -65,9 +113,8 @@ public class SampleConnector {
         /**
          * 注册扩展实现
          */
-
-        if(callback!=null){
-            this.callback.onCallBack();
+        if(extendCallback!=null){
+            this.extendCallback.onCallBack();
             Log.i(TAG,"success regist extend implmention");
         }
         else{
@@ -106,7 +153,6 @@ public class SampleConnector {
 
         logServiceThread.start();
 
-
         //处理初始化应用carsh
         CarshHandler crashHandler = CarshHandler.getIntance();
         crashHandler.init();
@@ -128,7 +174,7 @@ public class SampleConnector {
          * 初始化MQTT
          */
         long start = System.currentTimeMillis();
-        deviceMqttServiceInit();
+        neulinkService = deviceMqttServiceInit();
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
     /**
@@ -160,6 +206,9 @@ public class SampleConnector {
 
         NeulinkService service = NeulinkService.getInstance();
         service.buildMqttService(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER));//tcp://10.18.9.99:1883"));
+        if(mqttCallBack!=null){
+            service.addMQTTCallBack(mqttCallBack);
+        }
         return service;
     }
 }

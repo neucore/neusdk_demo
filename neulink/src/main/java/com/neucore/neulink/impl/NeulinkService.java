@@ -29,7 +29,9 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -42,7 +44,7 @@ public class NeulinkService {
     private String TAG = NeulinkConst.TAG_PREFIX+"Service";
 
     private MqttService mqttService = null;
-    private IMqttCallBack starMQTTCallBack;
+    private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
     private Boolean inited = false;
     private Boolean successedLogin = false;
     private Register register = null;
@@ -61,7 +63,8 @@ public class NeulinkService {
     public void buildMqttService(String serverUri) {
         this.defaultServerUri = serverUri;
         Context context = ContextHolder.getInstance().getContext();
-        starMQTTCallBack = new NeulinkMsgCallBack(context,this);
+        NeulinkMsgCallBack defaultMqttCallBack = new NeulinkMsgCallBack(context,this);
+        mqttCallBacks.add(defaultMqttCallBack);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
         register = new Register(context,this,serverUri);
@@ -111,10 +114,11 @@ public class NeulinkService {
         }
     }
 
-    IMqttCallBack getStarMQTTCallBack(){
-        return starMQTTCallBack;
+    public void addMQTTCallBack(IMqttCallBack mqttCallBack){
+        if(mqttCallBack!=null){
+            this.mqttCallBacks.add(mqttCallBack);
+        }
     }
-
 
     /**
      *
@@ -320,15 +324,19 @@ public class NeulinkService {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "onSuccess ");
             successedLogin = true;
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.connectSuccess(arg0);
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.connectSuccess(arg0);
+                }
             }
         }
 
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.connectFailed(arg0, arg1);
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.connectFailed(arg0, arg1);
+                }
             }
         }
     };
@@ -353,8 +361,11 @@ public class NeulinkService {
             finally {
                 reentrantLock.unlock();
             }
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.connectComplete(reconnect, serverURI);
+
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.connectComplete(reconnect, serverURI);
+                }
             }
         }
 
@@ -370,8 +381,10 @@ public class NeulinkService {
             Log.i(TAG, "messageArrived:" + msgContent);
             Log.i(TAG, detailLog);
 
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.messageArrived(topic, msgContent, receivedMessage.getQos());
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.messageArrived(topic, msgContent, receivedMessage.getQos());
+                }
             }
 
         }
@@ -379,8 +392,11 @@ public class NeulinkService {
         @Override
         public void deliveryComplete(IMqttDeliveryToken arg0) {
             Log.i(TAG, "deliveryComplete");
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.deliveryComplete(arg0);
+
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.deliveryComplete(arg0);
+                }
             }
         }
 
@@ -390,8 +406,10 @@ public class NeulinkService {
             Log.i(TAG, "connectionLost");
             successedLogin = false;
             publishDisConnect(1);
-            if (starMQTTCallBack != null) {
-                starMQTTCallBack.connectionLost(arg0);
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    callback.connectionLost(arg0);
+                }
             }
             // 失去连接，重连
         }

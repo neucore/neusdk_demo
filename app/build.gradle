@@ -98,6 +98,7 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'org.greenrobot:greendao-generator:3.0.0'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
 
     // butterknife
