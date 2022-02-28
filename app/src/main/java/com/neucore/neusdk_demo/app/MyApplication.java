@@ -83,7 +83,7 @@ public class MyApplication extends Application
         /**
          * 配置扩展: key可以参考ConfigContext内的定义
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.83:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
@@ -96,7 +96,7 @@ public class MyApplication extends Application
         /**
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/v1/device/regist");
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
         /**
          * FTP 实现
          */
