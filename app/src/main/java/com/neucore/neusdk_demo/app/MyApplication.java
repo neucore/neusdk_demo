@@ -2,11 +2,9 @@ package com.neucore.neusdk_demo.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IStorage;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
@@ -14,9 +12,8 @@ import com.neucore.neulink.extend.ILoginCallback;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
-import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
-import com.neucore.neulink.impl.service.device.DeviceInfoBuilder;
+import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -38,7 +35,6 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.Properties;
-import java.util.UUID;
 
 public class MyApplication extends Application
 {
@@ -196,12 +192,23 @@ public class MyApplication extends Application
     IDeviceService deviceService = new IDeviceService() {
         @Override
         public String getExtSN() {
+            /**
+             * 需要获取设备唯一标识【自定义，eg：YekerID】
+             */
             return DeviceUtils.getCPUSN(getContext());
         }
 
         @Override
         public DeviceInfo getInfo() {
-            return DeviceInfoBuilder.getInstance().build();
+            /**
+             * 需要上报应用列表【名称及其相关版本；】
+             * OTA升级文件规则
+             *
+             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
+             *
+             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
+             */
+            return DeviceInfoDefaultBuilder.getInstance().build();
         }
     };
 
