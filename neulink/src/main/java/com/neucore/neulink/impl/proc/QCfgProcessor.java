@@ -6,7 +6,7 @@ import com.neucore.neulink.cmd.cfg.CfgCmd;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;

@@ -2,12 +2,9 @@ package com.neucore.neulink.extend.impl;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmd;
 import com.neucore.neulink.cmd.rrpc.PanelCtrlSyncCmd;
 import com.neucore.neulink.cmd.rrpc.PanelCtrlSyncCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
 
 /**

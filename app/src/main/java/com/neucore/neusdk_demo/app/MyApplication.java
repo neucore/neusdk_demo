@@ -4,11 +4,13 @@ import android.app.Application;
 import android.content.Context;
 
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
-import com.neucore.neulink.extend.ILoginCallback;
+import com.neucore.neulink.ILoginCallback;
+import com.neucore.neulink.cmd.msg.SoftVInfo;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -34,6 +36,8 @@ import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class MyApplication extends Application
@@ -208,10 +212,27 @@ public class MyApplication extends Application
              *
              * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
              */
-            return DeviceInfoDefaultBuilder.getInstance().build();
+            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
         }
     };
 
+    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+        @Override
+        public List<SoftVInfo> getSubApps() {
+            /**
+             * 子应用列表
+             */
+            return null;
+        }
+
+        @Override
+        public List<Map<String, String>> getAttrs() {
+            /**
+             * 扩展属性
+             */
+            return null;
+        }
+    };
     /**
      * 登录loginCallback
      */

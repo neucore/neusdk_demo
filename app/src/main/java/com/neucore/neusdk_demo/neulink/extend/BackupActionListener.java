@@ -4,7 +4,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryResult;
 import com.neucore.neulink.extend.StorageFactory;

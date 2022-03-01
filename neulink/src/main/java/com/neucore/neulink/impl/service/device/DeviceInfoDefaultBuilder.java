@@ -6,6 +6,7 @@ import android.os.Build;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.MiscInfo;
 import com.neucore.neulink.cmd.msg.SoftVInfo;
+import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -14,10 +15,13 @@ import com.neucore.neulink.util.MacHelper;
 import cn.hutool.core.util.ObjectUtil;
 
 public class DeviceInfoDefaultBuilder {
+
     private static DeviceInfoDefaultBuilder instance = new DeviceInfoDefaultBuilder();
+
     public static DeviceInfoDefaultBuilder getInstance(){
         return instance;
     }
+
     public DeviceInfo build(){
         DeviceInfo deviceInfo = new DeviceInfo();
         /**
@@ -63,6 +67,21 @@ public class DeviceInfoDefaultBuilder {
         String[] funList = {"face"};//人脸识别
         deviceInfo.setFunList(funList);
         deviceInfo.setSkuToken(DeviceUtils.getSkuToken());
+
+        return deviceInfo;
+    }
+
+    /**
+     *
+     * @param callback
+     * @return
+     */
+    public DeviceInfo build(IExtendInfoCallback callback){
+        DeviceInfo deviceInfo = build();
+        if(callback!=null){
+            deviceInfo.setSubApps(callback.getSubApps());
+            deviceInfo.setAttrs(callback.getAttrs());
+        }
         return deviceInfo;
     }
 }

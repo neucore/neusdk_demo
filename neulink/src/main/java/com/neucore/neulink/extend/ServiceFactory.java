@@ -1,5 +1,6 @@
 package com.neucore.neulink.extend;
 
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.impl.service.device.DeviceServiceImpl;

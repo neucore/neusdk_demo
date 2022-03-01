@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.cmd.check.CheckCmd;
 import com.neucore.neulink.cmd.check.CheckCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryResult;
