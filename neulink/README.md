@@ -178,6 +178,115 @@ public class HelloCmdListener implements ICmdListener<String> {
 参照：MyApplication内installSDK()方法；
 
 ```
+    
+    /**
+     * MQTT 网络、消息扩展
+     */
+    IMqttCallBack mqttCallBack = new IMqttCallBack() {
+        @Override
+        public void connectComplete(boolean reconnect, String serverURI) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void messageArrived(String topic, String message, int qos) throws Exception {
+            /**
+             * 可以不用管
+             */
+        }
+
+        @Override
+        public void connectionLost(Throwable arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void connectSuccess(IMqttToken arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void connectFailed(IMqttToken arg0, Throwable arg1) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+    };
+
+
+    /**
+     * 登录loginCallback
+     */
+    ILoginCallback loginCallback = new ILoginCallback() {
+        @Override
+        public String login() {
+            /**
+             * 实现登录返回token
+             */
+            return null;
+        }
+    };
+
+    /**
+     * 设备服务扩展
+     */
+    IDeviceService deviceService = new IDeviceService() {
+        @Override
+        public String getExtSN() {
+            /**
+             * 需要获取设备唯一标识【自定义，eg：YekerID】
+             */
+            return DeviceUtils.getCPUSN(getContext());
+        }
+
+        @Override
+        public DeviceInfo getInfo() {
+            /**
+             * 需要上报应用列表【名称及其相关版本；】
+             * OTA升级文件规则
+             *
+             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
+             *
+             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
+             */
+            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
+        }
+    };
+
+    /**
+     * 设备信息上报扩展
+     */
+    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+        @Override
+        public List<SoftVInfo> getSubApps() {
+            /**
+             * 子应用列表
+             */
+            return null;
+        }
+
+        @Override
+        public List<Map<String, String>> getAttrs() {
+            /**
+             * 扩展属性
+             */
+            return null;
+        }
+    };
+    
     /**
      * 外部扩展
      */
