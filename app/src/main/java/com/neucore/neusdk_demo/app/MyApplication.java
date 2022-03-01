@@ -159,39 +159,54 @@ public class MyApplication extends Application
         MyApplication.threadAlive = alive;
     }
 
+    /**
+     * MQTT 网络、消息扩展
+     */
     IMqttCallBack mqttCallBack = new IMqttCallBack() {
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
-
+            /**
+             * 可以用在APP交互提示等
+             */
         }
 
         @Override
         public void messageArrived(String topic, String message, int qos) throws Exception {
-
+            /**
+             * 可以不用管
+             */
         }
 
         @Override
         public void connectionLost(Throwable arg0) {
-
+            /**
+             * 可以用在APP交互提示等
+             */
         }
 
         @Override
         public void deliveryComplete(IMqttDeliveryToken arg0) {
-
+            /**
+             * 可以用在APP交互提示等
+             */
         }
 
         @Override
         public void connectSuccess(IMqttToken arg0) {
-
+            /**
+             * 可以用在APP交互提示等
+             */
         }
 
         @Override
         public void connectFailed(IMqttToken arg0, Throwable arg1) {
-
+            /**
+             * 可以用在APP交互提示等
+             */
         }
     };
     /**
-     *
+     * 设备服务扩展
      */
     IDeviceService deviceService = new IDeviceService() {
         @Override
@@ -215,7 +230,9 @@ public class MyApplication extends Application
             return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
         }
     };
-
+    /**
+     * 设备信息上报扩展
+     */
     IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
         @Override
         public List<SoftVInfo> getSubApps() {
@@ -301,6 +318,8 @@ public class MyApplication extends Application
 
             /**
              * 自定义Processor注册
+             * 框架已经实现消息的接收及响应处理机制
+             * 只需要参考Hello业务的实现业务就行
              */
             NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
         }
