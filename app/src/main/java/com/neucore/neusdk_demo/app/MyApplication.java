@@ -319,7 +319,7 @@ public class MyApplication extends Application
             /**
              * 自定义Processor注册
              * 框架已经实现消息的接收及响应处理机制
-             * 只需要参考Hello业务的实现业务就行
+             * 新业务可以参考Hello业务的实现业务就行
              */
             NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
         }
