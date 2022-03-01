@@ -2,6 +2,14 @@
 
 # neulink集成及扩展开发使用说明
 
+## 描述
+
+neulink sdk已经完成了mqtt网络的连接、断网重连机制；
+实现了业务集成转发扩展机制；
+实现了http登录授权回调机制
+实现了Mqtt连接状态回调机制
+实现了消息、用户、设备等服务默认实现及其扩展机制
+
 ### 注意事项
 
 apk升级建议采用增量升级方式【即：patch方式，这样可以保留系统的业务数据】
@@ -57,8 +65,11 @@ NeulinkService.getInstance().destroy();
 ```
 
 ## 扩展-HTTP安全登录
-
-ILoginCallback loginCallback = new ILoginCallback() {
+```
+    /**
+     * HTTP(S)安全登录 loginCallback
+     */
+    ILoginCallback loginCallback = new ILoginCallback() {
         @Override
         public String login() {
             /**
@@ -67,6 +78,114 @@ ILoginCallback loginCallback = new ILoginCallback() {
             return null;
         }
     };
+
+```
+
+## 扩展-MQTT联网状态
+
+```
+    /**
+     * MQTT 网络、消息扩展
+     */
+    IMqttCallBack mqttCallBack = new IMqttCallBack() {
+        @Override
+        public void connectComplete(boolean reconnect, String serverURI) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void messageArrived(String topic, String message, int qos) throws Exception {
+            /**
+             * 可以不用管
+             */
+        }
+
+        @Override
+        public void connectionLost(Throwable arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void connectSuccess(IMqttToken arg0) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+
+        @Override
+        public void connectFailed(IMqttToken arg0, Throwable arg1) {
+            /**
+             * 可以用在APP交互提示等
+             */
+        }
+    };
+
+```
+
+## 扩展-设备服务
+```
+    /**
+     * 设备服务扩展
+     */
+    IDeviceService deviceService = new IDeviceService() {
+        @Override
+        public String getExtSN() {
+            /**
+             * 需要获取设备唯一标识【自定义，eg：YekerID】
+             */
+            return DeviceUtils.getCPUSN(getContext());
+        }
+
+        @Override
+        public DeviceInfo getInfo() {
+            /**
+             * 需要上报应用列表【名称及其相关版本；】
+             * OTA升级文件规则
+             *
+             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
+             *
+             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
+             */
+            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
+        }
+    };
+```
+    
+## 扩展-设备信息上报
+```
+    /**
+     * 设备信息上报扩展
+     */
+    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+        @Override
+        public List<SoftVInfo> getSubApps() {
+            /**
+             * 子应用列表
+             */
+            return null;
+        }
+
+        @Override
+        public List<Map<String, String>> getAttrs() {
+            /**
+             * 扩展属性
+             */
+            return null;
+        }
+    };
+    
+```
 
 ## 扩展-通用业务开发
 
@@ -173,120 +292,11 @@ public class HelloCmdListener implements ICmdListener<String> {
 ```
 
 
-## 扩展-集成
+## 扩展-通用业务集成
 
 参照：MyApplication内installSDK()方法；
 
 ```
-    
-    /**
-     * MQTT 网络、消息扩展
-     */
-    IMqttCallBack mqttCallBack = new IMqttCallBack() {
-        @Override
-        public void connectComplete(boolean reconnect, String serverURI) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void messageArrived(String topic, String message, int qos) throws Exception {
-            /**
-             * 可以不用管
-             */
-        }
-
-        @Override
-        public void connectionLost(Throwable arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void connectSuccess(IMqttToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void connectFailed(IMqttToken arg0, Throwable arg1) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-    };
-
-
-    /**
-     * 登录loginCallback
-     */
-    ILoginCallback loginCallback = new ILoginCallback() {
-        @Override
-        public String login() {
-            /**
-             * 实现登录返回token
-             */
-            return null;
-        }
-    };
-
-    /**
-     * 设备服务扩展
-     */
-    IDeviceService deviceService = new IDeviceService() {
-        @Override
-        public String getExtSN() {
-            /**
-             * 需要获取设备唯一标识【自定义，eg：YekerID】
-             */
-            return DeviceUtils.getCPUSN(getContext());
-        }
-
-        @Override
-        public DeviceInfo getInfo() {
-            /**
-             * 需要上报应用列表【名称及其相关版本；】
-             * OTA升级文件规则
-             *
-             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
-             *
-             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
-             */
-            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
-        }
-    };
-
-    /**
-     * 设备信息上报扩展
-     */
-    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
-        @Override
-        public List<SoftVInfo> getSubApps() {
-            /**
-             * 子应用列表
-             */
-            return null;
-        }
-
-        @Override
-        public List<Map<String, String>> getAttrs() {
-            /**
-             * 扩展属性
-             */
-            return null;
-        }
-    };
-    
     /**
      * 外部扩展
      */
@@ -364,6 +374,8 @@ public class HelloCmdListener implements ICmdListener<String> {
 
             /**
              * 自定义Processor注册
+             * 框架已经实现消息的接收及响应处理机制
+             * 新业务可以参考Hello业务的实现业务就行
              */
             NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
         }
