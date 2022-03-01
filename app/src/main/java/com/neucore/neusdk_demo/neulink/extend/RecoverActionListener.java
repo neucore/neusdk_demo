@@ -4,7 +4,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.recv.RecoverCmd;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.util.JSonUtils;

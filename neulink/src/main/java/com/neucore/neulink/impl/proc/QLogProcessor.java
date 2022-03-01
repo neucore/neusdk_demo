@@ -6,7 +6,7 @@ import android.util.Log;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.GProcessor;

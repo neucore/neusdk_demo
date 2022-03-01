@@ -8,7 +8,7 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
-import com.neucore.neulink.extend.ILoginCallback;
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;

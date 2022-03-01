@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.impl.proc.ALogProcessor;
 import com.neucore.neulink.impl.proc.AwakenProcessor;

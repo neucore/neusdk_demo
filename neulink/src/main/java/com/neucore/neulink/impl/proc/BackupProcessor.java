@@ -6,7 +6,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupCmd;
 import com.neucore.neulink.cmd.bak.BackupCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryResult;

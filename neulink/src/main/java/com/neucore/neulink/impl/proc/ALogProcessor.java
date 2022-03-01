@@ -3,7 +3,7 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;

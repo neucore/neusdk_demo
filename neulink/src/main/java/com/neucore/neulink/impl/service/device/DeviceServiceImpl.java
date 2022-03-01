@@ -18,6 +18,7 @@ public class DeviceServiceImpl implements IDeviceService {
 
     @Override
     public DeviceInfo getInfo() {
-        return DeviceInfoDefaultBuilder.getInstance().build();
+        DeviceInfo deviceInfo = DeviceInfoDefaultBuilder.getInstance().build();
+        return deviceInfo;
     }
 }

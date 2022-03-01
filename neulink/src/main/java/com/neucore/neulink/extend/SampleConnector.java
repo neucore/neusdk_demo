@@ -15,6 +15,7 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IUserService;

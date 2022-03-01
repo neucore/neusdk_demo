@@ -6,7 +6,7 @@ import android.util.Log;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;

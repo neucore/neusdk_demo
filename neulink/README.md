@@ -84,7 +84,7 @@ processor：包名com.neucore.neulink.extend.impl；类命名为HelloProcessor;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DeviceUtils;
@@ -161,7 +161,7 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
 ```
 package com.neucore.neusdk_demo.neulink.extend.hello;
 
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 
 public class HelloCmdListener implements ICmdListener<String> {

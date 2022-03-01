@@ -1,4 +1,4 @@
-package com.neucore.neulink.extend;
+package com.neucore.neulink;
 
 public interface ILoginCallback {
     String login();

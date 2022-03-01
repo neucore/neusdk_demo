@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.UpdateResult;
 import com.neucore.neulink.cmd.rrpc.FaceCmd;

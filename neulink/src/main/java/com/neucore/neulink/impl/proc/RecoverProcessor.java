@@ -8,7 +8,7 @@ import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.cmd.recv.RecoverCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;

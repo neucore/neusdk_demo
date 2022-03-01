@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;

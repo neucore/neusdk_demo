@@ -1,6 +1,6 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
 

@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.cmd.rrpc.SceneSyncCmd;
 import com.neucore.neulink.cmd.rrpc.SceneSyncCmdRes;
-import com.neucore.neulink.extend.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
 
 /**

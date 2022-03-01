@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 
-import com.neucore.neulink.extend.ICmdListener;
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.GProcessor;
