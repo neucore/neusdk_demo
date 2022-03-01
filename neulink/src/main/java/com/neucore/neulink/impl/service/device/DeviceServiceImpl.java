@@ -1,17 +1,8 @@
 package com.neucore.neulink.impl.service.device;
 
-import android.content.Context;
-import android.os.Build;
-
 import com.neucore.neulink.cmd.msg.DeviceInfo;
-import com.neucore.neulink.cmd.msg.MiscInfo;
-import com.neucore.neulink.cmd.msg.SoftVInfo;
-import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.MacHelper;
-
-import cn.hutool.core.util.ObjectUtil;
 
 public class DeviceServiceImpl implements IDeviceService {
 
@@ -27,6 +18,6 @@ public class DeviceServiceImpl implements IDeviceService {
 
     @Override
     public DeviceInfo getInfo() {
-        return DeviceInfoBuilder.getInstance().build();
+        return DeviceInfoDefaultBuilder.getInstance().build();
     }
 }

@@ -13,9 +13,9 @@ import com.neucore.neulink.util.MacHelper;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class DeviceInfoBuilder {
-    private static DeviceInfoBuilder instance = new DeviceInfoBuilder();
-    public static DeviceInfoBuilder getInstance(){
+public class DeviceInfoDefaultBuilder {
+    private static DeviceInfoDefaultBuilder instance = new DeviceInfoDefaultBuilder();
+    public static DeviceInfoDefaultBuilder getInstance(){
         return instance;
     }
     public DeviceInfo build(){
