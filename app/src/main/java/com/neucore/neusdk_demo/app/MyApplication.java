@@ -101,13 +101,13 @@ public class MyApplication extends Application
         /**
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
         /**
          * FTP 实现
          */
         extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
 
-        extConfig.setProperty(ConfigContext.FTP_SERVER,"47.118.59.46");
+        extConfig.setProperty(ConfigContext.FTP_SERVER,"dev.neucore.com");
 
 
         /**
