@@ -213,7 +213,7 @@ public class NeulinkService {
                 /**
                  * HTTP机制
                  */
-                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");
+                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
                 Log.d(TAG,"registServer："+registServer);
 
                 topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
