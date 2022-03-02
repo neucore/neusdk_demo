@@ -81,6 +81,16 @@ public class DeviceInfoDefaultBuilder {
         if(callback!=null){
             deviceInfo.setSubApps(callback.getSubApps());
             deviceInfo.setAttrs(callback.getAttrs());
+            deviceInfo.setImei(callback.getImei());
+            deviceInfo.setImsi(callback.getImsi());
+            deviceInfo.setIccid(callback.getIccid());
+            deviceInfo.setBiosVersion(callback.getBiosVersion());
+            deviceInfo.setJvmVersion(callback.getJvmVersion());
+            deviceInfo.setWifiModel(callback.getWifiModel());
+            deviceInfo.setNpuMode(callback.getNpuModel());
+            deviceInfo.setScreenSize(callback.getScreenSize());
+            deviceInfo.setScreenInterface(callback.getScreenInterface());
+            deviceInfo.setScreenResolution(callback.getScreenResolution());
         }
         return deviceInfo;
     }

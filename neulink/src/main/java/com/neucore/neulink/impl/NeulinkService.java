@@ -192,14 +192,6 @@ public class NeulinkService {
         }
         else{
 
-            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
-            if(loginCallback!=null){
-                if(NeulinkSecurity.getInstance().getToken()==null){
-                    String token = loginCallback.login();
-                    NeulinkSecurity.getInstance().setToken(token);
-                }
-            }
-
             String token = NeulinkSecurity.getInstance().getToken();
             Map<String,String> params = new HashMap<>();
             if(token!=null){
