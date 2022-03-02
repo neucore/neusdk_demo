@@ -41,6 +41,7 @@ public class DeviceInfo {
     public String getImei(){
         return imei;
     }
+
     @SerializedName("imsi")
     private String imsi;
 
@@ -52,7 +53,8 @@ public class DeviceInfo {
     public String getIccid(){
         return iccid;
     }
-    @SerializedName("wifi_model")
+
+    @SerializedName("wifim")
     private String wifiModel;
     public String getWifiModel(){
         return wifiModel;
