@@ -20,14 +20,13 @@ import com.neucore.neulink.util.NetworkHelper;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class Register extends BroadcastReceiver {
+public class Register {
 
     private String TAG = NeulinkConst.TAG_PREFIX+"Register";
     private Context context;
     private  NeulinkService service;
     private NeulinkScheduledReport autoReporter = null;
     private boolean initMqttService = false;
-    private boolean mqttServiceReady =false;
     private boolean networkReady = false;
     private boolean initRegistService = false;
     private boolean registed=false;
@@ -40,8 +39,6 @@ public class Register extends BroadcastReceiver {
         this.context = context;
         this.service = service;
         this.serviceUrl = serviceUrl;
-
-        registerReceiver(this);
 
         networkHelper.addListener(new NetworkHelper.Listener() {
             @Override
@@ -63,24 +60,19 @@ public class Register extends BroadcastReceiver {
     }
 
     private void initRegistService(String from){
-        Log.i(TAG,String.format("from=%s,networkReady=%s,mqttServiceReady=%s",from,networkReady, mqttServiceReady));
+        Log.i(TAG,String.format("from=%s,networkReady=%s,initMqttService=%s,initRegistService=%s",from,networkReady,initMqttService,initRegistService));
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
         if(networkReady){
-            if(channel==0 && !initMqttService ){//http注册方式&上报方式
+            if(!initMqttService ){//http注册方式&上报方式
                 Log.d(TAG,"try mqtt register");
                 service.init(serviceUrl,context);
                 initMqttService = true;
             }
         }
-        if((channel==0
-                && initMqttService
-                && mqttServiceReady
-                && !initRegistService)
-           || (channel ==1
-                && networkReady
-                && !initRegistService)){
 
-            service.init(serviceUrl,context);
+        if(networkReady
+            && initMqttService
+            && !initRegistService){
 
             Log.d(TAG,"try "+(channel==0?"mqtt":"http")+ " register");
             if(!registCalled){
@@ -93,12 +85,6 @@ public class Register extends BroadcastReceiver {
         }
     }
 
-    private void registerReceiver(BroadcastReceiver receiver) {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("MqttService.callbackToActivity.v0");
-        filter.addAction(Intent.ACTION_BOOT_COMPLETED);
-        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
-    }
     /**
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
      */
@@ -106,7 +92,7 @@ public class Register extends BroadcastReceiver {
         new Thread(){
             public void run(){
                 while(!registed){
-                    Log.i(TAG,"MQTT MqttConnSuccessed: "+service.getMqttConnSuccessed());
+                    Log.i(TAG,"@Regist MQTT MqttConnSuccessed: "+service.getMqttConnSuccessed());
                     if(!service.getMqttConnSuccessed()){
                         service.connect();
                     }
@@ -132,12 +118,5 @@ public class Register extends BroadcastReceiver {
             }
         }.start();
 
-    }
-
-    private static final String Action_Name="com.intel.unit.Clipy";
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        mqttServiceReady = true;
-        initRegistService("onReceive");
     }
 }

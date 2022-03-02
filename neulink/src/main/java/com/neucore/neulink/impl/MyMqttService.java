@@ -17,9 +17,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class MqttService {
+public class MyMqttService {
 
-    private final String TAG = NeulinkConst.TAG_PREFIX+"MqttService";
+    private final String TAG = NeulinkConst.TAG_PREFIX+"MyMqttService";
     private boolean canDoConnect = true;
 
     private MqttAsyncClient client;
@@ -46,7 +46,7 @@ public class MqttService {
      *
      * @param builder
      */
-    private MqttService(Builder builder) {
+    private MyMqttService(Builder builder) {
         this.context = builder.context;
         this.serverUrl = builder.serverUrl;
         this.userName = builder.userName;
@@ -141,9 +141,9 @@ public class MqttService {
             return this;
         }
 
-        public MqttService bulid(Context context) {
+        public MyMqttService bulid(Context context) {
             this.context = context;
-            return new MqttService(this);
+            return new MyMqttService(this);
         }
     }
 
@@ -159,7 +159,7 @@ public class MqttService {
         try {
             client.publish(topic, msg.getBytes(), qos, retained);
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "publish: "+e.toString(),e);
         }
     }
 
@@ -172,6 +172,7 @@ public class MqttService {
         return client;
     }
 
+    private MqttAndroidClient androidClient;
 
     private void init() {
         // 服务器地址（协议+地址+端口号）

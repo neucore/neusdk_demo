@@ -13,6 +13,8 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.UUID;
 
+import cn.hutool.core.util.StrUtil;
+
 public class NeulinkMsgCallBack implements IMqttCallBack {
 
     private String TAG = NeulinkConst.TAG_PREFIX+"MsgCallBack";
@@ -29,7 +31,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
     public void messageArrived(String topicStr, String message, int qos) {
 
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().parser(topicStr,qos);
-
+        String biz = topic.getBiz();
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
 
@@ -40,7 +42,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
                 processor.execute(topic,message);
             }
             else {
-                throw new Exception(topicStr+"没有找到相关的Processor实现类...");
+                throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
             }
         }
         catch (Throwable ex){

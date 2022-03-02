@@ -2,14 +2,15 @@ package com.neucore.neusdk_demo.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.cmd.msg.SoftVInfo;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
@@ -143,8 +144,6 @@ public class MyApplication extends Application
         connector.start();
     }
 
-
-
     public static Context getContext(){
         return instance.getApplicationContext();
     }
@@ -168,6 +167,7 @@ public class MyApplication extends Application
             /**
              * 可以用在APP交互提示等
              */
+            Log.i(TAG,"connectComplete");
         }
 
         @Override
@@ -182,6 +182,7 @@ public class MyApplication extends Application
             /**
              * 可以用在APP交互提示等
              */
+            Log.i(TAG,"connectionLost");
         }
 
         @Override
@@ -189,6 +190,7 @@ public class MyApplication extends Application
             /**
              * 可以用在APP交互提示等
              */
+            Log.i(TAG,"deliveryComplete");
         }
 
         @Override
@@ -196,6 +198,7 @@ public class MyApplication extends Application
             /**
              * 可以用在APP交互提示等
              */
+            Log.i(TAG,"connectSuccess");
         }
 
         @Override
@@ -203,6 +206,7 @@ public class MyApplication extends Application
             /**
              * 可以用在APP交互提示等
              */
+            Log.i(TAG,"connectFailed");
         }
     };
     /**
