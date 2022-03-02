@@ -8,10 +8,12 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
+import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.DeviceUtils;
@@ -97,18 +99,31 @@ public class Register {
                         service.connect();
                     }
                     if(service.getMqttConnSuccessed()){
-                        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
-                        DeviceInfo deviceInfo = deviceService.getInfo();
-                        if(ObjectUtil.isEmpty(deviceInfo)){
-                            throw new RuntimeException("设备服务 getInfo没有实现。。。");
-                        }
-                        String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
-                        deviceInfo.setDeviceId(devId);
+                        ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
+                        if(loginCallback!=null){
+                            String token = loginCallback.login();
+                            if(ObjectUtil.isNotEmpty(token)){
+                                NeulinkSecurity.getInstance().setToken(token);
+                                IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+                                DeviceInfo deviceInfo = deviceService.getInfo();
+                                if(ObjectUtil.isEmpty(deviceInfo)){
+                                    throw new RuntimeException("设备服务 getInfo没有实现。。。");
+                                }
+                                String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+                                deviceInfo.setDeviceId(devId);
 
-                        String payload = JSonUtils.toString(deviceInfo);
-                        String devinfo_topic = "msg/req/devinfo";
-                        service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
-                        registed = true;
+                                String payload = JSonUtils.toString(deviceInfo);
+                                String devinfo_topic = "msg/req/devinfo";
+                                service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+                                registed = true;
+                            }
+                            else {
+                                Log.i(TAG,"非法实现ILoginCallback，token非法。。。");
+                            }
+                        }
+                        else{
+                            Log.i(TAG,"没有实现ILoginCallback。。。");
+                        }
                     }
                     try {
                         Thread.sleep(5000);

@@ -253,6 +253,56 @@ public class MyApplication extends Application
              */
             return null;
         }
+
+        @Override
+        public String getImei() {
+            return null;
+        }
+
+        @Override
+        public String getImsi() {
+            return null;
+        }
+
+        @Override
+        public String getIccid() {
+            return null;
+        }
+
+        @Override
+        public String getWifiModel() {
+            return null;
+        }
+
+        @Override
+        public String getNpuModel() {
+            return null;
+        }
+
+        @Override
+        public String getScreenSize() {
+            return null;
+        }
+
+        @Override
+        public String getScreenInterface() {
+            return null;
+        }
+
+        @Override
+        public String getScreenResolution() {
+            return null;
+        }
+
+        @Override
+        public String getBiosVersion() {
+            return null;
+        }
+
+        @Override
+        public String getJvmVersion() {
+            return null;
+        }
     };
     /**
      * 登录loginCallback
