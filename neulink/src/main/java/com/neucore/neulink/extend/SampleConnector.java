@@ -44,6 +44,9 @@ public class SampleConnector {
     private Properties extConfig;
     private Handler tHandler;
     private Boolean started = false;
+    private boolean networkReady = false;
+    private boolean initMqttService = false;
+    private boolean mqttServiceReady =false;
 
     @Deprecated
     public SampleConnector(Application application, IExtendCallback callback, IUserService service){
@@ -100,28 +103,42 @@ public class SampleConnector {
      * 不然不起效果
      */
     public void start(){
+
         if(!started){
+
+            NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
+
+            NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
+
+            registerNetworkReceiver(netBroadcastReceiver);
+
+            NeulinkService service = NeulinkService.getInstance();
             ServiceFactory.getInstance().setLoginCallback(loginCallback);
             ServiceFactory.getInstance().setUserService(userService);
             ServiceFactory.getInstance().setDeviceService(deviceService);
             ServiceFactory.getInstance().setMessageService(messageService);
-            init();
+            ConfigContext.getInstance().setExtConfig(extConfig);
+
+            if(mqttCallBack!=null){
+                service.addMQTTCallBack(mqttCallBack);
+            }
+            /**
+             * 注册扩展实现
+             */
+            if(extendCallback!=null){
+                this.extendCallback.onCallBack();
+                Log.i(TAG,"success regist extend implmention");
+            }
+            else{
+                Log.i(TAG,"success regist 默认 implmention");
+            }
+
+            init(service);
         }
         started = true;
     }
 
-    private void init(){
-
-        /**
-         * 注册扩展实现
-         */
-        if(extendCallback!=null){
-            this.extendCallback.onCallBack();
-            Log.i(TAG,"success regist extend implmention");
-        }
-        else{
-            Log.i(TAG,"success regist 默认 implmention");
-        }
+    private void init(NeulinkService service){
 
         /**
          * 集成Neulink
@@ -168,27 +185,41 @@ public class SampleConnector {
             Log.i(TAG,"success load user info 2 mem");
         }
 
-        ConfigContext.getInstance().setExtConfig(extConfig);
-
-        NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
-        NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
-        registerReceiver(netBroadcastReceiver);
-
         /**
          * 初始化MQTT
          */
         long start = System.currentTimeMillis();
-        neulinkService = deviceMqttServiceInit();
+        deviceMqttServiceInit(service);
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
     /**
      * 网络恢复事件侦听器
      * @param receiver
      */
-    private void registerReceiver(BroadcastReceiver receiver) {
+
+    private void registerNetworkReceiver(BroadcastReceiver receiver) {
         IntentFilter filter = new IntentFilter();
+        /**
+         * 网络恢复事件侦听器
+         */
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        LocalBroadcastManager.getInstance(ContextHolder.getInstance().getContext()).registerReceiver(receiver, filter);
+
+        LocalBroadcastManager.getInstance(application).registerReceiver(receiver, filter);
+    }
+
+    private void registerMqttServiceReceiver(BroadcastReceiver receiver) {
+
+        IntentFilter filter = new IntentFilter();
+        /**
+         * 网络恢复事件侦听器
+         */
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        /**
+         * MqttService事件侦听器
+         */
+        filter.addAction("MyMqttService.callbackToActivity.v0");
+
+        LocalBroadcastManager.getInstance(application).registerReceiver(receiver, filter);
     }
 
     class LogServiceThread extends Thread {
@@ -201,18 +232,15 @@ public class SampleConnector {
         }
     }
 
-    private NeulinkService deviceMqttServiceInit(){
+    private NeulinkService deviceMqttServiceInit(NeulinkService service){
 
         if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
 
-        NeulinkService service = NeulinkService.getInstance();
         service.buildMqttService(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER));//tcp://10.18.9.99:1883"));
-        if(mqttCallBack!=null){
-            service.addMQTTCallBack(mqttCallBack);
-        }
+
         return service;
     }
 }

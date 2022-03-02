@@ -44,7 +44,7 @@ public class NeulinkService {
     private static NeulinkService instance = new NeulinkService();
     private String TAG = NeulinkConst.TAG_PREFIX+"Service";
 
-    private MqttService mqttService = null;
+    private MyMqttService myMqttService = null;
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
     private ILoginCallback loginCallback;
     private Boolean inited = false;
@@ -75,10 +75,10 @@ public class NeulinkService {
     }
 
     void init(String serverUri,Context context){
-
+        Log.i(TAG,String.format("inited %s",inited));
         synchronized (inited){
             if(!inited){
-                mqttService = new MqttService.Builder()
+                myMqttService = new MyMqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
                         //设置不清除回话session 可收到服务器之前发出的推送消息
@@ -97,7 +97,7 @@ public class NeulinkService {
                         //.mqttMessageListener(messageListener)
                         //构建出EasyMqttService 建议用application的context
                         .bulid(context);
-
+                inited = true;
                 new HouseKeeping().start();
             }
         }
@@ -112,7 +112,7 @@ public class NeulinkService {
      */
     void connect() {
         if(!mqttConnSuccessed){
-            mqttService.connect();
+            myMqttService.connect();
         }
     }
 
@@ -133,7 +133,7 @@ public class NeulinkService {
      * @param mqttMessageListener
      */
     protected void subscribeToTopic(final String topic, int qos,IMqttMessageListener mqttMessageListener){
-        mqttService.subscribe(topic, qos,mqttMessageListener);
+        myMqttService.subscribe(topic, qos,mqttMessageListener);
     }
 
     /**
@@ -180,12 +180,15 @@ public class NeulinkService {
                 newServiceUri = defaultServerUri;
             }
             init(newServiceUri,context);
+
+            if(topStr.contains("msg/req/devinfo")){
+                Log.d(TAG,"start mqtt regist");
+            }
             /**
              * MQTT机制
              */
             topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
-            Log.d(TAG,topStr);
-            mqttService.publish(payload,topStr, qos, retained);
+            myMqttService.publish(payload,topStr, qos, retained);
         }
         else{
 
@@ -212,6 +215,8 @@ public class NeulinkService {
              *
              */
             if(topStr.contains("msg/req/devinfo")){
+
+                Log.d(TAG,"start http regist");
 
                 /**
                  * HTTP机制
@@ -280,8 +285,8 @@ public class NeulinkService {
         Context context = ContextHolder.getInstance().getContext();
 
 //        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
-//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
+//        myMqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
+//        myMqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
@@ -293,8 +298,8 @@ public class NeulinkService {
     public void publishDisConnect(Integer flg){
 //        Context context = ContextHolder.getInstance().getContext();
 //        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        mqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/DISCONNECT", 1, true);
-//        mqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
+//        myMqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/DISCONNECT", 1, true);
+//        myMqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
 //        String topic = "msg/req/status";
 //        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
@@ -304,8 +309,8 @@ public class NeulinkService {
     }
 
     public void destroy(){
-        if(!destroy && !ObjectUtil.isEmpty(mqttService)){
-            mqttService.disconnect();
+        if(!destroy && !ObjectUtil.isEmpty(myMqttService)){
+            myMqttService.disconnect();
             destroy = true;
             Log.i(TAG,"断开Mqtt Service");
         }
