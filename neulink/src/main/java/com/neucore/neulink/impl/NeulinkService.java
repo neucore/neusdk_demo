@@ -163,9 +163,6 @@ public class NeulinkService {
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
-//        int deviceIdBKDRHash = HashAlgorithms.SDBMHash(DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()));
-//        int partition = deviceIdBKDRHash %ConfigContext.getInstance().getConfig("Topic.Partition",8);
-
         String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
 
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
@@ -237,7 +234,7 @@ public class NeulinkService {
                  * 		"placecode": "test",
                  * 		"server": "mqtt.neucore.com",
                  * 		"port": 1883,
-                 * 	    "http.server":"https://data.neuapi.com/v1/smrtlibs/neulink/upload2cloud"
+                 * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
                  *   }
                  * }
                  */
@@ -246,11 +243,10 @@ public class NeulinkService {
                 custid = zone.getCustid();
                 storeid = zone.getStoreid();
                 zoneid = zone.getId();
-//                newServiceUri = "tcp://"+zone.getMqttServer()+":"+zone.getMqttPort();
-//                init(newServiceUri,context);
+
                 /**
                  * upload.server 默认值
-                 * https://data.neuapi.com/neulink/upload2cloud
+                 * https://dev.neucore.com/api/neulink/upload2cloud
                  */
                 neulinkServer = zone.getUploadServer();
             }
@@ -274,27 +270,15 @@ public class NeulinkService {
     }
 
     public void publishConnect(Integer flg){
-        Context context = ContextHolder.getInstance().getContext();
-
-//        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        myMqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
-//        myMqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
-//        String topic = "msg/req/status";
-//        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"1",1,true);
-        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             publishMessage("MQTT/CONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":1}",1,true);
         }
     }
 
     public void publishDisConnect(Integer flg){
-//        Context context = ContextHolder.getInstance().getContext();
-//        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-//        myMqttService.publish(String.valueOf(flg),"$EDC/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/DISCONNECT", 1, true);
-//        myMqttService.publish("1","$share/will_test/"+sccperId+"/"+ServiceFactory.getInstance().getDeviceService().getSN()+"/MQTT/CONNECT", 1, true);
-//        String topic = "msg/req/status";
-//        publishMessage(topic,"2.0",UUID.randomUUID().toString(),"0",1,true);
-        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"false");
+
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             publishMessage("MQTT/DISCONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":0}",1,true);
         }

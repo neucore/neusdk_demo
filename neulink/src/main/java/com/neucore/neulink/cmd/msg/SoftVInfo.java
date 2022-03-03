@@ -2,18 +2,24 @@ package com.neucore.neulink.cmd.msg;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SoftVInfo {
+public class SoftVInfo extends SubApp{
+
+    @SerializedName("bios_version")
+    private String biosVersion;
 
     @SerializedName("osn")
     private String osName;
     @SerializedName("osv")
     private String osVersion;
-    @SerializedName("rptn")
-    private String reportName="NeuSDK";
-    @SerializedName("rptv")
-    private String reportVersion;
-    @SerializedName("alogv")
-    private String alogVersion;
+
+    @SerializedName("firn")
+    private String firName;
+
+    @SerializedName("firv")
+    private String firVersion;
+
+    @SerializedName("jvm_version")
+    private String jvmVersion;
 
     /**
      * 固件名称
@@ -47,51 +53,35 @@ public class SoftVInfo {
         this.osVersion = osVersion;
     }
 
-    /**
-     * 应用程序名称【apk应用名称】
-     * @return
-     */
-    public String getReportName() {
-        return reportName;
+    public String getFirName() {
+        return firName;
     }
 
-    /**
-     * 应用程序名称【apk应用名称】
-     * @param reportName
-     */
-    public void setReportName(String reportName) {
-        this.reportName = reportName;
+    public void setFirName(String firName) {
+        this.firName = firName;
     }
 
-    /**
-     * 应用程序版本【apk应用程序版本】
-     * @return
-     */
-    public String getReportVersion() {
-        return reportVersion;
+    public String getFirVersion() {
+        return firVersion;
     }
 
-    /**
-     * 应用程序版本【apk应用程序版本】
-     * @param reportVersion
-     */
-    public void setReportVersion(String reportVersion) {
-        this.reportVersion = reportVersion;
+    public void setFirVersion(String firVersion) {
+        this.firVersion = firVersion;
     }
 
-    /**
-     * 算法版本
-     * @return
-     */
-    public String getAlogVersion() {
-        return alogVersion;
+    public String getBiosVersion() {
+        return biosVersion;
     }
 
-    /**
-     * 算法版本
-     * @param alogVersion
-     */
-    public void setAlogVersion(String alogVersion) {
-        this.alogVersion = alogVersion;
+    public void setBiosVersion(String biosVersion) {
+        this.biosVersion = biosVersion;
+    }
+
+    public String getJvmVersion() {
+        return jvmVersion;
+    }
+
+    public void setJvmVersion(String jvmVersion) {
+        this.jvmVersion = jvmVersion;
     }
 }
