@@ -12,6 +12,7 @@ import com.neucore.neulink.IUserService;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SoftVInfo;
+import com.neucore.neulink.cmd.msg.SubApp;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -238,8 +239,10 @@ public class MyApplication extends Application
      * 设备信息上报扩展
      */
     IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+
+
         @Override
-        public List<SoftVInfo> getSubApps() {
+        public List<SubApp> getSubApps() {
             /**
              * 子应用列表
              */
@@ -250,6 +253,14 @@ public class MyApplication extends Application
         public List<Map<String, String>> getAttrs() {
             /**
              * 扩展属性
+             */
+            return null;
+        }
+
+        @Override
+        public String getModel() {
+            /**
+             * 产品型号
              */
             return null;
         }
@@ -270,12 +281,23 @@ public class MyApplication extends Application
         }
 
         @Override
+        public String getInterface() {
+            return null;
+        }
+
+        @Override
         public String getWifiModel() {
+            /**
+             * wifi模组型号
+             */
             return null;
         }
 
         @Override
         public String getNpuModel() {
+            /**
+             * npu型号
+             */
             return null;
         }
 
@@ -296,6 +318,36 @@ public class MyApplication extends Application
 
         @Override
         public String getBiosVersion() {
+            return null;
+        }
+
+        @Override
+        public String getOsName() {
+            return null;
+        }
+
+        @Override
+        public String getOsVersion() {
+            return null;
+        }
+
+        @Override
+        public String getFirName() {
+            return null;
+        }
+
+        @Override
+        public String getFirVersion() {
+            return null;
+        }
+
+        @Override
+        public String getMainAppName() {
+            return null;
+        }
+
+        @Override
+        public String getMainAppVersion() {
             return null;
         }
 

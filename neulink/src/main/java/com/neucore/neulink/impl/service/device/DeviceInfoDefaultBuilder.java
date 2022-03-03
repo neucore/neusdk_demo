@@ -79,13 +79,40 @@ public class DeviceInfoDefaultBuilder {
     public DeviceInfo build(IExtendInfoCallback callback){
         DeviceInfo deviceInfo = build();
         if(callback!=null){
+            deviceInfo.setModel(callback.getModel());
+
             deviceInfo.setSubApps(callback.getSubApps());
+
             deviceInfo.setAttrs(callback.getAttrs());
+
             deviceInfo.setImei(callback.getImei());
             deviceInfo.setImsi(callback.getImsi());
             deviceInfo.setIccid(callback.getIccid());
-            deviceInfo.setBiosVersion(callback.getBiosVersion());
-            deviceInfo.setJvmVersion(callback.getJvmVersion());
+
+            deviceInfo.getSoftVInfo().setBiosVersion(callback.getBiosVersion());
+
+            if(ObjectUtil.isNotEmpty(callback.getOsName())){
+                deviceInfo.getSoftVInfo().setOsName(callback.getOsName());
+            }
+
+            if(ObjectUtil.isNotEmpty(callback.getOsVersion())){
+                deviceInfo.getSoftVInfo().setOsVersion(callback.getOsVersion());
+            }
+
+            deviceInfo.getSoftVInfo().setJvmVersion(callback.getJvmVersion());
+
+            if(ObjectUtil.isNotEmpty(callback.getMainAppName())) {
+                deviceInfo.getSoftVInfo().setReportName(callback.getMainAppName());
+            }
+
+            if(ObjectUtil.isNotEmpty(callback.getMainAppVersion())){
+                deviceInfo.getSoftVInfo().setReportVersion(callback.getMainAppVersion());
+            }
+
+            deviceInfo.setFirName(callback.getFirName());
+            deviceInfo.setFirVersion(callback.getFirVersion());
+
+            deviceInfo.setInterface(callback.getInterface());
             deviceInfo.setWifiModel(callback.getWifiModel());
             deviceInfo.setNpuMode(callback.getNpuModel());
             deviceInfo.setScreenSize(callback.getScreenSize());

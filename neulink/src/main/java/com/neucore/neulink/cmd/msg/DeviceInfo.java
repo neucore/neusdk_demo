@@ -35,6 +35,9 @@ public class DeviceInfo {
     @SerializedName("sku_token")
     private String skuToken;
 
+    @SerializedName("model")
+    private String model;
+
     @SerializedName("imei")
     private String imei;
 
@@ -59,6 +62,18 @@ public class DeviceInfo {
     public String getWifiModel(){
         return wifiModel;
     }
+
+    @SerializedName("interface")
+    private String connInterface;
+
+    public String getInterface() {
+        return connInterface;
+    }
+
+    public void setInterface(String connInterface) {
+        this.connInterface = connInterface;
+    }
+
     @SerializedName("screen_size")
     private String screenSize;
     public String getScreenSize(){
@@ -74,15 +89,13 @@ public class DeviceInfo {
     public String getScreenResolution(){
         return screenResolution;
     }
-    @SerializedName("bios_version")
-    private String biosVersion;
-    public String getBiosVersion(){
-        return biosVersion;
+
+    public String getModel() {
+        return model;
     }
-    @SerializedName("jvm_version")
-    private String jvmVersion;
-    public String getJvmVersion(){
-        return jvmVersion;
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public void setImei(String imei) {
@@ -113,16 +126,28 @@ public class DeviceInfo {
         this.screenResolution = screenResolution;
     }
 
-    public void setBiosVersion(String biosVersion) {
-        this.biosVersion = biosVersion;
+    private String firName;
+
+    private String firVersion;
+
+    public String getFirName() {
+        return firName;
     }
 
-    public void setJvmVersion(String jvmVersion) {
-        this.jvmVersion = jvmVersion;
+    public void setFirName(String firName) {
+        this.firName = firName;
+    }
+
+    public String getFirVersion() {
+        return firVersion;
+    }
+
+    public void setFirVersion(String firVersion) {
+        this.firVersion = firVersion;
     }
 
     @SerializedName("subapps")
-    private List<SoftVInfo> subApps = new ArrayList<>();
+    private List<SubApp> subApps = new ArrayList<>();
 
     @SerializedName("attrs")
     private List<Map<String,String>> attrs = new ArrayList();
@@ -204,11 +229,11 @@ public class DeviceInfo {
         this.funList = funList;
     }
 
-    public List<SoftVInfo> getSubApps() {
+    public List<SubApp> getSubApps() {
         return subApps;
     }
 
-    public void setSubApps(List<SoftVInfo> subApps) {
+    public void setSubApps(List<SubApp> subApps) {
         this.subApps = subApps;
     }
 
