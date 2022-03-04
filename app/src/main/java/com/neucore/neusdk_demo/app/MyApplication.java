@@ -102,7 +102,7 @@ public class MyApplication extends Application
         /**
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");
         /**
          * FTP 实现
          */
@@ -115,7 +115,7 @@ public class MyApplication extends Application
          * ⚠️注意；http 通道启用时打开
          */
         //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
-        //extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.232:18093/v1/smrtlibs/neulink/regist");//设置http通道注册服务地址
+        //extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");//设置http通道注册服务地址
         SampleConnector connector = new SampleConnector(this,extConfig);
 
         /**
@@ -277,6 +277,22 @@ public class MyApplication extends Application
 
         @Override
         public String getIccid() {
+            return null;
+        }
+
+        @Override
+        public String getLat() {
+            /**
+             * 设备所在经度
+             */
+            return null;
+        }
+
+        @Override
+        public String getLng() {
+            /**
+             * 设备所在纬度
+             */
             return null;
         }
 
