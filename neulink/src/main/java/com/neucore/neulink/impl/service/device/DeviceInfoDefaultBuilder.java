@@ -79,6 +79,11 @@ public class DeviceInfoDefaultBuilder {
     public DeviceInfo build(IExtendInfoCallback callback){
         DeviceInfo deviceInfo = build();
         if(callback!=null){
+
+            deviceInfo.setLat(callback.getLat());
+
+            deviceInfo.setLng(callback.getLng());
+
             deviceInfo.setModel(callback.getModel());
 
             deviceInfo.setSubApps(callback.getSubApps());

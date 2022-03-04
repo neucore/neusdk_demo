@@ -56,6 +56,11 @@ public class DeviceInfo {
     public String getIccid(){
         return iccid;
     }
+    @SerializedName("lat")
+    private String lat;
+
+    @SerializedName("lng")
+    private String lng;
 
     @SerializedName("wifim")
     private String wifiModel;
@@ -172,6 +177,22 @@ public class DeviceInfo {
         this.tag = tag;
     }
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
     public MiscInfo getMiscInfo() {
         return miscInfo;
     }
@@ -211,7 +232,6 @@ public class DeviceInfo {
     public void setMac(String mac) {
         this.mac = mac;
     }
-
 
     public String getSkuToken() {
         return skuToken;
