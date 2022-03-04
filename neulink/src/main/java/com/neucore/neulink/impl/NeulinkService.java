@@ -272,7 +272,8 @@ public class NeulinkService {
     public void publishConnect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            publishMessage("MQTT/CONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":1}",1,true);
+            String payload = "{\"dev_id\",:\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
+            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
 
@@ -280,7 +281,8 @@ public class NeulinkService {
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            publishMessage("MQTT/DISCONNECT","v1.0",UUID.randomUUID().toString(),"{\"status\":0}",1,true);
+            String payload = "{\"dev_id\",:\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
+            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
 

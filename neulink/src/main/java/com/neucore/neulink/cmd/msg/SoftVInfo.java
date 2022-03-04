@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class SoftVInfo extends SubApp{
 
-    @SerializedName("bios_version")
+    @SerializedName("biosv")
     private String biosVersion;
 
     @SerializedName("osn")
@@ -18,7 +18,7 @@ public class SoftVInfo extends SubApp{
     @SerializedName("firv")
     private String firVersion;
 
-    @SerializedName("jvm_version")
+    @SerializedName("jvmv")
     private String jvmVersion;
 
     /**

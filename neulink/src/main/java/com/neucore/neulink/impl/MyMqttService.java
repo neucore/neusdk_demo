@@ -15,6 +15,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.HashMap;
+
 import cn.hutool.core.util.ObjectUtil;
 
 public class MyMqttService {
@@ -197,7 +199,8 @@ public class MyMqttService {
             conOpt.setAutomaticReconnect(autoReconnect);
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
-            conOpt.setWill("MQTT/LWT/v1.0/" + sccperId + "/" + clientId, "{\"status\":-1}".getBytes(), 1, true);
+            String payload = "{\"dev_id\",:\""+clientId+"\",\"status\":-1}";
+            conOpt.setWill("msg/req/lwt/v1.0/" + sccperId + "/" + clientId, payload.getBytes(), 1, true);
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){

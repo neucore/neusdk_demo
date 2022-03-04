@@ -16,6 +16,10 @@ public interface IExtendInfoCallback {
 
     String getIccid();
 
+    String getLat();
+
+    String getLng();
+
     String getInterface();
 
     String getWifiModel();
