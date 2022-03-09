@@ -7,14 +7,14 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
-import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthSyncCmdRes;
 
 /**
  * 设备授权下发
  * AuthSyncCmd:请求对象，
  * AuthSyncCmdRes：响应对象
- * String:actionListener的返回类型
+ * AuthActionResult:actionListener的返回类型
  */
 public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, AuthActionResult> {
 
