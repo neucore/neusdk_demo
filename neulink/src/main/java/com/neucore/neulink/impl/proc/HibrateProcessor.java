@@ -27,11 +27,11 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     @Override
     public Map<String,String> process(NeulinkTopicParser.Topic topic, ArgCmd cmd) {
         try {
-            ICmdListener<Result> listener = getListener();
+            ICmdListener<Result,ArgCmd> listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"Hibrate Listener does not implemention");
             }
-            listener.doAction(new NeulinkEvent(cmd));
+            listener.doAction(new NeulinkEvent<ArgCmd>(cmd));
             return new HashMap<String,String>();
         }
         catch (NeulinkException ex){

@@ -23,7 +23,7 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
     @Override
     public String process(NeulinkTopicParser.Topic topic, CheckCmd payload) {
         NeulinkEvent event = new NeulinkEvent(payload);
-        ICmdListener<QueryResult<Map<String,Object>>> listener = getListener();
+        ICmdListener<QueryResult<Map<String,Object>>,CheckCmd> listener = getListener();
         QueryResult<Map<String,Object>> result = listener.doAction(event);
         return (String)result.getData().get("card_ids");
     }

@@ -1,14 +1,15 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
 
 import java.io.File;
 
-public class AlogUpgrdActionListener implements ICmdListener<Result> {
+public class AlogUpgrdActionListener implements ICmdListener<Result, File> {
     @Override
-    public Result doAction(NeulinkEvent event) {
+    public Result doAction(NeulinkEvent<File> event) {
         /**
          * 最新下载的算法文件
          */

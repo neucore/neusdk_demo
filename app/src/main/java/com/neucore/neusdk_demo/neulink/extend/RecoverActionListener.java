@@ -12,13 +12,13 @@ import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.io.IOException;
 
-public class RecoverActionListener implements ICmdListener<Result>, NeulinkConst {
+public class RecoverActionListener implements ICmdListener<Result,RecoverCmd>, NeulinkConst {
     @Override
-    public Result doAction(NeulinkEvent event) {
+    public Result doAction(NeulinkEvent<RecoverCmd> event) {
         /**
          * 最新下载的算法文件
          */
-        RecoverCmd cmd = (RecoverCmd)event.getSource();
+        RecoverCmd cmd = event.getSource();
 
         String url = cmd.getUrl();
         try {
