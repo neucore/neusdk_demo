@@ -1,4 +1,4 @@
-package com.neucore.neulink.extend.auth;
+package com.neucore.neusdk_demo.neulink.extend.auth.response;
 
 import com.google.gson.annotations.SerializedName;
 

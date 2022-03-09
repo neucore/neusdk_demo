@@ -15,8 +15,10 @@ import com.neucore.neulink.cmd.rmsg.HibrateCmd;
 import com.neucore.neulink.cmd.rmsg.UpgrCmd;
 import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
 import com.neucore.neulink.cmd.rrpc.BTLibSyncCmd;
+import com.neucore.neulink.cmd.rrpc.BTLibSyncCmd;
 import com.neucore.neulink.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.listener.BLibSyncCmdListener;
 import com.neucore.neulink.rmsg.ReserveCmd;
 
 import java.io.File;
@@ -83,12 +85,18 @@ public class ListenerFactory {
             return new Result();
         }
     };
-
-    private ICmdListener<UpdateResult, FaceCmd> faceListener = new ICmdListener<UpdateResult,FaceCmd>() {
+    private ICmdListener<UpdateResult, BTLibSyncCmd> internalFaceListener = new BLibSyncCmdListener() {
         @Override
-        public UpdateResult doAction(NeulinkEvent<FaceCmd> event) {
+        public UpdateResult doAction(NeulinkEvent<BTLibSyncCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
             return new UpdateResult();
+        }
+    };
+    private ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd> faceListener = new ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd>() {
+        @Override
+        public UpdateResult<Map<String,Object>> doAction(NeulinkEvent<FaceCmd> event) {
+            Log.i(TAG,"face process implements need to by replace ");
+            return new UpdateResult<Map<String,Object>>();
         }
     };
 
@@ -178,11 +186,11 @@ public class ListenerFactory {
         this.reserveListener = reserveListener;
     }
 
-    public ICmdListener<UpdateResult, FaceCmd> getFaceListener() {
+    public ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd> getFaceListener() {
         return faceListener;
     }
 
-    public void setFaceListener(ICmdListener<UpdateResult,FaceCmd> faceListener) {
+    public void setFaceListener(ICmdListener faceListener) {
         this.faceListener = faceListener;
     }
 
@@ -190,7 +198,7 @@ public class ListenerFactory {
         return faceQueryListener;
     }
 
-    public void setFaceQueryListener(ICmdListener<QueryResult,TLibQueryCmd> faceQueryListener) {
+    public void setFaceQueryListener(ICmdListener faceQueryListener) {
         this.faceQueryListener = faceQueryListener;
     }
 
@@ -198,7 +206,7 @@ public class ListenerFactory {
         return faceCheckListener;
     }
 
-    public void setFaceCheckListener(ICmdListener<QueryResult,CheckCmd> faceCheckListener) {
+    public void setFaceCheckListener(ICmdListener faceCheckListener) {
         this.faceCheckListener = faceCheckListener;
     }
 
@@ -206,7 +214,7 @@ public class ListenerFactory {
         return backupListener;
     }
 
-    public void setBackupListener(ICmdListener<QueryResult,BackupCmd> backupListener) {
+    public void setBackupListener(ICmdListener backupListener) {
         this.backupListener = backupListener;
     }
 
@@ -214,7 +222,7 @@ public class ListenerFactory {
         return recoverListener;
     }
 
-    public void setRecoverListener(ICmdListener<QueryResult,RecoverCmd> recoverListener) {
+    public void setRecoverListener(ICmdListener recoverListener) {
         this.recoverListener = recoverListener;
     }
 

@@ -66,7 +66,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
             }
 
             long id = 0;
-            Req t = null;
+            Req req = null;
             try {
                 if (msg == null) {
                     msg = insert(topic, payload);
@@ -75,10 +75,10 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
                     id = msg.getId();
                 }
                 long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
-                t = parser(payload);
-                t.setReqtime(reqTime);
-                T result = process(topic, t);
-                Res res = responseWrapper(t, result);
+                req = parser(payload);
+                req.setReqtime(reqTime);
+                T result = process(topic, req);
+                Res res = responseWrapper(req, result);
                 String jsonStr = JSonUtils.toString(res);
                 if (res.getCode() == 200){//支撑多包批处理，所有包处理成功才叫做成功
                     update(id, IMessage.STATUS_SUCCESS, res.getMsg());
@@ -90,14 +90,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
             }
             catch(NeulinkException ex){
                 update(id,IMessage.STATUS_FAIL, ex.getMessage());
-                Res res = fail(t, ex.getCode(),ex.getMsg());
+                Res res = fail(req, ex.getCode(),ex.getMsg());
                 String jsonStr = JSonUtils.toString(res);
                 resLstRsl2Cloud(topic, jsonStr);
             }
             catch (Throwable ex) {
                 Log.e(TAG,"execute",ex);
                 update(id,IMessage.STATUS_FAIL, ex.getMessage());
-                Res res = fail(t, ex.getMessage());
+                Res res = fail(req, ex.getMessage());
                 String jsonStr = JSonUtils.toString(res);
                 resLstRsl2Cloud(topic, jsonStr);
             }
@@ -263,7 +263,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
         return topic.getBiz();
     }
 
-    protected ICmdListener getListener(){
+    protected ICmdListener<T,Req> getListener(){
         return ListenerFactory.getInstance().getExtendListener(biz());
     }
 }

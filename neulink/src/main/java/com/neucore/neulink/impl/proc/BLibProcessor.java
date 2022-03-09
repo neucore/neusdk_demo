@@ -179,69 +179,6 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
         return null;
     }
 
-//    protected void licSync(long reqTime,BTLibSync cmd,long msgId,long offset) throws Exception{
-//        //推送消息到达
-//        String jsonUrl = cmd.getDataUrl();
-//        int index = jsonUrl.lastIndexOf("/");
-//        String baseUrl = jsonUrl.substring(0,index+1);//包含'/'
-//
-//        String newJsonFileUrl = baseUrl+offset+".json";
-//
-//        String body = NeuHttpHelper.dldFile2String(newJsonFileUrl,3);
-//
-//        SyncInfo syncInfo = (SyncInfo) JSonUtils.toObject(body, SyncInfo.class);
-//
-//        String fileUrl = syncInfo.getFileUrl();
-//        String md5 = syncInfo.getMd5();
-//        String reqdir = libDir+File.separator+RequestContext.getId();
-//        File toDir = new File(reqdir);
-//        if(toDir.exists()){
-//            FileUtils.deleteDirectory(toDir.getAbsolutePath());//清空
-//        }
-//
-//        toDir.mkdirs();
-//
-//        List<FaceData> params = null;
-//        try {
-//            File tmpFile = NeuHttpHelper.dld2File(getContext(), RequestContext.getId(), fileUrl, toDir);//下载zip文件
-//
-//            FileUtils.unzipFile(tmpFile, toDir.getAbsolutePath());//解压zip文件
-//
-//            tmpFile.delete();//删除zip文件
-//            String infoFileDir = reqdir + "/info";
-//            File info = new File(infoFileDir + "/" + offset + ".json");
-//            List<String> lics = liclibDataReader(info);
-//            if (ADD.equalsIgnoreCase(cmd.getCmdStr()) ||
-//                    UPDATE.equalsIgnoreCase(cmd.getCmdStr()) ||
-//                    SYNC.equalsIgnoreCase(cmd.getCmdStr()) ||
-//                    PUSH.equalsIgnoreCase(cmd.getCmdStr())){
-//                libManagerService.insertOrUpdLicNumlib(reqTime, lics);
-//            }
-//            else if(DEL.equalsIgnoreCase(cmd.getCmdStr())){
-//                libManagerService.deleteLiclib(lics);
-//            }
-//        }
-//        catch (IOException e){
-//            throw e;
-//        }
-//        catch (RuntimeException e){
-//            throw e;
-//        }
-//    }
-
-//    private static List<String> liclibDataReader(File jsonDataFile) throws IOException {
-//
-//        BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonDataFile));
-//        StringBuffer sb = new StringBuffer();
-//        String line = null;
-//        while ((line=bufferedReader.readLine())!=null){
-//            sb.append(line);
-//        }
-//        bufferedReader.close();
-//        Type type =new TypeToken<List<String>>() {}.getType();
-//        List<String> params = JSonUtils.toList(sb.toString(), type);
-//        return params;
-//    }
 
     protected String[] faceSync(long reqTime, BTLibSyncCmd cmd, long offset) throws Exception{
         List failed = new ArrayList();
@@ -303,7 +240,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPayload(params);
             faceCmd.setImageDatas(images);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult,FaceCmd> listener = getListener();
+            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
             result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params,images);
         }
@@ -315,7 +252,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult,FaceCmd> listener = getListener();
+            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
             result = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params);
         }
@@ -327,7 +264,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult,FaceCmd> listener = getListener();
+            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
             result = listener.doAction(event);
             //libManagerService.deleteFacelib(params);
         }
@@ -412,7 +349,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     }
 
     @Override
-    protected ICmdListener<UpdateResult,FaceCmd> getListener() {
+    protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getFaceListener();
     }
 
