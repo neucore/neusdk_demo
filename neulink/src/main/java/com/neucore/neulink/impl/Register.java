@@ -1,12 +1,7 @@
 package com.neucore.neulink.impl;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IProcessor;
@@ -118,7 +113,7 @@ public class Register {
                                 registed = true;
                             }
                             else {
-                                Log.i(TAG,"非法实现ILoginCallback，token非法。。。");
+                                Log.i(TAG,"token非法。。。");
                             }
                         }
                         else{

@@ -250,7 +250,7 @@ public class NeuHttpHelper{
 				response = client.newCall(request).execute();
 				code = response.code();
 				if (code != 200) {
-					throw new RuntimeException(url + ",失败 with code=" + code);
+					throw new NeulinkException(code,url + ",失败 with code=" + code);
 				}
 				String responseData = response.body().string();
 				return responseData;
@@ -312,7 +312,7 @@ public class NeuHttpHelper{
 				response = client.newCall(request).execute();
 				code = response.code();
 				if (code != 200) {
-					throw new RuntimeException(url + ",失败 with code=" + code);
+					throw new NeulinkException(code,url + ",失败 with code=" + code);
 				}
 				String responseData = response.body().string();
 				return responseData;
@@ -342,59 +342,6 @@ public class NeuHttpHelper{
 			}
 		}
 		throw new RuntimeException(url + ",失败 with code=" + code);
-	}
-
-	private static Gson gson = new Gson();
-	public static void main(String[] args){
-
-		OkHttpClient okHttpClient  = getClient();
-		String img = "aaaa.jpg";
-
-		String base64 = null;
-
-		try {
-			BufferedReader fileReader = new BufferedReader(new FileReader("/Users/alex.zhu/img.txt"));
-			String line = null;
-			while((line = fileReader.readLine())!= null){
-
-				int index = line.indexOf(".");
-				final String card_no = line.substring(0,index);
-
-				base64 = NetImageToBase64("http://10.18.105.254/neucore_gate_server/upload/img/"+line);
-				//post方式提交的数据
-				FormBody formBody = new FormBody.Builder()
-						.add("image_type", "BASE64")
-						.add("image", base64)
-						.build();
-
-				final Request request = new Request.Builder()
-						.url("https://ai.neuapi.com/v1/face_feature?token=dmr3ecl515t89d3fq2utip1kb11np41n")//请求的url
-						.post(formBody)
-						.build();
-				Call call = okHttpClient.newCall(request);
-				//加入队列 异步操作
-				call.enqueue(new Callback() {
-					//请求错误回调方法
-					@Override
-					public void onFailure(Call call, IOException e) {
-						System.out.println("连接失败");
-					}
-
-					@Override
-					public void onResponse(Call call, Response response) throws IOException {
-						if(response.code()==200) {
-							String json = response.body().string();
-							Face face = gson.fromJson(json,Face.class);
-							String sql = "insert into face_id( card_no , face ) values('"+card_no+"','"+face.getData()+"')";
-							System.out.println(sql);
-						}
-					}
-				});
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private static String NetImageToBase64(String netImagePath) throws Exception {
