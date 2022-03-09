@@ -113,11 +113,11 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
     public T process(NeulinkTopicParser.Topic topic, Req cmd) {
         try {
 
-            ICmdListener<T> listener = getListener();
+            ICmdListener<T,Req> listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"awaken Listener does not implemention");
             }
-            T result = listener.doAction(new NeulinkEvent(cmd));
+            T result = listener.doAction(new NeulinkEvent<Req>(cmd));
             return result;
         }
         catch (NeulinkException ex){

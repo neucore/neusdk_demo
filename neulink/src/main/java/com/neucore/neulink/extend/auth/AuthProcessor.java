@@ -1,9 +1,7 @@
-package com.neucore.neulink.extend.impl;
+package com.neucore.neulink.extend.auth;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmd;
-import com.neucore.neulink.cmd.rrpc.AuthSyncCmdRes;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
@@ -15,7 +13,7 @@ import com.neucore.neulink.util.JSonUtils;
  * AuthSyncCmdRes：响应对象
  * String:actionListener的返回类型
  */
-public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,String> {
+public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, AuthActionResult> {
 
     public AuthProcessor(){
         this(ContextHolder.getInstance().getContext());
@@ -37,7 +35,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes,Strin
      * @return
      */
     @Override
-    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, String result) {
+    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);

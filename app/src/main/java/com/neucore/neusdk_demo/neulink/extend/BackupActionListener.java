@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.cmd.bak.BackupCmd;
 import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
@@ -23,27 +24,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackupActionListener implements ICmdListener<QueryResult>, NeulinkConst {
+public class BackupActionListener implements ICmdListener<QueryResult, BackupCmd>, NeulinkConst {
     @Override
-    public QueryResult doAction(NeulinkEvent event) {
+    public QueryResult doAction(NeulinkEvent<BackupCmd> event) {
         /**
-         * 最新下载的算法文件
+         *
          */
-        RecoverCmd cmd = (RecoverCmd)event.getSource();
+        BackupCmd cmd = event.getSource();
 
-        String url = cmd.getUrl();
-        String backUrl = null;
-        try {
-            String json  = NeuHttpHelper.dldFile2String(url,3);
-            BackupItem[] items = (BackupItem[]) JSonUtils.toObject(json, BackupItem[].class);
-            /**
-             * 备份打包@TODO
-             */
-            backUrl = doBackup(items);
+        String[] backups = cmd.getObjs();
 
-        } catch (IOException e) {
-            throw new NeulinkException(500,e.getMessage());
-        }
+        /**
+         * 备份打包@TODO
+         */
+        String backUrl = doBackup(backups);
 
         QueryResult result = new QueryResult();
         /**
@@ -65,29 +59,29 @@ public class BackupActionListener implements ICmdListener<QueryResult>, NeulinkC
      * @param backups
      * @return
      */
-    private String doBackup(BackupItem[] backups){
+    private String doBackup(String[] backups){
         int len = backups==null?0:backups.length;
         HashMap<String,BackupItem> urls = new HashMap<String,BackupItem>();
         for(int i=0;i<len;i++){
             String path = null;
 
-            if(Backup_Obj_Cfg.equalsIgnoreCase(backups[i].getObj())){//应用配置备份
+            if(Backup_Obj_Cfg.equalsIgnoreCase(backups[i])){//应用配置备份
                 path= cfgBackup();
             }
-            else if(Backup_Obj_Syscfg.equalsIgnoreCase(backups[i].getObj())){//系统配置备份
+            else if(Backup_Obj_Syscfg.equalsIgnoreCase(backups[i])){//系统配置备份
                 path = syscfgBackup();
             }
-            if(Backup_Obj_Data.equalsIgnoreCase(backups[i].getObj())){//数据库数据
+            if(Backup_Obj_Data.equalsIgnoreCase(backups[i])){//数据库数据
                 path = dataBackup();
             }
             if(path!=null){
                 BackupItem item = new BackupItem();
-                item.setObj(backups[i].getObj());
+                item.setObj(backups[i]);
                 String url = StorageFactory.getInstance().uploadBak(path, RequestContext.getId(),1);
                 item.setUrl(url);
                 try {
                     item.setMd5(MD5Utils.getInstance().getMD5File(path));
-                    urls.put(backups[i].getObj(),item);
+                    urls.put(backups[i],item);
                 } catch (Exception e) {
 
                 }

@@ -8,10 +8,10 @@ import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import java.io.File;
 import java.util.Map;
 
-public class ApkUpgrdActionListener implements ICmdListener<Result> {
+public class ApkUpgrdActionListener implements ICmdListener<Result,UgrdeCmd> {
     @Override
-    public Result doAction(NeulinkEvent event) {
-        UgrdeCmd cmd = (UgrdeCmd)event.getSource();
+    public Result doAction(NeulinkEvent<UgrdeCmd> event) {
+        UgrdeCmd cmd = event.getSource();
 
         Map<String,String> argMaps = cmd.argsToMap();
         /**

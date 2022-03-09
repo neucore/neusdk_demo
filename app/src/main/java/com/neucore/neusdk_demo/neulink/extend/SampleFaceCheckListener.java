@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class SampleFaceCheckListener implements ICmdListener<QueryResult> {
+public class SampleFaceCheckListener implements ICmdListener<QueryResult,CheckCmd> {
     private LibManagerService libManagerService;
     private String TAG = "SampleFaceCheckListener";
     public SampleFaceCheckListener(){
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
     }
     @Override
-    public QueryResult doAction(NeulinkEvent event) {
+    public QueryResult doAction(NeulinkEvent<CheckCmd> event) {
 
-        CheckCmd faceCmd = (CheckCmd) event.getSource();
+        CheckCmd faceCmd = event.getSource();
         String md5Cloud = faceCmd.getMd5();
 
         /**

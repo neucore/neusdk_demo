@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleFaceQueryListener implements ICmdListener<QueryResult> {
+public class SampleFaceQueryListener implements ICmdListener<QueryResult,TLibQueryCmd> {
     private LibManagerService libManagerService;
     private UserDaoUtils userDaoUtils = null;
     private String TAG = "SampleFaceQueryListener";
@@ -29,10 +29,10 @@ public class SampleFaceQueryListener implements ICmdListener<QueryResult> {
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
     }
     @Override
-    public QueryResult doAction(NeulinkEvent event) {
+    public QueryResult doAction(NeulinkEvent<TLibQueryCmd> event) {
 
         NeulinkTopicParser.Topic topic = null;
-        TLibQueryCmd cmd = (TLibQueryCmd)event.getSource();
+        TLibQueryCmd cmd = event.getSource();
 
         long count = userDaoUtils.count(cmd.getConds());
 

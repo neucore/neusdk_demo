@@ -5,10 +5,10 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.impl.ArgCmd;
 
-public class AwakenActionListener  implements ICmdListener<Result> {
+public class AwakenActionListener  implements ICmdListener<Result,ArgCmd> {
     @Override
-    public Result doAction(NeulinkEvent event) {
-        ArgCmd cmd = (ArgCmd) event.getSource();
+    public Result doAction(NeulinkEvent<ArgCmd> event) {
+        ArgCmd cmd = event.getSource();
         /**
          * 此处实现系统休眠操作
          */

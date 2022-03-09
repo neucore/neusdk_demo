@@ -8,10 +8,10 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
 
-public class CfgActionListener implements ICmdListener<Result>, NeulinkConst {
+public class CfgActionListener implements ICmdListener<Result,CfgCmd>, NeulinkConst {
     @Override
-    public Result doAction(NeulinkEvent event) {
-        CfgCmd cmd = (CfgCmd) event.getSource();
+    public Result doAction(NeulinkEvent<CfgCmd> event) {
+        CfgCmd cmd = event.getSource();
         CfgItem[] items = cmd.getData();
         int size = items==null?0:items.length;
 

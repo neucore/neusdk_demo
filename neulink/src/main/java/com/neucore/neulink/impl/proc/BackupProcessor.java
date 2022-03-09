@@ -26,7 +26,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     @Override
     public String process(NeulinkTopicParser.Topic topic, BackupCmd payload) {
         NeulinkEvent event = new NeulinkEvent(payload);
-        ICmdListener<QueryResult> listener = getListener();
+        ICmdListener<QueryResult,BackupCmd> listener = getListener();
         if(listener==null){
             throw new NeulinkException(404,"backup Listener does not implemention");
         }
@@ -72,7 +72,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     }
 
     @Override
-    protected ICmdListener<QueryResult> getListener() {
+    protected ICmdListener<QueryResult,BackupCmd> getListener() {
         return ListenerFactory.getInstance().getBackupListener();
     }
 }
