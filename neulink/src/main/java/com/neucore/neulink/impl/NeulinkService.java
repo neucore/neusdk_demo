@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
@@ -196,6 +197,7 @@ public class NeulinkService {
                 if(index!=-1){
                     token = token.substring(index+1);
                 }
+                
                 params.put("Authorization","Bearer "+token);
             }
 
@@ -221,7 +223,6 @@ public class NeulinkService {
                     response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,3);
                 } catch (UnsupportedEncodingException e) {
                 }
-
                 Log.d(TAG,"设备注册响应："+response);
 
                 /**
@@ -255,16 +256,34 @@ public class NeulinkService {
                  * 设备端2cloud
                  */
                 Log.d(TAG,"upload2cloud with http");
-                try {
-                    topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
-                    Log.d(TAG,topStr);
-                    String topic = URLEncoder.encode(topStr,"UTF-8");
-
-                    String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
-                    Log.d(TAG,"设备upload2cloud响应："+response);
-                } catch (Exception e) {
-                    Log.d(TAG,"upload2cloud error with: "+e.getMessage());
+                Boolean done = false;
+                int count = 0;
+                while(!done && count<3){
+                    try {
+                        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
+                        Log.d(TAG,topStr);
+                        String topic = URLEncoder.encode(topStr,"UTF-8");
+                        String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
+                        Log.d(TAG,"设备upload2cloud响应："+response);
+                        done = true;
+                    }
+                    catch (NeulinkException e) {
+                        if(e.getCode()==401||e.getCode()==403){
+                            Log.i(TAG,"token过期，重新登录");
+                            token = ServiceFactory.getInstance().getLoginCallback().login();
+                            if(ObjectUtil.isNotEmpty(token)){
+                                Log.i(TAG,"token过期，重新登录成功");
+                                NeulinkSecurity.getInstance().setToken(token);
+                            }
+                            count++;
+                        }
+                    }
+                    catch (Exception e) {
+                        Log.d(TAG,"upload2cloud error with: "+e.getMessage());
+                        done = true;
+                    }
                 }
+
             }
         }
     }
