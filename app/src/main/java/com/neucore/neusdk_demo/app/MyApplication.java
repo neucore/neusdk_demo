@@ -34,6 +34,8 @@ import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
+import com.neucore.neusdk_demo.neulink.extend.auth.AuthCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 
@@ -446,6 +448,8 @@ public class MyApplication extends Application
              * 新业务可以参考Hello业务的实现业务就行
              */
             NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
+
+            NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
         }
     };
 }
