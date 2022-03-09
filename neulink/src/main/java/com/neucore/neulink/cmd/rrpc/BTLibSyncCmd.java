@@ -19,7 +19,7 @@ public class BTLibSyncCmd extends Cmd {
     private long pages;
 
     @SerializedName("offset")
-    private int offset;
+    private Long offset;
 
     @SerializedName("data_url")
     private String dataUrl;
@@ -51,11 +51,11 @@ public class BTLibSyncCmd extends Cmd {
         this.pages = pages;
     }
 
-    public int getOffset() {
+    public Long getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(Long offset) {
         this.offset = offset;
     }
 

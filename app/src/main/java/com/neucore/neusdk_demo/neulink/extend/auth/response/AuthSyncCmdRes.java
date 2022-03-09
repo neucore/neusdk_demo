@@ -1,6 +1,7 @@
-package com.neucore.neulink.extend.auth;
+package com.neucore.neusdk_demo.neulink.extend.auth.response;
 
 import com.neucore.neulink.impl.CmdRes;
+import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthActionResult;
 
 public class AuthSyncCmdRes extends CmdRes {
 

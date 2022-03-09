@@ -15,6 +15,7 @@ public class Cmd {
         this.cmdStr = cmdStr;
     }
 
+    @SerializedName("time_stamp")
     private long reqtime;
 
     public long getReqtime() {

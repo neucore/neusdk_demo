@@ -1,4 +1,4 @@
-package com.neucore.neulink.extend.auth;
+package com.neucore.neusdk_demo.neulink.extend.auth;
 
 import android.content.Context;
 
@@ -6,6 +6,9 @@ import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
+import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthSyncCmdRes;
 
 /**
  * 设备授权下发

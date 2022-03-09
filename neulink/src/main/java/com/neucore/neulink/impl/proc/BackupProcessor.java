@@ -72,7 +72,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     }
 
     @Override
-    protected ICmdListener<QueryResult,BackupCmd> getListener() {
+    protected ICmdListener getListener() {
         return ListenerFactory.getInstance().getBackupListener();
     }
 }
