@@ -1,13 +1,11 @@
-package com.neucore.neusdk_demo.neulink.extend.auth.response;
+package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AuthResult {
+public class DeviceResult {
     private String mode;
-    @SerializedName("user_id")
-    private String userId;
-    @SerializedName("unlock_device")
-    private String unlockDevice;
+    @SerializedName("device_id")
+    private String deviceId;
     private Integer code;
     @SerializedName("msg")
     private String message;
@@ -20,20 +18,12 @@ public class AuthResult {
         this.mode = mode;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUnlockDevice() {
-        return unlockDevice;
-    }
-
-    public void setUnlockDevice(String unlockDevice) {
-        this.unlockDevice = unlockDevice;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public Integer getCode() {

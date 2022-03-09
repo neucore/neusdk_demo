@@ -196,74 +196,76 @@ NeulinkService.getInstance().destroy();
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
-topic：rrpc/req/${dev_id}/Hello/v1.0/${req_no}[/${md5}]；
-processor：包名com.neucore.neulink.extend.impl；类命名为HelloProcessor;
+topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
+processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ```
 
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthSyncCmdRes;
 
 /**
  * 设备授权下发
- * HelloCmd:请求对象，
- * HelloCmdRes：响应对象
- * String:actionListener的返回类型
+ * AuthSyncCmd:请求对象，
+ * AuthSyncCmdRes：响应对象
+ * AuthActionResult:actionListener的返回类型
  */
-public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
+public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, AuthActionResult> {
 
-    public HelloProcessor(){
+    public AuthProcessor(){
         this(ContextHolder.getInstance().getContext());
     }
 
-    public HelloProcessor(Context context) {
+    public AuthProcessor(Context context) {
         super(context);
     }
 
     @Override
-    public HelloCmd parser(String payload) {
-        return (HelloCmd) JSonUtils.toObject(payload, HelloCmd.class);
+    public AuthSyncCmd parser(String payload) {
+        return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
     }
 
     /**
      *
      * @param t 同步请求
-     * @param result listener.doAction 的返回值即响应协议的data部分
+     * @param result listener.doAction 的返回值
      * @return
      */
     @Override
-    protected HelloCmdRes responseWrapper(HelloCmd t, String result) {
-        HelloCmdRes res = new HelloCmdRes();
+    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(200);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(result);
         res.setMsg("成功");
         return res;
     }
 
     @Override
-    protected HelloCmdRes fail(HelloCmd t, String error) {
-        HelloCmdRes res = new HelloCmdRes();
+    protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
     }
 
     @Override
-    protected HelloCmdRes fail(HelloCmd t, int code, String error) {
-        HelloCmdRes res = new HelloCmdRes();
+    protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
+        AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getSN());
+        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
@@ -273,23 +275,139 @@ public class HelloProcessor  extends GProcessor<HelloCmd, HelloCmdRes,String> {
 
 ```
 
-3，定义xxxCmdListener实现ICmdListener;eg:HelloCmdListener
-备注：切记！！！
-上面listener 的doAction 返回值是 响应协议的data部分
+3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
+
+### 备注：切记 listener 的doAction 返回值是 响应协议的data部分
 
 ```
-package com.neucore.neusdk_demo.neulink.extend.hello;
-
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.LinkResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
 
-public class HelloCmdListener implements ICmdListener<String> {
+/**
+ * 协议可以参考：授权下发 https://project.neucore.com/zentao/doc-view-82.html
+ */
+public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncCmd> {
     @Override
-    public String doAction(NeulinkEvent event) {
-        return "hello";
+    public AuthActionResult/*Auth Action 返回处理结果*/ doAction(NeulinkEvent<AuthSyncCmd/*授权指令*/> event) {
+        AuthSyncCmd cmd = event.getSource();
+        /**
+         * @TODO: 实现业务。。。
+         */
+        DeviceResult deviceResult = new DeviceResult();/*@TODO: 构造返回结果*/
+        DomainResult domainResult = new DomainResult();/*@TODO: 构造返回结果*/
+        LinkResult linkResult = new LinkResult();/*@TODO: 构造返回结果*/
+        AuthItemResult authItemResult = new AuthItemResult();/*@TODO: 构造返回结果*/
+        AuthActionResult result = new AuthActionResult();/*@TODO: 构造返回结果*/
+        /**
+         * @TODO: 构造返回结果
+         */
+        result.add(deviceResult);
+        result.add(domainResult);
+        result.add(linkResult);
+        result.add(authItemResult);
+        return result;
     }
 }
 ```
+
+4, listener 的doAction 返回值 AuthActionResult
+
+```
+import com.google.gson.annotations.SerializedName;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.LinkResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AuthActionResult {
+
+    @SerializedName("device")
+    private List<DeviceResult> devices;
+    @SerializedName("domain")
+    private List<DomainResult> domains;
+    @SerializedName("link")
+    private List<LinkResult> links;
+    @SerializedName("auth")
+    private List<AuthItemResult> authItems;
+
+    public List<DeviceResult> getDevices() {
+        return devices;
+    }
+
+    public void add(DeviceResult result){
+        if(result!=null && getDevices()==null){
+            devices = new ArrayList<>();
+        }
+        if(result!=null ){
+            devices.add(result);
+        }
+    }
+
+    public void setDevices(List<DeviceResult> devices) {
+        this.devices = devices;
+    }
+
+    public List<DomainResult> getDomains() {
+        return domains;
+    }
+
+    public void add(DomainResult result){
+        if(result!=null && getDomains()==null){
+            domains = new ArrayList<>();
+        }
+        if(result!=null ){
+            domains.add(result);
+        }
+    }
+
+    public void setDomains(List<DomainResult> domains) {
+        this.domains = domains;
+    }
+
+    public List<LinkResult> getLinks() {
+        return links;
+    }
+
+    public void add(LinkResult result){
+        if(result!=null && getLinks()==null){
+            links = new ArrayList<>();
+        }
+        if(result!=null ){
+            links.add(result);
+        }
+    }
+
+    public void setLinks(List<LinkResult> links) {
+        this.links = links;
+    }
+
+    public List<AuthItemResult> getAuthItems() {
+        return authItems;
+    }
+
+    public void add(AuthItemResult result){
+        if(result!=null && getAuthItems()==null){
+            authItems = new ArrayList<>();
+        }
+        if(result!=null ){
+            authItems.add(result);
+        }
+    }
+    public void setAuthItems(List<AuthItemResult> authItems) {
+        this.authItems = authItems;
+    }
+}
+```
+
 
 
 ## 扩展-通用业务集成
@@ -375,9 +493,9 @@ public class HelloCmdListener implements ICmdListener<String> {
             /**
              * 自定义Processor注册
              * 框架已经实现消息的接收及响应处理机制
-             * 新业务可以参考Hello业务的实现业务就行
+             * 新业务可以参考Auth业务的实现业务就行
              */
-            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
+            NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
         }
     };
 
