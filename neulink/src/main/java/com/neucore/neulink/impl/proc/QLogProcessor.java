@@ -78,34 +78,6 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
         catch (Exception e){
 
         }
-//        long count = messageDaoUtils.countByReqtime(start,end);
-//
-//        int page = (int) (count/200);
-//        int mod = (int) (count%200);
-//        if(mod>0){
-//            page=page+1;
-//        }
-//
-//        List<String> urls = new ArrayList<String>();
-//        List<String> md5s = new ArrayList<String>();
-//
-//        if(page>0){
-//            for(int i=1;i<page+1;i++){
-//                List<Message> messageList = messageDaoUtils.queryReqtime(start,end,i);
-//                Message[] msgArray = new Message[messageList.size()];
-//                messageList.toArray(msgArray);
-//                File localFile = store(topic,"logs",i,msgArray);
-//                String md5 = MD5Utils.getInstance().getMD5File(localFile.getAbsolutePath());
-//                String url = StorageFactory.getInstance().uploadLog(localFile.getAbsolutePath(),ServiceFactory.getInstance().getDeviceService().getSN(), RequestContext.getId(),(i+1));
-//                md5s.add(md5);
-//                urls.add(url);
-//                localFile.delete();
-//            }
-//            result.setOffset(1);
-//            result.setUrl(urls.get(0));
-//            result.setMd5(md5s.get(0));
-//        }
-//        result.setPages(page);
 
         return result;
     }

@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.cmd.rmsg.HibrateCmd;
+import com.neucore.neulink.cmd.rmsg.HibrateRes;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
@@ -18,20 +20,20 @@ import com.neucore.neulink.util.JSonUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,String>> {
+public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes,Map<String,String>> {
 
     @SuppressLint("InvalidWakeLockTag")
     public HibrateProcessor(Context context){
         super(context);
     }
     @Override
-    public Map<String,String> process(NeulinkTopicParser.Topic topic, ArgCmd cmd) {
+    public Map<String,String> process(NeulinkTopicParser.Topic topic, HibrateCmd cmd) {
         try {
-            ICmdListener<Result,ArgCmd> listener = getListener();
+            ICmdListener<Result,HibrateCmd> listener = getListener();
             if(listener==null){
                 throw new NeulinkException(404,"Hibrate Listener does not implemention");
             }
-            listener.doAction(new NeulinkEvent<ArgCmd>(cmd));
+            listener.doAction(new NeulinkEvent<HibrateCmd>(cmd));
             return new HashMap<String,String>();
         }
         catch (NeulinkException ex){
@@ -43,13 +45,13 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     }
 
     @Override
-    public ArgCmd parser(String payload) {
-        return (ArgCmd) JSonUtils.toObject(payload, ArgCmd.class);
+    public HibrateCmd parser(String payload) {
+        return (HibrateCmd) JSonUtils.toObject(payload, HibrateCmd.class);
     }
 
     @Override
-    protected CmdRes responseWrapper(ArgCmd cmd, Map<String, String> result) {
-        CmdRes res = new CmdRes();
+    protected HibrateRes responseWrapper(HibrateCmd cmd, Map<String, String> result) {
+        HibrateRes res = new HibrateRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(200);
@@ -58,8 +60,8 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     }
 
     @Override
-    protected CmdRes fail(ArgCmd cmd, String error) {
-        CmdRes res = new CmdRes();
+    protected HibrateRes fail(HibrateCmd cmd, String error) {
+        HibrateRes res = new HibrateRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(500);
@@ -68,8 +70,8 @@ public class HibrateProcessor extends GProcessor<ArgCmd, CmdRes,Map<String,Strin
     }
 
     @Override
-    protected CmdRes fail(ArgCmd cmd,int code, String error) {
-        CmdRes res = new CmdRes();
+    protected HibrateRes fail(HibrateCmd cmd,int code, String error) {
+        HibrateRes res = new HibrateRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);

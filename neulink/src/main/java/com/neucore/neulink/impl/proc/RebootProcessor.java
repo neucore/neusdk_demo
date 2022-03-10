@@ -37,7 +37,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
 
     @Override
     public RebootCmd parser(String payload) {
-        return (RebootCmd) JSonUtils.toObject(payload, ArgCmd.class);
+        return (RebootCmd) JSonUtils.toObject(payload, RebootCmd.class);
     }
 
     @Override
