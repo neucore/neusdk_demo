@@ -85,6 +85,7 @@ public class Register {
     /**
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
      */
+    boolean logined = false;
     void regist() {
         new Thread(){
             public void run(){
@@ -93,38 +94,48 @@ public class Register {
                     if(!service.getMqttConnSuccessed()){
                         service.connect();
                     }
-                    if(service.getMqttConnSuccessed()){
-                        ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
-                        if(loginCallback!=null){
-                            String token = loginCallback.login();
-                            if(ObjectUtil.isNotEmpty(token)){
-                                NeulinkSecurity.getInstance().setToken(token);
-                                IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
-                                DeviceInfo deviceInfo = deviceService.getInfo();
-                                if(ObjectUtil.isEmpty(deviceInfo)){
-                                    throw new RuntimeException("设备服务 getInfo没有实现。。。");
+                    int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+                    if(service.getMqttConnSuccessed()) {
+                        if(channel==1){
+                            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
+                            if(loginCallback!=null) {
+                                String token = loginCallback.login();
+                                if(ObjectUtil.isEmpty(token)){
+                                    Log.i(TAG,"token非法。。。");
                                 }
-                                String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
-                                deviceInfo.setDeviceId(devId);
+                                else{
+                                    logined = true;
+                                    NeulinkSecurity.getInstance().setToken(token);
+                                }
+                            }
+                            else{
+                                Log.i(TAG,"没有实现ILoginCallback。。。");
+                            }
+                        }
+                    }
 
-                                String payload = JSonUtils.toString(deviceInfo);
-                                String devinfo_topic = "msg/req/devinfo";
-                                service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
-                                registed = true;
-                            }
-                            else {
-                                Log.i(TAG,"token非法。。。");
-                            }
+                    if(!service.getMqttConnSuccessed() || (channel==1 && logined==false)){
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
                         }
-                        else{
-                            Log.i(TAG,"没有实现ILoginCallback。。。");
-                        }
+                        continue;
                     }
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
+
+                    IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+                    DeviceInfo deviceInfo = deviceService.getInfo();
+                    if(ObjectUtil.isEmpty(deviceInfo)){
+                        throw new RuntimeException("设备服务 getInfo没有实现。。。");
                     }
+                    String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
+                    deviceInfo.setDeviceId(devId);
+
+                    String payload = JSonUtils.toString(deviceInfo);
+                    String devinfo_topic = "msg/req/devinfo";
+                    service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+                    registed = true;
                 }
+
             }
         }.start();
 

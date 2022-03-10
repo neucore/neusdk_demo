@@ -376,11 +376,9 @@ public class NeulinkService {
                 mqttConnSuccessed = true;
                 Log.i(TAG, "connectComplete ");
                 reentrantLock.lock();
-                if(reconnect){
-                    subscriberFacde.subAll();
-                    publishConnect(1);
-                    Log.d(TAG, "Server:" + defaultServerUri + " ,connectComplete reconnect:" + reconnect);
-                }
+                subscriberFacde.subAll();
+                publishConnect(1);
+                Log.d(TAG, "Server:" + defaultServerUri + " ,connectComplete reconnect:" + reconnect);
             }
             finally {
                 reentrantLock.unlock();
