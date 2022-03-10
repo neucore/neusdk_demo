@@ -1,7 +1,5 @@
 # neulink 开发使用手册
 
-# neulink集成及扩展开发使用说明
-
 ## 描述
 
 neulink sdk已经完成了mqtt网络的连接、断网重连机制；
