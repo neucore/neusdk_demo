@@ -53,8 +53,9 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     <uses-permission android:name="android.permission.INTERNET"/>
   
     ```
-+ 代码调用    
-    neulink集成参考MyApplication
+## neulink集成
+
+参照：MyApplication内installSDK()方法；
 
 ## neulink服务退出
 
@@ -196,7 +197,7 @@ NeulinkService.getInstance().destroy();
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
 eg：授权处理器
-topic：rrpc/req/${dev_id}/auth/v1.0/${req_no}[/${md5}]；
+topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ```
