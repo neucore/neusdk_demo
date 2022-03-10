@@ -48,8 +48,6 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
     ```
 
-    <!-- Mqtt Service -->
-    <service android:name="org.eclipse.paho.android.service.MqttService" />
     <!-- Log Service -->
     <service android:name="com.neucore.neulink.impl.LogService" />
 
