@@ -72,4 +72,38 @@ public class ShellExecutor {
         }
         return response;
     }
+
+    //OTA APP升级
+    public static synchronized Map<String,String> execute(Context context,String cmd) {
+        Map<String,String> response = new HashMap<String,String>();
+        try {
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            StringBuilder successMsg = new StringBuilder();
+            StringBuilder errorMsg = new StringBuilder();
+            BufferedReader successResultBuffer = new BufferedReader(new InputStreamReader(process.getInputStream(),"GBK"));
+            BufferedReader errorResultBuffer = new BufferedReader(new InputStreamReader(process.getErrorStream(),"GBK"));
+            String s = null;
+            while ((s = successResultBuffer.readLine()) != null) {
+                successMsg.append(s);
+                successMsg.append(System.lineSeparator());
+            }
+
+            while ((s = errorResultBuffer.readLine()) != null) {
+                errorMsg.append(s);
+                errorMsg.append(System.lineSeparator());
+            }
+            if(errorMsg.length()>0){
+                response.put("stdout",errorMsg.toString());
+            }
+            else{
+                response.put("stdout",successMsg.toString());
+            }
+            response.put("shellRet",String.valueOf(process.exitValue()));
+
+        } catch (Exception e) {
+            response.put("stdout",e.getMessage());
+        }
+        return response;
+    }
 }

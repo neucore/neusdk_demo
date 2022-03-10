@@ -23,17 +23,13 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
         String[] cmds = null;
         Map<String, String> result = null;
         try {
-            String[] cmdA = cmd.toArrays();
-            return ShellExecutor.run(this.getContext(), cmdA);
+            String cmdA = cmd.toString();
+            return ShellExecutor.execute(this.getContext(), cmdA);
         }
         catch (Throwable ex){
             throw new RuntimeException(ex);
         }
     }
-
-//    protected String getStatus(){
-//        return Message.STATUS_SUCCESS;
-//    }
 
     @Override
     public ShellCmd parser(String payload) {
