@@ -75,6 +75,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
                 }
                 long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
                 req = parser(payload);
+                req.setReqId(topic.getReqId());
                 req.setReqtime(reqTime);
                 T result = process(topic, req);
                 Res res = responseWrapper(req, result);

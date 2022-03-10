@@ -7,6 +7,16 @@ public class Cmd {
     @SerializedName("mode")
     protected String cmdStr;
 
+    private String reqId;
+
+    public String getReqId() {
+        return reqId;
+    }
+
+    public void setReqId(String reqId) {
+        this.reqId = reqId;
+    }
+
     public String getCmdStr() {
         return cmdStr;
     }
