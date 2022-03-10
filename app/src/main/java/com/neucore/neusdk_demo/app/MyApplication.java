@@ -14,13 +14,11 @@ import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SubApp;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
-import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neusdk_demo.db.MessageService;
 import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.ApkUpgrdActionListener;
@@ -33,8 +31,9 @@ import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
-import com.neucore.neusdk_demo.neulink.extend.hello.HelloCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
+
+import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
+import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -443,9 +442,9 @@ public class MyApplication extends Application
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Hello业务的实现业务就行
              */
-            NeulinkProcessorFactory.regist("hello",new HelloProcessor(),new HelloCmdListener());
-
             NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
+
+            NeulinkProcessorFactory.regist("binding",new BindProcessor(),new BindCmdListener());
         }
     };
 }
