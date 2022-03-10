@@ -141,6 +141,10 @@ public class MyApplication extends Application
          */
         connector.setUserService(userService);
         /**
+         * neulink消息线性处理存储服务
+         */
+        connector.setMessageService(null);
+        /**
          * 开始连接
          */
         connector.start();
@@ -433,11 +437,6 @@ public class MyApplication extends Application
              * 备份实现
              */
             ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
-
-            /**
-             * neulink消息线性处理存储服务
-             */
-            ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
 
             /**
              * 自定义Processor注册
