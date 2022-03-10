@@ -3,12 +3,15 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ServiceFactory;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
+
+import java.util.List;
 
 /**
  * 终端消费者
@@ -95,13 +98,16 @@ public class NeulinkSubscriberFacde {
 
             MqttReceivedMessage receivedMessage = (MqttReceivedMessage)message;
 
-            int messageId = receivedMessage.getMessageId();
-            String detailLog = topic + ";qos:" + receivedMessage.getQos() + ";retained:" + receivedMessage.isRetained() + ",messageId:"+messageId;
             String msgContent = new String(receivedMessage.getPayload());
 
-            Log.i(TAG, detailLog);
-
-            Log.i(TAG, "messageArrived:" + msgContent);
+            List<IMqttCallBack>  mqttCallBacks = service.getMqttCallBacks();
+            if (mqttCallBacks != null) {
+                if (mqttCallBacks != null) {
+                    for (IMqttCallBack callback: mqttCallBacks) {
+                        callback.messageArrived(topic, msgContent, receivedMessage.getQos());
+                    }
+                }
+            }
         }
     };
 }
