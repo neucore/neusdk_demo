@@ -365,6 +365,10 @@ public class NeulinkService {
         }
     };
 
+    public List<IMqttCallBack> getMqttCallBacks() {
+        return mqttCallBacks;
+    }
+
     // MQTT监听并且接受消息
     private MqttCallback mqttCallback = new MqttCallbackExtended() {
 

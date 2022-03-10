@@ -224,7 +224,7 @@ public class MyApplication extends Application
             /**
              * 需要获取设备唯一标识【自定义，eg：YekerID】
              */
-            return "0BLB11Y202080404200100000002";//DeviceUtils.getCPUSN(getContext());
+            return DeviceUtils.getCPUSN(getContext());
         }
 
         @Override

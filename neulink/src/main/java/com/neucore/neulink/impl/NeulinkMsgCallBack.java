@@ -35,8 +35,10 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
 
-        IProcessor processor = NeulinkProcessorFactory.build(context,topic);
         Log.d(TAG,"start topic:"+ topicStr+",message:"+message);
+
+        IProcessor processor = NeulinkProcessorFactory.build(context,topic);
+
         try {
             if(processor!=null){
                 processor.execute(topic,message);
