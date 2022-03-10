@@ -18,10 +18,32 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
     拷贝neulink.jar 放到 app/libs目录下
     
+## 依赖库
+```
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'com.lzy.net:okgo:3.0.4'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc4'
+    implementation 'com.qianwen:okhttp-utils:3.8.0'
+    implementation 'com.qianwen:update-app:3.5.2'//实现自我更新
+    implementation 'commons-net:commons-net:3.8.0'
+    implementation 'cn.hutool:hutool-all:5.6.0'
+    implementation 'org.greenrobot:greendao:3.3.0' // add library
+```   
+    
 ## 集成&扩展
 
 ### 集成
-+ 配置文件
+
+#### 配置
     服务注册【AndroidManifest.xml】
 
     在AndroidManifest.xml中添加下列内容
@@ -53,11 +75,11 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     <uses-permission android:name="android.permission.INTERNET"/>
   
     ```
-## neulink集成
+#### 代码集成
 
 参照：MyApplication内installSDK()方法；
 
-## neulink服务退出
+#### neulink服务退出
 
 ```
 
@@ -65,7 +87,9 @@ NeulinkService.getInstance().destroy();
 
 ```
 
-## 扩展-HTTP安全登录
+### 扩展
+
+#### 扩展-HTTP安全登录
 ```
     /**
      * HTTP(S)安全登录 loginCallback
@@ -82,7 +106,7 @@ NeulinkService.getInstance().destroy();
 
 ```
 
-## 扩展-MQTT联网状态
+#### 扩展-MQTT联网状态
 
 ```
     /**
@@ -134,7 +158,7 @@ NeulinkService.getInstance().destroy();
 
 ```
 
-## 扩展-设备服务
+#### 扩展-设备服务
 ```
     /**
      * 设备服务扩展
@@ -163,7 +187,7 @@ NeulinkService.getInstance().destroy();
     };
 ```
     
-## 扩展-设备信息上报
+#### 扩展-设备信息上报
 ```
     /**
      * 设备信息上报扩展
@@ -188,7 +212,7 @@ NeulinkService.getInstance().destroy();
     
 ```
 
-## 扩展-通用业务开发
+#### 扩展-通用业务开发
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
@@ -278,7 +302,9 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 
 3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
-### 备注：切记 listener 的doAction 返回值是 响应协议的data部分
+#### 注意事项
+
+切记 listener 的doAction 返回值是 响应协议的data部分
 
 ```
 import com.neucore.neulink.ICmdListener;
@@ -411,7 +437,7 @@ public class AuthActionResult {
 
 
 
-## 扩展-通用业务集成
+#### 扩展业务集成
 
 参照：MyApplication内installSDK()方法；
 
@@ -503,7 +529,7 @@ public class AuthActionResult {
 ```
 
 
-## 发送消息到云端
+### 上报消息到云端
 
 0，在NeulinkPublisherFacde中实现
 
