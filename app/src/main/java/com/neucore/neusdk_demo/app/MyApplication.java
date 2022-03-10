@@ -95,7 +95,7 @@ public class MyApplication extends Application
         /**
          * 设置设备端2Cloud的通信通道；默认为mqtt
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
         /**
          * 30分钟
          */
