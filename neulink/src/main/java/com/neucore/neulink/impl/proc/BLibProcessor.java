@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.Result;
@@ -350,7 +351,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getFaceListener();
+        throw new NeulinkException(503,"该方法不能用。。。请直接调用ListenerFactory.getInstance().getFaceListener()");
     }
 
     public static void main(String[] args) throws Exception{

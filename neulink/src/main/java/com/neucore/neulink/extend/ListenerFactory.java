@@ -28,11 +28,11 @@ import java.util.Map;
 public class ListenerFactory {
     private String TAG = NeulinkConst.TAG_PREFIX+"ListenerFactory";
 
-    private ICmdListener<Result,AlogUpgrCmd> alogListener = new ICmdListener<Result, AlogUpgrCmd>() {
+    private ICmdListener<String,AlogUpgrCmd> alogListener = new ICmdListener<String, AlogUpgrCmd>() {
         @Override
-        public Result doAction(NeulinkEvent<AlogUpgrCmd> event) {
+        public String doAction(NeulinkEvent<AlogUpgrCmd> event) {
             Log.i(TAG,"Algorithm upgrade need to by replace ");
-            return new Result();
+            return null;
         }
     };
     private ICmdListener<Result,UpgrCmd> fireware$ApkListener = new ICmdListener<Result, UpgrCmd>() {
@@ -138,7 +138,7 @@ public class ListenerFactory {
         return instance;
     }
 
-    public ICmdListener<Result,AlogUpgrCmd> getAlogListener(){
+    public ICmdListener<String,AlogUpgrCmd> getAlogListener(){
         return alogListener;
     }
 
