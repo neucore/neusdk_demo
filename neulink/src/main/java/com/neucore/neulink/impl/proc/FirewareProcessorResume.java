@@ -46,7 +46,6 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
             /**
              * 发送响应消息给到服务端
              */
-            NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+RequestContext.getId();
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 6);
             downloader.download(new DownloadProgressListener() {

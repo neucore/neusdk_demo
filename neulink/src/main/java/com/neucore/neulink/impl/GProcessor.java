@@ -50,7 +50,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
          * 发送响应消息给到服务端
          */
         NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
-
         //检查当前请求是否已经已经到达过
         synchronized (lock){
             msg = query(topic.getReqId());
