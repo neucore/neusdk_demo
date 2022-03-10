@@ -95,7 +95,7 @@ public class MyApplication extends Application
         /**
          * 设置设备端2Cloud的通信通道；默认为mqtt
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         /**
          * 30分钟
          */
@@ -224,7 +224,7 @@ public class MyApplication extends Application
             /**
              * 需要获取设备唯一标识【自定义，eg：YekerID】
              */
-            return DeviceUtils.getCPUSN(getContext());
+            return "0BLB11Y202080404200100000002";//DeviceUtils.getCPUSN(getContext());
         }
 
         @Override
