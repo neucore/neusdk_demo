@@ -318,7 +318,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				return responseData;
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"下载"+url+"失败：",ex);
+				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}

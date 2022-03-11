@@ -394,7 +394,7 @@ public class MyApplication extends Application
             /**
              * 实现登录返回token
              */
-            return null;
+            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0NzIyODMyMywiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjI4MGJhZjlmLTg0NzctNDM2My1iMzczLTcxYzJjNTRlZWY5MCIsImNsaWVudF9pZCI6ImdlbWluaSJ9.OBx1QJKBXr5IMIucvfejFu7IquHngWXgSh0UfwC4Jo4";
         }
     };
 

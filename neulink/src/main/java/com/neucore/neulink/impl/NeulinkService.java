@@ -255,12 +255,13 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * 设备端2cloud
                  */
+                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
+                neulinkServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,neulinkServer);
                 Log.d(TAG,"upload2cloud with http");
                 Boolean done = false;
                 int count = 0;
                 while(!done && count<3){
                     try {
-                        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
                         Log.d(TAG,topStr);
                         String topic = URLEncoder.encode(topStr,"UTF-8");
                         String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
