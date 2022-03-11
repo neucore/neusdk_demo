@@ -1,6 +1,8 @@
 package com.neucore.neulink.cmd.rrpc;
 
-public class QResult {
+import com.neucore.neulink.extend.ActionResult;
+
+public class QResult extends ActionResult {
 
     private String objtype;
 

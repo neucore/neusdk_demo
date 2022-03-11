@@ -9,7 +9,7 @@ import com.neucore.neulink.cmd.bak.BackupCmdRes;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -17,21 +17,22 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> implements NeulinkConst {
+public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryActionResult<Map<String,String>>> implements NeulinkConst {
 
     public BackupProcessor(Context context) {
         super(context);
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, BackupCmd payload) {
+    public QueryActionResult<Map<String,String>> process(NeulinkTopicParser.Topic topic, BackupCmd payload) {
         NeulinkEvent event = new NeulinkEvent(payload);
-        ICmdListener<QueryResult,BackupCmd> listener = getListener();
+        ICmdListener<QueryActionResult,BackupCmd> listener = getListener();
         if(listener==null){
             throw new NeulinkException(STATUS_404,"backup Listener does not implemention");
         }
-        QueryResult<Map<String,String>> result = listener.doAction(event);
-        return result.getData().get("url");
+        QueryActionResult<Map<String,String>> result = listener.doAction(event);
+
+        return result;
     }
 
     @Override
@@ -40,13 +41,13 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
     }
 
     @Override
-    protected BackupCmdRes responseWrapper(BackupCmd cmd, String result) {
+    protected BackupCmdRes responseWrapper(BackupCmd cmd, QueryActionResult<Map<String,String>> result) {
         BackupCmdRes cmdRes = new BackupCmdRes();
         cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_200);
         cmdRes.setMsg(MESSAGE_SUCCESS);
-        cmdRes.setUrl(result);
+        cmdRes.setUrl(result.getData().get("url"));
         cmdRes.setMd5("fdafdsa");
         return cmdRes;
     }

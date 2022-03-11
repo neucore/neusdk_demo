@@ -7,6 +7,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkService;
@@ -26,15 +27,15 @@ import java.util.Map;
  * NeuSDK升级/或者固件升级
  * @deprecated
  */
-public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> {
+public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes, ActionResult<String>> {
 
     public FirewareProcessor(Context context){
         super(context);
     }
     @Override
-    public String process(NeulinkTopicParser.Topic topic, UgrdeCmd cmd) {
+    public ActionResult<String> process(NeulinkTopicParser.Topic topic, UgrdeCmd cmd) {
         String[] cmds = null;
-        Map<String, String> result = null;
+//        Map<String, String> result = null;
         File srcFile = null;
         try {
             String upgrade_url = cmd.getUrl();
@@ -59,7 +60,9 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
 
             cmd.setLocalFile(srcFile);
             listener.doAction(new NeulinkEvent(cmd));
-            return MESSAGE_SUCCESS;
+            ActionResult<String> result = new ActionResult<>();
+            result.setData(MESSAGE_SUCCESS);
+            return result;
         }
         catch (NeulinkException ex){
             throw ex;
@@ -81,7 +84,7 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes,String> 
     }
 
     @Override
-    protected UgrdeCmdRes responseWrapper(UgrdeCmd cmd, String result) {
+    protected UgrdeCmdRes responseWrapper(UgrdeCmd cmd, ActionResult<String> result) {
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());

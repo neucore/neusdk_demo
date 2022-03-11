@@ -5,12 +5,12 @@ import com.neucore.neulink.cmd.cfg.CfgCmd;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.Result;
 
-public class CfgActionListener implements ICmdListener<Result,CfgCmd>, NeulinkConst {
+public class CfgActionListener implements ICmdListener<ActionResult,CfgCmd>, NeulinkConst {
     @Override
-    public Result doAction(NeulinkEvent<CfgCmd> event) {
+    public ActionResult doAction(NeulinkEvent<CfgCmd> event) {
         CfgCmd cmd = event.getSource();
         CfgItem[] items = cmd.getData();
         int size = items==null?0:items.length;
@@ -27,6 +27,6 @@ public class CfgActionListener implements ICmdListener<Result,CfgCmd>, NeulinkCo
         else if("sync".equalsIgnoreCase(cmd.getCmdStr())){
             ConfigContext.getInstance().sync(items);
         }
-        return new Result();
+        return new ActionResult();
     }
 }

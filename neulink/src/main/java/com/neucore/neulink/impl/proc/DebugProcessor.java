@@ -5,6 +5,7 @@ import android.content.Context;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -14,15 +15,15 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
+public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<String>> {
 
     public DebugProcessor(Context context){
         super(context);
     }
     @Override
-    public String process(NeulinkTopicParser.Topic topic, DebugCmd cmd) {
+    public ActionResult<String> process(NeulinkTopicParser.Topic topic, DebugCmd cmd) {
         String[] cmds = null;
-        Map<String, String> result = null;
+//        Map<String, String> result = null;
         try {
             String[] args = cmd.getArgs();
             if(args==null||args.length==0||(!"on".equalsIgnoreCase(args[0]) && !"off".equalsIgnoreCase(args[0]))){
@@ -34,7 +35,9 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
                 item.setValue(args[0]);
                 CfgItem[] items = new CfgItem[]{item};
                 ConfigContext.getInstance().update(items);
-                return MESSAGE_SUCCESS;
+                ActionResult<String> result = new ActionResult<>();
+                result.setData(MESSAGE_SUCCESS);
+                return result;
             }
         }
         catch (Throwable ex){
@@ -46,12 +49,12 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
         return (DebugCmd) JSonUtils.toObject(payload, DebugCmd.class);
     }
 
-    public DebugRes responseWrapper(DebugCmd cmd, String result) {
+    public DebugRes responseWrapper(DebugCmd cmd, ActionResult<String> result) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
-        res.setMsg(MESSAGE_SUCCESS);
+        res.setMsg(result.getData());
         return res;
     }
 

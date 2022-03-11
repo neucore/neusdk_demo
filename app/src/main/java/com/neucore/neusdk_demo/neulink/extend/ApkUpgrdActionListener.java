@@ -1,16 +1,16 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 
 import java.io.File;
 import java.util.Map;
 
-public class ApkUpgrdActionListener implements ICmdListener<Result,UgrdeCmd> {
+public class ApkUpgrdActionListener implements ICmdListener<ActionResult,UgrdeCmd> {
     @Override
-    public Result doAction(NeulinkEvent<UgrdeCmd> event) {
+    public ActionResult doAction(NeulinkEvent<UgrdeCmd> event) {
         UgrdeCmd cmd = event.getSource();
 
         Map<String,String> argMaps = cmd.argsToMap();
@@ -23,15 +23,15 @@ public class ApkUpgrdActionListener implements ICmdListener<Result,UgrdeCmd> {
          */
         //@TODO apk文件安装
 
-        Result result = new Result();
+        ActionResult actionResult = new ActionResult();
         /**
          * 200表示成功 500：表示错误
          */
-        result.setCode(200);
+        actionResult.setCode(200);
         /**
          * 错误信息
          */
-        result.setMessage("success");
-        return result;
+        actionResult.setMessage("success");
+        return actionResult;
     }
 }

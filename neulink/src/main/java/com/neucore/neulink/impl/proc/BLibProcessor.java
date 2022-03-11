@@ -9,9 +9,9 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.Result;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
-import com.neucore.neulink.extend.UpdateResult;
+import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.IMessage;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -223,7 +223,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             throw e;
         }
         Map images = null;
-        Result<Map<String,Object>> result = null;
+        ActionResult<Map<String,Object>> actionResult = null;
         if(ADD.equalsIgnoreCase(cmd.getCmdStr())||
                 UPDATE.equalsIgnoreCase(cmd.getCmdStr())||
                 SYNC.equalsIgnoreCase(cmd.getCmdStr())){
@@ -241,8 +241,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPayload(params);
             faceCmd.setImageDatas(images);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
-            result = listener.doAction(event);
+            ICmdListener<UpdateActionResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
+            actionResult = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params,images);
         }
         else if(PUSH.equalsIgnoreCase(cmd.getCmdStr())){
@@ -253,8 +253,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
-            result = listener.doAction(event);
+            ICmdListener<UpdateActionResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
+            actionResult = listener.doAction(event);
             //libManagerService.insertOrUpdFacelib(reqTime,params);
         }
         else if(DEL.equalsIgnoreCase(cmd.getCmdStr())){
@@ -265,12 +265,12 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
             faceCmd.setPages(cmd.getPages());
             faceCmd.setPayload(params);
             NeulinkEvent event = new NeulinkEvent(faceCmd);
-            ICmdListener<UpdateResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
-            result = listener.doAction(event);
+            ICmdListener<UpdateActionResult<Map<String,Object>>,FaceCmd> listener = ListenerFactory.getInstance().getFaceListener();
+            actionResult = listener.doAction(event);
             //libManagerService.deleteFacelib(params);
         }
-        if(result!=null){
-            Map<String,Object> temp = result.getData();
+        if(actionResult !=null){
+            Map<String,Object> temp = actionResult.getData();
             if(temp!=null){
                 failed = (List)temp.remove("failed");
             }

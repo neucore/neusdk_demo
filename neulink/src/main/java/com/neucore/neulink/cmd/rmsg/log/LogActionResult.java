@@ -1,8 +1,9 @@
 package com.neucore.neulink.cmd.rmsg.log;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.extend.ActionResult;
 
-public class LogResult {
+public class LogActionResult extends ActionResult {
 
     private int code;
     private String msg;

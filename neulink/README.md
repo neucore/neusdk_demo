@@ -229,7 +229,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthSyncCmdRes;
 
 /**
@@ -256,16 +256,16 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     /**
      *
      * @param t 同步请求
-     * @param result listener.doAction 的返回值
+     * @param actionResult listener.doAction 的返回值
      * @return
      */
     @Override
-    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
+    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult actionResult) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(STATUS_200);
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setData(result);
+        res.setData(actionResult);
         res.setMsg("成功");
         return res;
     }
@@ -305,11 +305,11 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 ```
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.LinkResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthItemResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DeviceResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DomainResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.LinkResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
 
 /**
@@ -326,15 +326,15 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
         DomainResult domainResult = new DomainResult();/*@TODO: 构造返回结果*/
         LinkResult linkResult = new LinkResult();/*@TODO: 构造返回结果*/
         AuthItemResult authItemResult = new AuthItemResult();/*@TODO: 构造返回结果*/
-        AuthActionResult result = new AuthActionResult();/*@TODO: 构造返回结果*/
+        AuthActionResult actionResult = new AuthActionResult();/*@TODO: 构造返回结果*/
         /**
          * @TODO: 构造返回结果
          */
-        result.add(deviceResult);
-        result.add(domainResult);
-        result.add(linkResult);
-        result.add(authItemResult);
-        return result;
+        actionResult.add(deviceResult);
+        actionResult.add(domainResult);
+        actionResult.add(linkResult);
+        actionResult.add(authItemResult);
+        return actionResult;
     }
 }
 ```
@@ -343,10 +343,10 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
 
 ```
 import com.google.gson.annotations.SerializedName;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.LinkResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthItemResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DeviceResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DomainResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.LinkResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -366,12 +366,12 @@ public class AuthActionResult {
         return devices;
     }
 
-    public void add(DeviceResult result){
-        if(result!=null && getDevices()==null){
+    public void add(DeviceResult actionResult){
+        if(actionResult!=null && getDevices()==null){
             devices = new ArrayList<>();
         }
-        if(result!=null ){
-            devices.add(result);
+        if(actionResult!=null ){
+            devices.add(actionResult);
         }
     }
 
@@ -383,12 +383,12 @@ public class AuthActionResult {
         return domains;
     }
 
-    public void add(DomainResult result){
-        if(result!=null && getDomains()==null){
+    public void add(DomainResult actionResult){
+        if(actionResult!=null && getDomains()==null){
             domains = new ArrayList<>();
         }
-        if(result!=null ){
-            domains.add(result);
+        if(actionResult!=null ){
+            domains.add(actionResult);
         }
     }
 
@@ -400,12 +400,12 @@ public class AuthActionResult {
         return links;
     }
 
-    public void add(LinkResult result){
-        if(result!=null && getLinks()==null){
+    public void add(LinkResult actionResult){
+        if(actionResult!=null && getLinks()==null){
             links = new ArrayList<>();
         }
-        if(result!=null ){
-            links.add(result);
+        if(actionResult!=null ){
+            links.add(actionResult);
         }
     }
 
@@ -417,12 +417,12 @@ public class AuthActionResult {
         return authItems;
     }
 
-    public void add(AuthItemResult result){
-        if(result!=null && getAuthItems()==null){
+    public void add(AuthItemResult actionResult){
+        if(actionResult!=null && getAuthItems()==null){
             authItems = new ArrayList<>();
         }
-        if(result!=null ){
-            authItems.add(result);
+        if(actionResult!=null ){
+            authItems.add(actionResult);
         }
     }
     public void setAuthItems(List<AuthItemResult> authItems) {

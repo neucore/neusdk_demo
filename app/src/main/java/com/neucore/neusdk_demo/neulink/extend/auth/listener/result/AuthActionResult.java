@@ -1,6 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
@@ -9,7 +10,7 @@ import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.LinkResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthActionResult {
+public class AuthActionResult extends ActionResult {
 
     @SerializedName("device")
     private List<DeviceResult> devices;

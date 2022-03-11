@@ -1,20 +1,17 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
-import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupCmd;
 import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.extend.StorageFactory;
-import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
-import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 import com.neucore.neusdk_demo.db.DaoManager;
 
@@ -24,9 +21,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackupActionListener implements ICmdListener<QueryResult, BackupCmd>, NeulinkConst {
+public class BackupActionListener implements ICmdListener<QueryActionResult, BackupCmd>, NeulinkConst {
     @Override
-    public QueryResult doAction(NeulinkEvent<BackupCmd> event) {
+    public QueryActionResult doAction(NeulinkEvent<BackupCmd> event) {
         /**
          *
          */
@@ -39,7 +36,7 @@ public class BackupActionListener implements ICmdListener<QueryResult, BackupCmd
          */
         String backUrl = doBackup(backups);
 
-        QueryResult result = new QueryResult();
+        QueryActionResult result = new QueryActionResult();
         /**
          * 200表示成功 500：表示错误
          */

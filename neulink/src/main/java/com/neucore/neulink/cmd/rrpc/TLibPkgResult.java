@@ -1,6 +1,8 @@
 package com.neucore.neulink.cmd.rrpc;
 
-public class TLibPkgResult {
+import com.neucore.neulink.util.IActionResult;
+
+public class TLibPkgResult implements IActionResult {
 
     private int code;
     private String msg;

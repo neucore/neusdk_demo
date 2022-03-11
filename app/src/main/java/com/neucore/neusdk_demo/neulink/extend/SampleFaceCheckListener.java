@@ -3,7 +3,7 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.cmd.check.CheckCmd;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neusdk_demo.db.LibManagerService;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class SampleFaceCheckListener implements ICmdListener<QueryResult,CheckCmd> {
+public class SampleFaceCheckListener implements ICmdListener<QueryActionResult,CheckCmd> {
     private LibManagerService libManagerService;
     private String TAG = "SampleFaceCheckListener";
     public SampleFaceCheckListener(){
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
     }
     @Override
-    public QueryResult doAction(NeulinkEvent<CheckCmd> event) {
+    public QueryActionResult doAction(NeulinkEvent<CheckCmd> event) {
 
         CheckCmd faceCmd = event.getSource();
         String md5Cloud = faceCmd.getMd5();
@@ -56,7 +56,7 @@ public class SampleFaceCheckListener implements ICmdListener<QueryResult,CheckCm
             }
             i++;
         }
-        QueryResult result = new QueryResult();
+        QueryActionResult result = new QueryActionResult();
 
         String cardIdStr;
 
