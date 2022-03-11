@@ -16,7 +16,7 @@ import com.neucore.neulink.util.ContextHolder;
 
 public class OSSStorage extends AbsStorage implements IStorage {
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"OSSStorage";
+    private String TAG = TAG_PREFIX+"OSSStorage";
 
     private static OSS getOSSClient() {
         OSSCredentialProvider credentialProvider =

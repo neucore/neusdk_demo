@@ -63,11 +63,11 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
             Log.i(TAG,"存储位置: "+downloader.getSaveFile().getAbsolutePath());
             ICmdListener listener = getListener();
             if(listener==null){
-                throw new NeulinkException(404,"apk Listener does not implemention");
+                throw new NeulinkException(STATUS_404,"apk Listener does not implemention");
             }
             cmd.setLocalFile(srcFile);
             listener.doAction(new NeulinkEvent(cmd));
-            return "success";
+            return MESSAGE_SUCCESS;
         }
         catch (NeulinkException ex){
             throw ex;
@@ -93,8 +93,8 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         return res;
     }
 
@@ -103,7 +103,7 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes,St
         UgrdeCmdRes res = new UgrdeCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

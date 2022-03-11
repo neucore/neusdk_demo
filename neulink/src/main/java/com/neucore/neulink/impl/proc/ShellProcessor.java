@@ -41,8 +41,8 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         res.setStdout(result.get("stdout"));
         res.setShellRet(Integer.valueOf(result.get("shellRet")));
         return res;
@@ -53,7 +53,7 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

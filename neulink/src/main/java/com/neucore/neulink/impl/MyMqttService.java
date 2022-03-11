@@ -19,9 +19,9 @@ import java.util.HashMap;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class MyMqttService {
+public class MyMqttService implements NeulinkConst{
 
-    private final String TAG = NeulinkConst.TAG_PREFIX+"MyMqttService";
+    private final String TAG = TAG_PREFIX+"MyMqttService";
     private boolean canDoConnect = true;
 
     private MqttAsyncClient client;

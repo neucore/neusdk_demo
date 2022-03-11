@@ -40,7 +40,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class BLibSyncCmdListener implements ICmdListener<UpdateResult,BTLibSyncCmd> {
 
-    protected String TAG = NeulinkConst.TAG_PREFIX+this.getClass().getSimpleName();
+    protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
 
     final private String OBJ_TYPE_FACE = "face";
 

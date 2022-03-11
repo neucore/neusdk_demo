@@ -1,6 +1,8 @@
 package com.neucore.neulink;
 
-public interface IStorage {
+import com.neucore.neulink.app.NeulinkConst;
+
+public interface IStorage extends NeulinkConst {
 
     String uploadBak(String path,String requestId,int index);
 

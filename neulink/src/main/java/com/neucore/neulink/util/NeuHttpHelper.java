@@ -33,9 +33,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class NeuHttpHelper{
+public class NeuHttpHelper implements NeulinkConst{
 
-	private static String TAG = NeulinkConst.TAG_PREFIX+"NeuHttpHelper";
+	private static String TAG = TAG_PREFIX+"NeuHttpHelper";
 
 	private static OkHttpClient getClient(){
 		return getClient(5,5);

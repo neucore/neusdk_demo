@@ -8,6 +8,7 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -23,7 +24,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> implements IProcessor {
 
-    protected String TAG = NeulinkConst.TAG_PREFIX+this.getClass().getSimpleName();
+    protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
     private Context context;
     protected Object lock = new Object();
     protected NeulinkTopicParser.Topic topic;
@@ -49,7 +50,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
         /**
          * 发送响应消息给到服务端
          */
-        NeulinkService.getInstance().getPublisherFacde().upldResponse(resTopic,topic.getReqId(),"receive");
+        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),NEULINK_MODE_RECEIVE,topic.getReqId(),STATUS_200,"消息已经接收",null);
         //检查当前请求是否已经已经到达过
         synchronized (lock){
             msg = query(topic.getReqId());
@@ -77,6 +78,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
                 req = parser(payload);
                 req.setReqId(topic.getReqId());
                 req.setReqtime(reqTime);
+                req.setVersion(topic.getVersion());
                 T result = process(topic, req);
                 Res res = responseWrapper(req, result);
                 String jsonStr = JSonUtils.toString(res);
@@ -115,7 +117,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> impleme
 
             ICmdListener<T,Req> listener = getListener();
             if(listener==null){
-                throw new NeulinkException(404,"awaken Listener does not implemention");
+                throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
             }
             T result = listener.doAction(new NeulinkEvent<Req>(cmd));
             return result;

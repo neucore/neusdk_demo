@@ -17,9 +17,9 @@ import com.neucore.neulink.util.NetworkHelper;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class Register {
+public class Register implements NeulinkConst{
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"Register";
+    private String TAG = TAG_PREFIX+"Register";
     private Context context;
     private  NeulinkService service;
     private NeulinkScheduledReport autoReporter = null;

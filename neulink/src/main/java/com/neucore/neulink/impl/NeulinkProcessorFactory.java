@@ -29,10 +29,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-public class NeulinkProcessorFactory {
+public class NeulinkProcessorFactory implements NeulinkConst{
 
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
-    private static String TAG = NeulinkConst.TAG_PREFIX+"ProcessorFactory";
+    private static String TAG = TAG_PREFIX+"ProcessorFactory";
     /**
      *
      * 设备重启 rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0

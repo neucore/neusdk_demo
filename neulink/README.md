@@ -263,7 +263,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
-        res.setCode(200);
+        res.setCode(STATUS_200);
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(result);
         res.setMsg("成功");
@@ -274,7 +274,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");

@@ -65,8 +65,8 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
         TLQueryRes res = new TLQueryRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         res.setTotal(result.getCount());
         res.setPages(result.getPage());
         res.setOffset(result.getOffset());
@@ -80,7 +80,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
         TLQueryRes res = new TLQueryRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

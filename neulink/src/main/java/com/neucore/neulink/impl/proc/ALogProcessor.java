@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -31,10 +32,10 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
             srcFile = NeuHttpHelper.dld2File(this.getContext(), RequestContext.getId(), alog.getUrl());
             ICmdListener listener = getListener();
             if(listener==null){
-                throw new NeulinkException(404,"alog Listener does not implemention");
+                throw new NeulinkException(STATUS_404,"alog Listener does not implemention");
             }
             listener.doAction(new NeulinkEvent(srcFile));
-            return "success";
+            return MESSAGE_SUCCESS;
         }
         catch (NeulinkException ex){
             throw ex;
@@ -55,7 +56,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
     public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, String result) {
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
+        res.setCode(STATUS_200);
         res.setMsg(result);
         res.setVinfo(cmd.getVinfo());
         return res;
@@ -64,7 +65,7 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
     public AlogUpgrRes fail(AlogUpgrCmd cmd, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(message);
         res.setVinfo(cmd.getVinfo());
         return res;

@@ -4,9 +4,8 @@ import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
 
-public class LogUtils
-{
-  private static final String TAG = NeulinkConst.TAG_PREFIX+"LogUtils";
+public class LogUtils implements NeulinkConst{
+  private static final String TAG = TAG_PREFIX+"LogUtils";
   public static boolean isDebug =true;
 
   public static void d(Class<?> paramClass, String paramString)

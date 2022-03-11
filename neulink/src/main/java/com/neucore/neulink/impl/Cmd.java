@@ -17,6 +17,16 @@ public class Cmd {
         this.reqId = reqId;
     }
 
+    private String version;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public String getCmdStr() {
         return cmdStr;
     }

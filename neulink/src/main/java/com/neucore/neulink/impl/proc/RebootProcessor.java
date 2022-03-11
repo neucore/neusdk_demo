@@ -45,8 +45,8 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
         RebootRes res = new RebootRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         return res;
     }
 
@@ -55,7 +55,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
         RebootRes res = new RebootRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

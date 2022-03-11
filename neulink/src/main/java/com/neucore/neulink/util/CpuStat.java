@@ -19,9 +19,9 @@ import java.util.Calendar;
 import java.util.regex.Pattern;
 
 
-public class CpuStat {
+public class CpuStat implements NeulinkConst {
 
-    private static String TAG = NeulinkConst.TAG_PREFIX+"CpuStat";
+    private static String TAG = TAG_PREFIX+"CpuStat";
 
     /** CPU信息文件的路径 */
     public static final String CPUC_INFO_PATH = "/proc/cpuinfo";

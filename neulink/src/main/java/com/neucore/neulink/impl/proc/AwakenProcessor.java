@@ -6,6 +6,7 @@ import android.os.PowerManager;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.rmsg.AwakenCmd;
 import com.neucore.neulink.cmd.rmsg.AwakenRes;
 import com.neucore.neulink.extend.ListenerFactory;
@@ -35,7 +36,7 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes,Map<String,
 
             ICmdListener listener = getListener();
             if(listener==null){
-                throw new NeulinkException(404,"awaken Listener does not implemention");
+                throw new NeulinkException(STATUS_404,"awaken Listener does not implemention");
             }
             listener.doAction(new NeulinkEvent(cmd));
             return new HashMap<String,String>();
@@ -58,8 +59,8 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes,Map<String,
         AwakenRes res = new AwakenRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         return res;
     }
 
@@ -68,7 +69,7 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes,Map<String,
         AwakenRes res = new AwakenRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

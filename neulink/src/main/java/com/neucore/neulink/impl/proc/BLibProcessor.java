@@ -89,8 +89,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
 
                 failed = process(cmd.getReqtime(), cmd, i);
                 if(i!=pages){//非最后请求包响应
-                    result.setCode(200);
-                    result.setMsg("success");
+                    result.setCode(STATUS_200);
+                    result.setMsg(MESSAGE_SUCCESS);
                     BTLibSyncRes res = responseWrapper(cmd,result);
                     res.setFailed(failed);
                     rsl = JSonUtils.toString(res);
@@ -98,13 +98,13 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
                 }
                 Log.d(TAG,"成功完成人脸offset:"+i+"下载");
                 if(ObjectUtil.isNotEmpty(msg)){
-                    updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, "success");
+                    updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, MESSAGE_SUCCESS);
                 }
             }
             catch (Throwable ex){
                 Log.d(TAG,"人脸offset:"+i+"下载失败",ex);
                 Log.e(TAG,"process",ex);
-                result.setCode(500);
+                result.setCode(STATUS_500);
                 result.setMsg(ex.getMessage());
                 if(ObjectUtil.isNotEmpty(msg)){
                     updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
@@ -114,8 +114,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
         }
 
         result.setFailed(failed);
-        result.setCode(200);
-        result.setMsg("success");
+        result.setCode(STATUS_200);
+        result.setMsg(MESSAGE_SUCCESS);
 
         /**
          * 刷新内存
@@ -147,7 +147,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());
         res.setTotal(cmd.getTotal());
@@ -350,12 +350,10 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     }
 
     @Override
+    /**
+     * @deprecated
+     */
     protected ICmdListener getListener() {
-        throw new NeulinkException(503,"该方法不能用。。。请直接调用ListenerFactory.getInstance().getFaceListener()");
-    }
-
-    public static void main(String[] args) throws Exception{
-        List<FaceData> data = facelibDataReader(new File("/Users/alex.zhu/Downloads/test.json"));
-        System.out.println(data.size());
+        throw new NeulinkException(STATUS_503,"该方法不能用。。。请直接调用ListenerFactory.getInstance().getFaceListener()");
     }
 }
