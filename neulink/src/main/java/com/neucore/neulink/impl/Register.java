@@ -55,10 +55,30 @@ public class Register implements NeulinkConst{
 
         autoReporter = new NeulinkScheduledReport(context,service);
     }
-
+    private Boolean logined = false;
     private void initRegistService(String from){
         Log.i(TAG,String.format("from=%s,networkReady=%s,initMqttService=%s,initRegistService=%s",from,networkReady,initMqttService,initRegistService));
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+
+        while (!logined&&channel==1) {
+            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
+            if(loginCallback!=null) {
+                String token = loginCallback.login();
+                if(ObjectUtil.isEmpty(token)){
+                    Log.i(TAG,"token非法。。。");
+                }
+                else{
+                    logined = true;
+                    NeulinkSecurity.getInstance().setToken(token);
+                    continue;
+                }
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+            }
+        }
+
         if(networkReady){
             if(!initMqttService ){//http注册方式&上报方式
                 Log.d(TAG,"try mqtt register");
@@ -85,7 +105,6 @@ public class Register implements NeulinkConst{
     /**
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
      */
-    boolean logined = false;
     void regist() {
         new Thread(){
             public void run(){
@@ -94,27 +113,8 @@ public class Register implements NeulinkConst{
                     if(!service.getMqttConnSuccessed()){
                         service.connect();
                     }
-                    int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-                    if(service.getMqttConnSuccessed()) {
-                        if(channel==1){
-                            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
-                            if(loginCallback!=null) {
-                                String token = loginCallback.login();
-                                if(ObjectUtil.isEmpty(token)){
-                                    Log.i(TAG,"token非法。。。");
-                                }
-                                else{
-                                    logined = true;
-                                    NeulinkSecurity.getInstance().setToken(token);
-                                }
-                            }
-                            else{
-                                Log.i(TAG,"没有实现ILoginCallback。。。");
-                            }
-                        }
-                    }
 
-                    if(!service.getMqttConnSuccessed() || (channel==1 && logined==false)){
+                    if(!service.getMqttConnSuccessed()){
                         try {
                             Thread.sleep(5000);
                         } catch (InterruptedException e) {
