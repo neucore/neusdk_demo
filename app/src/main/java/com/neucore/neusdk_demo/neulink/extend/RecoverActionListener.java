@@ -6,15 +6,15 @@ import com.neucore.neulink.cmd.bak.BackupItem;
 import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.Result;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.io.IOException;
 
-public class RecoverActionListener implements ICmdListener<Result,RecoverCmd>, NeulinkConst {
+public class RecoverActionListener implements ICmdListener<ActionResult,RecoverCmd>, NeulinkConst {
     @Override
-    public Result doAction(NeulinkEvent<RecoverCmd> event) {
+    public ActionResult doAction(NeulinkEvent<RecoverCmd> event) {
         /**
          * 最新下载的算法文件
          */
@@ -47,15 +47,15 @@ public class RecoverActionListener implements ICmdListener<Result,RecoverCmd>, N
          */
         //@TODO 算法文件安装
 
-        Result result = new Result();
+        ActionResult actionResult = new ActionResult();
         /**
          * 200表示成功 500：表示错误
          */
-        result.setCode(200);
+        actionResult.setCode(200);
         /**
          * 错误信息
          */
-        result.setMessage("success");
-        return result;
+        actionResult.setMessage("success");
+        return actionResult;
     }
 }

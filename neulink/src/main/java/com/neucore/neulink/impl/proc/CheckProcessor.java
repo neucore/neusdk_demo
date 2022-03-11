@@ -5,27 +5,28 @@ import android.content.Context;
 import com.neucore.neulink.cmd.check.CheckCmd;
 import com.neucore.neulink.cmd.check.CheckCmdRes;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
+public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
 
     public CheckProcessor(Context context) {
         super(context);
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, CheckCmd payload) {
+    public QueryActionResult<Map<String,Object>> process(NeulinkTopicParser.Topic topic, CheckCmd payload) {
         NeulinkEvent event = new NeulinkEvent(payload);
-        ICmdListener<QueryResult<Map<String,Object>>,CheckCmd> listener = getListener();
-        QueryResult<Map<String,Object>> result = listener.doAction(event);
-        return (String)result.getData().get("card_ids");
+        ICmdListener<QueryActionResult<Map<String,Object>>,CheckCmd> listener = getListener();
+        QueryActionResult<Map<String,Object>> result = listener.doAction(event);
+        return result;
     }
 
     @Override
@@ -34,13 +35,13 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
     }
 
     @Override
-    protected CheckCmdRes responseWrapper(CheckCmd t, String result) {
+    protected CheckCmdRes responseWrapper(CheckCmd t, QueryActionResult<Map<String,Object>> result) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setCmdStr(t.getCmdStr());
         cmdRes.setCode(STATUS_200);
         cmdRes.setObjtype(t.getObjtype());
         cmdRes.setMsg(MESSAGE_SUCCESS);
-        cmdRes.setDatas(result);
+        cmdRes.setDatas((String)result.getData().get("card_ids"));
         return cmdRes;
     }
 

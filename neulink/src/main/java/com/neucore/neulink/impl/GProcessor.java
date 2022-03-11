@@ -14,6 +14,7 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
+import com.neucore.neulink.util.IActionResult;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 
@@ -22,7 +23,7 @@ import java.io.PrintStream;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T> implements IProcessor {
+public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends IActionResult> implements IProcessor {
 
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
     private Context context;

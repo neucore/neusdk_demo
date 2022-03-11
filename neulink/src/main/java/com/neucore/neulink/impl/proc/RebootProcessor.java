@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.ArgCmd;
 import com.neucore.neulink.impl.GProcessor;
@@ -16,7 +17,7 @@ import com.neucore.neulink.util.ShellExecutor;
 
 import java.util.Map;
 
-public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,String>> {
+public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResult<Map<String,String>>> {
 
     private PowerManager pm =null;
     PowerManager.WakeLock wakeLock = null;
@@ -26,9 +27,12 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
         super(context);
     }
     @Override
-    public Map<String,String> process(NeulinkTopicParser.Topic topic, RebootCmd cmd) {
+    public ActionResult<Map<String,String>> process(NeulinkTopicParser.Topic topic, RebootCmd cmd) {
         try {
-            return ShellExecutor.run(this.getContext(), cmd.toArrays());
+            Map<String,String> stringStringMap = ShellExecutor.run(this.getContext(), cmd.toArrays());
+            ActionResult<Map<String,String>> actionResult = new ActionResult<>();
+            actionResult.setData(stringStringMap);
+            return actionResult;
         }
         catch (Throwable ex){
             throw new RuntimeException(ex);
@@ -41,7 +45,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes,Map<String,
     }
 
     @Override
-    protected RebootRes responseWrapper(RebootCmd cmd, Map<String, String> result) {
+    protected RebootRes responseWrapper(RebootCmd cmd, ActionResult<Map<String,String>>  result) {
         RebootRes res = new RebootRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());

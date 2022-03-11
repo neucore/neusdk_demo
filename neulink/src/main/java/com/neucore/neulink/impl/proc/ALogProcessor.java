@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -18,14 +18,14 @@ import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
 
-public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
+public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionResult<String>>{
 
     public ALogProcessor(Context context){
         super(context);
     }
 
     @Override
-    public String process(NeulinkTopicParser.Topic topic, AlogUpgrCmd alog) {
+    public ActionResult<String> process(NeulinkTopicParser.Topic topic, AlogUpgrCmd alog) {
         File srcFile = null;
         try {
 
@@ -35,7 +35,9 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
                 throw new NeulinkException(STATUS_404,"alog Listener does not implemention");
             }
             listener.doAction(new NeulinkEvent(srcFile));
-            return MESSAGE_SUCCESS;
+            ActionResult<String> actionResult = new ActionResult<>();
+            actionResult.setData(MESSAGE_SUCCESS);
+            return actionResult;
         }
         catch (NeulinkException ex){
             throw ex;
@@ -53,11 +55,11 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes,String>{
         return (AlogUpgrCmd) JSonUtils.toObject(payload, AlogUpgrCmd.class);
     }
 
-    public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, String result) {
+    public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, ActionResult<String> actionResult) {
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
-        res.setMsg(result);
+        res.setMsg(actionResult.getData());
         res.setVinfo(cmd.getVinfo());
         return res;
     }

@@ -15,57 +15,55 @@ import com.neucore.neulink.cmd.rmsg.HibrateCmd;
 import com.neucore.neulink.cmd.rmsg.UpgrCmd;
 import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
 import com.neucore.neulink.cmd.rrpc.BTLibSyncCmd;
-import com.neucore.neulink.cmd.rrpc.BTLibSyncCmd;
 import com.neucore.neulink.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
 import com.neucore.neulink.impl.listener.BLibSyncCmdListener;
 import com.neucore.neulink.rmsg.ReserveCmd;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ListenerFactory implements NeulinkConst{
     private String TAG = TAG_PREFIX+"ListenerFactory";
 
-    private ICmdListener<String,AlogUpgrCmd> alogListener = new ICmdListener<String, AlogUpgrCmd>() {
+    private ICmdListener<ActionResult,AlogUpgrCmd> alogListener = new ICmdListener<ActionResult, AlogUpgrCmd>() {
         @Override
-        public String doAction(NeulinkEvent<AlogUpgrCmd> event) {
+        public ActionResult doAction(NeulinkEvent<AlogUpgrCmd> event) {
             Log.i(TAG,"Algorithm upgrade need to by replace ");
             return null;
         }
     };
-    private ICmdListener<Result,UpgrCmd> fireware$ApkListener = new ICmdListener<Result, UpgrCmd>() {
+    private ICmdListener<ActionResult,UpgrCmd> fireware$ApkListener = new ICmdListener<ActionResult, UpgrCmd>() {
         @Override
-        public Result doAction(NeulinkEvent<UpgrCmd> event) {
+        public ActionResult doAction(NeulinkEvent<UpgrCmd> event) {
             Log.i(TAG,"Application upgrade need to by replace ");
-            return new Result();
+            return new ActionResult();
         }
     };
-    private ICmdListener<Result,AwakenCmd> awakenListener = new ICmdListener<Result, AwakenCmd>() {
+    private ICmdListener<ActionResult,AwakenCmd> awakenListener = new ICmdListener<ActionResult, AwakenCmd>() {
         @Override
-        public Result doAction(NeulinkEvent<AwakenCmd> event) {
+        public ActionResult doAction(NeulinkEvent<AwakenCmd> event) {
             Log.i(TAG,"device awaken implements need to by replace ");
-            return new Result();
+            return new ActionResult();
         }
     };
-    private ICmdListener<Result,HibrateCmd> hibrateListener = new ICmdListener<Result, HibrateCmd>() {
+    private ICmdListener<ActionResult,HibrateCmd> hibrateListener = new ICmdListener<ActionResult, HibrateCmd>() {
         @Override
-        public Result doAction(NeulinkEvent<HibrateCmd> event) {
+        public ActionResult doAction(NeulinkEvent<HibrateCmd> event) {
             Log.i(TAG,"device hibrate implements need to by replace ");
-            return new Result();
+            return new ActionResult();
         }
     };
-    private ICmdListener<Result,ReserveCmd> reserveListener = new ICmdListener<Result, ReserveCmd>() {
+    private ICmdListener<ActionResult,ReserveCmd> reserveListener = new ICmdListener<ActionResult, ReserveCmd>() {
         @Override
-        public Result doAction(NeulinkEvent<ReserveCmd> event) {
+        public ActionResult doAction(NeulinkEvent<ReserveCmd> event) {
             Log.i(TAG,"device reserve implements need to by replace ");
-            return new Result();
+            return new ActionResult();
         }
     };
 
-    private ICmdListener<Result,CfgCmd> cfgListener = new ICmdListener<Result,CfgCmd>() {
-        public Result doAction(NeulinkEvent<CfgCmd> event) {
+    private ICmdListener<ActionResult,CfgCmd> cfgListener = new ICmdListener<ActionResult,CfgCmd>() {
+        public ActionResult doAction(NeulinkEvent<CfgCmd> event) {
             CfgCmd cmd = event.getSource();
             CfgItem[] items = cmd.getData();
             int size = items==null?0:items.length;
@@ -82,53 +80,53 @@ public class ListenerFactory implements NeulinkConst{
             else if("sync".equalsIgnoreCase(cmd.getCmdStr())){
                 ConfigContext.getInstance().sync(items);
             }
-            return new Result();
+            return new ActionResult();
         }
     };
-    private ICmdListener<UpdateResult, BTLibSyncCmd> internalFaceListener = new BLibSyncCmdListener() {
+    private ICmdListener<UpdateActionResult, BTLibSyncCmd> internalFaceListener = new BLibSyncCmdListener() {
         @Override
-        public UpdateResult doAction(NeulinkEvent<BTLibSyncCmd> event) {
+        public UpdateActionResult doAction(NeulinkEvent<BTLibSyncCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new UpdateResult();
+            return new UpdateActionResult();
         }
     };
-    private ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd> faceListener = new ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd>() {
+    private ICmdListener<UpdateActionResult<Map<String,Object>>, FaceCmd> faceListener = new ICmdListener<UpdateActionResult<Map<String,Object>>, FaceCmd>() {
         @Override
-        public UpdateResult<Map<String,Object>> doAction(NeulinkEvent<FaceCmd> event) {
+        public UpdateActionResult<Map<String,Object>> doAction(NeulinkEvent<FaceCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new UpdateResult<Map<String,Object>>();
-        }
-    };
-
-    private ICmdListener<QueryResult,TLibQueryCmd> faceQueryListener = new ICmdListener<QueryResult, TLibQueryCmd>() {
-        @Override
-        public QueryResult doAction(NeulinkEvent<TLibQueryCmd> event) {
-            Log.i(TAG,"face process implements need to by replace ");
-            return new QueryResult();
+            return new UpdateActionResult<Map<String,Object>>();
         }
     };
 
-    private ICmdListener<QueryResult,CheckCmd> faceCheckListener = new ICmdListener<QueryResult, CheckCmd>() {
+    private ICmdListener<QueryActionResult,TLibQueryCmd> faceQueryListener = new ICmdListener<QueryActionResult, TLibQueryCmd>() {
         @Override
-        public QueryResult doAction(NeulinkEvent<CheckCmd> event) {
+        public QueryActionResult doAction(NeulinkEvent<TLibQueryCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new QueryResult();
+            return new QueryActionResult();
         }
     };
 
-    private ICmdListener<QueryResult,BackupCmd> backupListener = new ICmdListener<QueryResult, BackupCmd>() {
+    private ICmdListener<QueryActionResult,CheckCmd> faceCheckListener = new ICmdListener<QueryActionResult, CheckCmd>() {
         @Override
-        public QueryResult<Map<String,String>> doAction(NeulinkEvent<BackupCmd> event) {
+        public QueryActionResult doAction(NeulinkEvent<CheckCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new QueryResult<Map<String, String>>();
+            return new QueryActionResult();
         }
     };
 
-    private ICmdListener<QueryResult,RecoverCmd> recoverListener = new ICmdListener<QueryResult, RecoverCmd>() {
+    private ICmdListener<QueryActionResult,BackupCmd> backupListener = new ICmdListener<QueryActionResult, BackupCmd>() {
         @Override
-        public QueryResult doAction(NeulinkEvent<RecoverCmd> event) {
+        public QueryActionResult<Map<String,String>> doAction(NeulinkEvent<BackupCmd> event) {
             Log.i(TAG,"face process implements need to by replace ");
-            return new QueryResult();
+            return new QueryActionResult<Map<String, String>>();
+        }
+    };
+
+    private ICmdListener<QueryActionResult,RecoverCmd> recoverListener = new ICmdListener<QueryActionResult, RecoverCmd>() {
+        @Override
+        public QueryActionResult doAction(NeulinkEvent<RecoverCmd> event) {
+            Log.i(TAG,"face process implements need to by replace ");
+            return new QueryActionResult();
         }
     };
 
@@ -138,15 +136,15 @@ public class ListenerFactory implements NeulinkConst{
         return instance;
     }
 
-    public ICmdListener<String,AlogUpgrCmd> getAlogListener(){
+    public ICmdListener<ActionResult,AlogUpgrCmd> getAlogListener(){
         return alogListener;
     }
 
-    public ICmdListener<Result,AwakenCmd> getAwakenListener(){
+    public ICmdListener<ActionResult,AwakenCmd> getAwakenListener(){
         return awakenListener;
     }
 
-    public ICmdListener<Result,CfgCmd> getCfgListener() {
+    public ICmdListener<ActionResult,CfgCmd> getCfgListener() {
         return cfgListener;
     }
 
@@ -186,7 +184,7 @@ public class ListenerFactory implements NeulinkConst{
         this.reserveListener = reserveListener;
     }
 
-    public ICmdListener<UpdateResult<Map<String,Object>>, FaceCmd> getFaceListener() {
+    public ICmdListener<UpdateActionResult<Map<String,Object>>, FaceCmd> getFaceListener() {
         return faceListener;
     }
 
@@ -194,7 +192,7 @@ public class ListenerFactory implements NeulinkConst{
         this.faceListener = faceListener;
     }
 
-    public ICmdListener<QueryResult,TLibQueryCmd> getFaceQueryListener() {
+    public ICmdListener<QueryActionResult,TLibQueryCmd> getFaceQueryListener() {
         return faceQueryListener;
     }
 
@@ -202,7 +200,7 @@ public class ListenerFactory implements NeulinkConst{
         this.faceQueryListener = faceQueryListener;
     }
 
-    public ICmdListener<QueryResult,CheckCmd> getFaceCheckListener() {
+    public ICmdListener<QueryActionResult,CheckCmd> getFaceCheckListener() {
         return faceCheckListener;
     }
 
@@ -210,7 +208,7 @@ public class ListenerFactory implements NeulinkConst{
         this.faceCheckListener = faceCheckListener;
     }
 
-    public ICmdListener<QueryResult,BackupCmd> getBackupListener() {
+    public ICmdListener<QueryActionResult,BackupCmd> getBackupListener() {
         return backupListener;
     }
 
@@ -218,7 +216,7 @@ public class ListenerFactory implements NeulinkConst{
         this.backupListener = backupListener;
     }
 
-    public ICmdListener<QueryResult,RecoverCmd> getRecoverListener() {
+    public ICmdListener<QueryActionResult,RecoverCmd> getRecoverListener() {
         return recoverListener;
     }
 

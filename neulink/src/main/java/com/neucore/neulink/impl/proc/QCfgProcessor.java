@@ -7,6 +7,7 @@ import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
@@ -18,14 +19,14 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
-public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> {
+public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes, ActionResult<CfgItem[]>> {
 
 
     public QCfgProcessor(Context context){
         super(context);
     }
     @Override
-    public CfgItem[] process(NeulinkTopicParser.Topic topic, CfgCmd cmd) {
+    public ActionResult<CfgItem[]> process(NeulinkTopicParser.Topic topic, CfgCmd cmd) {
         try{
             CfgItem[] retItems = null;
             if("query".equalsIgnoreCase(cmd.getCmdStr())) {
@@ -42,7 +43,9 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
                 retItems = new CfgItem[result.size()];
                 result.toArray(retItems);
             }
-            return retItems;
+            ActionResult<CfgItem[]> actionResult = new ActionResult<>();
+            actionResult.setData(retItems);
+            return actionResult;
         }
         catch (Throwable ex){
             throw new RuntimeException(ex);
@@ -53,13 +56,13 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
         return (CfgCmd) JSonUtils.toObject(payload, CfgCmd.class);
     }
 
-    public CfgQueryCmdRes responseWrapper(CfgCmd cmd,CfgItem[] result) {
+    public CfgQueryCmdRes responseWrapper(CfgCmd cmd, ActionResult<CfgItem[]> actionResult) {
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
-        res.setData(result);
+        res.setData(actionResult.getData());
         return res;
     }
 

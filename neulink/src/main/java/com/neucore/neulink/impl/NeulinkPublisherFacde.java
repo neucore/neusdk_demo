@@ -93,12 +93,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
         String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
-        UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(code);
-        upgrRes.setMsg(message);
-        upgrRes.setCmdStr(mode);
-        upgrRes.setData(payload);
-        upldResponse(topicPrefix,reqId,upgrRes);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res);
     }
     /**
      * rrpc请求响应
@@ -113,12 +113,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
         String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(code);
-        upgrRes.setMsg(message);
-        upgrRes.setCmdStr(mode);
-        upgrRes.setData(payload);
-        upldResponse(topicPrefix,reqId,upgrRes);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res);
     }
     /**
      * 抓拍上传
@@ -132,32 +132,15 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
         String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(code);
-        upgrRes.setMsg(message);
-        upgrRes.setCmdStr(mode);
-        upgrRes.setData(payload);
-        upldResponse(topicPrefix,reqId,upgrRes);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res);
     }
 
-    private void upldResponse(String topicPrefix,String reqId,UpgrRes upgrRes){
-
-        String[] lspTopics = topicPrefix.split("/v\\d+\\.\\d+(\\.\\d+)?(/)?");
-        String[] uspTopics = topicPrefix.split("/V\\d+\\.\\d+(\\.\\d+)?(/)?");
-
-        if(lspTopics.length==topicPrefix.length() && uspTopics.length==topicPrefix.length()){
-            throw new NeulinkException(STATUS_505,"topic不符合规范:没有版本字段信息");
-        }
-        if(lspTopics.length!=topicPrefix.length()){
-            topicPrefix = lspTopics[0];
-        }
-        if(uspTopics.length!=topicPrefix.length()){
-            topicPrefix = uspTopics[0];
-        }
-        String[] topicArray = topicPrefix.split("/");
-        if("req".equalsIgnoreCase(topicArray[1]) && "res".equalsIgnoreCase(topicArray[1])){
-            throw new NeulinkException(STATUS_505,"topic不符合规范");
-        }
+    private void response(String topicPrefix,String reqId,CmdRes upgrRes){
         String payloadStr = JSonUtils.toString(upgrRes);
         upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0);

@@ -35,7 +35,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
             String objtype = cmd.getObjtype();
             QResult result = new QResult();
             if("face".equalsIgnoreCase(objtype)){
-                //QueryResult queryResult = ListenerFactory.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
+                //QueryActionResult queryResult = ListenerFactory.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
                 //result.setCount(count);
                 throw new RuntimeException("人脸目标库查询还在建设中");
             }

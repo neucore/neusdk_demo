@@ -9,7 +9,7 @@ import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.UpdateResult;
+import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.cmd.rrpc.FaceData;
 import com.neucore.neulink.cmd.rrpc.KVPair;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SampleFaceListener implements ICmdListener<UpdateResult,FaceCmd> {
+public class SampleFaceListener implements ICmdListener<UpdateActionResult,FaceCmd> {
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private LibManagerService libManagerService;
     private NeuFace mNeucore_face;
@@ -39,7 +39,7 @@ public class SampleFaceListener implements ICmdListener<UpdateResult,FaceCmd> {
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
     }
     @Override
-    public UpdateResult doAction(NeulinkEvent<FaceCmd> event) {
+    public UpdateActionResult doAction(NeulinkEvent<FaceCmd> event) {
         FaceCmd faceCmd = event.getSource();
         String cmd = faceCmd.getCmd();//add：添加|del：删除|update：更新|sync：同步
         mNeucore_face  = NeuFaceFactory.getInstance().create();
@@ -125,7 +125,7 @@ public class SampleFaceListener implements ICmdListener<UpdateResult,FaceCmd> {
             libManagerService.deleteFacelibByReqTime(reqTime);//删除历史数据
         }
 
-        UpdateResult<Map<String,Object>> result = new UpdateResult();
+        UpdateActionResult<Map<String,Object>> result = new UpdateActionResult();
         result.setCode(200);
         result.setMessage("success");
         //返回失败的人脸ext_id 列表

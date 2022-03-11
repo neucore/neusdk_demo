@@ -2,7 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryResult;
+import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rrpc.QResult;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleFaceQueryListener implements ICmdListener<QueryResult,TLibQueryCmd> {
+public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,TLibQueryCmd> {
     private LibManagerService libManagerService;
     private UserDaoUtils userDaoUtils = null;
     private String TAG = "SampleFaceQueryListener";
@@ -29,7 +29,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryResult,TLibQue
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
     }
     @Override
-    public QueryResult doAction(NeulinkEvent<TLibQueryCmd> event) {
+    public QueryActionResult doAction(NeulinkEvent<TLibQueryCmd> event) {
 
         NeulinkTopicParser.Topic topic = null;
         TLibQueryCmd cmd = event.getSource();
@@ -75,7 +75,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryResult,TLibQue
             result.setMd5(md5s.get(0));
         }
 
-        return new QueryResult();
+        return new QueryActionResult();
     }
 
     protected File store(NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {

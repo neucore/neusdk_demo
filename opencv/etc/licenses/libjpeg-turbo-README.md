@@ -96,7 +96,7 @@ time with:
     #ifdef JCS_EXTENSIONS
 
 At run time, attempting to use these extensions with a libjpeg implementation
-that does not support them will result in a "Bogus input colorspace" error.
+that does not support them will actionResult in a "Bogus input colorspace" error.
 Applications can trap this error in order to test whether run-time support is
 available for the colorspace extensions.
 

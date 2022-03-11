@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -13,18 +14,21 @@ import com.neucore.neulink.util.ShellExecutor;
 
 import java.util.Map;
 
-public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String, String>> {
+public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, ActionResult<Map<String, String>>> {
 
     public ShellProcessor(Context context){
         super(context);
     }
     @Override
-    public Map<String, String> process(NeulinkTopicParser.Topic topic, ShellCmd cmd) {
+    public ActionResult<Map<String, String>> process(NeulinkTopicParser.Topic topic, ShellCmd cmd) {
         String[] cmds = null;
-        Map<String, String> result = null;
+        Map<String, String> resultMap = null;
         try {
             String cmdA = cmd.toString();
-            return ShellExecutor.execute(this.getContext(), cmdA);
+            ActionResult<Map<String, String>> actionResult = new ActionResult<>();
+            resultMap = ShellExecutor.execute(this.getContext(), cmdA);
+            actionResult.setData(resultMap);
+            return actionResult;
         }
         catch (Throwable ex){
             throw new RuntimeException(ex);
@@ -37,14 +41,14 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes,Map<String,
     }
 
     @Override
-    protected ShellCmdRes responseWrapper(ShellCmd cmd, Map<String, String> result) {
+    protected ShellCmdRes responseWrapper(ShellCmd cmd, ActionResult<Map<String, String>> actionResult) {
         ShellCmdRes res = new ShellCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
-        res.setStdout(result.get("stdout"));
-        res.setShellRet(Integer.valueOf(result.get("shellRet")));
+        res.setStdout(actionResult.getData().get("stdout"));
+        res.setShellRet(Integer.valueOf(actionResult.getData().get("shellRet")));
         return res;
     }
 
