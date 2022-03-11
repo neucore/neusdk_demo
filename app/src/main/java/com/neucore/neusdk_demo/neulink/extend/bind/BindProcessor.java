@@ -39,10 +39,10 @@ public class BindProcessor extends GProcessor<BindSyncCmd, BindSyncCmdRes, BindA
 //        LogUtilil.setLog(TAG, "BindSyncCmdRes responseWrapper" );
         BindSyncCmdRes res = new BindSyncCmdRes();
         res.setCmdStr(bindSyncCmd.getCmdStr());
-        res.setCode(200);
+        res.setCode(bindActionResult.getCode());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(bindActionResult);
-        res.setMsg("成功");
+        res.setMsg(bindActionResult.getMessage());
         return res;
     }
 
