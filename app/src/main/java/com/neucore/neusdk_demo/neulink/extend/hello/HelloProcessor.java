@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.hello;
 
 import android.content.Context;
 
+import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
@@ -13,7 +14,7 @@ import com.neucore.neulink.util.JSonUtils;
  * HelloCmdRes：响应对象
  * String:actionListener的返回类型
  */
-public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
+public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResult<String>> {
 
     public HelloProcessor(){
         this(ContextHolder.getInstance().getContext());
@@ -35,13 +36,13 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes,String> {
      * @return
      */
     @Override
-    protected HelloCmdRes responseWrapper(HelloCmd t, String result) {
+    protected HelloCmdRes responseWrapper(HelloCmd t, ActionResult<String> result) {
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
-        res.setCode(200);
+        res.setCode(result.getCode());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setData(result);
-        res.setMsg("成功");
+        res.setData(result.getData());
+        res.setMsg(result.getMessage());
         return res;
     }
 

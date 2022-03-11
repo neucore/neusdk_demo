@@ -6,9 +6,7 @@ import android.util.Log;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -23,7 +21,7 @@ import java.io.PrintStream;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends IActionResult> implements IProcessor {
+public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResult extends IActionResult> implements IProcessor {
 
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
     private Context context;
@@ -80,8 +78,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends 
                 req.setReqId(topic.getReqId());
                 req.setReqtime(reqTime);
                 req.setVersion(topic.getVersion());
-                T result = process(topic, req);
-                Res res = responseWrapper(req, result);
+                ActionResult actionResult = process(topic, req);
+                Res res = responseWrapper(req, actionResult);
                 String jsonStr = JSonUtils.toString(res);
                 if (res.getCode() == 200){//支撑多包批处理，所有包处理成功才叫做成功
                     update(id, IMessage.STATUS_SUCCESS, res.getMsg());
@@ -113,15 +111,15 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends 
      * @param cmd
      * @return
      */
-    public T process(NeulinkTopicParser.Topic topic, Req cmd) {
+    public ActionResult process(NeulinkTopicParser.Topic topic, Req cmd) {
         try {
 
-            ICmdListener<T,Req> listener = getListener();
+            ICmdListener<ActionResult,Req> listener = getListener();
             if(listener==null){
                 throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
             }
-            T result = listener.doAction(new NeulinkEvent<Req>(cmd));
-            return result;
+            ActionResult actionResult = listener.doAction(new NeulinkEvent<Req>(cmd));
+            return actionResult;
         }
         catch (NeulinkException ex){
             throw ex;
@@ -256,7 +254,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends 
      */
     public abstract Req parser(String payload);
 
-    protected abstract Res responseWrapper(Req t, T result);
+    protected abstract Res responseWrapper(Req t, ActionResult actionResult);
 
     protected abstract Res fail(Req t, String error);
 
@@ -266,7 +264,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, T extends 
         return topic.getBiz();
     }
 
-    protected ICmdListener<T,Req> getListener(){
+    protected ICmdListener<ActionResult,Req> getListener(){
         return ListenerFactory.getInstance().getExtendListener(biz());
     }
 }
