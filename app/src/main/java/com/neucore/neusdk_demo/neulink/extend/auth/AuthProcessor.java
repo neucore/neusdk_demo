@@ -41,10 +41,10 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
-        res.setCode(200);
+        res.setCode(result.getCode());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setData(result);
-        res.setMsg("成功");
+        res.setMsg(result.getMessage());
         return res;
     }
 

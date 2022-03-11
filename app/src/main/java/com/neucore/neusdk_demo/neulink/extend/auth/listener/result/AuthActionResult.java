@@ -2,6 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
 
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neulink.util.IActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthItemResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DeviceResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.DomainResult;
