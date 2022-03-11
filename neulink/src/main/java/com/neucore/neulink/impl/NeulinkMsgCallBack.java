@@ -17,7 +17,7 @@ import cn.hutool.core.util.StrUtil;
 
 public class NeulinkMsgCallBack implements IMqttCallBack {
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"MsgCallBack";
+    private String TAG = TAG_PREFIX+"MsgCallBack";
 
     private Context context;
     private NeulinkService service;

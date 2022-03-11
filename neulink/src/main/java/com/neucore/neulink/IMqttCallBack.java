@@ -1,9 +1,11 @@
 package com.neucore.neulink;
 
+import com.neucore.neulink.app.NeulinkConst;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-public interface IMqttCallBack {
+public interface IMqttCallBack extends NeulinkConst {
 
     void connectComplete(boolean reconnect, String serverURI);
 

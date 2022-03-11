@@ -27,7 +27,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
             NeulinkEvent<CfgCmd> event = new NeulinkEvent(cmd);
             ICmdListener listener = getListener();
             listener.doAction(event);
-            return "success";
+            return MESSAGE_SUCCESS;
         }
         catch (Throwable ex){
             throw new RuntimeException(ex);
@@ -42,7 +42,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
         CfgCmdRes res = new CfgCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
+        res.setCode(STATUS_200);
         res.setMsg(result);
         return res;
     }
@@ -51,7 +51,7 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes,String> {
         CfgCmdRes res = new CfgCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(message);
         return res;
     }

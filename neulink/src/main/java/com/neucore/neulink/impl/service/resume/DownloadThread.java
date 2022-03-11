@@ -15,8 +15,8 @@ import com.neucore.neulink.app.NeulinkConst;
 
 import okhttp3.Response;
 
-public class DownloadThread extends Thread {
-    private static final String TAG = NeulinkConst.TAG_PREFIX+"DownloadThread";
+public class DownloadThread extends Thread implements NeulinkConst {
+    private static final String TAG = TAG_PREFIX+"DownloadThread";
     private File saveFile;
     private String downUrl;
     private long block;

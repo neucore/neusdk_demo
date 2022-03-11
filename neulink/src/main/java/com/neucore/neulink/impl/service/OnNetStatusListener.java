@@ -7,8 +7,8 @@ import com.neucore.neulink.app.NeulinkConst;
 
 import java.lang.annotation.Target;
 
-public class OnNetStatusListener implements IOnNetStatusListener {
-    private String TAG = NeulinkConst.TAG_PREFIX+"OnNetStatusListener";
+public class OnNetStatusListener implements IOnNetStatusListener ,NeulinkConst{
+    private String TAG = TAG_PREFIX+"OnNetStatusListener";
     @Override
     public void onNetStatus(int netType, String netName) {
         Log.i(TAG,netName+",网络恢复");

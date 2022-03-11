@@ -31,7 +31,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes,Map<Stri
         try {
             ICmdListener<Result,HibrateCmd> listener = getListener();
             if(listener==null){
-                throw new NeulinkException(404,"Hibrate Listener does not implemention");
+                throw new NeulinkException(STATUS_404,"Hibrate Listener does not implemention");
             }
             listener.doAction(new NeulinkEvent<HibrateCmd>(cmd));
             return new HashMap<String,String>();
@@ -54,8 +54,8 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes,Map<Stri
         HibrateRes res = new HibrateRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         return res;
     }
 
@@ -64,7 +64,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes,Map<Stri
         HibrateRes res = new HibrateRes();
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

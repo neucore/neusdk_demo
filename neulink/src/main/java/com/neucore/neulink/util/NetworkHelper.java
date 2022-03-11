@@ -15,9 +15,9 @@ import com.neucore.neulink.app.NeulinkConst;
 
 import java.util.ArrayList;
 
-public class NetworkHelper {
+public class NetworkHelper implements NeulinkConst{
 
-    private static String TAG = NeulinkConst.TAG_PREFIX+"NetworkHelper";
+    private static String TAG = TAG_PREFIX+"NetworkHelper";
 
     public interface Listener {
         void onConnectivityChange(boolean connect);

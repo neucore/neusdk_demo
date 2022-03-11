@@ -38,8 +38,8 @@ import okhttp3.Response;
  e.printStackTrace();
  }
  */
-public class FileDownloader {
-    private static final String TAG = NeulinkConst.TAG_PREFIX+"FileDownloader";
+public class FileDownloader implements NeulinkConst{
+    private static final String TAG = TAG_PREFIX+"FileDownloader";
     private Context context;
     private FileService fileService = FileService.getInstance();
     /* 已下载文件长度 */

@@ -12,9 +12,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShellExecutor {
+public class ShellExecutor implements NeulinkConst{
 
-    private static String TAG = NeulinkConst.TAG_PREFIX+"ShellExecutor";
+    private static String TAG = TAG_PREFIX+"ShellExecutor";
     /**
      *
      * @param context

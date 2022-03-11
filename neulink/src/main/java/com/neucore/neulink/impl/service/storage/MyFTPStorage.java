@@ -15,7 +15,7 @@ import cn.hutool.extra.ftp.FtpMode;
 
 public class MyFTPStorage extends AbsStorage implements IStorage {
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"MyFTPStorage";
+    private String TAG = TAG_PREFIX+"MyFTPStorage";
 
     private String server = "";
 

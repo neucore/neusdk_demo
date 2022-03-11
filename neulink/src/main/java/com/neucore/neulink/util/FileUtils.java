@@ -31,8 +31,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 @SuppressLint({ "NewApi", "DefaultLocale" })
-public class FileUtils {
-	private static String TAG = NeulinkConst.TAG_PREFIX+"FileUtils";
+public class FileUtils implements NeulinkConst{
+	private static String TAG = TAG_PREFIX+"FileUtils";
 	// 获取当前目录下所有的mp4文件
 	public static Vector<String> GetVideoFileName(String fileAbsolutePath) {
 		Vector<String> vecFile = new Vector<String>();
@@ -390,7 +390,7 @@ public class FileUtils {
 			}
 		}
 		catch (Exception ex){
-			throw new NeulinkException(500,ex.getMessage());
+			throw new NeulinkException(STATUS_500,ex.getMessage());
 		}
 		finally {
 			if(fileInputStream!=null){

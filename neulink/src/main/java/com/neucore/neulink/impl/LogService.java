@@ -52,8 +52,8 @@ import java.util.List;
  * @author Administrator
  *
  */
-public class LogService extends Service {
-    private static final String TAG = NeulinkConst.TAG_PREFIX+"LogService";
+public class LogService extends Service implements NeulinkConst{
+    private static final String TAG = TAG_PREFIX+"LogService";
 
     private static final int MEMORY_LOG_FILE_MAX_SIZE = 10 * 1024 * 1024;			//内存中日志文件最大值，10M
     private static final int MEMORY_LOG_FILE_MONITOR_INTERVAL = 10 * 60 * 1000;		//内存中的日志文件大小监控时间间隔，10分钟

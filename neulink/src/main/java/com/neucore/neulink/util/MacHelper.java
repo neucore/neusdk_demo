@@ -16,9 +16,9 @@ import java.util.List;
 
 import static android.os.Build.VERSION.SDK_INT;
 
-public class MacHelper {
+public class MacHelper implements NeulinkConst{
 
-    private static String TAG = NeulinkConst.TAG_PREFIX+"MacHelper";
+    private static String TAG = TAG_PREFIX+"MacHelper";
 
 
     /**

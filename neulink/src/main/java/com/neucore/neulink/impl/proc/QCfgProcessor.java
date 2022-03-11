@@ -57,8 +57,8 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         res.setData(result);
         return res;
     }
@@ -67,7 +67,7 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes,CfgItem[]> 
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(message);
         return res;
     }

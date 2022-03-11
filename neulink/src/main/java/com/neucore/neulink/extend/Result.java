@@ -1,8 +1,10 @@
 package com.neucore.neulink.extend;
 
-public class Result<T> {
+import com.neucore.neulink.app.NeulinkConst;
+
+public class Result<T> implements NeulinkConst {
     private int code=200;
-    private String message="success";
+    private String message = MESSAGE_SUCCESS;
     private T data;
     public int getCode() {
         return code;

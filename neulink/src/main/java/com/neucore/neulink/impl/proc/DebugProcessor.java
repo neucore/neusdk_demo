@@ -34,7 +34,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
                 item.setValue(args[0]);
                 CfgItem[] items = new CfgItem[]{item};
                 ConfigContext.getInstance().update(items);
-                return "success";
+                return MESSAGE_SUCCESS;
             }
         }
         catch (Throwable ex){
@@ -50,8 +50,8 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
         return res;
     }
 
@@ -59,7 +59,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes,String> {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(message);
         return res;
     }

@@ -28,7 +28,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
         NeulinkEvent event = new NeulinkEvent(payload);
         ICmdListener<QueryResult,BackupCmd> listener = getListener();
         if(listener==null){
-            throw new NeulinkException(404,"backup Listener does not implemention");
+            throw new NeulinkException(STATUS_404,"backup Listener does not implemention");
         }
         QueryResult<Map<String,String>> result = listener.doAction(event);
         return result.getData().get("url");
@@ -44,8 +44,8 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
         BackupCmdRes cmdRes = new BackupCmdRes();
         cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
-        cmdRes.setCode(200);
-        cmdRes.setMsg("success");
+        cmdRes.setCode(STATUS_200);
+        cmdRes.setMsg(MESSAGE_SUCCESS);
         cmdRes.setUrl(result);
         cmdRes.setMd5("fdafdsa");
         return cmdRes;
@@ -56,7 +56,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes,String> 
         BackupCmdRes cmdRes = new BackupCmdRes();
         cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
-        cmdRes.setCode(500);
+        cmdRes.setCode(STATUS_500);
         cmdRes.setMsg(error);
         return cmdRes;
     }

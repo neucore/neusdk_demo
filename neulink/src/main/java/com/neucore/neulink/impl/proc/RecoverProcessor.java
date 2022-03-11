@@ -45,7 +45,7 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
             }
 
         } catch (IOException e) {
-            throw new NeulinkException(500,e.getMessage());
+            throw new NeulinkException(STATUS_500,e.getMessage());
         }
         return null;
     }
@@ -59,8 +59,8 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
     protected RecoverCmdRes responseWrapper(RecoverCmd t, String result) {
         RecoverCmdRes recoverCmdRes = new RecoverCmdRes();
         recoverCmdRes.setCmdStr(t.getCmdStr());
-        recoverCmdRes.setCode(200);
-        recoverCmdRes.setMsg("success");
+        recoverCmdRes.setCode(STATUS_200);
+        recoverCmdRes.setMsg(MESSAGE_SUCCESS);
         recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         return recoverCmdRes;
     }
@@ -70,7 +70,7 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes,Strin
 
         RecoverCmdRes recoverCmdRes = new RecoverCmdRes();
         recoverCmdRes.setCmdStr(t.getCmdStr());
-        recoverCmdRes.setCode(500);
+        recoverCmdRes.setCode(STATUS_500);
         recoverCmdRes.setMsg(error);
         recoverCmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         return recoverCmdRes;

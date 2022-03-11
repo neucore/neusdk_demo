@@ -121,7 +121,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
             @Override
             public boolean accept(File pathname) {
                 String name = pathname.getName();
-                if(name.indexOf(NeulinkConst.LOG_CARSH)==-1){
+                if(name.indexOf(LOG_CARSH)==-1){
                     return false;
                 }
                 try {
@@ -181,8 +181,8 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
         res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setCode(200);
-        res.setMsg("success");
+        res.setCode(STATUS_200);
+        res.setMsg(MESSAGE_SUCCESS);
 
         res.setPages(result.getPages());
         res.setOffset(result.getOffset());
@@ -197,7 +197,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes,LogResult> {
         DnloadRes res = new DnloadRes();
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
-        res.setCode(500);
+        res.setCode(STATUS_500);
         res.setMsg(error);
         return res;
     }

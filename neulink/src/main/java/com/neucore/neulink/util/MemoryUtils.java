@@ -11,8 +11,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MemoryUtils {
-    private static String TAG = NeulinkConst.TAG_PREFIX+"MemoryUtils";
+public class MemoryUtils implements NeulinkConst{
+    private static String TAG = TAG_PREFIX+"MemoryUtils";
     /** 内存信息文件的路径 */
     public static final String MEMORY_INFO_PATH = "/proc/meminfo";
     /** buffer size */

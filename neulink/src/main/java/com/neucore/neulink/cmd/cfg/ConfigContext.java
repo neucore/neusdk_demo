@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Properties;
 
-public class ConfigContext {
+public class ConfigContext implements NeulinkConst{
 
     public final static String STORAGE_OSS = "OSS";
 
@@ -67,7 +67,7 @@ public class ConfigContext {
 
     public final static String HTTP_SESSION_TIMEOUT = "http.session.timeout";
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"ConfigContext";
+    private String TAG = TAG_PREFIX+"ConfigContext";
 
     private static ConfigContext configContext = new ConfigContext();
 
@@ -143,7 +143,7 @@ public class ConfigContext {
             FileUtils.move(tmpFile,new File(configFile));
             tmpFile.delete();
         } catch (IOException e) {
-            throw new NeulinkException(500,e.getMessage());
+            throw new NeulinkException(STATUS_500,e.getMessage());
         }
     }
 

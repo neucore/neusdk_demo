@@ -6,9 +6,9 @@ import com.neucore.neulink.app.NeulinkConst;
 
 import java.io.RandomAccessFile;
 
-public class TrafficUtils {
+public class TrafficUtils implements NeulinkConst{
 
-    private static String TAG = NeulinkConst.TAG_PREFIX+"TrafficUtils";
+    private static String TAG = TAG_PREFIX+"TrafficUtils";
     /** 传输信息文件的路径 */
     public static final String TRAFFIC_INFO_PATH = "/proc/uid_stat/";
 

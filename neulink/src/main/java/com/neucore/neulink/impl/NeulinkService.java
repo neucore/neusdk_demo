@@ -40,10 +40,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class NeulinkService {
+public class NeulinkService implements NeulinkConst{
 
     private static NeulinkService instance = new NeulinkService();
-    private String TAG = NeulinkConst.TAG_PREFIX+"Service";
+    private String TAG = TAG_PREFIX+"Service";
 
     private MyMqttService myMqttService = null;
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
@@ -372,7 +372,7 @@ public class NeulinkService {
     // MQTT监听并且接受消息
     private MqttCallback mqttCallback = new MqttCallbackExtended() {
 
-        private String TAG = NeulinkConst.TAG_PREFIX+"MqttCallback";
+        private String TAG = TAG_PREFIX+"MqttCallback";
 
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {

@@ -15,8 +15,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
 
-public class UdpReceiveAndtcpSend extends  Thread {
-    private String TAG = NeulinkConst.TAG_PREFIX+"UdpReceiveAndtcpSend";
+public class UdpReceiveAndtcpSend extends  Thread implements NeulinkConst{
+    private String TAG = TAG_PREFIX+"UdpReceiveAndtcpSend";
     private MulticastSocket ms = null;
     private DatagramPacket dp = null;
     private Socket socket = null;

@@ -31,8 +31,8 @@ import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Properties;
 
-public class SampleConnector {
-    private String TAG = NeulinkConst.TAG_PREFIX+"SampleConnector";
+public class SampleConnector implements NeulinkConst{
+    private String TAG = TAG_PREFIX+"SampleConnector";
     private Application application;
     private NeulinkService neulinkService;
     private IUserService userService;

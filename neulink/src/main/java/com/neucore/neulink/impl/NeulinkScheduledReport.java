@@ -29,12 +29,12 @@ import java.util.UUID;
 /**
  * 定期收集上报信息
  */
-public class NeulinkScheduledReport {
+public class NeulinkScheduledReport implements NeulinkConst{
 
     private  Context context;
     private  NeulinkService service;
     private Boolean started = false;
-    private String TAG = NeulinkConst.TAG_PREFIX+"ScheduledReport";
+    private String TAG = TAG_PREFIX+"ScheduledReport";
 
     public NeulinkScheduledReport(Context context, NeulinkService service) {
         this.context = context;

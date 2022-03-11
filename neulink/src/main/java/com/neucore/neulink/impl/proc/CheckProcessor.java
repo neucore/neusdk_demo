@@ -37,9 +37,9 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
     protected CheckCmdRes responseWrapper(CheckCmd t, String result) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setCmdStr(t.getCmdStr());
-        cmdRes.setCode(200);
+        cmdRes.setCode(STATUS_200);
         cmdRes.setObjtype(t.getObjtype());
-        cmdRes.setMsg("success");
+        cmdRes.setMsg(MESSAGE_SUCCESS);
         cmdRes.setDatas(result);
         return cmdRes;
     }
@@ -48,7 +48,7 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes,String> {
     protected CheckCmdRes fail(CheckCmd t, String error) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setCmdStr(t.getCmdStr());
-        cmdRes.setCode(500);
+        cmdRes.setCode(STATUS_500);
         cmdRes.setObjtype(t.getObjtype());
         cmdRes.setMsg(error);
         return cmdRes;

@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * 终端消费者
  */
-public class NeulinkSubscriberFacde {
-    private String TAG = NeulinkConst.TAG_PREFIX+"SubscriberFacde";
+public class NeulinkSubscriberFacde implements NeulinkConst{
+    private String TAG = TAG_PREFIX+"SubscriberFacde";
 
     private Context context;
     private NeulinkService service;
@@ -92,7 +92,7 @@ public class NeulinkSubscriberFacde {
      */
     private IMqttMessageListener messageListener = new IMqttMessageListener(){
 
-        private String TAG = NeulinkConst.TAG_PREFIX+"IMqttMessageListener";
+        private String TAG = TAG_PREFIX+"IMqttMessageListener";
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
 

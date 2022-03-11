@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.cmd.lic.LicUpldCmd;
@@ -18,9 +20,9 @@ import cn.hutool.core.util.ObjectUtil;
 /**
  * sdk应用信息上报接口：主要包括车牌上报、体温上报、人脸信息上报
  */
-public class NeulinkPublisherFacde {
+public class NeulinkPublisherFacde implements NeulinkConst{
 
-    private String TAG = NeulinkConst.TAG_PREFIX+"PublisherFacde";
+    private String TAG = TAG_PREFIX+"PublisherFacde";
 
     private static Context context;
     private static NeulinkService service;
@@ -64,34 +66,101 @@ public class NeulinkPublisherFacde {
     }
 
     /**
-     * 上报下载进度
-     * @param topicPrefix eg：rrpc/res/xxx
+     * 上报升级包下载进度
+     * @param topicPrefix
+     * @param reqId
      * @param progress
      */
     public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
         UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(200);
+        upgrRes.setCode(STATUS_200);
         upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         String payload = JSonUtils.toString(upgrRes);
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
-
     /**
-     *
-     * @param topicPrefix
+     * rmsg请求响应
+     * rmsg/res/${biz}/${version}
+     * @param biz
+     * @param version
      * @param reqId
      * @param mode
+     * @param code
+     * @param message
+     * @param payload
      */
-    public void upldResponse(String topicPrefix,String reqId,String mode){
+    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
+        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
         UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(200);
-        upgrRes.setMsg("消息已经接收");
+        upgrRes.setCode(code);
+        upgrRes.setMsg(message);
         upgrRes.setCmdStr(mode);
+        upgrRes.setData(payload);
+        upldResponse(topicPrefix,reqId,upgrRes);
+    }
+    /**
+     * rrpc请求响应
+     * rrpc/res/${biz}/${version}
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
+        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(code);
+        upgrRes.setMsg(message);
+        upgrRes.setCmdStr(mode);
+        upgrRes.setData(payload);
+        upldResponse(topicPrefix,reqId,upgrRes);
+    }
+    /**
+     * 抓拍上传
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(code);
+        upgrRes.setMsg(message);
+        upgrRes.setCmdStr(mode);
+        upgrRes.setData(payload);
+        upldResponse(topicPrefix,reqId,upgrRes);
+    }
+
+    private void upldResponse(String topicPrefix,String reqId,UpgrRes upgrRes){
+
+        String[] lspTopics = topicPrefix.split("/v\\d+\\.\\d+(\\.\\d+)?(/)?");
+        String[] uspTopics = topicPrefix.split("/V\\d+\\.\\d+(\\.\\d+)?(/)?");
+
+        if(lspTopics.length==topicPrefix.length() && uspTopics.length==topicPrefix.length()){
+            throw new NeulinkException(STATUS_505,"topic不符合规范:没有版本字段信息");
+        }
+        if(lspTopics.length!=topicPrefix.length()){
+            topicPrefix = lspTopics[0];
+        }
+        if(uspTopics.length!=topicPrefix.length()){
+            topicPrefix = uspTopics[0];
+        }
+        String[] topicArray = topicPrefix.split("/");
+        if("req".equalsIgnoreCase(topicArray[1]) && "res".equalsIgnoreCase(topicArray[1])){
+            throw new NeulinkException(STATUS_505,"topic不符合规范");
+        }
+        String payloadStr = JSonUtils.toString(upgrRes);
         upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        String payload = JSonUtils.toString(upgrRes);
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0);
     }
     /**
      * 人脸上报

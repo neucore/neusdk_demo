@@ -25,8 +25,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListenerFactory {
-    private String TAG = NeulinkConst.TAG_PREFIX+"ListenerFactory";
+public class ListenerFactory implements NeulinkConst{
+    private String TAG = TAG_PREFIX+"ListenerFactory";
 
     private ICmdListener<String,AlogUpgrCmd> alogListener = new ICmdListener<String, AlogUpgrCmd>() {
         @Override
