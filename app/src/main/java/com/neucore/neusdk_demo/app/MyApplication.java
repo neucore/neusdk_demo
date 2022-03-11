@@ -76,16 +76,12 @@ public class MyApplication extends Application
          * 集成Neulink
          */
         Properties extConfig = new Properties();
-        /**
-         * 设置登录用户名密码
-         */
-        extConfig.setProperty(ConfigContext.USERNAME,"admin");
-        extConfig.setProperty(ConfigContext.PASSWORD,"password");
 
         /**
-         * 配置扩展: key可以参考ConfigContext内的定义
+         * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+        extConfig.setProperty(ConfigContext.SCOPEID,"yeker");
+
         /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
@@ -95,29 +91,41 @@ public class MyApplication extends Application
          * 设置设备端2Cloud的通信通道；默认为mqtt
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
+        //##########################################################################################
+        /**
+         * 设置登录用户名密码
+         */
+        extConfig.setProperty(ConfigContext.USERNAME,"admin");
+        extConfig.setProperty(ConfigContext.PASSWORD,"password");
+        /**
+         * 配置扩展: key可以参考ConfigContext内的定义
+         */
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+        //##########################################################################################
+        /**
+         * ⚠️注意；http 通道启用时打开
+         * 设置设备注册服务地址
+         */
+        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");
         /**
          * 30分钟
          */
         extConfig.setProperty(ConfigContext.HTTP_SESSION_TIMEOUT,String.valueOf(30*60*1000L));
-        /**
-         * 设置设备注册服务地址
-         */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");
+        //##########################################################################################
         /**
          * FTP 实现
          */
         extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
 
         extConfig.setProperty(ConfigContext.FTP_SERVER,"dev.neucore.com");
-
-
         /**
-         * ⚠️注意；http 通道启用时打开
+         * 连接器
          */
-        //extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
-        //extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");//设置http通道注册服务地址
         SampleConnector connector = new SampleConnector(this,extConfig);
-
+        //##########################################################################################
+        /**
+         * 扩展实现。。。
+         */
         /**
          * http登录授权回调
          */
@@ -143,6 +151,7 @@ public class MyApplication extends Application
          * neulink消息线性处理存储服务
          */
         connector.setMessageService(null);
+        //##########################################################################################
         /**
          * 开始连接
          */

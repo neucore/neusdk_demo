@@ -67,6 +67,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String HTTP_SESSION_TIMEOUT = "http.session.timeout";
 
+    public final static String SCOPEID = "ScopeId";
+
     private String TAG = TAG_PREFIX+"ConfigContext";
 
     private static ConfigContext configContext = new ConfigContext();
