@@ -162,30 +162,30 @@ public class NeulinkService implements NeulinkConst{
     }
 
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
+
+        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
         String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
 
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
+
+        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topStr);
 
         Context context = ContextHolder.getInstance().getContext();
 
         if (channel==0){//向下兼容
-
-            Log.d(TAG,"upload2cloud with mqtt");
 
             if(newServiceUri==null){
                 newServiceUri = defaultServerUri;
             }
             init(newServiceUri,context);
 
-            if(topStr.contains("msg/req/devinfo")){
-                Log.d(TAG,"start mqtt regist");
-            }
             /**
              * MQTT机制
              */
-            topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
+
             myMqttService.publish(payload,topStr, qos, retained);
         }
         else{
@@ -197,7 +197,6 @@ public class NeulinkService implements NeulinkConst{
                 if(index!=-1){
                     token = token.substring(index+1);
                 }
-                
                 params.put("Authorization","Bearer "+token);
             }
 
@@ -207,22 +206,19 @@ public class NeulinkService implements NeulinkConst{
              */
             if(topStr.contains("msg/req/devinfo")){
 
-                Log.d(TAG,"start http regist");
-
                 /**
                  * HTTP机制
                  */
                 String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
                 Log.d(TAG,"registServer："+registServer);
 
-                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
-                Log.d(TAG,topStr);
                 String response = null;
                 try {
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,3);
                 } catch (UnsupportedEncodingException e) {
                 }
+
                 Log.d(TAG,"设备注册响应："+response);
 
                 /**
@@ -255,16 +251,14 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * 设备端2cloud
                  */
-                topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
                 neulinkServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,neulinkServer);
-                Log.d(TAG,"upload2cloud with http");
                 Boolean done = false;
                 int count = 0;
                 while(!done && count<3){
                     try {
                         Log.d(TAG,topStr);
                         String topic = URLEncoder.encode(topStr,"UTF-8");
-                        String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,3);
+                        String response = NeuHttpHelper.post(neulinkServer+"?topic="+topic,payload,params,10,60,1);
                         Log.d(TAG,"设备upload2cloud响应："+response);
                         done = true;
                     }
@@ -292,7 +286,7 @@ public class NeulinkService implements NeulinkConst{
     public void publishConnect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\",:\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
+            String payload = "{\"dev_id\":\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
             publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
@@ -301,7 +295,7 @@ public class NeulinkService implements NeulinkConst{
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\",:\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
+            String payload = "{\"dev_id\":\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
             publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
@@ -419,6 +413,12 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void deliveryComplete(IMqttDeliveryToken arg0) {
             Log.i(TAG, "deliveryComplete");
+            try {
+                MqttMessage message = arg0.getMessage();
+                String[] topics = arg0.getTopics();
+                Log.i(TAG,String.format(""));
+            }
+            catch (Exception ex){}
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
