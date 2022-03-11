@@ -80,7 +80,7 @@ public class MyApplication extends Application
         /**
          * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.SCOPEID,"yeker");
+        extConfig.setProperty(ConfigContext.SCOPEID,"1");
 
         /**
          * 设备类型：根据APK功能决定进行配置
