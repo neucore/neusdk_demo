@@ -162,4 +162,6 @@ public interface NeulinkConst {
 
     String MESSAGE_SUCCESS = "success";
 
+    String MESSAGE_FAILED = "failed";
+
 }

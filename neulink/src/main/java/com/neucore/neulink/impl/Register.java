@@ -23,7 +23,6 @@ public class Register implements NeulinkConst{
     private Context context;
     private  NeulinkService service;
     private NeulinkScheduledReport autoReporter = null;
-    private boolean initMqttService = false;
     private boolean networkReady = false;
     private boolean initRegistService = false;
     private boolean registed=false;
@@ -32,7 +31,7 @@ public class Register implements NeulinkConst{
     private String serviceUrl;
     private final NetworkHelper networkHelper = NetworkHelper.getInstance();
 
-    public Register(final Context context, final NeulinkService service, final String serviceUrl) {
+    public Register(final Context context, final NeulinkService service) {
         this.context = context;
         this.service = service;
         this.serviceUrl = serviceUrl;
@@ -57,7 +56,7 @@ public class Register implements NeulinkConst{
     }
     private Boolean logined = false;
     private void initRegistService(String from){
-        Log.i(TAG,String.format("from=%s,networkReady=%s,initMqttService=%s,initRegistService=%s",from,networkReady,initMqttService,initRegistService));
+        Log.i(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
         while (!logined&&channel==1) {
@@ -79,16 +78,7 @@ public class Register implements NeulinkConst{
             }
         }
 
-        if(networkReady){
-            if(!initMqttService ){//http注册方式&上报方式
-                Log.d(TAG,"try mqtt register");
-                service.init(serviceUrl,context);
-                initMqttService = true;
-            }
-        }
-
         if(networkReady
-            && initMqttService
             && !initRegistService){
 
             Log.d(TAG,"try "+(channel==0?"mqtt":"http")+ " register");
@@ -96,9 +86,6 @@ public class Register implements NeulinkConst{
                 registCalled = true;
                 regist();
             }
-
-            autoReporter.start();
-            initRegistService = true;
         }
     }
 
@@ -109,35 +96,29 @@ public class Register implements NeulinkConst{
         new Thread(){
             public void run(){
                 while(!registed){
-                    Log.i(TAG,"@Regist MQTT MqttConnSuccessed: "+service.getMqttConnSuccessed());
-                    if(!service.getMqttConnSuccessed()){
-                        service.connect();
-                    }
-
-                    if(!service.getMqttConnSuccessed()){
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
+                    try {
+                        Thread.sleep(5000);
+                        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+                        DeviceInfo deviceInfo = deviceService.getInfo();
+                        if (ObjectUtil.isEmpty(deviceInfo)) {
+                            throw new RuntimeException("设备服务 getInfo没有实现。。。");
                         }
-                        continue;
-                    }
+                        String devId = DeviceUtils.getDeviceId(context) + "@@" + deviceService.getExtSN() + "@@" + ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE, 0);
+                        deviceInfo.setDeviceId(devId);
 
-                    IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
-                    DeviceInfo deviceInfo = deviceService.getInfo();
-                    if(ObjectUtil.isEmpty(deviceInfo)){
-                        throw new RuntimeException("设备服务 getInfo没有实现。。。");
+                        String payload = JSonUtils.toString(deviceInfo);
+                        String devinfo_topic = "msg/req/devinfo";
+                        service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+                        registed = true;
+                        autoReporter.start();
+                        initRegistService = true;
                     }
-                    String devId = DeviceUtils.getDeviceId(context)+"@@"+ deviceService.getExtSN()+"@@"+ ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE,0);
-                    deviceInfo.setDeviceId(devId);
-
-                    String payload = JSonUtils.toString(deviceInfo);
-                    String devinfo_topic = "msg/req/devinfo";
-                    service.publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
-                    registed = true;
+                    catch(Exception ex){
+                        Log.e(TAG,"注册失败："+ex.getMessage());
+                    }
                 }
 
             }
         }.start();
-
     }
 }
