@@ -288,6 +288,9 @@ public class NeulinkService implements NeulinkConst{
                             }
                             count++;
                         }
+                        else {
+                            done = true;
+                        }
                     }
                     catch (Exception e) {
                         Log.d(TAG,"upload2cloud error with: "+e.getMessage());
