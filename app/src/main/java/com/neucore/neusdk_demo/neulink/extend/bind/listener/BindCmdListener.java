@@ -16,7 +16,9 @@ public class BindCmdListener implements ICmdListener<BindActionResult, BindSyncC
 
         //绑定事件
         toUserUpload(true);
-
+        /**
+         * @TODO: 业务处理；eg：保存
+         */
         BindActionResult result = new BindActionResult();
         result.setCode(NeulinkConst.STATUS_202);//需要审核确认
         result.setMessage(NeulinkConst.MESSAGE_SUCCESS);
