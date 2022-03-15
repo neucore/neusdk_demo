@@ -10,8 +10,8 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.extend.NeulinkSecurity;
+import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
@@ -30,7 +30,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,8 +47,8 @@ public class NeulinkService implements NeulinkConst{
 
     private MyMqttService myMqttService = null;
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
-    private ILoginCallback loginCallback;
-    private Boolean inited = false;
+    private Boolean neulinkServiceInited = false;
+    private Boolean mqttInited = false;
     private Boolean mqttConnSuccessed = false;
     private Register register = null;
     private Boolean destroy = false;
@@ -64,7 +63,7 @@ public class NeulinkService implements NeulinkConst{
     /**
      * 构建EasyMqttService对象
      */
-    public void buildMqttService() {
+    public void init() {
         Context context = ContextHolder.getInstance().getContext();
         NeulinkMsgCallBack defaultMqttCallBack = new NeulinkMsgCallBack(context,this);
         mqttCallBacks.add(defaultMqttCallBack);
@@ -75,10 +74,10 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
-    private void init(String serverUri,Context context){
-        Log.i(TAG,String.format("inited %s",inited));
-        synchronized (inited){
-            if(!inited){
+    private void initMqtt(String serverUri, Context context){
+        Log.i(TAG,String.format("inited %s", mqttInited));
+        synchronized (mqttInited){
+            if(!mqttInited){
                 myMqttService = new MyMqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
@@ -98,7 +97,7 @@ public class NeulinkService implements NeulinkConst{
                         //.mqttMessageListener(messageListener)
                         //构建出EasyMqttService 建议用application的context
                         .bulid(context);
-                inited = true;
+                mqttInited = true;
                 new HouseKeeping().start();
             }
         }
@@ -169,6 +168,7 @@ public class NeulinkService implements NeulinkConst{
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         publishMessage(topicPrefix,version,reqId,payload,qos,retained,null);
     }
+
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained,IPublishCallback callback){
 
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
@@ -193,8 +193,9 @@ public class NeulinkService implements NeulinkConst{
             /**
              * MQTT机制
              */
+            myMqttService.publish(reqId,payload,topStr, qos, retained,context,callback);
 
-            myMqttService.publish(payload,topStr, qos, retained);
+            neulinkServiceInited = true;
         }
         else{
 
@@ -241,7 +242,7 @@ public class NeulinkService implements NeulinkConst{
                      *   }
                      * }
                      */
-                    ResRegist resRegist = (ResRegist)JSonUtils.toObject(response, ResRegist.class);
+                    ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
                     NeulinkZone zone = resRegist.getZone();
                     custid = zone.getCustid();
                     storeid = zone.getStoreid();
@@ -255,6 +256,8 @@ public class NeulinkService implements NeulinkConst{
                     mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
 
                     connect(mqttServiceUri,context);
+
+                    neulinkServiceInited = true;
 
                 } catch (Exception e) {
                     Log.e(TAG,e.getMessage(),e);
@@ -274,7 +277,10 @@ public class NeulinkService implements NeulinkConst{
                         String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topic,payload,params,10,60,1);
                         Log.d(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
-                            callback.onFinished(response);
+                            Class cls = callback.getResultType();
+                            Result result = (Result) JSonUtils.toObject(response,cls);
+                            result.setReqId(reqId);
+                            callback.onFinished(result);
                         }
                         done = true;
                     }
@@ -302,8 +308,8 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private void connect(String mqttServiceUri,Context context){
-        if(!inited){
-            init(mqttServiceUri,context);
+        if(!mqttInited){
+            initMqtt(mqttServiceUri,context);
             int cnt = 0;
             while (!getMqttConnSuccessed()){
                 try {
@@ -317,7 +323,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    public void publishConnect(Integer flg){
+    protected void publishConnect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
@@ -325,7 +331,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    public void publishDisConnect(Integer flg){
+    protected void publishDisConnect(Integer flg){
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
@@ -494,4 +500,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    public Boolean isNeulinkServiceInited() {
+        return neulinkServiceInited;
+    }
 }

@@ -1,5 +1,8 @@
 package com.neucore.neulink;
 
-public interface IPublishCallback {
-    void onFinished(String result);
+import com.neucore.neulink.extend.Result;
+
+public interface IPublishCallback<T extends Result> {
+    Class<T> getResultType();
+    void onFinished(T result);
 }

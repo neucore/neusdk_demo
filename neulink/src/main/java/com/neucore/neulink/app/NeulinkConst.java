@@ -159,9 +159,25 @@ public interface NeulinkConst {
      * 同步包处理过程中出错
      */
     Integer STATUS_50002 = 50002;
-
+    /**
+     * 成功
+     */
     String MESSAGE_SUCCESS = "success";
-
+    /**
+     * 失败
+     */
     String MESSAGE_FAILED = "failed";
+    /**
+     * 处理中
+     */
+    String MESSAGE_PROCESSING = "processing";
+    /**
+     * 同意
+     */
+    String MESSAGE_AGREE = "agree";
+    /**
+     * 拒绝
+     */
+    String MESSAGE_REFUSE = "refuse";
 
 }
