@@ -3,8 +3,10 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.IPublishCallback;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.extend.MyPublishListener;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -14,8 +16,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import java.util.HashMap;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -149,6 +149,7 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
+
     /**
      * 发布消息
      *
@@ -157,9 +158,16 @@ public class MyMqttService implements NeulinkConst{
      * @param qos
      * @param retained
      */
-    public void publish(String msg, String topic, int qos, boolean retained) {
+    public void publish(String reqId,String msg, String topic, int qos, boolean retained, Context context, IPublishCallback iPublishCallback) {
         try {
-            client.publish(topic, msg.getBytes(), qos, retained);
+            if(ObjectUtil.isNotEmpty(iPublishCallback)){
+                MyPublishListener myPublishAction = new MyPublishListener(reqId,iPublishCallback);
+                client.publish(topic, msg.getBytes(), qos, retained,context,myPublishAction);
+            }
+            else{
+                client.publish(topic, msg.getBytes(), qos, retained);
+            }
+
         } catch (Exception e) {
             Log.e(TAG, "publish: "+e.toString(),e);
         }

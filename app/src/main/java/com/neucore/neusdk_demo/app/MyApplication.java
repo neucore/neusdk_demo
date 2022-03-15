@@ -8,13 +8,19 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IPublishCallback;
 import com.neucore.neulink.IUserService;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SubApp;
 import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.SampleConnector;
+import com.neucore.neulink.impl.Cmd;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
+import com.neucore.neulink.impl.NeulinkPublisherFacde;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
@@ -60,6 +66,26 @@ public class MyApplication extends Application
          * 集成SDK
          */
         installSDK();
+        new Thread(){
+            public void run(){
+                while(!NeulinkService.getInstance().isNeulinkServiceInited()){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+                /**
+                 * ⚠️注意：
+                 * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
+                 */
+                //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+                String biz = "binding";
+                String version = "v1.0";
+                String reqId = "3214323ewadfdsad";
+                String mode = "bind";
+                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iPublishCallback);
+            }
+        }.start();
     }
 
     /**
@@ -90,7 +116,7 @@ public class MyApplication extends Application
         /**
          * 设置设备端2Cloud的通信通道；默认为mqtt
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         //##########################################################################################
         /**
          * mqtt
@@ -453,8 +479,19 @@ public class MyApplication extends Application
              * 新业务可以参考Hello业务的实现业务就行
              */
             NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
-
             NeulinkProcessorFactory.regist("binding",new BindProcessor(),new BindCmdListener());
+        }
+    };
+
+    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+        @Override
+        public Class<Result> getResultType() {
+            return Result.class;
+        }
+
+        @Override
+        public void onFinished(Result result) {
+            Log.i(TAG, "onFinished： "+result.getReqId());
         }
     };
 }

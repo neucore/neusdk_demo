@@ -537,14 +537,66 @@ public void upldLic(String num, String color, String imageUrl, String cmpCode, S
 public void upldFacetmp(FaceTemp[] data);
 public void upldFacetmp(FaceTemp[] data,IPublishCallback callback);
 public void upldDownloadProgress(String topicPrefix,String reqId,String progress);
-public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
-public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
-public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
-public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
-public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload);
-public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback);
 public void upldFaceInfo$1$2(String url, FaceUpload12 info);
 public void upldFaceInfo$1$2(String url, FaceUpload12 info,IPublishCallback callback);
+
+public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
+public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+
+public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
+public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+
+public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload);
+public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback);
+
+```
+
+### 异步响应注意事项
+
+异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功；
+
+2，异步响应-绑定接收成功
+```
+    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+        @Override
+        public Class<Result> getResultType() {
+            return Result.class;
+        }
+
+        @Override
+        public void onFinished(Result result) {
+            Log.i(TAG, result.getReqId());
+        }
+    };
+    //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+    String biz = "binding";
+    String version = "v1.0";
+    String reqId = "3214323ewadfdsad";
+    String mode = "bind";
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iPublishCallback);
+    
+```
+
+3，异步响应-绑定同意
+```
+    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+        @Override
+        public Class<Result> getResultType() {
+            return Result.class;
+        }
+
+        @Override
+        public void onFinished(Result result) {
+            Log.i(TAG, result.getReqId());
+        }
+    };
+    //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+    String biz = "binding";
+    String version = "v1.0";
+    String reqId = "3214323ewadfdsad";
+    String mode = "bind";
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 200, NeulinkConst.MESSAGE_AGREE, "",iPublishCallback);
+    
 ```
 
 ## 配置文件管理

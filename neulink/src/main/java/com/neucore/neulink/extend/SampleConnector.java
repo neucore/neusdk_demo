@@ -189,7 +189,14 @@ public class SampleConnector implements NeulinkConst{
          * 初始化MQTT
          */
         long start = System.currentTimeMillis();
-        deviceMqttServiceInit(service);
+
+        if (Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        service.init();//tcp://10.18.9.99:1883"));
+
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
     /**
@@ -230,17 +237,5 @@ public class SampleConnector implements NeulinkConst{
             tHandler.sendEmptyMessage(1);
             Looper.loop();  //looper开始处理消息。
         }
-    }
-
-    private NeulinkService deviceMqttServiceInit(NeulinkService service){
-
-        if (Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
-        service.buildMqttService();//tcp://10.18.9.99:1883"));
-
-        return service;
     }
 }

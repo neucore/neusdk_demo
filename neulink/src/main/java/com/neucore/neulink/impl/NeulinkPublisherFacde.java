@@ -92,149 +92,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 上报升级包下载进度
-     * @param topicPrefix
-     * @param reqId
-     * @param progress
-     */
-    public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
-        UpgrRes upgrRes = new UpgrRes();
-        upgrRes.setCode(STATUS_200);
-        upgrRes.setMsg("下载中");
-        upgrRes.setProgress(progress);
-        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        String payload = JSonUtils.toString(upgrRes);
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
-    }
-    /**
-     * rmsg请求响应
-     * rmsg/res/${biz}/${version}
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     */
-    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
-        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,null);
-    }
-
-    /**
-     *
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     * @param callback
-     */
-    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback){
-        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
-    }
-    /**
-     * rrpc请求响应
-     * rrpc/res/${biz}/${version}
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     */
-    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload){
-        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,null);
-    }
-
-    /**
-     *
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     * @param callback
-     */
-    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback){
-        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
-    }
-    /**
-     * 抓拍上传
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     */
-    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,null);
-    }
-
-    /**
-     *
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     * @param callback
-     */
-    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
-    }
-
-    private void response(String topicPrefix,String reqId,CmdRes upgrRes,IPublishCallback callback){
-        String payloadStr = JSonUtils.toString(upgrRes);
-        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0,callback);
-    }
-    /**
      * 人脸上报
      * 1.2版本协议
      * @param url 人脸照片的url
@@ -297,4 +154,149 @@ public class NeulinkPublisherFacde implements NeulinkConst{
             Log.i(TAG,"url为空");
         }
     }
+
+    /**
+     * 上报升级包下载进度
+     * @param topicPrefix
+     * @param reqId
+     * @param progress
+     */
+    public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(STATUS_200);
+        upgrRes.setMsg("下载中");
+        upgrRes.setProgress(progress);
+        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        String payload = JSonUtils.toString(upgrRes);
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
+    }
+    /**
+     * rmsg请求响应
+     * rmsg/res/${biz}/${version}
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload){
+        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,null);
+    }
+
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload,IPublishCallback callback){
+        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
+    }
+    /**
+     * rrpc请求响应
+     * rrpc/res/${biz}/${version}
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload){
+        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,null);
+    }
+
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload,IPublishCallback callback){
+        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
+    }
+    /**
+     * 抓拍上传
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,null);
+    }
+
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
+    }
+
+    private void response(String topicPrefix,String reqId,CmdRes upgrRes,IPublishCallback callback){
+        String payloadStr = JSonUtils.toString(upgrRes);
+        upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0,callback);
+    }
+
 }

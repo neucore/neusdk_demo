@@ -7,6 +7,7 @@ import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
@@ -49,7 +50,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         /**
          * 发送响应消息给到服务端
          */
-        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),NEULINK_MODE_RECEIVE,topic.getReqId(),STATUS_200,"消息已经接收",null);
+        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),NEULINK_MODE_RECEIVE,topic.getReqId(),STATUS_200, NeulinkConst.MESSAGE_PROCESSING,null);
         //检查当前请求是否已经已经到达过
         synchronized (lock){
             msg = query(topic.getReqId());

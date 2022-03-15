@@ -23,7 +23,7 @@ public class JSonUtils {
         return gson.toJson(obj);
     }
 
-    public static Object toObject(String paylog, Class t){
+    public static <T> T toObject(String paylog, Class<T> t){
         return gson.fromJson(paylog,t);
     }
 
