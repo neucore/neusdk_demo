@@ -531,6 +531,21 @@ public class AuthActionResult {
 
 1，在Apk应用中采用NeulinkService.getInstance().getPublisherFacde()获取消息发送接口进行进行消息发送;
 
+```
+public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position);
+public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IPublishCallback callback);
+public void upldFacetmp(FaceTemp[] data);
+public void upldFacetmp(FaceTemp[] data,IPublishCallback callback);
+public void upldDownloadProgress(String topicPrefix,String reqId,String progress);
+public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
+public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
+public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload);
+public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback);
+public void upldFaceInfo$1$2(String url, FaceUpload12 info);
+public void upldFaceInfo$1$2(String url, FaceUpload12 info,IPublishCallback callback);
+```
 
 ## 配置文件管理
 

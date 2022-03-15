@@ -75,9 +75,12 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 }
                 long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
                 req = parser(payload);
+
+                req.setBiz(topic.getBiz());
                 req.setReqId(topic.getReqId());
                 req.setReqtime(reqTime);
                 req.setVersion(topic.getVersion());
+
                 ActionResult actionResult = process(topic, req);
                 Res res = responseWrapper(req, actionResult);
                 String jsonStr = JSonUtils.toString(res);

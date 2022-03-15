@@ -294,7 +294,6 @@ public class NeulinkService implements NeulinkConst{
                         done = true;
                     }
                 }
-
             }
         }
     }
