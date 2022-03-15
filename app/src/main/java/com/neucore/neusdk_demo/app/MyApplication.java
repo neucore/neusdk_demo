@@ -80,19 +80,20 @@ public class MyApplication extends Application
         /**
          * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.SCOPEID,"1");
+        extConfig.setProperty(ConfigContext.SCOPEID,"1");//租户id
 
         /**
          * 设备类型：根据APK功能决定进行配置
-         * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC】
+         * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC  14:相框-Android;15:相框-Lunix】
          */
-        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"5");//默认为客流机器
+        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"14");//默认为客流机器
         /**
          * 设置设备端2Cloud的通信通道；默认为mqtt
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
         //##########################################################################################
         /**
+         * mqtt
          * 设置登录用户名密码
          */
         extConfig.setProperty(ConfigContext.USERNAME,"admin");
@@ -394,7 +395,7 @@ public class MyApplication extends Application
             /**
              * 实现登录返回token
              */
-            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0NzIyODMyMywiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjI4MGJhZjlmLTg0NzctNDM2My1iMzczLTcxYzJjNTRlZWY5MCIsImNsaWVudF9pZCI6ImdlbWluaSJ9.OBx1QJKBXr5IMIucvfejFu7IquHngWXgSh0UfwC4Jo4";
+            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0NzU3MDY4OSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjkzZmUxMGViLThmMDEtNGZjZS1iNGQ3LTcyNWYyNGYwNTk2NSIsImNsaWVudF9pZCI6ImdlbWluaSJ9.6tKIk8TIxLRQh7z67d5vj45NEvXBmonqDYwfnjDy9Eo";
         }
     };
 

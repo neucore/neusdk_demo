@@ -239,7 +239,7 @@ public class SampleConnector implements NeulinkConst{
             StrictMode.setThreadPolicy(policy);
         }
 
-        service.buildMqttService(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER));//tcp://10.18.9.99:1883"));
+        service.buildMqttService();//tcp://10.18.9.99:1883"));
 
         return service;
     }
