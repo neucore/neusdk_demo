@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.IPublishCallback;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.app.NeulinkConst;
@@ -51,6 +52,21 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         service.publishMessage(topic, IProcessor.V1$0, payload, 0);
     }
 
+    public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IPublishCallback callback){
+        LicUpldCmd req = new LicUpldCmd();
+        req.setNum(num);
+        req.setColor(color);
+        req.setImageUrl(imageUrl);
+        req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        req.setCmpCode(cmpCode);
+        req.setLocationCode(locationCode);
+        req.setPosition(position);
+
+        String payload = JSonUtils.toString(req);
+        String topic = "upld/req/carplateinfo";
+        service.publishMessage(topic, IProcessor.V1$0, payload, 0,callback);
+    }
+
     /**
      * 体温上报
      * upld/req/facetemprature/v1.0/${req_no}[/${md5}], qos=0
@@ -63,6 +79,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
         service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+    }
+
+    public void upldFacetmp(FaceTemp[] data,IPublishCallback callback){
+        FaceTempCmd req = new FaceTempCmd();
+        req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        req.setData(data);
+
+        String payload = JSonUtils.toString(req);
+        String topic = "upld/req/facetemprature";
+        service.publishMessage(topic, IProcessor.V1$0, payload, 0,callback);
     }
 
     /**
@@ -98,7 +124,28 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res);
+        response(topicPrefix,reqId,res,null);
+    }
+
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback){
+        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
     }
     /**
      * rrpc请求响应
@@ -118,7 +165,28 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res);
+        response(topicPrefix,reqId,res,null);
+    }
+
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback){
+        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
     }
     /**
      * 抓拍上传
@@ -137,13 +205,34 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res);
+        response(topicPrefix,reqId,res,null);
     }
 
-    private void response(String topicPrefix,String reqId,CmdRes upgrRes){
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
+    }
+
+    private void response(String topicPrefix,String reqId,CmdRes upgrRes,IPublishCallback callback){
         String payloadStr = JSonUtils.toString(upgrRes);
         upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0);
+        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0,callback);
     }
     /**
      * 人脸上报
@@ -166,6 +255,35 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo/"+info.getDeviceId();
                     service.publishMessage(topic, IProcessor.V1$2, payload, 0);
+                }
+                else{
+                    Log.i(TAG,String.format("url=%s",url));
+                }
+            }
+            else {
+                Log.i(TAG,String.format("url=%s",url));
+            }
+        }
+        else {
+            Log.i(TAG,"url为空");
+        }
+    }
+
+    public void upldFaceInfo$1$2(String url, FaceUpload12 info,IPublishCallback callback){
+        if(!ObjectUtil.isEmpty(url)){
+            int index = url.lastIndexOf("/");
+            if(index!=-1){
+                String dir =url.substring(0,index);
+                if(!ObjectUtil.isEmpty(dir)){
+                    info.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+
+                    if (info.getAiData()!=null){
+                        info.getAiData().setDir(dir);
+                    }
+
+                    String payload = JSonUtils.toString(info);
+                    String topic = "upld/req/faceinfo/"+info.getDeviceId();
+                    service.publishMessage(topic, IProcessor.V1$2, payload, 0,callback);
                 }
                 else{
                     Log.i(TAG,String.format("url=%s",url));

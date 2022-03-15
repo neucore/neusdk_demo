@@ -4,6 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class Cmd {
 
+    private String biz;
+
+    public String getBiz() {
+        return biz;
+    }
+
+    void setBiz(String biz) {
+        this.biz = biz;
+    }
+
     @SerializedName("mode")
     protected String cmdStr;
 
@@ -13,7 +23,7 @@ public class Cmd {
         return reqId;
     }
 
-    public void setReqId(String reqId) {
+    void setReqId(String reqId) {
         this.reqId = reqId;
     }
 
@@ -23,7 +33,7 @@ public class Cmd {
         return version;
     }
 
-    public void setVersion(String version) {
+    void setVersion(String version) {
         this.version = version;
     }
 
@@ -42,7 +52,7 @@ public class Cmd {
         return reqtime;
     }
 
-    public void setReqtime(long reqtime) {
+    void setReqtime(long reqtime) {
         this.reqtime = reqtime;
     }
 }
