@@ -6,6 +6,7 @@ neulink sdk已经完成了mqtt网络的连接、断网重连机制；
 实现了业务集成转发扩展机制；
 实现了http登录授权回调机制
 实现了Mqtt连接状态回调机制
+实现了响应上传回调机制
 实现了消息、用户、设备等服务默认实现及其扩展机制
 
 ### 注意事项
@@ -470,43 +471,43 @@ public class AuthActionResult {
             /**
              * 配置扩展
              */
-            ListenerFactory.getInstance().setCfgListener(new CfgActionListener());
+            ListenerRegistrator.getInstance().setCfgListener(new CfgActionListener());
             /**
              * 人脸下发 扩展
              */
-            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+            ListenerRegistrator.getInstance().setFaceListener(new SampleFaceListener());
             /**
              * 人脸比对 扩展
              */
-            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            ListenerRegistrator.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展
              */
-            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            ListenerRegistrator.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
 
             /**
              * 唤醒 扩展
              */
-            ListenerFactory.getInstance().setAwakenListener(new AwakenActionListener());
+            ListenerRegistrator.getInstance().setAwakenListener(new AwakenActionListener());
             /**
              * 休眠 扩展
              */
-            ListenerFactory.getInstance().setHibrateListener(new HibrateActionListener());
+            ListenerRegistrator.getInstance().setHibrateListener(new HibrateActionListener());
 
             /**
              * 算法升级 扩展
              */
-            ListenerFactory.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
+            ListenerRegistrator.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
 
             /**
              * 固件$APK 扩展
              */
-            ListenerFactory.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
+            ListenerRegistrator.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
 
             /**
              * 备份现 扩展
              */
-            ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
+            ListenerRegistrator.getInstance().setBackupListener(new BackupActionListener());
 
             /**
              * neulink消息线性处理存储服务
@@ -518,7 +519,7 @@ public class AuthActionResult {
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Auth业务的实现业务就行
              */
-            NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
+            ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
         }
     };
 
@@ -557,7 +558,7 @@ public void upldRequest(String biz,String version,String reqId,String mode,Integ
 
 2，异步响应-绑定接收成功
 ```
-    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+    IPublishCallback iResCallback = new IPublishCallback<Result>() {
         @Override
         public Class<Result> getResultType() {
             return Result.class;
@@ -573,13 +574,13 @@ public void upldRequest(String biz,String version,String reqId,String mode,Integ
     String version = "v1.0";
     String reqId = "3214323ewadfdsad";
     String mode = "bind";
-    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iPublishCallback);
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iResCallback);
     
 ```
 
 3，异步响应-绑定同意
 ```
-    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+    IPublishCallback iResCallback = new IPublishCallback<Result>() {
         @Override
         public Class<Result> getResultType() {
             return Result.class;
@@ -595,7 +596,7 @@ public void upldRequest(String biz,String version,String reqId,String mode,Integ
     String version = "v1.0";
     String reqId = "3214323ewadfdsad";
     String mode = "bind";
-    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 200, NeulinkConst.MESSAGE_AGREE, "",iPublishCallback);
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 200, NeulinkConst.MESSAGE_AGREE, "",iResCallback);
     
 ```
 

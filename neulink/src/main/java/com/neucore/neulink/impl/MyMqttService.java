@@ -3,10 +3,9 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.IPublishCallback;
+import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.extend.MyPublishListener;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -158,10 +157,10 @@ public class MyMqttService implements NeulinkConst{
      * @param qos
      * @param retained
      */
-    public void publish(String reqId,String msg, String topic, int qos, boolean retained, Context context, IPublishCallback iPublishCallback) {
+    public void publish(String reqId,String msg, String topic, int qos, boolean retained, Context context, IResCallback iResCallback) {
         try {
-            if(ObjectUtil.isNotEmpty(iPublishCallback)){
-                MyPublishListener myPublishAction = new MyPublishListener(reqId,iPublishCallback);
+            if(ObjectUtil.isNotEmpty(iResCallback)){
+                MqttActionListenerAdapter myPublishAction = new MqttActionListenerAdapter(reqId, iResCallback);
                 client.publish(topic, msg.getBytes(), qos, retained,context,myPublishAction);
             }
             else{

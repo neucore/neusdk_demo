@@ -12,7 +12,7 @@ import com.neucore.neulink.cmd.rrpc.FaceData;
 import com.neucore.neulink.cmd.rrpc.SyncInfo;
 import com.neucore.neulink.cmd.rrpc.TLibPkgResult;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.extend.UpdateActionResult;
@@ -271,6 +271,6 @@ public class BLibSyncCmdListener implements ICmdListener<UpdateActionResult,BTLi
     }
 
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getFaceListener();
+        return ListenerRegistrator.getInstance().getFaceListener();
     }
 }

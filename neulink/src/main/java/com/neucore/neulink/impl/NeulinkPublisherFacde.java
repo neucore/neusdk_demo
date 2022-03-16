@@ -4,9 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.IPublishCallback;
-import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.cmd.lic.LicUpldCmd;
@@ -49,10 +47,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/carplateinfo";
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("carplateinfo");
+        service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
-    public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IPublishCallback callback){
+    public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IResCallback callback){
         LicUpldCmd req = new LicUpldCmd();
         req.setNum(num);
         req.setColor(color);
@@ -78,10 +77,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("facetemprature");
+        service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
-    public void upldFacetmp(FaceTemp[] data,IPublishCallback callback){
+    public void upldFacetmp(FaceTemp[] data, IResCallback callback){
         FaceTempCmd req = new FaceTempCmd();
         req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         req.setData(data);
@@ -111,7 +111,8 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo/"+info.getDeviceId();
-                    service.publishMessage(topic, IProcessor.V1$2, payload, 0);
+                    IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("faceinfo");
+                    service.publishMessage(topic, IProcessor.V1$2, payload, 0,resCallback);
                 }
                 else{
                     Log.i(TAG,String.format("url=%s",url));
@@ -126,7 +127,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         }
     }
 
-    public void upldFaceInfo$1$2(String url, FaceUpload12 info,IPublishCallback callback){
+    public void upldFaceInfo$1$2(String url, FaceUpload12 info, IResCallback callback){
         if(!ObjectUtil.isEmpty(url)){
             int index = url.lastIndexOf("/");
             if(index!=-1){
@@ -188,7 +189,8 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,null);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        response(topicPrefix,reqId,res,resCallback);
     }
 
     /**
@@ -202,7 +204,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      * @param callback
      */
-    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload,IPublishCallback callback){
+    public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback){
         String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
         CmdRes res = new CmdRes();
         res.setCode(code);
@@ -229,7 +231,8 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,null);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        response(topicPrefix,reqId,res,resCallback);
     }
 
     /**
@@ -243,7 +246,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      * @param callback
      */
-    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload,IPublishCallback callback){
+    public void rrpcResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback){
         String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
         CmdRes res = new CmdRes();
         res.setCode(code);
@@ -269,7 +272,8 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,null);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        response(topicPrefix,reqId,res,resCallback);
     }
 
     /**
@@ -283,7 +287,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      * @param callback
      */
-    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback){
+    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback){
         String topicPrefix = String.format("upld/req/%s/%s/%s",biz,ServiceFactory.getInstance().getDeviceService().getExtSN(),version);
         CmdRes res = new CmdRes();
         res.setCode(code);
@@ -293,10 +297,9 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         response(topicPrefix,reqId,res,callback);
     }
 
-    private void response(String topicPrefix,String reqId,CmdRes upgrRes,IPublishCallback callback){
+    private void response(String topicPrefix, String reqId, CmdRes upgrRes, IResCallback callback){
         String payloadStr = JSonUtils.toString(upgrRes);
         upgrRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0,callback);
     }
-
 }

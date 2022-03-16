@@ -8,7 +8,7 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.cmd.rmsg.HibrateCmd;
 import com.neucore.neulink.cmd.rmsg.HibrateRes;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
@@ -82,6 +82,6 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getHibrateListener();
+        return ListenerRegistrator.getInstance().getHibrateListener();
     }
 }

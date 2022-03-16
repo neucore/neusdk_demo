@@ -8,7 +8,7 @@ import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
@@ -123,6 +123,6 @@ public class FirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes, A
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getFireware$ApkListener();
+        return ListenerRegistrator.getInstance().getFireware$ApkListener();
     }
 }

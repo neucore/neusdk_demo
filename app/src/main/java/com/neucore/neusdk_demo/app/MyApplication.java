@@ -8,19 +8,17 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IPublishCallback;
+import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SubApp;
-import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.SampleConnector;
-import com.neucore.neulink.impl.Cmd;
-import com.neucore.neulink.impl.NeulinkProcessorFactory;
-import com.neucore.neulink.impl.NeulinkPublisherFacde;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.ProcessRegistrator;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
@@ -40,6 +38,9 @@ import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
 import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
+import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -83,7 +84,7 @@ public class MyApplication extends Application
                 String version = "v1.0";
                 String reqId = "3214323ewadfdsad";
                 String mode = "bind";
-                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iPublishCallback);
+                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "", iResCallback);
             }
         }.start();
     }
@@ -435,55 +436,56 @@ public class MyApplication extends Application
             /**
              * 配置扩展
              */
-            ListenerFactory.getInstance().setCfgListener(new CfgActionListener());
+            ListenerRegistrator.getInstance().setCfgListener(new CfgActionListener());
             /**
              * 人脸下发 扩展
              */
-            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+            ListenerRegistrator.getInstance().setFaceListener(new SampleFaceListener());
             /**
              * 人脸比对 扩展
              */
-            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            ListenerRegistrator.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展
              */
-            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            ListenerRegistrator.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
 
             /**
              * 唤醒 扩展
              */
-            ListenerFactory.getInstance().setAwakenListener(new AwakenActionListener());
+            ListenerRegistrator.getInstance().setAwakenListener(new AwakenActionListener());
             /**
              * 休眠 扩展
              */
-            ListenerFactory.getInstance().setHibrateListener(new HibrateActionListener());
+            ListenerRegistrator.getInstance().setHibrateListener(new HibrateActionListener());
 
             /**
              * 算法升级 扩展
              */
-            ListenerFactory.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
+            ListenerRegistrator.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
 
             /**
              * 固件$APK 升级扩展
              */
-            ListenerFactory.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
+            ListenerRegistrator.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
 
             /**
              * 备份实现
              */
-            ListenerFactory.getInstance().setBackupListener(new BackupActionListener());
+            ListenerRegistrator.getInstance().setBackupListener(new BackupActionListener());
 
             /**
              * 自定义Processor注册
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Hello业务的实现业务就行
              */
-            NeulinkProcessorFactory.regist("auth",new AuthProcessor(),new AuthCmdListener());
-            NeulinkProcessorFactory.regist("binding",new BindProcessor(),new BindCmdListener());
+            ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
+            ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
+            ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
         }
     };
 
-    IPublishCallback iPublishCallback = new IPublishCallback<Result>() {
+    IResCallback iResCallback = new IResCallback<Result>() {
         @Override
         public Class<Result> getResultType() {
             return Result.class;

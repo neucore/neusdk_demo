@@ -7,11 +7,11 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.bak.BackupCmd;
 import com.neucore.neulink.cmd.bak.BackupCmdRes;
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -74,6 +74,6 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getBackupListener();
+        return ListenerRegistrator.getInstance().getBackupListener();
     }
 }
