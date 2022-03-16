@@ -9,6 +9,12 @@ public class NeulinkZone {
     private String custid;
     @SerializedName("storeid")
     private String storeid;
+
+    @SerializedName("mqtt_username")
+    private String mqttUserName;
+    @SerializedName("mqtt_password")
+    private String mqttPassword;
+
     @SerializedName("mqtt_server")
     private String mqttServer;
     @SerializedName("mqtt_port")
@@ -38,6 +44,22 @@ public class NeulinkZone {
 
     public void setStoreid(String storeid) {
         this.storeid = storeid;
+    }
+
+    public String getMqttUserName() {
+        return mqttUserName;
+    }
+
+    public void setMqttUserName(String mqttUserName) {
+        this.mqttUserName = mqttUserName;
+    }
+
+    public String getMqttPassword() {
+        return mqttPassword;
+    }
+
+    public void setMqttPassword(String mqttPassword) {
+        this.mqttPassword = mqttPassword;
     }
 
     public String getMqttServer() {
