@@ -229,7 +229,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;

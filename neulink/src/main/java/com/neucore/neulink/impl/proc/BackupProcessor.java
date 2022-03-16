@@ -9,7 +9,7 @@ import com.neucore.neulink.cmd.bak.BackupCmdRes;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -43,7 +43,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
     @Override
     protected BackupCmdRes responseWrapper(BackupCmd cmd, QueryActionResult<Map<String,String>> result) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_200);
         cmdRes.setMsg(MESSAGE_SUCCESS);
@@ -55,7 +55,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_500);
         cmdRes.setMsg(error);
@@ -65,7 +65,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, int code, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(code);
         cmdRes.setMsg(error);

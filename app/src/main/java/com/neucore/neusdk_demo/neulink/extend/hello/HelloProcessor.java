@@ -3,11 +3,10 @@ package com.neucore.neusdk_demo.neulink.extend.hello;
 import android.content.Context;
 
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.request.HelloCmd;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HelloCmdRes;
 
@@ -43,7 +42,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResu
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(result.getData());
         res.setMsg(result.getMessage());
         return res;
@@ -54,7 +53,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResu
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
@@ -65,7 +64,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResu
         HelloCmdRes res = new HelloCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;

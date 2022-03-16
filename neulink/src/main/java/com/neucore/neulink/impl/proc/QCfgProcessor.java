@@ -8,7 +8,7 @@ import com.neucore.neulink.cmd.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -59,7 +59,7 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes, ActionResu
     public CfgQueryCmdRes responseWrapper(CfgCmd cmd, ActionResult<CfgItem[]> actionResult) {
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
         res.setData(actionResult.getData());
@@ -69,7 +69,7 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes, ActionResu
     public CfgQueryCmdRes fail(CfgCmd cmd,String message) {
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_500);
         res.setMsg(message);
         return res;
@@ -77,7 +77,7 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes, ActionResu
     public CfgQueryCmdRes fail(CfgCmd cmd,int code,String message) {
         CfgQueryCmdRes res = new CfgQueryCmdRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(message);
         return res;

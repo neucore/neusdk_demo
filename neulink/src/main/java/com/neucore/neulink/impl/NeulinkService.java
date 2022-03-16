@@ -12,7 +12,7 @@ import com.neucore.neulink.cmd.msg.NeulinkZone;
 import com.neucore.neulink.cmd.msg.ResRegist;
 import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -84,7 +84,7 @@ public class NeulinkService implements NeulinkConst{
                         //设置不清除回话session 可收到服务器之前发出的推送消息
                         .cleanSession(false)
                         //唯一标示 保证每个设备都唯一就可以 建议 imei
-                        .clientId(ServiceFactory.getInstance().getDeviceService().getExtSN())
+                        .clientId(ServiceRegistrator.getInstance().getDeviceService().getExtSN())
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         .serverUrl(serverUri)
                         //心跳包默认的发送间隔
@@ -177,7 +177,7 @@ public class NeulinkService implements NeulinkConst{
 
         String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
 
-        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ServiceFactory.getInstance().getDeviceService().getExtSN();
+        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ ServiceRegistrator.getInstance().getDeviceService().getExtSN();
 
         Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topStr);
 
@@ -287,7 +287,7 @@ public class NeulinkService implements NeulinkConst{
                     catch (NeulinkException e) {
                         if(e.getCode()==401||e.getCode()==403){
                             Log.i(TAG,"token过期，重新登录");
-                            token = ServiceFactory.getInstance().getLoginCallback().login();
+                            token = ServiceRegistrator.getInstance().getLoginCallback().login();
                             if(ObjectUtil.isNotEmpty(token)){
                                 Log.i(TAG,"token过期，重新登录成功");
                                 NeulinkSecurity.getInstance().setToken(token);
@@ -326,7 +326,7 @@ public class NeulinkService implements NeulinkConst{
     protected void publishConnect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
+            String payload = "{\"dev_id\":\""+ ServiceRegistrator.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
             publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
@@ -335,7 +335,7 @@ public class NeulinkService implements NeulinkConst{
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ServiceFactory.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
+            String payload = "{\"dev_id\":\""+ ServiceRegistrator.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
             publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }

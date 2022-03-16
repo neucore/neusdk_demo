@@ -113,10 +113,10 @@ public class SampleConnector implements NeulinkConst{
             registerNetworkReceiver(netBroadcastReceiver);
 
             NeulinkService service = NeulinkService.getInstance();
-            ServiceFactory.getInstance().setLoginCallback(loginCallback);
-            ServiceFactory.getInstance().setUserService(userService);
-            ServiceFactory.getInstance().setDeviceService(deviceService);
-            ServiceFactory.getInstance().setMessageService(messageService);
+            ServiceRegistrator.getInstance().setLoginCallback(loginCallback);
+            ServiceRegistrator.getInstance().setUserService(userService);
+            ServiceRegistrator.getInstance().setDeviceService(deviceService);
+            ServiceRegistrator.getInstance().setMessageService(messageService);
             ConfigContext.getInstance().setExtConfig(extConfig);
 
             if(mqttCallBack!=null){
@@ -180,8 +180,8 @@ public class SampleConnector implements NeulinkConst{
         /**
          * 加载人脸到内存
          */
-        if(ServiceFactory.getInstance().getUserService()!=null){
-            ServiceFactory.getInstance().getUserService().load();
+        if(ServiceRegistrator.getInstance().getUserService()!=null){
+            ServiceRegistrator.getInstance().getUserService().load();
             Log.i(TAG,"success load user info 2 mem");
         }
 

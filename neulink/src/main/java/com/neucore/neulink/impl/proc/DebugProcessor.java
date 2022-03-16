@@ -6,14 +6,12 @@ import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.app.DebugCmd;
 import com.neucore.neulink.cmd.rmsg.app.DebugRes;
 import com.neucore.neulink.util.JSonUtils;
-
-import java.util.Map;
 
 public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<String>> {
 
@@ -52,7 +50,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<
     public DebugRes responseWrapper(DebugCmd cmd, ActionResult<String> result) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(result.getData());
         return res;
@@ -61,7 +59,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<
     public DebugRes fail(DebugCmd cmd, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_500);
         res.setMsg(message);
         return res;
@@ -69,7 +67,7 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<
     public DebugRes fail(DebugCmd cmd, int code, String message) {
         DebugRes res = new DebugRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(message);
         return res;

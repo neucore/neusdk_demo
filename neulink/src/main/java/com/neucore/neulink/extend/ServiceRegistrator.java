@@ -6,11 +6,11 @@ import com.neucore.neulink.IUserService;
 import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 
-public class ServiceFactory {
+public class ServiceRegistrator {
 
-    private static ServiceFactory instance = new ServiceFactory();
+    private static ServiceRegistrator instance = new ServiceRegistrator();
 
-    public static ServiceFactory getInstance(){
+    public static ServiceRegistrator getInstance(){
         return instance;
     }
 
