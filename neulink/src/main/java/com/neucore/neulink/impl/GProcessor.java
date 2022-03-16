@@ -9,7 +9,7 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.IActionResult;
@@ -164,7 +164,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     }
 
     public IMessage insert(NeulinkTopicParser.Topic topic, String payload) {
-        IMessageService messageService = ServiceFactory.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             return messageService.save(topic,payload);
         }
@@ -178,7 +178,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param msg
      */
     public void update(long id, String status, String msg) {
-        IMessageService messageService = ServiceFactory.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.update(id,status,msg);
         }
@@ -192,14 +192,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param msg
      */
     public void updatePkg(long id, long offset,String status, String msg) {
-        IMessageService messageService = ServiceFactory.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);
         }
     }
 
     public IMessage query(String reqId) {
-        IMessageService messageService = ServiceFactory.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             IMessage message = messageService.queryByReqNo(reqId);
             return message;

@@ -1,6 +1,6 @@
 package com.neucore.neulink.impl.service.storage;
 
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 
 import java.util.Calendar;
 
@@ -31,7 +31,7 @@ public abstract class AbsStorage {
     }
 
     protected String getDeviceId(){
-        return ServiceFactory.getInstance().getDeviceService().getExtSN();
+        return ServiceRegistrator.getInstance().getDeviceService().getExtSN();
     }
 
     /**

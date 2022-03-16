@@ -9,7 +9,7 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.IMessage;
@@ -132,7 +132,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes responseWrapper(BTLibSyncCmd cmd, TLibPkgResult result) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(result.getCode());
         res.setMsg(result.getMsg());
         res.setObjtype(cmd.getObjtype());
@@ -146,7 +146,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes fail(BTLibSyncCmd cmd, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_500);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());
@@ -159,7 +159,7 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     public BTLibSyncRes fail(BTLibSyncCmd cmd, int code, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
         res.setCmdStr(cmd.getCmdStr());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());

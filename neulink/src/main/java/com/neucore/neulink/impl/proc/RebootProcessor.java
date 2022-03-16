@@ -6,8 +6,7 @@ import android.os.PowerManager;
 
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
-import com.neucore.neulink.impl.ArgCmd;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.cmd.rmsg.RebootCmd;
@@ -47,7 +46,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
     @Override
     protected RebootRes responseWrapper(RebootCmd cmd, ActionResult<Map<String,String>>  result) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
@@ -57,7 +56,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
     @Override
     protected RebootRes fail(RebootCmd cmd, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(error);
@@ -67,7 +66,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
     @Override
     protected RebootRes fail(RebootCmd cmd,int code, String error) {
         RebootRes res = new RebootRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(error);

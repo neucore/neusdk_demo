@@ -7,7 +7,7 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.cmd.rmsg.log.LogActionResult;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.extend.StorageFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -179,7 +179,7 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogActionRes
         DnloadRes res = new DnloadRes();
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
 

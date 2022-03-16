@@ -8,9 +8,9 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.cmd.rmsg.HibrateCmd;
 import com.neucore.neulink.cmd.rmsg.HibrateRes;
 import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
@@ -53,7 +53,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
     @Override
     protected HibrateRes responseWrapper(HibrateCmd cmd, ActionResult<Map<String, String>> actionResult) {
         HibrateRes res = new HibrateRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
@@ -63,7 +63,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
     @Override
     protected HibrateRes fail(HibrateCmd cmd, String error) {
         HibrateRes res = new HibrateRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(error);
@@ -73,7 +73,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
     @Override
     protected HibrateRes fail(HibrateCmd cmd,int code, String error) {
         HibrateRes res = new HibrateRes();
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(error);

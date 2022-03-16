@@ -9,7 +9,7 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.extend.NeulinkSecurity;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -60,7 +60,7 @@ public class Register implements NeulinkConst{
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
         while (!logined&&channel==1) {
-            ILoginCallback loginCallback = ServiceFactory.getInstance().getLoginCallback();
+            ILoginCallback loginCallback = ServiceRegistrator.getInstance().getLoginCallback();
             if(loginCallback!=null) {
                 String token = loginCallback.login();
                 if(ObjectUtil.isEmpty(token)){
@@ -98,7 +98,7 @@ public class Register implements NeulinkConst{
                 while(!registed){
                     try {
                         Thread.sleep(5000);
-                        IDeviceService deviceService = ServiceFactory.getInstance().getDeviceService();
+                        IDeviceService deviceService = ServiceRegistrator.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
                         if (ObjectUtil.isEmpty(deviceInfo)) {
                             throw new RuntimeException("设备服务 getInfo没有实现。。。");

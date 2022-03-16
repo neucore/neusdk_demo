@@ -14,7 +14,7 @@ import com.neucore.neulink.cmd.msg.SDInfo;
 import com.neucore.neulink.cmd.msg.Stat;
 import com.neucore.neulink.cmd.msg.Status;
 import com.neucore.neulink.cmd.rmsg.log.LogUploadCmd;
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.DoubleSerializer;
@@ -69,7 +69,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.status","false"))){
                         try {
                             Status status = new Status();
-                            status.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+                            status.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
 
                             String payload = JSonUtils.toString(status);
                             String topic = "msg/req/status";
@@ -102,7 +102,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                         try {
                             Stat stat = new Stat();
 
-                            stat.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+                            stat.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
 
                             CPUInfo cpuInfo = new CPUInfo();
 
@@ -185,7 +185,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 }
                             }
                             LogUploadCmd req = new LogUploadCmd();
-                            req.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+                            req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
                             req.setReqId(UUID.randomUUID().toString());
                             req.setMsg(sb.toString());
                             int index = name.lastIndexOf(".");

@@ -2,7 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.auth;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceFactory;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
@@ -42,7 +42,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(result);
         res.setMsg(result.getMessage());
         return res;
@@ -53,7 +53,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
@@ -64,7 +64,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
         AuthSyncCmdRes res = new AuthSyncCmdRes();
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setData(error);
         res.setMsg("失败");
         return res;
