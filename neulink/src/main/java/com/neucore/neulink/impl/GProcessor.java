@@ -8,7 +8,6 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.util.ContextHolder;
@@ -269,7 +268,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     }
 
     protected ICmdListener<ActionResult,Req> getListener(){
-        return ListenerFactory.getInstance().getExtendListener(biz());
+        return ListenerRegistrator.getInstance().getExtendListener(biz());
     }
 }
 

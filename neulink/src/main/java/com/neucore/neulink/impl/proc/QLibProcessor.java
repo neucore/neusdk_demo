@@ -3,7 +3,7 @@ package com.neucore.neulink.impl.proc;
 import android.content.Context;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -35,7 +35,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
             String objtype = cmd.getObjtype();
             QResult result = new QResult();
             if("face".equalsIgnoreCase(objtype)){
-                //QueryActionResult queryResult = ListenerFactory.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
+                //QueryActionResult queryResult = ListenerRegistrator.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
                 //result.setCount(count);
                 throw new RuntimeException("人脸目标库查询还在建设中");
             }
@@ -97,6 +97,6 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getFaceQueryListener();
+        return ListenerRegistrator.getInstance().getFaceQueryListener();
     }
 }

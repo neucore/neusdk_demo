@@ -7,7 +7,10 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.extend.NeulinkEvent;
 
 import com.neucore.neusdk_demo.neulink.extend.bind.request.BindSyncCmd;
-
+/**
+ * 云端下发至设备端的命令侦听器
+ * 所有业务处理都在这地方处理
+ */
 public class BindCmdListener implements ICmdListener<BindActionResult, BindSyncCmd> {
     private String TAG = BindCmdListener.class.getSimpleName();
     @Override

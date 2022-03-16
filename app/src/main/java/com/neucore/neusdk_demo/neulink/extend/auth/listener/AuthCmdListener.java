@@ -11,6 +11,8 @@ import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
 
 /**
  * 协议可以参考：授权下发 https://project.neucore.com/zentao/doc-view-82.html
+ * 云端下发至设备端的命令侦听器
+ * 所有业务处理都在这地方处理
  */
 public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncCmd> {
     @Override

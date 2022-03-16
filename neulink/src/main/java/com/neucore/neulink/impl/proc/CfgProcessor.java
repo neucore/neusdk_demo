@@ -7,7 +7,7 @@ import com.neucore.neulink.cmd.cfg.CfgCmdRes;
 import com.neucore.neulink.cmd.cfg.CfgItem;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
@@ -70,6 +70,6 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionResult<Str
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getCfgListener();
+        return ListenerRegistrator.getInstance().getCfgListener();
     }
 }

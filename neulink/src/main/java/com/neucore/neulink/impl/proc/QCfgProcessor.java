@@ -8,9 +8,9 @@ import com.neucore.neulink.cmd.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -85,6 +85,6 @@ public class QCfgProcessor extends GProcessor<CfgCmd, CfgQueryCmdRes, ActionResu
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getCfgListener();
+        return ListenerRegistrator.getInstance().getCfgListener();
     }
 }

@@ -7,6 +7,9 @@ import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.hello.request.HelloCmd;
+import com.neucore.neusdk_demo.neulink.extend.hello.response.HelloCmdRes;
 
 /**
  * 设备授权下发
@@ -15,7 +18,7 @@ import com.neucore.neulink.util.JSonUtils;
  * String:actionListener的返回类型
  */
 public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResult<String>> {
-
+    private String TAG = HelloProcessor.class.getSimpleName();
     public HelloProcessor(){
         this(ContextHolder.getInstance().getContext());
     }

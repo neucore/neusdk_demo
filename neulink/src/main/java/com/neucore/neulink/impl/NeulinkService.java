@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IPublishCallback;
+import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
@@ -144,7 +144,7 @@ public class NeulinkService implements NeulinkConst{
         publishMessage(topicPrefix,version, payload, qos,null);
     }
 
-    protected void publishMessage(String topicPrefix, String version, String payload, int qos, IPublishCallback callback){
+    protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
 
         publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,callback);
     }
@@ -161,7 +161,7 @@ public class NeulinkService implements NeulinkConst{
         publishMessage(topicPrefix,version,reqId,payload,qos,false,null);
     }
 
-    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,IPublishCallback callback){
+    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos, IResCallback callback){
         publishMessage(topicPrefix,version,reqId,payload,qos,false,callback);
     }
 
@@ -169,7 +169,7 @@ public class NeulinkService implements NeulinkConst{
         publishMessage(topicPrefix,version,reqId,payload,qos,retained,null);
     }
 
-    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained,IPublishCallback callback){
+    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos, boolean retained, IResCallback callback){
 
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 

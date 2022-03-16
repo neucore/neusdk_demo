@@ -10,7 +10,7 @@ import com.neucore.neulink.cmd.recv.RecoverCmd;
 import com.neucore.neulink.cmd.recv.RecoverCmdRes;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ListenerFactory;
+import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.ServiceFactory;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
@@ -89,6 +89,6 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes, Acti
 
     @Override
     protected ICmdListener getListener() {
-        return ListenerFactory.getInstance().getRecoverListener();
+        return ListenerRegistrator.getInstance().getRecoverListener();
     }
 }
