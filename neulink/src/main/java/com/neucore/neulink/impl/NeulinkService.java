@@ -74,7 +74,7 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
-    private void initMqtt(String serverUri, Context context){
+    private void initMqtt(String serverUri,String userName,String password, Context context){
         Log.i(TAG,String.format("inited %s", mqttInited));
         synchronized (mqttInited){
             if(!mqttInited){
@@ -87,6 +87,8 @@ public class NeulinkService implements NeulinkConst{
                         .clientId(ServiceRegistrator.getInstance().getDeviceService().getExtSN())
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         .serverUrl(serverUri)
+                        .userName(userName)
+                        .passWord(password)
                         //心跳包默认的发送间隔
                         .keepAliveInterval(20)
                         //设置发布和订阅回调接口
@@ -188,8 +190,9 @@ public class NeulinkService implements NeulinkConst{
             if(mqttServiceUri ==null){
                 mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
             }
-
-            connect(mqttServiceUri,context);
+            String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
+            String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
+            connect(mqttServiceUri,userName,password,context);
             /**
              * MQTT机制
              */
@@ -251,11 +254,12 @@ public class NeulinkService implements NeulinkConst{
                     httpServiceUri = zone.getUploadServer();
                     String mqttHost = zone.getMqttServer();
                     Integer port = zone.getMqttPort();
-
+                    String userName = zone.getMqttUserName();
+                    String password = zone.getMqttPassword();
                     //tcp://dev.neucore.com:1883
                     mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
 
-                    connect(mqttServiceUri,context);
+                    connect(mqttServiceUri,userName,password,context);
 
                     neulinkServiceInited = true;
 
@@ -307,9 +311,9 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    private void connect(String mqttServiceUri,Context context){
+    private void connect(String mqttServiceUri,String userName,String password,Context context){
         if(!mqttInited){
-            initMqtt(mqttServiceUri,context);
+            initMqtt(mqttServiceUri,userName,password,context);
             int cnt = 0;
             while (!getMqttConnSuccessed()){
                 try {
