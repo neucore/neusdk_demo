@@ -88,7 +88,7 @@ public interface NeulinkConst {
      */
     Integer STATUS_200 = 200;
     /**
-     * 成功，新增了资源
+     * 成功，新增了资源｜消息已送达
      */
     Integer STATUS_201 = 201;
     /**
