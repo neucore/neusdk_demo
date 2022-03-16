@@ -84,6 +84,10 @@ NeulinkService.getInstance().destroy();
 
 ```
 
+### 时序图
+
+![时序图](images/secquence.png)
+
 ### 扩展
 
 #### 扩展-HTTP安全登录
