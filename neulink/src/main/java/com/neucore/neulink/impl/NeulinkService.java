@@ -240,7 +240,7 @@ public class NeulinkService implements NeulinkConst{
                 try {
                     connect();
                     cnt++;
-                    Thread.sleep(5000);
+                    Thread.sleep(1000);
                     Log.i(TAG,"try "+cnt+"次连接。。。。");
                 }
                 catch (Exception ex){
