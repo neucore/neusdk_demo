@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -60,6 +62,7 @@ public class NeulinkService implements NeulinkConst{
     public static NeulinkService getInstance(){
         return instance;
     }
+    final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(1);
     /**
      * 构建EasyMqttService对象
      */
@@ -171,7 +174,7 @@ public class NeulinkService implements NeulinkConst{
         publishMessage(topicPrefix,version,reqId,payload,qos,retained,null);
     }
 
-    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos, boolean retained, IResCallback callback){
+    protected void publishMessage(final String topicPrefix, String version, final String reqId, final String payload, final int qos, final boolean retained, final IResCallback callback){
 
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
@@ -181,29 +184,19 @@ public class NeulinkService implements NeulinkConst{
 
         topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ ServiceRegistrator.getInstance().getDeviceService().getExtSN();
 
-        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topStr);
+        final String topic = topStr;
 
-        Context context = ContextHolder.getInstance().getContext();
+        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topStr);
 
         if (channel==0){//向下兼容
 
-            if(mqttServiceUri ==null){
-                mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
-            }
-            String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
-            String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
-            connect(mqttServiceUri,userName,password,context);
-            /**
-             * MQTT机制
-             */
-            myMqttService.publish(reqId,payload,topStr, qos, retained,context,callback);
+            mqttPublish(reqId,payload,topic,qos,retained,callback);
 
-            neulinkServiceInited = true;
         }
         else{
 
             String token = NeulinkSecurity.getInstance().getToken();
-            Map<String,String> params = new HashMap<>();
+            final Map<String,String> params = new HashMap<>();
             if(token!=null){
                 int index = token.indexOf(" ");
                 if(index!=-1){
@@ -217,98 +210,26 @@ public class NeulinkService implements NeulinkConst{
              *
              */
             if(topStr.contains("msg/req/devinfo")){
-
-                /**
-                 * HTTP机制
-                 */
-                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
-                Log.d(TAG,"registServer："+registServer);
-
-                String response = null;
-                try {
-                    String topic = URLEncoder.encode(topStr,"UTF-8");
-                    response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
-
-                    Log.d(TAG,"设备注册响应："+response);
-
-                    /**
-                     * {
-                     * 	"code": 200,
-                     * 	"msg": "注册成功",
-                     * 	"zone": {
-                     * 		"zoneid": 3,
-                     * 		"custcode": "saic",
-                     * 		"placecode": "test",
-                     * 		"server": "mqtt.neucore.com",
-                     * 		"port": 1883,
-                     * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
-                     *   }
-                     * }
-                     */
-                    ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
-                    NeulinkZone zone = resRegist.getZone();
-                    custid = zone.getCustid();
-                    storeid = zone.getStoreid();
-                    zoneid = zone.getId();
-
-                    httpServiceUri = zone.getUploadServer();
-                    String mqttHost = zone.getMqttServer();
-                    Integer port = zone.getMqttPort();
-                    String userName = zone.getMqttUserName();
-                    String password = zone.getMqttPassword();
-                    //tcp://dev.neucore.com:1883
-                    mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
-
-                    connect(mqttServiceUri,userName,password,context);
-
-                    neulinkServiceInited = true;
-
-                } catch (Exception e) {
-                    Log.e(TAG,e.getMessage(),e);
-                }
+                httpRegist(reqId,topic,payload,params);
             }
             else {
-                /**
-                 * 设备端2cloud
-                 */
-                httpServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, httpServiceUri);
-                Boolean done = false;
-                int count = 0;
-                while(!done && count<3){
-                    try {
-                        Log.d(TAG,topStr);
-                        String topic = URLEncoder.encode(topStr,"UTF-8");
-                        String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topic,payload,params,10,60,1);
-                        Log.d(TAG,"设备upload2cloud响应："+response);
-                        if(ObjectUtil.isNotEmpty(callback)){
-                            Class cls = callback.getResultType();
-                            Result result = (Result) JSonUtils.toObject(response,cls);
-                            result.setReqId(reqId);
-                            callback.onFinished(result);
-                        }
-                        done = true;
-                    }
-                    catch (NeulinkException e) {
-                        if(e.getCode()==401||e.getCode()==403){
-                            Log.i(TAG,"token过期，重新登录");
-                            token = ServiceRegistrator.getInstance().getLoginCallback().login();
-                            if(ObjectUtil.isNotEmpty(token)){
-                                Log.i(TAG,"token过期，重新登录成功");
-                                NeulinkSecurity.getInstance().setToken(token);
-                            }
-                            count++;
-                        }
-                        else {
-                            done = true;
-                        }
-                    }
-                    catch (Exception e) {
-                        Log.d(TAG,"upload2cloud error with: "+e.getMessage());
-                        done = true;
-                    }
+                if(!neulinkServiceInited){
+                    throw new NeulinkException(STATUS_503,"SDK还没初始化完成");
                 }
+                httpPublish(reqId,topic,payload,params,callback);
             }
         }
+    }
+    private void mqttPublish(String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
+        fixedThreadPool.execute(new MqttPublisher(reqId,payload,topStr,qos,retained,callback));
+    }
+
+    private void httpRegist(String reqId,String topStr,String payload,Map<String,String> params){
+        fixedThreadPool.execute(new HttpRegistor(reqId,payload,topStr,params));
+    }
+
+    private void httpPublish(String reqId,String topStr,String payload,Map<String,String> params,IResCallback callback){
+        fixedThreadPool.execute(new HttpPublisher(reqId,topStr,payload,params,callback));
     }
 
     private void connect(String mqttServiceUri,String userName,String password,Context context){
@@ -319,10 +240,12 @@ public class NeulinkService implements NeulinkConst{
                 try {
                     connect();
                     cnt++;
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                     Log.i(TAG,"try "+cnt+"次连接。。。。");
                 }
-                catch (Exception ex){}
+                catch (Exception ex){
+                    Log.e(TAG,"连接失败：",ex);
+                }
             }
         }
     }
@@ -366,15 +289,29 @@ public class NeulinkService implements NeulinkConst{
     }
     private String storeid="notimpl";
     private String getStoreId(){
-        return storeid;
+        if(ObjectUtil.isNotEmpty(storeid)){
+            return storeid;
+        }
+        return "notimpl";
     }
     private String zoneid="0";
     private String getZoneId(){
-        return zoneid;
+        if(ObjectUtil.isNotEmpty(zoneid)){
+            return zoneid;
+        }
+        return "notimpl";
     }
 
     boolean getMqttConnSuccessed(){
-        return mqttConnSuccessed;
+        synchronized (this){
+            return mqttConnSuccessed;
+        }
+    }
+
+    void setMqttConnSuccessed(Boolean connSuccessed){
+        synchronized (this) {
+            this.mqttConnSuccessed = connSuccessed;
+        }
     }
 
     private ReentrantLock reentrantLock = new ReentrantLock();
@@ -386,7 +323,7 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "onSuccess ");
-            mqttConnSuccessed = true;
+            setMqttConnSuccessed(true);
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     callback.connectSuccess(arg0);
@@ -416,7 +353,7 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
             try {
-                mqttConnSuccessed = true;
+                setMqttConnSuccessed(true);
                 Log.i(TAG, "connectComplete ");
                 reentrantLock.lock();
                 subscriberFacde.subAll();
@@ -468,7 +405,6 @@ public class NeulinkService implements NeulinkConst{
         public void connectionLost(Throwable arg0) {
 
             Log.i(TAG, "connectionLost");
-            mqttConnSuccessed = false;
             publishDisConnect(1);
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
@@ -499,6 +435,174 @@ public class NeulinkService implements NeulinkConst{
                 try {
                     Thread.currentThread().sleep(60*60*1000);
                 } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    class MqttPublisher implements Runnable{
+        private String reqId;
+        private String payload;
+        private String topStr;
+        private Integer qos;
+        private boolean retained;
+        private IResCallback callback;
+        public MqttPublisher(String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
+            this.reqId = reqId;
+            this.payload = payload;
+            this.topStr = topStr;
+            this.qos = qos;
+            this.retained = retained;
+            this.callback = callback;
+        }
+        @Override
+        public void run() {
+            if(mqttServiceUri ==null){
+                mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
+            }
+            String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
+            String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
+            Context context = ContextHolder.getInstance().getContext();
+            connect(mqttServiceUri,userName,password,context);
+            /**
+             * MQTT机制
+             */
+            myMqttService.publish(reqId,payload,topStr, qos, retained,context,callback);
+
+            neulinkServiceInited = true;
+        }
+    }
+
+    class HttpRegistor implements Runnable{
+        private String reqId;
+        private String payload;
+        private String topStr;
+        private Map<String,String> params;
+
+        public HttpRegistor(String reqId,String payload,String topStr,Map<String,String> params){
+            this.reqId = reqId;
+            this.payload = payload;
+            this.topStr = topStr;
+            this.params = params;
+        }
+        @Override
+        public void run() {
+            /**
+             * HTTP机制
+             */
+            Context context = ContextHolder.getInstance().getContext();
+            String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
+            Log.d(TAG,"registServer："+registServer);
+
+            String response = null;
+            try {
+                String topic = URLEncoder.encode(topStr,"UTF-8");
+                response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
+
+                Log.d(TAG,"设备注册响应："+response);
+
+                /**
+                 * {
+                 * 	"code": 200,
+                 * 	"msg": "注册成功",
+                 * 	"zone": {
+                 * 		"zoneid": 3,
+                 * 		"custcode": "saic",
+                 * 		"placecode": "test",
+                 * 		"server": "mqtt.neucore.com",
+                 * 		"port": 1883,
+                 * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
+                 *   }
+                 * }
+                 */
+                ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
+                NeulinkZone zone = resRegist.getZone();
+                custid = zone.getCustid();
+                storeid = zone.getStoreid();
+                zoneid = zone.getId();
+
+                httpServiceUri = zone.getUploadServer();
+                String mqttHost = zone.getMqttServer();
+                Integer port = zone.getMqttPort();
+                String userName = zone.getMqttUserName();
+                String password = zone.getMqttPassword();
+                //tcp://dev.neucore.com:1883
+                mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
+
+                connect(mqttServiceUri,userName,password,context);
+
+                neulinkServiceInited = true;
+
+            } catch (Exception e) {
+                Log.e(TAG,e.getMessage(),e);
+            }
+        }
+    }
+
+    class HttpPublisher implements Runnable{
+        private String reqId;
+        private String topStr;
+        private String payload;
+        private Map<String,String> params;
+        private IResCallback callback;
+        public HttpPublisher(String reqId,String topStr,String payload,Map<String,String> params,IResCallback callback){
+            this.reqId = reqId;
+            this.topStr = topStr;
+            this.payload = payload;
+            this.params = params;
+            this.callback = callback;
+        }
+        @Override
+        public void run() {
+            /**
+             * 设备端2cloud
+             */
+            httpServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, httpServiceUri);
+            Boolean done = false;
+            int count = 0;
+            while(!done && count<3){
+                try {
+                    Log.d(TAG,topStr);
+                    String topicStr = URLEncoder.encode(topStr,"UTF-8");
+                    String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
+                    Log.d(TAG,"设备upload2cloud响应："+response);
+                    if(ObjectUtil.isNotEmpty(callback)){
+                        Class cls = callback.getResultType();
+                        Result result = (Result) JSonUtils.toObject(response,cls);
+                        result.setReqId(reqId);
+                        callback.onFinished(result);
+                    }
+                    done = true;
+                }
+                catch (NeulinkException e) {
+                    if(e.getCode()==401||e.getCode()==403){
+                        Log.i(TAG,"token过期，重新登录");
+                        String token = ServiceRegistrator.getInstance().getLoginCallback().login();
+                        if(ObjectUtil.isNotEmpty(token)){
+                            Log.i(TAG,"token过期，重新登录成功");
+                            NeulinkSecurity.getInstance().setToken(token);
+                        }
+                        count++;
+                    }
+                    else {
+                        if(ObjectUtil.isNotEmpty(callback)){
+                            Class cls = callback.getResultType();
+                            Result result = Result.fail(e.getCode(),e.getMessage());
+                            result.setReqId(reqId);
+                            callback.onFinished(result);
+                        }
+                        done = true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.d(TAG,"upload2cloud error with: "+e.getMessage());
+                    if(ObjectUtil.isNotEmpty(callback)){
+                        Class cls = callback.getResultType();
+                        Result result = Result.fail(STATUS_500,e.getMessage());
+                        result.setReqId(reqId);
+                        callback.onFinished(result);
+                    }
+                    done = true;
                 }
             }
         }

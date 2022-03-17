@@ -57,31 +57,9 @@ public class Register implements NeulinkConst{
     private Boolean logined = false;
     private void initRegistService(String from){
         Log.i(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-
-        while (!logined&&channel==1) {
-            ILoginCallback loginCallback = ServiceRegistrator.getInstance().getLoginCallback();
-            if(loginCallback!=null) {
-                String token = loginCallback.login();
-                if(ObjectUtil.isEmpty(token)){
-                    Log.i(TAG,"token非法。。。");
-                }
-                else{
-                    logined = true;
-                    NeulinkSecurity.getInstance().setToken(token);
-                    continue;
-                }
-            }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-            }
-        }
 
         if(networkReady
             && !initRegistService){
-
-            Log.d(TAG,"try "+(channel==0?"mqtt":"http")+ " register");
             if(!registCalled){
                 registCalled = true;
                 regist();
@@ -95,9 +73,33 @@ public class Register implements NeulinkConst{
     void regist() {
         new Thread(){
             public void run(){
+
+                int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+
+                while (!logined&&channel==1) {
+                    ILoginCallback loginCallback = ServiceRegistrator.getInstance().getLoginCallback();
+                    if(loginCallback!=null) {
+                        String token = loginCallback.login();
+                        if(ObjectUtil.isEmpty(token)){
+                            Log.i(TAG,"token非法。。。");
+                        }
+                        else{
+                            logined = true;
+                            NeulinkSecurity.getInstance().setToken(token);
+                            continue;
+                        }
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+
+                Log.d(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
+
                 while(!registed){
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                         IDeviceService deviceService = ServiceRegistrator.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
                         if (ObjectUtil.isEmpty(deviceInfo)) {
