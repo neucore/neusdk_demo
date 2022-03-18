@@ -36,7 +36,7 @@ public class Result<T> implements Serializable {
     @SerializedName("time")
     private Long time;
 
-    private Result() {
+    public Result() {
         this.time = System.currentTimeMillis();
     }
 

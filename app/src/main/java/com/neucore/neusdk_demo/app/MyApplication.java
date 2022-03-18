@@ -422,7 +422,7 @@ public class MyApplication extends Application
             /**
              * 实现登录返回token
              */
-            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0NzU3MDY4OSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjkzZmUxMGViLThmMDEtNGZjZS1iNGQ3LTcyNWYyNGYwNTk2NSIsImNsaWVudF9pZCI6ImdlbWluaSJ9.6tKIk8TIxLRQh7z67d5vj45NEvXBmonqDYwfnjDy9Eo";
+            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0NzgzMDAxMSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjE0NjYwNGMzLTNhZTgtNDI0MC1iZmZiLWQ3ODNlZmIzOTcyNCIsImNsaWVudF9pZCI6ImdlbWluaSJ9.ONfCMspkqeY2gUDyMmdEz_SmMApBsITDTBgBGA4lAGs";
         }
     };
 
@@ -485,12 +485,7 @@ public class MyApplication extends Application
         }
     };
 
-    IResCallback iResCallback = new IResCallback<Result>() {
-        @Override
-        public Class<Result> getResultType() {
-            return Result.class;
-        }
-
+    IResCallback iResCallback = new IResCallback() {
         @Override
         public void onFinished(Result result) {
             Log.i(TAG, "onFinished： "+result.getReqId());
