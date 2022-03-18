@@ -40,33 +40,33 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResu
     @Override
     protected HelloCmdRes responseWrapper(HelloCmd t, ActionResult<String> result) {
         HelloCmdRes res = new HelloCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(result.getData());
         res.setMsg(result.getMessage());
+        res.setData(result.getData());
         return res;
     }
 
     @Override
     protected HelloCmdRes fail(HelloCmd t, String error) {
         HelloCmdRes res = new HelloCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 
     @Override
     protected HelloCmdRes fail(HelloCmd t, int code, String error) {
         HelloCmdRes res = new HelloCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 }
