@@ -6,6 +6,7 @@ import com.neucore.neulink.cmd.check.CheckCmd;
 import com.neucore.neulink.cmd.check.CheckCmdRes;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryActionResult;
@@ -31,37 +32,43 @@ public class CheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActio
 
     @Override
     public CheckCmd parser(String payload) {
-        return (CheckCmd) JSonUtils.toObject(payload, CheckCmd.class);
+        return JSonUtils.toObject(payload, CheckCmd.class);
     }
 
     @Override
     protected CheckCmdRes responseWrapper(CheckCmd t, QueryActionResult<Map<String,Object>> result) {
         CheckCmdRes cmdRes = new CheckCmdRes();
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
         cmdRes.setCode(STATUS_200);
-        cmdRes.setObjtype(t.getObjtype());
         cmdRes.setMsg(MESSAGE_SUCCESS);
+        cmdRes.setObjtype(t.getObjtype());
         cmdRes.setDatas((String)result.getData().get("card_ids"));
+        cmdRes.setData(result.getData());
         return cmdRes;
     }
 
     @Override
     protected CheckCmdRes fail(CheckCmd t, String error) {
         CheckCmdRes cmdRes = new CheckCmdRes();
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
         cmdRes.setCode(STATUS_500);
+        cmdRes.setMsg(MESSAGE_FAILED);
         cmdRes.setObjtype(t.getObjtype());
-        cmdRes.setMsg(error);
+        cmdRes.setData(error);
         return cmdRes;
     }
 
     @Override
     protected CheckCmdRes fail(CheckCmd t, int code, String error) {
         CheckCmdRes cmdRes = new CheckCmdRes();
+        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
         cmdRes.setCode(code);
+        cmdRes.setMsg(MESSAGE_FAILED);
         cmdRes.setObjtype(t.getObjtype());
-        cmdRes.setMsg(error);
+        cmdRes.setData(error);
         return cmdRes;
     }
 

@@ -28,7 +28,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 
     @Override
     public AuthSyncCmd parser(String payload) {
-        return (AuthSyncCmd) JSonUtils.toObject(payload, AuthSyncCmd.class);
+        return JSonUtils.toObject(payload, AuthSyncCmd.class);
     }
 
     /**
@@ -44,7 +44,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMessage());
-        res.setData(result);
+        res.setData(result.getData());
         return res;
     }
 

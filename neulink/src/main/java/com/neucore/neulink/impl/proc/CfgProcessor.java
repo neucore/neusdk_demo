@@ -38,33 +38,36 @@ public class CfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionResult<Str
     }
 
     public CfgCmd parser(String payload){
-        return (CfgCmd) JSonUtils.toObject(payload, CfgCmd.class);
+        return JSonUtils.toObject(payload, CfgCmd.class);
     }
 
     public CfgCmdRes responseWrapper(CfgCmd cmd,ActionResult<String> result) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
-        res.setMsg(result.getData());
+        res.setMsg(MESSAGE_SUCCESS);
+        res.setData(result.getData());
         return res;
     }
 
     public CfgCmdRes fail(CfgCmd cmd,String message) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(message);
         return res;
     }
 
     public CfgCmdRes fail(CfgCmd cmd,int code,String message) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(message);
         return res;
     }
 

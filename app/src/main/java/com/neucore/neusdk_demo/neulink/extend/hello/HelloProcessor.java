@@ -28,7 +28,7 @@ public class HelloProcessor extends GProcessor<HelloCmd, HelloCmdRes, ActionResu
 
     @Override
     public HelloCmd parser(String payload) {
-        return (HelloCmd) JSonUtils.toObject(payload, HelloCmd.class);
+        return JSonUtils.toObject(payload, HelloCmd.class);
     }
 
     /**

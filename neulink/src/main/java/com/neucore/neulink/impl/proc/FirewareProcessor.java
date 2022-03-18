@@ -79,36 +79,39 @@ public class FirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCmdRes, ActionR
 
     @Override
     public UgrdeCmd parser(String payload) {
-        return (UgrdeCmd) JSonUtils.toObject(payload, UgrdeCmd.class);
+        return JSonUtils.toObject(payload, UgrdeCmd.class);
     }
 
     @Override
     protected UgrdeCmdRes responseWrapper(UgrdeCmd cmd, ActionResult<String> result) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
+        res.setData(result.getData());
         return res;
     }
 
     @Override
     protected UgrdeCmdRes fail(UgrdeCmd cmd, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
     @Override
     protected UgrdeCmdRes fail(UgrdeCmd cmd,int code, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

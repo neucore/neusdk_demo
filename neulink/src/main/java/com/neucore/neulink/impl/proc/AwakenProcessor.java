@@ -52,7 +52,7 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResu
 
     @Override
     public AwakenCmd parser(String payload) {
-        return (AwakenCmd) JSonUtils.toObject(payload, AwakenCmd.class);
+        return JSonUtils.toObject(payload, AwakenCmd.class);
     }
 
     @Override
@@ -62,6 +62,7 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResu
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
+        res.setData(actionResult.getData());
         return res;
     }
 
@@ -71,7 +72,8 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResu
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
@@ -81,7 +83,8 @@ public class AwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResu
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

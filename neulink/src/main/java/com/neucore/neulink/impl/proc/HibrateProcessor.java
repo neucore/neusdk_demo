@@ -47,7 +47,7 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
 
     @Override
     public HibrateCmd parser(String payload) {
-        return (HibrateCmd) JSonUtils.toObject(payload, HibrateCmd.class);
+        return JSonUtils.toObject(payload, HibrateCmd.class);
     }
 
     @Override
@@ -66,7 +66,8 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
@@ -76,7 +77,8 @@ public class HibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionR
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

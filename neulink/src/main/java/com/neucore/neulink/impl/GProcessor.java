@@ -83,14 +83,16 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
                 ActionResult actionResult = process(topic, req);
                 Res res = responseWrapper(req, actionResult);
-                String jsonStr = JSonUtils.toString(res);
-                if (res.getCode() == 200){//支撑多包批处理，所有包处理成功才叫做成功
-                    update(id, IMessage.STATUS_SUCCESS, res.getMsg());
+                if(ObjectUtil.isNotEmpty(res)){
+                    String jsonStr = JSonUtils.toString(res);
+                    if (res.getCode() == 200){//支撑多包批处理，所有包处理成功才叫做成功
+                        update(id, IMessage.STATUS_SUCCESS, res.getMsg());
+                    }
+                    else {
+                        update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
+                    }
+                    resLstRsl2Cloud(topic, jsonStr);
                 }
-                else {
-                    update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
-                }
-                resLstRsl2Cloud(topic, jsonStr);
             }
             catch(NeulinkException ex){
                 update(id,IMessage.STATUS_FAIL, ex.getMessage());
@@ -255,7 +257,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param payload
      * @return
      */
-    public abstract Req parser(String payload);
+    protected abstract Req parser(String payload);
 
     protected abstract Res responseWrapper(Req t, ActionResult actionResult);
 

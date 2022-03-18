@@ -40,7 +40,7 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
 
     @Override
     public RebootCmd parser(String payload) {
-        return (RebootCmd) JSonUtils.toObject(payload, RebootCmd.class);
+        return JSonUtils.toObject(payload, RebootCmd.class);
     }
 
     @Override
@@ -59,7 +59,8 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
@@ -69,7 +70,8 @@ public class RebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResu
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

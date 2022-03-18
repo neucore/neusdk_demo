@@ -37,7 +37,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
 
     @Override
     public BackupCmd parser(String payload) {
-        return (BackupCmd) JSonUtils.toObject(payload, BackupCmd.class);
+        return JSonUtils.toObject(payload, BackupCmd.class);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
         cmdRes.setCode(STATUS_200);
         cmdRes.setMsg(MESSAGE_SUCCESS);
         cmdRes.setUrl(result.getData().get("url"));
-        cmdRes.setMd5("fdafdsa");
+        cmdRes.setData(result.getData());
         return cmdRes;
     }
 
@@ -58,7 +58,8 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
         cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_500);
-        cmdRes.setMsg(error);
+        cmdRes.setMsg(MESSAGE_FAILED);
+        cmdRes.setData(error);
         return cmdRes;
     }
 
@@ -68,7 +69,8 @@ public class BackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, QueryAc
         cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(code);
-        cmdRes.setMsg(error);
+        cmdRes.setMsg(MESSAGE_FAILED);
+        cmdRes.setData(error);
         return cmdRes;
     }
 

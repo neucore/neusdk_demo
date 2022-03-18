@@ -57,7 +57,7 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
 
     @Override
     public TLibQueryCmd parser(String payload) {
-        return (TLibQueryCmd) JSonUtils.toObject(payload, TLibQueryCmd.class);
+        return JSonUtils.toObject(payload, TLibQueryCmd.class);
     }
 
     @Override
@@ -81,7 +81,8 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
@@ -91,7 +92,8 @@ public class QLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> 
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

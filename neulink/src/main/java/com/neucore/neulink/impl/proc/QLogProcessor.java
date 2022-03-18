@@ -171,18 +171,17 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogActionRes
     }
     @Override
     public DnloadCmd parser(String payload) {
-        return (DnloadCmd) JSonUtils.toObject(payload, DnloadCmd.class);
+        return JSonUtils.toObject(payload, DnloadCmd.class);
     }
 
     @Override
     protected DnloadRes responseWrapper(DnloadCmd cmd, LogActionResult result) {
         DnloadRes res = new DnloadRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
-
         res.setPages(result.getPages());
         res.setOffset(result.getOffset());
         res.setUrl(result.getUrl());
@@ -194,20 +193,24 @@ public class QLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogActionRes
     @Override
     protected DnloadRes fail(DnloadCmd cmd, String error) {
         DnloadRes res = new DnloadRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
     @Override
     protected DnloadRes fail(DnloadCmd cmd, int code, String error) {
         DnloadRes res = new DnloadRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 

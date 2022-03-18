@@ -126,13 +126,13 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
     }
 
     public BTLibSyncCmd parser(String payload){
-        return (BTLibSyncCmd) JSonUtils.toObject(payload, BTLibSyncCmd.class);
+        return JSonUtils.toObject(payload, BTLibSyncCmd.class);
     }
 
     public BTLibSyncRes responseWrapper(BTLibSyncCmd cmd, TLibPkgResult result) {
         BTLibSyncRes res = new BTLibSyncRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMsg());
         res.setObjtype(cmd.getObjtype());
@@ -145,8 +145,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
 
     public BTLibSyncRes fail(BTLibSyncCmd cmd, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());
@@ -158,8 +158,8 @@ public class BLibProcessor extends GProcessor<BTLibSyncCmd, BTLibSyncRes, TLibPk
 
     public BTLibSyncRes fail(BTLibSyncCmd cmd, int code, String message) {
         BTLibSyncRes res = new BTLibSyncRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(message);
         res.setObjtype(cmd.getObjtype());
