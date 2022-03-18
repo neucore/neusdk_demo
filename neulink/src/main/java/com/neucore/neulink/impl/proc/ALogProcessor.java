@@ -52,15 +52,16 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionRes
         }
     }
     public AlogUpgrCmd parser(String payload){
-        return (AlogUpgrCmd) JSonUtils.toObject(payload, AlogUpgrCmd.class);
+        return JSonUtils.toObject(payload, AlogUpgrCmd.class);
     }
 
     public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, ActionResult<String> actionResult) {
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
-        res.setMsg(actionResult.getData());
+        res.setMsg(MESSAGE_SUCCESS);
         res.setVinfo(cmd.getVinfo());
+        res.setData(actionResult.getData());
         return res;
     }
 
@@ -68,16 +69,18 @@ public class ALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionRes
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_500);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
         res.setVinfo(cmd.getVinfo());
+        res.setData(message);
         return res;
     }
     public AlogUpgrRes fail(AlogUpgrCmd cmd, int code, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
         res.setVinfo(cmd.getVinfo());
+        res.setData(message);
         return res;
     }
 

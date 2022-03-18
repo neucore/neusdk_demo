@@ -44,32 +44,35 @@ public class DebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<
     }
 
     public DebugCmd parser(String payload){
-        return (DebugCmd) JSonUtils.toObject(payload, DebugCmd.class);
+        return JSonUtils.toObject(payload, DebugCmd.class);
     }
 
     public DebugRes responseWrapper(DebugCmd cmd, ActionResult<String> result) {
         DebugRes res = new DebugRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
-        res.setMsg(result.getData());
+        res.setMsg(MESSAGE_SUCCESS);
+        res.setData(result.getData());
         return res;
     }
 
     public DebugRes fail(DebugCmd cmd, String message) {
         DebugRes res = new DebugRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(message);
         return res;
     }
     public DebugRes fail(DebugCmd cmd, int code, String message) {
         DebugRes res = new DebugRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(message);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(message);
         return res;
     }
 

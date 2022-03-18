@@ -53,37 +53,39 @@ public class RecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes, Acti
 
     @Override
     public RecoverCmd parser(String payload) {
-        return (RecoverCmd) JSonUtils.toObject(payload, RecoverCmd.class);
+        return JSonUtils.toObject(payload, RecoverCmd.class);
     }
 
     @Override
     protected RecoverCmdRes responseWrapper(RecoverCmd t, ActionResult<String> result) {
         RecoverCmdRes recoverCmdRes = new RecoverCmdRes();
+        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(STATUS_200);
         recoverCmdRes.setMsg(MESSAGE_SUCCESS);
-        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+
         return recoverCmdRes;
     }
 
     @Override
     protected RecoverCmdRes fail(RecoverCmd t, String error) {
-
         RecoverCmdRes recoverCmdRes = new RecoverCmdRes();
+        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(STATUS_500);
-        recoverCmdRes.setMsg(error);
-        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        recoverCmdRes.setMsg(MESSAGE_FAILED);
+        recoverCmdRes.setData(error);
         return recoverCmdRes;
     }
 
     @Override
     protected RecoverCmdRes fail(RecoverCmd t, int code, String error) {
         RecoverCmdRes recoverCmdRes = new RecoverCmdRes();
+        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         recoverCmdRes.setCmdStr(t.getCmdStr());
         recoverCmdRes.setCode(code);
-        recoverCmdRes.setMsg(error);
-        recoverCmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        recoverCmdRes.setMsg(MESSAGE_FAILED);
+        recoverCmdRes.setData(error);
         return recoverCmdRes;
     }
 

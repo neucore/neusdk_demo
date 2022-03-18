@@ -37,38 +37,42 @@ public class ShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, ActionResu
 
     @Override
     public ShellCmd parser(String payload) {
-        return (ShellCmd) JSonUtils.toObject(payload, ShellCmd.class);
+        return JSonUtils.toObject(payload, ShellCmd.class);
     }
 
     @Override
     protected ShellCmdRes responseWrapper(ShellCmd cmd, ActionResult<Map<String, String>> actionResult) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
+
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
         res.setStdout(actionResult.getData().get("stdout"));
         res.setShellRet(Integer.valueOf(actionResult.getData().get("shellRet")));
+        res.setData(actionResult.getData());
         return res;
     }
 
     @Override
     protected ShellCmdRes fail(ShellCmd cmd, String error) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
     @Override
     protected ShellCmdRes fail(ShellCmd cmd,int code, String error) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setCmdStr(cmd.getCmdStr());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
-        res.setMsg(error);
+        res.setMsg(MESSAGE_FAILED);
+        res.setData(error);
         return res;
     }
 
