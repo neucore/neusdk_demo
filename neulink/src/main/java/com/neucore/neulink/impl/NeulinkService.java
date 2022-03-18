@@ -68,7 +68,7 @@ public class NeulinkService implements NeulinkConst{
      */
     public void init() {
         Context context = ContextHolder.getInstance().getContext();
-        NeulinkMsgCallBack defaultMqttCallBack = new NeulinkMsgCallBack(context,this);
+        NeulinkMsgCallBackAdapter defaultMqttCallBack = new NeulinkMsgCallBackAdapter(context,this);
         mqttCallBacks.add(defaultMqttCallBack);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
@@ -77,10 +77,11 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
-    private void initMqtt(String serverUri,String userName,String password, Context context){
+    private void createMqttService(String serverUri, String userName, String password){
         Log.i(TAG,String.format("inited %s", mqttInited));
         synchronized (mqttInited){
             if(!mqttInited){
+                Context context = ContextHolder.getInstance().getContext();
                 myMqttService = new MyMqttService.Builder()
                         //设置自动重连
                         .autoReconnect(true)
@@ -95,15 +96,33 @@ public class NeulinkService implements NeulinkConst{
                         //心跳包默认的发送间隔
                         .keepAliveInterval(20)
                         //设置发布和订阅回调接口
-                        .mqttCallback(mqttCallback)
+                        .mqttCallback(defaultMqttCallback)
                         //设置连接或者发布动作侦听器
-                        .mqttActionListener(mqttActionListener)
+                        .mqttActionListener(defaultMqttActionListener)
                         //设置消息侦听器
                         //.mqttMessageListener(messageListener)
                         //构建出EasyMqttService 建议用application的context
                         .bulid(context);
                 mqttInited = true;
                 new HouseKeeping().start();
+            }
+        }
+    }
+
+    private void initMqttService(String mqttServiceUri, String userName, String password){
+        if(!mqttInited){
+            createMqttService(mqttServiceUri,userName,password);
+            int cnt = 0;
+            while (!getMqttConnSuccessed()){
+                try {
+                    connectMqtt();
+                    cnt++;
+                    Thread.sleep(1000);
+                    Log.i(TAG,"try "+cnt+"次连接。。。。");
+                }
+                catch (Exception ex){
+                    Log.e(TAG,"连接失败：",ex);
+                }
             }
         }
     }
@@ -115,7 +134,7 @@ public class NeulinkService implements NeulinkConst{
     /**
      * 连接Mqtt服务器
      */
-    void connect() {
+    private void connectMqtt() {
         if(!mqttConnSuccessed){
             myMqttService.connect();
         }
@@ -180,36 +199,26 @@ public class NeulinkService implements NeulinkConst{
 
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
-        String topStr = topicPrefix+"/"+version+"/"+ reqId+"/"+md5;
+        final String topic = buildTopic(topicPrefix,version,reqId,md5);
 
-        topStr = topStr+"/"+getCustId()+"/"+getStoreId()+"/"+getZoneId()+"/"+ ServiceRegistrator.getInstance().getDeviceService().getExtSN();
-
-        final String topic = topStr;
-
-        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topStr);
+        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topic);
 
         if (channel==0){//向下兼容
-
-            mqttPublish(reqId,payload,topic,qos,retained,callback);
-
+            if(topic.startsWith("msg/req/devinfo")) {
+                mqttRegist(reqId, payload, topic, qos, retained, callback);
+            }
+            else{
+                mqttPublish(reqId, payload, topic, qos, retained, callback);
+            }
         }
         else{
 
-            String token = NeulinkSecurity.getInstance().getToken();
-            final Map<String,String> params = new HashMap<>();
-            if(token!=null){
-                int index = token.indexOf(" ");
-                if(index!=-1){
-                    token = token.substring(index+1);
-                }
-                params.put("Authorization","Bearer "+token);
-            }
-
+            Map<String,String> params = getParams();
             /**
              * 设备注册：
              *
              */
-            if(topStr.contains("msg/req/devinfo")){
+            if(topic.startsWith("msg/req/devinfo")){
                 httpRegist(reqId,topic,payload,params);
             }
             else {
@@ -220,8 +229,35 @@ public class NeulinkService implements NeulinkConst{
             }
         }
     }
+
+    private String buildTopic(String topicPrefix,String version,String reqId,String md5){
+
+        StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId).append("/").append(md5);
+
+        stringBuffer.append("/").append(getCustId()).append("/").append(getStoreId()).append("/").append(getZoneId()).append("/").append(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+
+        return stringBuffer.toString();
+    }
+
+    private void mqttRegist(String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
+        fixedThreadPool.execute(new MqttPublisher(reqId,payload,topStr,qos,retained,callback));
+    }
+
     private void mqttPublish(String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
         fixedThreadPool.execute(new MqttPublisher(reqId,payload,topStr,qos,retained,callback));
+    }
+
+    private Map<String,String> getParams(){
+        String token = NeulinkSecurity.getInstance().getToken();
+        final Map<String,String> params = new HashMap<>();
+        if(token!=null){
+            int index = token.indexOf(" ");
+            if(index!=-1){
+                token = token.substring(index+1);
+            }
+            params.put("Authorization","Bearer "+token);
+        }
+        return params;
     }
 
     private void httpRegist(String reqId,String topStr,String payload,Map<String,String> params){
@@ -230,24 +266,6 @@ public class NeulinkService implements NeulinkConst{
 
     private void httpPublish(String reqId,String topStr,String payload,Map<String,String> params,IResCallback callback){
         fixedThreadPool.execute(new HttpPublisher(reqId,topStr,payload,params,callback));
-    }
-
-    private void connect(String mqttServiceUri,String userName,String password,Context context){
-        if(!mqttInited){
-            initMqtt(mqttServiceUri,userName,password,context);
-            int cnt = 0;
-            while (!getMqttConnSuccessed()){
-                try {
-                    connect();
-                    cnt++;
-                    Thread.sleep(1000);
-                    Log.i(TAG,"try "+cnt+"次连接。。。。");
-                }
-                catch (Exception ex){
-                    Log.e(TAG,"连接失败：",ex);
-                }
-            }
-        }
     }
 
     protected void publishConnect(Integer flg){
@@ -318,7 +336,7 @@ public class NeulinkService implements NeulinkConst{
     /**
      * MQTT是否连接成功
      */
-    private IMqttActionListener mqttActionListener = new IMqttActionListener() {
+    private IMqttActionListener defaultMqttActionListener = new IMqttActionListener() {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
@@ -346,7 +364,7 @@ public class NeulinkService implements NeulinkConst{
     }
 
     // MQTT监听并且接受消息
-    private MqttCallback mqttCallback = new MqttCallbackExtended() {
+    private MqttCallback defaultMqttCallback = new MqttCallbackExtended() {
 
         private String TAG = TAG_PREFIX+"MqttCallback";
 
@@ -462,12 +480,11 @@ public class NeulinkService implements NeulinkConst{
             }
             String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
             String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
-            Context context = ContextHolder.getInstance().getContext();
-            connect(mqttServiceUri,userName,password,context);
+            initMqttService(mqttServiceUri,userName,password);
             /**
              * MQTT机制
              */
-            myMqttService.publish(reqId,payload,topStr, qos, retained,context,callback);
+            myMqttService.publish(reqId,payload,topStr, qos, retained,callback);
 
             neulinkServiceInited = true;
         }
@@ -529,7 +546,7 @@ public class NeulinkService implements NeulinkConst{
                 //tcp://dev.neucore.com:1883
                 mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
 
-                connect(mqttServiceUri,userName,password,context);
+                initMqttService(mqttServiceUri,userName,password);
 
                 neulinkServiceInited = true;
 

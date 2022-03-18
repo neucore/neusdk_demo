@@ -195,7 +195,7 @@ public class SampleConnector implements NeulinkConst{
             StrictMode.setThreadPolicy(policy);
         }
 
-        service.init();//tcp://10.18.9.99:1883"));
+        service.init();
 
         Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }

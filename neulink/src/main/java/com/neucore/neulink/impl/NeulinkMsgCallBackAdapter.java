@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import cn.hutool.core.util.StrUtil;
 
-public class NeulinkMsgCallBack implements IMqttCallBack {
+public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
 
     private String TAG = TAG_PREFIX+"MsgCallBack";
 
@@ -23,7 +23,7 @@ public class NeulinkMsgCallBack implements IMqttCallBack {
     private NeulinkService service;
     //private MessageDaoUtils messageDaoUtils;
 
-    public NeulinkMsgCallBack(Context context, NeulinkService service){
+    public NeulinkMsgCallBackAdapter(Context context, NeulinkService service){
         this.context = context;
         this.service = service;
     }
