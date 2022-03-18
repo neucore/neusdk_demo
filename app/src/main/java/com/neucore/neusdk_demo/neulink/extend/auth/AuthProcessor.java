@@ -40,33 +40,33 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(result);
         res.setMsg(result.getMessage());
+        res.setData(result);
         return res;
     }
 
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 }

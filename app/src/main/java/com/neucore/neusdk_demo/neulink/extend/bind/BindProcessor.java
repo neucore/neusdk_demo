@@ -30,43 +30,40 @@ public class BindProcessor extends GProcessor<BindSyncCmd, BindSyncCmdRes, BindA
 
     @Override
     public BindSyncCmd parser(String payload) {
-        //LogUtil.setLog(TAG, "BindProcessor..parser=" + payload);
-        return (BindSyncCmd) JSonUtils.toObject(payload, BindSyncCmd.class);
+        return JSonUtils.toObject(payload, BindSyncCmd.class);
     }
 
     @Override
-    protected BindSyncCmdRes responseWrapper(BindSyncCmd bindSyncCmd, BindActionResult bindActionResult) {
-//        LogUtilil.setLog(TAG, "BindSyncCmdRes responseWrapper" );
+    protected BindSyncCmdRes responseWrapper(BindSyncCmd bindSyncCmd, BindActionResult result) {
         BindSyncCmdRes res = new BindSyncCmdRes();
-        res.setCmdStr(bindSyncCmd.getCmdStr());
-        res.setCode(bindActionResult.getCode());
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(bindActionResult);
-        res.setMsg(bindActionResult.getMessage());
+        res.setCmdStr(bindSyncCmd.getCmdStr());
+        res.setCode(result.getCode());
+        res.setMsg(result.getMessage());
+        res.setData(result.getData());
+
         return res;
     }
 
     @Override
     protected BindSyncCmdRes fail(BindSyncCmd bindSyncCmd, String s) {
-//        LogUtil.setLog(TAG, "BindSyncCmdRes fail" );
         BindSyncCmdRes res = new BindSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(bindSyncCmd.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(s);
         res.setMsg("失败");
+        res.setData(s);
         return res;
     }
 
     @Override
     protected BindSyncCmdRes fail(BindSyncCmd bindSyncCmd, int i, String s) {
-//        LogUtil.setLog(TAG, "BindSyncCmdRes fail+"+i );
         BindSyncCmdRes res = new BindSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(bindSyncCmd.getCmdStr());
         res.setCode(i);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        res.setData(s);
         res.setMsg("失败");
+        res.setData(s);
         return res;
     }
 }

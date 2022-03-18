@@ -227,6 +227,8 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ```
 
+package com.neucore.neusdk_demo.neulink.extend.auth;
+
 import android.content.Context;
 
 import com.neucore.neulink.extend.ServiceRegistrator;
@@ -234,7 +236,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.response.AuthSyncCmdRes;
 
 /**
@@ -261,43 +263,42 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     /**
      *
      * @param t 同步请求
-     * @param actionResult listener.doAction 的返回值
+     * @param result listener.doAction 的返回值
      * @return
      */
     @Override
-    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult actionResult) {
+    protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
-        res.setCode(STATUS_200);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setData(actionResult);
-        res.setMsg("成功");
+        res.setCode(result.getCode());
+        res.setMsg(result.getMessage());
+        res.setData(result);
         return res;
     }
 
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
-        res.setCode(STATUS_500);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
+        res.setCode(500);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
+        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
-        res.setDeviceId(ServiceFactory.getInstance().getDeviceService().getExtSN());
-        res.setData(error);
         res.setMsg("失败");
+        res.setData(error);
         return res;
     }
 }
-
 
 ```
 
@@ -308,17 +309,22 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 切记 listener 的doAction 返回值是 响应协议的data部分
 
 ```
+package com.neucore.neusdk_demo.neulink.extend.auth.listener;
+
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthActionResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthItemResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DeviceResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DomainResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.LinkResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthActionResultData;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthItemResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.DeviceResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.DomainResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.LinkResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.request.AuthSyncCmd;
 
 /**
  * 协议可以参考：授权下发 https://project.neucore.com/zentao/doc-view-82.html
+ * 云端下发至设备端的命令侦听器
+ * 所有业务处理都在这地方处理
  */
 public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncCmd> {
     @Override
@@ -331,33 +337,48 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
         DomainResult domainResult = new DomainResult();/*@TODO: 构造返回结果*/
         LinkResult linkResult = new LinkResult();/*@TODO: 构造返回结果*/
         AuthItemResult authItemResult = new AuthItemResult();/*@TODO: 构造返回结果*/
-        AuthActionResult actionResult = new AuthActionResult();/*@TODO: 构造返回结果*/
-        /**
-         * @TODO: 构造返回结果
-         */
-        actionResult.add(deviceResult);
-        actionResult.add(domainResult);
-        actionResult.add(linkResult);
-        actionResult.add(authItemResult);
-        return actionResult;
+
+        AuthActionResult result = new AuthActionResult();/*@TODO: 构造返回结果*/
+
+        AuthActionResultData data = new AuthActionResultData();/*@TODO 构造返回数据*/
+        data.add(deviceResult);
+        data.add(domainResult);
+        data.add(linkResult);
+        data.add(authItemResult);
+
+        result.setData(data);
+
+        return result;
     }
 }
+
 ```
 
 4, listener 的doAction 返回值 AuthActionResult
 
 ```
+package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
+
+import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthActionResultData;
+
+public class AuthActionResult extends ActionResult<AuthActionResultData/*响应体data部分*/> {
+    
+}
+
+```
+
+5, listener 的doAction 返回值 AuthActionResultData
+
+```
+package com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data;
+
 import com.google.gson.annotations.SerializedName;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.AuthItemResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DeviceResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.DomainResult;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.actionResult.LinkResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthActionResult {
-
+public class AuthActionResultData {
     @SerializedName("device")
     private List<DeviceResult> devices;
     @SerializedName("domain")
@@ -371,12 +392,12 @@ public class AuthActionResult {
         return devices;
     }
 
-    public void add(DeviceResult actionResult){
-        if(actionResult!=null && getDevices()==null){
+    public void add(DeviceResult result){
+        if(result!=null && getDevices()==null){
             devices = new ArrayList<>();
         }
-        if(actionResult!=null ){
-            devices.add(actionResult);
+        if(result!=null ){
+            devices.add(result);
         }
     }
 
@@ -388,12 +409,12 @@ public class AuthActionResult {
         return domains;
     }
 
-    public void add(DomainResult actionResult){
-        if(actionResult!=null && getDomains()==null){
+    public void add(DomainResult result){
+        if(result!=null && getDomains()==null){
             domains = new ArrayList<>();
         }
-        if(actionResult!=null ){
-            domains.add(actionResult);
+        if(result!=null ){
+            domains.add(result);
         }
     }
 
@@ -405,12 +426,12 @@ public class AuthActionResult {
         return links;
     }
 
-    public void add(LinkResult actionResult){
-        if(actionResult!=null && getLinks()==null){
+    public void add(LinkResult result){
+        if(result!=null && getLinks()==null){
             links = new ArrayList<>();
         }
-        if(actionResult!=null ){
-            links.add(actionResult);
+        if(result!=null ){
+            links.add(result);
         }
     }
 
@@ -422,21 +443,20 @@ public class AuthActionResult {
         return authItems;
     }
 
-    public void add(AuthItemResult actionResult){
-        if(actionResult!=null && getAuthItems()==null){
+    public void add(AuthItemResult result){
+        if(result!=null && getAuthItems()==null){
             authItems = new ArrayList<>();
         }
-        if(actionResult!=null ){
-            authItems.add(actionResult);
+        if(result!=null ){
+            authItems.add(result);
         }
     }
     public void setAuthItems(List<AuthItemResult> authItems) {
         this.authItems = authItems;
     }
 }
+
 ```
-
-
 
 #### 扩展业务集成
 
