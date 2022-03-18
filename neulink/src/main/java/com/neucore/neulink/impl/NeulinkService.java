@@ -77,6 +77,24 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
+    public void initMqttService(String mqttServiceUri, String userName, String password){
+        if(!mqttInited){
+            createMqttService(mqttServiceUri,userName,password);
+            int cnt = 0;
+            while (!getMqttConnSuccessed()){
+                try {
+                    connectMqtt();
+                    cnt++;
+                    Thread.sleep(1000);
+                    Log.i(TAG,"try "+cnt+"次连接。。。。");
+                }
+                catch (Exception ex){
+                    Log.e(TAG,"连接失败：",ex);
+                }
+            }
+        }
+    }
+
     private void createMqttService(String serverUri, String userName, String password){
         Log.i(TAG,String.format("inited %s", mqttInited));
         synchronized (mqttInited){
@@ -105,24 +123,6 @@ public class NeulinkService implements NeulinkConst{
                         .bulid(context);
                 mqttInited = true;
                 new HouseKeeping().start();
-            }
-        }
-    }
-
-    private void initMqttService(String mqttServiceUri, String userName, String password){
-        if(!mqttInited){
-            createMqttService(mqttServiceUri,userName,password);
-            int cnt = 0;
-            while (!getMqttConnSuccessed()){
-                try {
-                    connectMqtt();
-                    cnt++;
-                    Thread.sleep(1000);
-                    Log.i(TAG,"try "+cnt+"次连接。。。。");
-                }
-                catch (Exception ex){
-                    Log.e(TAG,"连接失败：",ex);
-                }
             }
         }
     }
