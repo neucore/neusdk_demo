@@ -524,6 +524,11 @@ public class AuthActionResult {
              * 新业务可以参考Auth业务的实现业务就行
              */
             ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
+            ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
+            /**
+             * 异步回调机制
+             */
+            ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
         }
     };
 
