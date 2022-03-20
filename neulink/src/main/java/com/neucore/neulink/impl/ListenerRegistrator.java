@@ -22,9 +22,7 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.impl.listener.BLibSyncCmdListener;
-import com.neucore.neulink.rmsg.ReserveCmd;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -63,13 +61,6 @@ public class ListenerRegistrator implements NeulinkConst {
         @Override
         public ActionResult doAction(NeulinkEvent<HibrateCmd> event) {
             Log.i(TAG,"device hibrate implements need to by replace ");
-            return new ActionResult();
-        }
-    };
-    private ICmdListener<ActionResult, ReserveCmd> reserveListener = new ICmdListener<ActionResult, ReserveCmd>() {
-        @Override
-        public ActionResult doAction(NeulinkEvent<ReserveCmd> event) {
-            Log.i(TAG,"device reserve implements need to by replace ");
             return new ActionResult();
         }
     };
@@ -180,14 +171,6 @@ public class ListenerRegistrator implements NeulinkConst {
 
     public void setHibrateListener(ICmdListener hibrateListener) {
         this.hibrateListener = hibrateListener;
-    }
-
-    public ICmdListener getReserveListener(){
-        return reserveListener;
-    }
-
-    public void setReserveListener(ICmdListener reserveListener) {
-        this.reserveListener = reserveListener;
     }
 
     public ICmdListener<UpdateActionResult<Map<String,Object>>, FaceCmd> getFaceListener() {
