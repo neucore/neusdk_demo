@@ -44,9 +44,11 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class NeulinkService implements NeulinkConst{
 
-    private static NeulinkService instance = new NeulinkService();
     private String TAG = TAG_PREFIX+"Service";
 
+    private static NeulinkService instance = new NeulinkService();
+
+    protected IResCallback defaultResCallback = new ResCallback2Log();
     private MyMqttService myMqttService = null;
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
     private Boolean neulinkServiceInited = false;
@@ -254,6 +256,12 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private void publish(String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
+
+        if(ObjectUtil.isEmpty(callback)){
+            Log.i(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
+            callback = defaultResCallback;
+        }
+
         if(!neulinkServiceInited){
             if(callback!=null){
                 Result result = Result.fail(STATUS_503,"SDK还没初始化完成");

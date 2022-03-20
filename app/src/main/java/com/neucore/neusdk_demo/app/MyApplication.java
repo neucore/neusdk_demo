@@ -8,14 +8,13 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SubApp;
-import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.SampleConnector;
+import com.neucore.neulink.impl.ResCallback2Log;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.ProcessRegistrator;
@@ -84,7 +83,7 @@ public class MyApplication extends Application
                 String version = "v1.0";
                 String reqId = "3214323ewadfdsad";
                 String mode = "bind";
-                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "", iResCallback);
+                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "", new ResCallback2Log());
             }
         }.start();
     }
@@ -482,13 +481,6 @@ public class MyApplication extends Application
             ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
             ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
             ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
-        }
-    };
-
-    IResCallback iResCallback = new IResCallback() {
-        @Override
-        public void onFinished(Result result) {
-            Log.i(TAG, "onFinished： "+result.getReqId());
         }
     };
 }

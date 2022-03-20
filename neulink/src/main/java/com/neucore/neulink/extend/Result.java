@@ -154,4 +154,16 @@ public class Result<T> implements Serializable {
     public void setTime(Long time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "reqId='" + reqId + '\'' +
+                ", total=" + total +
+                ", code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                ", time=" + time +
+                '}';
+    }
 }
