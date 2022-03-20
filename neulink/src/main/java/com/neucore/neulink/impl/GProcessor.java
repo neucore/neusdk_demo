@@ -123,7 +123,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
             if(listener==null){
                 throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
             }
-            ActionResult actionResult = listener.doAction(new NeulinkEvent<Req>(cmd));
+            ActionResult actionResult = listener.doAction(new NeulinkEvent<>(cmd));
             return actionResult;
         }
         catch (NeulinkException ex){
