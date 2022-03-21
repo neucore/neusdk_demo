@@ -562,22 +562,138 @@ public class AuthActionResultData {
 1，在Apk应用中采用NeulinkService.getInstance().getPublisherFacde()获取消息发送接口进行进行消息发送;
 
 ```
-public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position);
-public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IPublishCallback callback);
-public void upldFacetmp(FaceTemp[] data);
-public void upldFacetmp(FaceTemp[] data,IPublishCallback callback);
-public void upldDownloadProgress(String topicPrefix,String reqId,String progress);
-public void upldFaceInfo$1$2(String url, FaceUpload12 info);
-public void upldFaceInfo$1$2(String url, FaceUpload12 info,IPublishCallback callback);
 
-public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
-public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+    /**
+     * 车牌抓拍上报
+     * upld/req/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
+     */
+    public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position)
 
-public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload);
-public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,ObjectUtil payload,IPublishCallback callback);
+    /**
+     * 车牌抓拍上报
+     * @param num
+     * @param color
+     * @param imageUrl
+     * @param cmpCode
+     * @param locationCode
+     * @param position
+     * @param callback
+     */
+    public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IResCallback callback)
 
-public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload);
-public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload,IPublishCallback callback);
+    /**
+     * 体温检测上报
+     * upld/req/facetemprature/v1.0/${req_no}[/${md5}], qos=0
+     */
+    public void upldFacetmp(FaceTemp[] data)
+
+    /**
+     * 体温检测上报
+     * @param data
+     * @param callback
+     */
+    public void upldFacetmp(FaceTemp[] data, IResCallback callback)
+
+    /**
+     * 人脸抓拍上报
+     * 1.2版本协议
+     * @param url 人脸照片的url
+     * @param info 人脸识别信息
+     */
+    public void upldFaceInfo$1$2(String url, FaceUpload12 info)
+
+    /**
+     * 人脸抓拍上报
+     * @param url
+     * @param info
+     * @param callback
+     */
+    public void upldFaceInfo$1$2(String url, FaceUpload12 info, IResCallback callback)
+
+    /**
+     * 上报升级包下载进度
+     * @param topicPrefix
+     * @param reqId
+     * @param progress
+     */
+    public void upldDownloadProgress(String topicPrefix,String reqId,String progress)
+
+    /**
+     * rmsg请求异步处理响应
+     * rmsg/res/${biz}/${version}
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload)
+
+    /**
+     * rmsg请求异步处理响应
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback)
+    
+    /**
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload)
+
+    /**
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback)
+
+    /**
+     * rrpc请求异步处理响应
+     * rrpc/res/${biz}/${version}
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload)
+
+    /**
+     * rrpc请求异步处理响应
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void rrpcResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback)
 
 ```
 

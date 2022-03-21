@@ -480,7 +480,18 @@ public class MyApplication extends Application
              */
             ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
             ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
+            /**
+             * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
+             */
             ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
+
+            /**
+             * 上传结果给到云端
+             * 这个业务一般用于端侧自动抓拍、日志自动上报
+             * 端侧审核操作【同意、拒绝】结果给到云端
+             * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
+             * 具体参考Neulink 使用手册《上报消息到云端》部分
+             */
         }
     };
 }
