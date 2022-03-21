@@ -46,7 +46,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
         payload = auth(topic,payload);
 
-        String resTopic = resTopic();
         /**
          * 发送响应消息给到服务端
          */
@@ -96,17 +95,25 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 }
             }
             catch(NeulinkException ex){
-                update(id,IMessage.STATUS_FAIL, ex.getMessage());
-                Res res = fail(req, ex.getCode(),ex.getMsg());
-                String jsonStr = JSonUtils.toString(res);
-                resLstRsl2Cloud(topic, jsonStr);
+                try {
+                    Log.e(TAG, "execute", ex);
+                    update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    Res res = fail(req, ex.getCode(), ex.getMsg());
+                    String jsonStr = JSonUtils.toString(res);
+                    resLstRsl2Cloud(topic, jsonStr);
+                }
+                catch(Exception e){
+                }
             }
             catch (Throwable ex) {
-                Log.e(TAG,"execute",ex);
-                update(id,IMessage.STATUS_FAIL, ex.getMessage());
-                Res res = fail(req, ex.getMessage());
-                String jsonStr = JSonUtils.toString(res);
-                resLstRsl2Cloud(topic, jsonStr);
+                try {
+                    Log.e(TAG, "execute", ex);
+                    update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    Res res = fail(req, ex.getMessage());
+                    String jsonStr = JSonUtils.toString(res);
+                    resLstRsl2Cloud(topic, jsonStr);
+                }
+                catch(Exception e){}
             }
         }
     }
@@ -234,10 +241,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
             return;
         }
         NeulinkService.getInstance().publishMessage(resTopic,topic.getVersion(),topic.getReqId(),result,topic.getQos());
-    }
-
-    public void clean(){
-
     }
 
     protected String resTopic(){

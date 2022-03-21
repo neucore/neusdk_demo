@@ -351,7 +351,12 @@ public class NeulinkService implements NeulinkConst{
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
-                    callback.connectSuccess(arg0);
+                    try {
+                        callback.connectSuccess(arg0);
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                 }
             }
             setMqttConnSuccessed(true);
@@ -361,7 +366,12 @@ public class NeulinkService implements NeulinkConst{
         public void onFailure(IMqttToken arg0, Throwable arg1) {
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
-                    callback.connectFailed(arg0, arg1);
+                    try {
+                        callback.connectFailed(arg0, arg1);
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                 }
             }
         }
@@ -387,7 +397,12 @@ public class NeulinkService implements NeulinkConst{
                 Log.d(TAG, "Server:" + mqttServiceUri + " ,connectComplete reconnect:" + reconnect);
                 if (mqttCallBacks != null) {
                     for (IMqttCallBack callback: mqttCallBacks) {
-                        callback.connectComplete(reconnect, serverURI);
+                        try {
+                            callback.connectComplete(reconnect, serverURI);
+                        }
+                        catch (Exception ex){
+                            Log.e(TAG,ex.getMessage());
+                        }
                     }
                 }
                 setMqttConnSuccessed(true);
@@ -411,7 +426,12 @@ public class NeulinkService implements NeulinkConst{
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
-                    callback.messageArrived(topic, msgContent, receivedMessage.getQos());
+                    try {
+                        callback.messageArrived(topic, msgContent, receivedMessage.getQos());
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                 }
             }
 
@@ -422,7 +442,12 @@ public class NeulinkService implements NeulinkConst{
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
-                    callback.deliveryComplete(arg0);
+                    try {
+                        callback.deliveryComplete(arg0);
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                 }
             }
         }
@@ -434,13 +459,21 @@ public class NeulinkService implements NeulinkConst{
             publishDisConnect(1);
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
-                    callback.connectionLost(arg0);
+                    try {
+                        callback.connectionLost(arg0);
+                    }
+                    catch (Exception ex){
+                        Log.e(TAG,ex.getMessage());
+                    }
                 }
             }
             // 失去连接，重连
         }
     };
 
+    /**
+     * 日志周期清理服务
+     */
     class HouseKeeping extends Thread{
         public void run(){
             while (!destroy){
@@ -466,6 +499,9 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    /**
+     * 异步注册器
+     */
     class AsyncRegistor implements Runnable {
 
         private String reqId;
@@ -548,13 +584,23 @@ public class NeulinkService implements NeulinkConst{
 
                     neulinkServiceInited = true;
 
-                } catch (Exception e) {
-                    Log.e(TAG,e.getMessage(),e);
                 }
+                catch (NeulinkException e) {
+                    Log.e(TAG,"注册失败",e);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(e.getCode());
+                    result.setMsg(e.getMsg());
+                    defaultResCallback.onFinished(result);
+                }
+                catch (Exception ex){}
             }
         }
     }
 
+    /**
+     * 异步发布器
+     */
     class AsynPublisher implements Runnable{
         private String reqId;
         private String topStr;
@@ -611,11 +657,24 @@ public class NeulinkService implements NeulinkConst{
                     }
                     catch (NeulinkException e) {
                         if(e.getCode()==401||e.getCode()==403){
-                            Log.i(TAG,"token过期，重新登录");
+
+                            Result result = Result.fail(e.getCode(),e.getMessage());
+                            result.setReqId(reqId);
+                            result.setCode(e.getCode());
+                            result.setMsg("token过期");
+                            callback.onFinished(result);
+
                             String token = ServiceRegistrator.getInstance().getLoginCallback().login();
                             if(ObjectUtil.isNotEmpty(token)){
                                 Log.i(TAG,"token过期，重新登录成功");
                                 NeulinkSecurity.getInstance().setToken(token);
+                            }
+                            else{
+                                result = Result.fail(e.getCode(),e.getMessage());
+                                result.setReqId(reqId);
+                                result.setCode(e.getCode());
+                                result.setMsg("token过期，重新登录失败");
+                                callback.onFinished(result);
                             }
                             count++;
                         }
