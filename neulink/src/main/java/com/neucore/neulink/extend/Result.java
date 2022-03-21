@@ -159,11 +159,11 @@ public class Result<T> implements Serializable {
     public String toString() {
         return "Result{" +
                 "reqId='" + reqId + '\'' +
-                ", total=" + total +
+                ", time=" + time +
                 ", code=" + code +
                 ", msg='" + msg + '\'' +
+                ", total=" + total +
                 ", data=" + data +
-                ", time=" + time +
                 '}';
     }
 }
