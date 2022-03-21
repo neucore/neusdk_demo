@@ -85,8 +85,13 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 Res res = responseWrapper(req, actionResult);
                 if(ObjectUtil.isNotEmpty(res)){
                     String jsonStr = JSonUtils.toString(res);
-                    if (res.getCode() == 200){//支撑多包批处理，所有包处理成功才叫做成功
+                    if (res.getCode() == STATUS_200
+                            ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
                         update(id, IMessage.STATUS_SUCCESS, res.getMsg());
+                    }
+                    else if(res.getCode()==STATUS_201
+                            ||res.getCode()==STATUS_202){
+                        update(id, IMessage.STATUS_PROCESS, res.getMsg());
                     }
                     else {
                         update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
