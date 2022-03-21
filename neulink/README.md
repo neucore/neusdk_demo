@@ -273,7 +273,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMessage());
-        res.setData(result);
+        res.setData(result.getData());
         return res;
     }
 
@@ -300,15 +300,15 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     }
 }
 
+
 ```
 
 3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
 #### 注意事项
 
-切记 listener 的doAction 返回值是 响应协议的data部分
-
 ```
+
 package com.neucore.neusdk_demo.neulink.extend.auth.listener;
 
 import com.neucore.neulink.ICmdListener;
