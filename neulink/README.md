@@ -541,14 +541,22 @@ public class AuthActionResultData {
             /**
              * 自定义Processor注册
              * 框架已经实现消息的接收及响应处理机制
-             * 新业务可以参考Auth业务的实现业务就行
+             * 新业务可以参考Hello业务的实现业务就行
              */
             ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
             ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
             /**
-             * 异步回调机制
+             * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
              */
             ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
+
+            /**
+             * 上传结果给到云端
+             * 这个业务一般用于端侧自动抓拍、日志自动上报
+             * 端侧审核操作【同意、拒绝】结果给到云端
+             * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
+             * 《上报消息到云端》部分
+             */
         }
     };
 
