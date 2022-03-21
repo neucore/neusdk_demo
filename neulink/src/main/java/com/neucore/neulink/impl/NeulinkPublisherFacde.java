@@ -32,7 +32,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 车牌上报
+     * 车牌抓拍上报
      * upld/req/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      */
     public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position){
@@ -51,6 +51,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
+    /**
+     * 车牌抓拍上报
+     * @param num
+     * @param color
+     * @param imageUrl
+     * @param cmpCode
+     * @param locationCode
+     * @param position
+     * @param callback
+     */
     public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position, IResCallback callback){
         LicUpldCmd req = new LicUpldCmd();
         req.setNum(num);
@@ -67,7 +77,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 体温上报
+     * 体温检测上报
      * upld/req/facetemprature/v1.0/${req_no}[/${md5}], qos=0
      */
     public void upldFacetmp(FaceTemp[] data){
@@ -81,6 +91,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
+    /**
+     * 体温检测上报
+     * @param data
+     * @param callback
+     */
     public void upldFacetmp(FaceTemp[] data, IResCallback callback){
         FaceTempCmd req = new FaceTempCmd();
         req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
@@ -92,7 +107,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 人脸上报
+     * 人脸抓拍上报
      * 1.2版本协议
      * @param url 人脸照片的url
      * @param info 人脸识别信息
@@ -127,6 +142,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         }
     }
 
+    /**
+     * 人脸抓拍上报
+     * @param url
+     * @param info
+     * @param callback
+     */
     public void upldFaceInfo$1$2(String url, FaceUpload12 info, IResCallback callback){
         if(!ObjectUtil.isEmpty(url)){
             int index = url.lastIndexOf("/");
@@ -172,7 +193,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
     }
     /**
-     * rmsg请求响应
+     * rmsg请求异步处理响应
      * rmsg/res/${biz}/${version}
      * @param biz
      * @param version
@@ -194,7 +215,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * rmsg请求异步处理响应
      * @param biz
      * @param version
      * @param reqId
@@ -213,8 +234,51 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setData(payload);
         response(topicPrefix,reqId,res,callback);
     }
+
     /**
-     * rrpc请求响应
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     */
+    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        response(topicPrefix,reqId,res,resCallback);
+    }
+
+    /**
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
+    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback){
+        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        CmdRes res = new CmdRes();
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        res.setData(payload);
+        response(topicPrefix,reqId,res,callback);
+    }
+
+    /**
+     * rrpc请求异步处理响应
      * rrpc/res/${biz}/${version}
      * @param biz
      * @param version
@@ -236,7 +300,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * rrpc请求异步处理响应
      * @param biz
      * @param version
      * @param reqId
@@ -248,47 +312,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void rrpcResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback){
         String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
-    }
-    /**
-     * 抓拍上传
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     */
-    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
-        response(topicPrefix,reqId,res,resCallback);
-    }
-
-    /**
-     *
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
-     * @param callback
-     */
-    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
