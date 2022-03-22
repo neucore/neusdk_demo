@@ -45,7 +45,7 @@ public class SampleFirewareResumeCmdListener implements ICmdListener<ActionResul
                     String progress = formater.format(size*1.0/total*1.0*100);
 
                     Log.i(TAG,cmd.getReqId()+ " progress: "+progress);
-                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getReqId(),progress);
+                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqId(),progress);
                 }
             });
             Log.i(TAG,"成功下载完成："+downloader.getFileSize());
