@@ -495,43 +495,43 @@ public class AuthActionResultData {
             /**
              * 配置扩展
              */
-            ListenerRegistrator.getInstance().setCfgListener(new CfgActionListener());
+            ListenerFactory.getInstance().setCfgListener(new SampleCfgActionListener());
             /**
              * 人脸下发 扩展
              */
-            ListenerRegistrator.getInstance().setFaceListener(new SampleFaceListener());
+            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
             /**
              * 人脸比对 扩展
              */
-            ListenerRegistrator.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展
              */
-            ListenerRegistrator.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
 
             /**
              * 唤醒 扩展
              */
-            ListenerRegistrator.getInstance().setAwakenListener(new AwakenActionListener());
+            ListenerFactory.getInstance().setAwakenListener(new SampleAwakenActionListener());
             /**
              * 休眠 扩展
              */
-            ListenerRegistrator.getInstance().setHibrateListener(new HibrateActionListener());
+            ListenerFactory.getInstance().setHibrateListener(new SampleHibrateActionListener());
 
             /**
              * 算法升级 扩展
              */
-            ListenerRegistrator.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
+            ListenerFactory.getInstance().setAlogListener(new SampleAlogUpgrdActionListener());
 
             /**
-             * 固件$APK 扩展
+             * 固件$APK 升级扩展
              */
-            ListenerRegistrator.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
+            ListenerFactory.getInstance().setFireware$ApkListener(new SampleFirewareUpgrdActionListener());
 
             /**
-             * 备份现 扩展
+             * 备份实现
              */
-            ListenerRegistrator.getInstance().setBackupListener(new BackupActionListener());
+            ListenerFactory.getInstance().setBackupListener(new SampleBackupActionListener());
 
             /**
              * neulink消息线性处理存储服务
