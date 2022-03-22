@@ -10,7 +10,7 @@ public class Cmd {
         return biz;
     }
 
-    void setBiz(String biz) {
+    protected void setBiz(String biz) {
         this.biz = biz;
     }
 
@@ -23,7 +23,7 @@ public class Cmd {
         return reqId;
     }
 
-    void setReqId(String reqId) {
+    protected void setReqId(String reqId) {
         this.reqId = reqId;
     }
 
@@ -33,7 +33,7 @@ public class Cmd {
         return version;
     }
 
-    void setVersion(String version) {
+    protected void setVersion(String version) {
         this.version = version;
     }
 
@@ -52,7 +52,7 @@ public class Cmd {
         return reqtime;
     }
 
-    void setReqtime(long reqtime) {
+    protected void setReqtime(long reqtime) {
         this.reqtime = reqtime;
     }
 }

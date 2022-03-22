@@ -19,6 +19,7 @@ import android.util.Log;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.util.NeuHttpHelper;
 
+import cn.hutool.core.util.ObjectUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -254,9 +255,11 @@ public class FileDownloader implements NeulinkConst{
      */
     private String getFileName(Response response) {
         String filename = response.header("Content-Disposition");
-        Matcher m = Pattern.compile(".*filename=(.*)").matcher(filename);
-        if(m.find()) {
-            return m.group(1);
+        if(ObjectUtil.isNotEmpty(filename)){
+            Matcher m = Pattern.compile(".*filename=(.*)").matcher(filename);
+            if(m.find()) {
+                return m.group(1);
+            }
         }
         return UUID.randomUUID()+ ".tmp";//默认取一个文件名
     }

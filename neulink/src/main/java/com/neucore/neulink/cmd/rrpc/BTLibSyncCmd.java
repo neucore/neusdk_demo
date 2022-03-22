@@ -3,7 +3,7 @@ package com.neucore.neulink.cmd.rrpc;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.Cmd;
 
-public class BTLibSyncCmd extends Cmd {
+public class BTLibSyncCmd extends PkgCmd {
 
     public BTLibSyncCmd(){
         cmdStr = "sync";

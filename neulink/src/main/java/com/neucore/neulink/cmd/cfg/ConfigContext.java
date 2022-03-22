@@ -16,7 +16,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
+
+import cn.hutool.core.util.ObjectUtil;
 
 public class ConfigContext implements NeulinkConst{
 
@@ -71,10 +76,8 @@ public class ConfigContext implements NeulinkConst{
 
     private String TAG = TAG_PREFIX+"ConfigContext";
 
-    private static ConfigContext configContext = new ConfigContext();
-
     private Properties defaultConfig = new Properties();
-    {
+    void loadDefault() {
         defaultConfig.setProperty(MQTT_SERVER,"WJ8vFilazdPSHmI2C0g5kl5yIDpvMYj0odLucUl/T1Y=");
         defaultConfig.setProperty(STORAGE_TYPE,"XBtKHrBKP7c=");//""NvfwywVaqXA=");
         defaultConfig.setProperty(OSS_END_POINT,"YcCiqgrFpSdKjx6yQAEi+3VOA1kk3RHA6AQ/Tx0Z9bX1iQfGu8HWFw==");
@@ -90,6 +93,9 @@ public class ConfigContext implements NeulinkConst{
         defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
         defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRkFFGfiMM+IXv6Ft4mvB0Enb4z9vlvJJuPyfCaAA3EqR");
     }
+
+    private static ConfigContext configContext = new ConfigContext();
+
     private Properties extConfig = new Properties();
     private Properties configs = new Properties();
     private Context context = null;
@@ -121,9 +127,17 @@ public class ConfigContext implements NeulinkConst{
 
         FileReader reader = null;
         try {
+            loadDefault();
             Properties properties = new Properties();
             reader = new FileReader(configFile);
             properties.load(reader);
+            Iterator<String> keys = defaultConfig.stringPropertyNames().iterator();
+            while (keys.hasNext()){
+                String key = keys.next();
+                if(!properties.containsKey(key)){
+                    properties.setProperty(key,getConfig(key));
+                }
+            }
             configs = properties;
         } catch (IOException e) {
             Log.e(TAG,"load",e);
@@ -243,11 +257,14 @@ public class ConfigContext implements NeulinkConst{
             return defaultValue;
         }
         String setting = defaultConfig.getProperty(key);
-        byte[] encrypt = new byte[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            encrypt = Base64.getDecoder().decode(setting);
+        if(ObjectUtil.isNotEmpty(setting)){
+            byte[] encrypt = new byte[0];
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                encrypt = Base64.getDecoder().decode(setting);
+            }
+            setting = new String(EnDecUtil.DESDecrypt("neucore-security-key",encrypt));
         }
-        setting = new String(EnDecUtil.DESDecrypt("neucore-security-key",encrypt));
+
         return setting;
     }
 }

@@ -11,9 +11,6 @@ public class RecoverCmd extends Cmd {
     @SerializedName("md5")
     private String md5;
 
-    @SerializedName("timestamp")
-    private long timestamp;
-
     @Override
     public String getCmdStr() {
         return cmdStr;
@@ -38,13 +35,5 @@ public class RecoverCmd extends Cmd {
 
     public void setMd5(String md5) {
         this.md5 = md5;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 }
