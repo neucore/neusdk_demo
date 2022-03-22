@@ -26,7 +26,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.5.0'
     implementation 'com.lzy.net:okgo:3.0.4'
