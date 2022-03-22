@@ -75,19 +75,17 @@ public class NeuHttpHelper implements NeulinkConst{
 	 * @return
 	 * @throws IOException
 	 */
-	public static String dldFile2String(String fileUrl, int tryNum) throws IOException {
+	public static String dldFile2String(String fileUrl, int tryNum) throws NeulinkException {
 
 		int trys = 1;
-		Response response = null;
-		int code = 200;
 		while(trys<=tryNum){
 			try {
-				response = getClient().newCall(createRequest(fileUrl)).execute();
-				code = response.code();
+				Response response = getClient().newCall(createRequest(fileUrl)).execute();
+				int code = response.code();
 				if(code!=200){
-					throw new RuntimeException(fileUrl+",下载失败 with code="+code);
+					throw new NeulinkException(code,fileUrl+",下载失败 with code="+code);
 				}
-				break;
+				return response.body().string();
 			}
 			catch (IOException ex){
 				Log.e(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
@@ -101,8 +99,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 			}
 		}
-
-		return response.body().string();
+		return null;
 	}
 
 	/**
@@ -187,7 +184,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				response = client.newCall(createRequest(fileUrl)).execute();
 				code = response.code();
 				if(code!=200){
-					throw new RuntimeException(fileUrl+",下载失败 with code="+code);
+					throw new NeulinkException(code,fileUrl+",下载失败 with code="+code);
 				}
 				is = response.body().byteStream();
 

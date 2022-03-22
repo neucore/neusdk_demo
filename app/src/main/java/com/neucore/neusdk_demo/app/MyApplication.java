@@ -13,9 +13,9 @@ import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.cmd.msg.SubApp;
+import com.neucore.neulink.extend.ListenerFactory;
 import com.neucore.neulink.extend.SampleConnector;
 import com.neucore.neulink.impl.ResCallback2Log;
-import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.ProcessRegistrator;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
@@ -23,15 +23,6 @@ import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neusdk_demo.db.UserService;
-import com.neucore.neusdk_demo.neulink.extend.AlogUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.ApkUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.AwakenActionListener;
-import com.neucore.neusdk_demo.neulink.extend.BackupActionListener;
-import com.neucore.neusdk_demo.neulink.extend.CfgActionListener;
-import com.neucore.neusdk_demo.neulink.extend.HibrateActionListener;
-import com.neucore.neusdk_demo.neulink.extend.SampleFaceCheckListener;
-import com.neucore.neusdk_demo.neulink.extend.SampleFaceListener;
-import com.neucore.neusdk_demo.neulink.extend.SampleFaceQueryListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 
@@ -40,6 +31,15 @@ import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleAlogUpgrdActionListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleAwakenActionListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleBackupActionListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleCfgActionListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceCheckListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceQueryListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleFirewareUpgrdActionListener;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleHibrateActionListener;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -435,43 +435,43 @@ public class MyApplication extends Application
             /**
              * 配置扩展
              */
-            ListenerRegistrator.getInstance().setCfgListener(new CfgActionListener());
+            ListenerFactory.getInstance().setCfgListener(new SampleCfgActionListener());
             /**
              * 人脸下发 扩展
              */
-            ListenerRegistrator.getInstance().setFaceListener(new SampleFaceListener());
+            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
             /**
              * 人脸比对 扩展
              */
-            ListenerRegistrator.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展
              */
-            ListenerRegistrator.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
 
             /**
              * 唤醒 扩展
              */
-            ListenerRegistrator.getInstance().setAwakenListener(new AwakenActionListener());
+            ListenerFactory.getInstance().setAwakenListener(new SampleAwakenActionListener());
             /**
              * 休眠 扩展
              */
-            ListenerRegistrator.getInstance().setHibrateListener(new HibrateActionListener());
+            ListenerFactory.getInstance().setHibrateListener(new SampleHibrateActionListener());
 
             /**
              * 算法升级 扩展
              */
-            ListenerRegistrator.getInstance().setAlogListener("auth", new AlogUpgrdActionListener());
+            ListenerFactory.getInstance().setAlogListener(new SampleAlogUpgrdActionListener());
 
             /**
              * 固件$APK 升级扩展
              */
-            ListenerRegistrator.getInstance().setFireware$ApkListener(new ApkUpgrdActionListener());
+            ListenerFactory.getInstance().setFireware$ApkListener(new SampleFirewareUpgrdActionListener());
 
             /**
              * 备份实现
              */
-            ListenerRegistrator.getInstance().setBackupListener(new BackupActionListener());
+            ListenerFactory.getInstance().setBackupListener(new SampleBackupActionListener());
 
             /**
              * 自定义Processor注册

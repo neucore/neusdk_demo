@@ -2,7 +2,7 @@ package com.neucore.neulink.cmd.rrpc;
 
 import com.google.gson.annotations.SerializedName;
 
-public class FaceData {
+public class FaceData extends PkgData{
     /**
      * 访客规则：xxxxx,中控系统号码
      * 正式员工规则：yyyyy 卡号

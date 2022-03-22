@@ -7,22 +7,22 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.impl.proc.ALogProcessor;
-import com.neucore.neulink.impl.proc.AwakenProcessor;
-import com.neucore.neulink.impl.proc.BLibProcessor;
-import com.neucore.neulink.impl.proc.BackupProcessor;
-import com.neucore.neulink.impl.proc.CfgProcessor;
-import com.neucore.neulink.impl.proc.CheckProcessor;
-import com.neucore.neulink.impl.proc.DebugProcessor;
-import com.neucore.neulink.impl.proc.FirewareProcessor;
-import com.neucore.neulink.impl.proc.FirewareProcessorResume;
-import com.neucore.neulink.impl.proc.HibrateProcessor;
-import com.neucore.neulink.impl.proc.QCfgProcessor;
-import com.neucore.neulink.impl.proc.QLibProcessor;
-import com.neucore.neulink.impl.proc.QLogProcessor;
-import com.neucore.neulink.impl.proc.RebootProcessor;
-import com.neucore.neulink.impl.proc.RecoverProcessor;
-import com.neucore.neulink.impl.proc.ShellProcessor;
+import com.neucore.neulink.impl.proc.DefaultALogProcessor;
+import com.neucore.neulink.impl.proc.DefaultAwakenProcessor;
+import com.neucore.neulink.impl.proc.DefaultBLibProcessor;
+import com.neucore.neulink.impl.proc.DefaultBackupProcessor;
+import com.neucore.neulink.impl.proc.DefaultCfgProcessor;
+import com.neucore.neulink.impl.proc.DefaultCheckProcessor;
+import com.neucore.neulink.impl.proc.DefaultDebugProcessor;
+import com.neucore.neulink.impl.proc.DefaultFirewareProcessor;
+import com.neucore.neulink.impl.proc.DefaultFirewareProcessorResume;
+import com.neucore.neulink.impl.proc.DefaultHibrateProcessor;
+import com.neucore.neulink.impl.proc.DefaultQCfgProcessor;
+import com.neucore.neulink.impl.proc.DefaultQLibProcessor;
+import com.neucore.neulink.impl.proc.DefaultQLogProcessor;
+import com.neucore.neulink.impl.proc.DefaultRebootProcessor;
+import com.neucore.neulink.impl.proc.DefaultRecoverProcessor;
+import com.neucore.neulink.impl.proc.DefaultShellProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -57,6 +57,7 @@ public class ProcessRegistrator implements NeulinkConst {
      *
      * 车牌信息上报响应 upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      * 温度信息上报响应 upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
+     * @deprecated
      */
     public synchronized static IProcessor build(Context context, NeulinkTopicParser.Topic topic){
         String biz = topic.getBiz().toLowerCase();
@@ -64,55 +65,55 @@ public class ProcessRegistrator implements NeulinkConst {
             return processors.get(biz);
         }
         if("reboot".equalsIgnoreCase(biz)){//设备重启
-            regist(biz,new RebootProcessor(context));
+            regist(biz,new DefaultRebootProcessor(context));
         }
         else if("firmware".equalsIgnoreCase(biz)){//设备固件升级
-            regist(biz,new FirewareProcessor(context));
+            regist(biz,new DefaultFirewareProcessor(context));
         }
         else if("firmwareresume".equalsIgnoreCase(biz)){//设备固件升级
-            regist(biz,new FirewareProcessorResume(context));
+            regist(biz,new DefaultFirewareProcessorResume(context));
         }
         else if("hibrate".equalsIgnoreCase(biz)){//设备休眠
-            regist(biz,new HibrateProcessor(context));
+            regist(biz,new DefaultHibrateProcessor(context));
         }
         else if("awaken".equalsIgnoreCase(biz)){//设备唤醒
-            regist(biz,new AwakenProcessor(context));
+            regist(biz,new DefaultAwakenProcessor(context));
         }
         else if("debug".equalsIgnoreCase(biz)){//Shell命令处理器
-            regist(biz,new DebugProcessor(context));
+            regist(biz,new DefaultDebugProcessor(context));
         }
         else if("shell".equalsIgnoreCase(biz)){//Shell命令处理器
-            regist(biz,new ShellProcessor(context));
+            regist(biz,new DefaultShellProcessor(context));
         }
         else if("alog".equalsIgnoreCase(biz)){//算法升级处理器
-            regist(biz, new ALogProcessor(context));
+            regist(biz, new DefaultALogProcessor(context));
         }
         else if("qlog".equalsIgnoreCase(biz)){//日志请求处理器
-            regist(biz, new QLogProcessor(context));
+            regist(biz, new DefaultQLogProcessor(context));
         }
         else if("blib".equalsIgnoreCase(biz)){//目标库批量处理器
-            regist(biz,new BLibProcessor(context));
+            regist(biz,new DefaultBLibProcessor(context));
         }
         else if("qlib".equalsIgnoreCase(biz)){//目标库单记录处理器
-            regist(biz,new QLibProcessor(context));
+            regist(biz,new DefaultQLibProcessor(context));
         }
         else if("cfg".equalsIgnoreCase(biz)){//配置管理处理器
-            regist(biz,new CfgProcessor(context));
+            regist(biz,new DefaultCfgProcessor(context));
         }
         else if("qcfg".equalsIgnoreCase(biz)){//配置管理处理器
-            regist(biz,new QCfgProcessor(context));
+            regist(biz,new DefaultQCfgProcessor(context));
         }
         else if("backup".equalsIgnoreCase(biz)){//备份处理器
-            regist(biz,new BackupProcessor(context));
+            regist(biz,new DefaultBackupProcessor(context));
         }
         else if("recover".equalsIgnoreCase(biz)){//备份恢复处理器
-            regist(biz,new RecoverProcessor(context));
+            regist(biz,new DefaultRecoverProcessor(context));
         }
         else if("check".equalsIgnoreCase(biz)){//数据校验处理器
-            regist(biz,new CheckProcessor(context));
+            regist(biz,new DefaultCheckProcessor(context));
         }
         IProcessor processor = processors.get(biz);
-        if(ObjectUtil.isNotEmpty(processor)){
+        if(ObjectUtil.isEmpty(processor)){
             String upperFirst = StrUtil.upperFirst(biz);
             try {
                 Class cls = Class.forName("com.neucore.neulink.extend.impl." + upperFirst + "Processor");

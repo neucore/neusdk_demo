@@ -25,7 +25,7 @@ import cn.hutool.core.util.ObjectUtil;
 public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResult extends IActionResult> implements IProcessor {
 
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
-    private Context context;
+    protected Context context;
     protected Object lock = new Object();
     protected NeulinkTopicParser.Topic topic;
     protected IMessage msg;
@@ -40,7 +40,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return context;
     }
 
-    final public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    public void execute(NeulinkTopicParser.Topic topic, String payload) {
 
         this.topic = topic;
 
@@ -49,7 +49,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         /**
          * 发送响应消息给到服务端
          */
-        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),NEULINK_MODE_RECEIVE,topic.getReqId(),STATUS_201, NeulinkConst.MESSAGE_PROCESSING,null);
+        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),topic.getReqId(),NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,null);
         //检查当前请求是否已经已经到达过
         synchronized (lock){
             msg = query(topic.getReqId());
@@ -82,18 +82,20 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 req.setVersion(topic.getVersion());
 
                 ActionResult actionResult = process(topic, req);
-                Res res = responseWrapper(req, actionResult);
-                if(ObjectUtil.isNotEmpty(res)){
-                    String jsonStr = JSonUtils.toString(res);
-                    if (res.getCode() == STATUS_200
-                            ||res.getCode()==STATUS_202
-                            ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
-                        update(id, IMessage.STATUS_SUCCESS, res.getMsg());
+                if(ObjectUtil.isNotEmpty(actionResult)){
+                    Res res = responseWrapper(req, actionResult);
+                    if(ObjectUtil.isNotEmpty(res)){
+                        String jsonStr = JSonUtils.toString(res);
+                        if (res.getCode() == STATUS_200
+                                ||res.getCode()==STATUS_202
+                                ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
+                            update(id, IMessage.STATUS_SUCCESS, res.getMsg());
+                        }
+                        else {
+                            update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
+                        }
+                        resLstRsl2Cloud(topic, jsonStr);
                     }
-                    else {
-                        update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
-                    }
-                    resLstRsl2Cloud(topic, jsonStr);
                 }
             }
             catch(NeulinkException ex){
@@ -120,31 +122,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         }
     }
 
-    /**
-     * 默认实现
-     * @param topic
-     * @param cmd
-     * @return
-     */
-    public ActionResult process(NeulinkTopicParser.Topic topic, Req cmd) {
-        try {
-
-            ICmdListener<ActionResult,Req> listener = getListener();
-            if(listener==null){
-                throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
-            }
-            ActionResult actionResult = listener.doAction(new NeulinkEvent<>(cmd));
-            return actionResult;
-        }
-        catch (NeulinkException ex){
-            throw ex;
-        }
-        catch (Throwable ex){
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public String auth(NeulinkTopicParser.Topic topic, String payload){
+    protected String auth(NeulinkTopicParser.Topic topic, String payload){
         String version = topic.getVersion();
         if("v1.0".equalsIgnoreCase(version)){
             return payload;
@@ -167,7 +145,30 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return payload;
     }
 
-    public static String stack2Str(Throwable ex) {
+    /**
+     * 默认实现
+     * @param topic
+     * @param cmd
+     * @return
+     */
+    protected ActionResult process(NeulinkTopicParser.Topic topic, Req cmd) {
+        try {
+            ICmdListener<ActionResult,Req> listener = getListener();
+            if(listener==null){
+                throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
+            }
+            ActionResult actionResult = listener.doAction(new NeulinkEvent<>(cmd));
+            return actionResult;
+        }
+        catch (NeulinkException ex){
+            throw ex;
+        }
+        catch (Throwable ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected static String stack2Str(Throwable ex) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
         ex.printStackTrace(ps);
@@ -175,7 +176,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return new String(baos.toByteArray());
     }
 
-    public IMessage insert(NeulinkTopicParser.Topic topic, String payload) {
+    protected IMessage insert(NeulinkTopicParser.Topic topic, String payload) {
         IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             return messageService.save(topic,payload);
@@ -189,7 +190,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param status
      * @param msg
      */
-    public void update(long id, String status, String msg) {
+    protected void update(long id, String status, String msg) {
         IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.update(id,status,msg);
@@ -203,14 +204,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param status
      * @param msg
      */
-    public void updatePkg(long id, long offset,String status, String msg) {
+    protected void updatePkg(long id, long offset,String status, String msg) {
         IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);
         }
     }
 
-    public IMessage query(String reqId) {
+    protected IMessage query(String reqId) {
         IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             IMessage message = messageService.queryByReqNo(reqId);
@@ -258,6 +259,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return IMessage.STATUS_PROCESS;
     }
 
+    protected String biz(){
+        return topic.getBiz();
+    }
+
+    protected ICmdListener<ActionResult,Req> getListener(){
+        return ListenerRegistrator.getInstance().getExtendListener(biz());
+    }
+
     /**
      * 解析处理
      * @param payload
@@ -270,13 +279,5 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     protected abstract Res fail(Req t, String error);
 
     protected abstract Res fail(Req t,int code, String error);
-
-    protected String biz(){
-        return topic.getBiz();
-    }
-
-    protected ICmdListener<ActionResult,Req> getListener(){
-        return ListenerRegistrator.getInstance().getExtendListener(biz());
-    }
 }
 
