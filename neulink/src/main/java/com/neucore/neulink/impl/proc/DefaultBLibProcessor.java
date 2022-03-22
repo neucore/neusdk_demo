@@ -60,7 +60,7 @@ public class DefaultBLibProcessor extends GBatchProcessor<FaceCmd, BTLibSyncRes,
     }
 
     @Override
-    protected FaceCmd buildCmd(String cmdStr, String jsonUrl, long offset) throws NeulinkException {
+    protected FaceCmd buildPkg(String cmdStr, String jsonUrl, long offset) throws NeulinkException {
         //推送消息到达
         FaceCmd faceCmd = new FaceCmd();
         int index = jsonUrl.lastIndexOf("/");

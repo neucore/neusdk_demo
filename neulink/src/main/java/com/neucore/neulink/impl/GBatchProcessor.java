@@ -174,7 +174,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
         if(listener==null){
             throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
         }
-        buildCmd(cmd.getCmdStr(),cmd.getDataUrl(), cmd.getOffset());
+        buildPkg(cmd.getCmdStr(),cmd.getDataUrl(), cmd.getOffset());
         ActionResult actionResult = listener.doAction(new NeulinkEvent<>(cmd));
         return actionResult;
     }
@@ -195,5 +195,13 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
 
     protected abstract Res fail(Req t,int code, String error);
 
-    protected abstract Req buildCmd(String cmdStr, String dataUrl, long offset) throws NeulinkException;
+    /**
+     * 下载包数据并构建包请求
+     * @param cmdStr
+     * @param dataUrl
+     * @param offset
+     * @return
+     * @throws NeulinkException
+     */
+    protected abstract Req buildPkg(String cmdStr, String dataUrl, long offset) throws NeulinkException;
 }
