@@ -49,7 +49,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         /**
          * 发送响应消息给到服务端
          */
-        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(topic.getBiz(),topic.getVersion(),topic.getReqId(),NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,null);
+        String topicPrefix = String.format("%s/%s/%s",topic.getPrefix(),"res",topic.getBiz());
+        NeulinkService.getInstance().getPublisherFacde().response(topicPrefix,topic.getBiz(),topic.getVersion(),topic.getReqId(),NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,null);
         //检查当前请求是否已经已经到达过
         synchronized (lock){
             msg = query(topic.getReqId());
