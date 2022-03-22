@@ -183,14 +183,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param reqId
      * @param progress
      */
-    public void upldDownloadProgress(String topicPrefix,String reqId,String progress){
+    public void upldDownloadProgress(String topicPrefix,String version,String reqId,String progress){
         UpgrRes upgrRes = new UpgrRes();
         upgrRes.setCode(STATUS_200);
         upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         String payload = JSonUtils.toString(upgrRes);
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payload,0);
+        service.publishMessage(topicPrefix,version,reqId,payload,0);
     }
     /**
      * rmsg请求异步处理响应
@@ -204,14 +204,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      */
     public void rmsgResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload){
-        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
+        String topicPrefix = String.format("rmsg/res/%s",biz);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
         IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
-        response(topicPrefix,reqId,res,resCallback);
+        response(topicPrefix,version,reqId,res,resCallback);
     }
 
     /**
@@ -226,13 +226,13 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback){
-        String topicPrefix = String.format("rmsg/res/%s/%s",biz,version);
+        String topicPrefix = String.format("rmsg/res/%s",biz);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
+        response(topicPrefix,version,reqId,res,callback);
     }
 
     /**
@@ -246,14 +246,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      */
     public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
         IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
-        response(topicPrefix,reqId,res,resCallback);
+        response(topicPrefix,version,reqId,res,resCallback);
     }
 
     /**
@@ -268,13 +268,13 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback){
-        String topicPrefix = String.format("upld/req/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
+        response(topicPrefix,version,reqId,res,callback);
     }
 
     /**
@@ -289,14 +289,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      */
     public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload){
-        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        String topicPrefix = String.format("rrpc/res/%s",biz);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
         IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
-        response(topicPrefix,reqId,res,resCallback);
+        response(topicPrefix,version,reqId,res,resCallback);
     }
 
     /**
@@ -311,18 +311,18 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void rrpcResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback){
-        String topicPrefix = String.format("rrpc/res/%s/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN(),version);
+        String topicPrefix = String.format("rrpc/res/%s",biz);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        response(topicPrefix,reqId,res,callback);
+        response(topicPrefix,version,reqId,res,callback);
     }
 
-    private void response(String topicPrefix, String reqId, CmdRes upgrRes, IResCallback callback){
+    private void response(String topicPrefix, String version,String reqId, CmdRes upgrRes, IResCallback callback){
         String payloadStr = JSonUtils.toString(upgrRes);
         upgrRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
-        service.publishMessage(topicPrefix,IProcessor.V1$0,reqId,payloadStr,0,callback);
+        service.publishMessage(topicPrefix,version,reqId,payloadStr,0,callback);
     }
 }
