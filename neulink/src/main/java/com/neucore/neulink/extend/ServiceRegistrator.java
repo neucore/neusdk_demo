@@ -2,7 +2,6 @@ package com.neucore.neulink.extend;
 
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
-import com.neucore.neulink.IUserService;
 import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 
@@ -22,17 +21,6 @@ public class ServiceRegistrator {
 
     public ILoginCallback getLoginCallback() {
         return loginCallback;
-    }
-
-
-    private IUserService userService;
-
-    public IUserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(IUserService userService) {
-        this.userService = userService;
     }
 
     private IMessageService messageService;

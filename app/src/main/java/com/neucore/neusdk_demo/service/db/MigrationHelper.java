@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.db;
 
 import android.database.Cursor;
 import android.database.SQLException;

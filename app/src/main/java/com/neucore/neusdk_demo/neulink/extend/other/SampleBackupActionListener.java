@@ -13,7 +13,7 @@ import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.RequestContext;
-import com.neucore.neusdk_demo.db.DaoManager;
+import com.neucore.neusdk_demo.service.db.DaoManager;
 
 import java.io.File;
 import java.io.FileWriter;

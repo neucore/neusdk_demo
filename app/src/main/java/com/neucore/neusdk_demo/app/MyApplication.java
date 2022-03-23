@@ -8,7 +8,7 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IUserService;
+import com.neucore.neusdk_demo.service.IUserService;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DeviceInfo;
@@ -22,7 +22,6 @@ import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neusdk_demo.db.UserService;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 
@@ -40,6 +39,7 @@ import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceListener;
 import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceQueryListener;
 import com.neucore.neusdk_demo.neulink.extend.other.SampleFirewareUpgrdActionListener;
 import com.neucore.neusdk_demo.neulink.extend.other.SampleHibrateActionListener;
+import com.neucore.neusdk_demo.service.impl.UserService;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -55,7 +55,6 @@ public class MyApplication extends Application
     public static MyApplication getInstance(){
         return instance;
     }
-
     @Override
     public void onCreate()
     {
@@ -63,9 +62,14 @@ public class MyApplication extends Application
 
         instance=this;
         /**
+         * 人脸服务初始化
+         */
+        UserService.getInstance(getContext());
+        /**
          * 集成SDK
          */
         installSDK();
+
         new Thread(){
             public void run(){
                 while(!NeulinkService.getInstance().isNeulinkServiceInited()){
@@ -94,10 +98,7 @@ public class MyApplication extends Application
     private void installSDK(){
 
         ContextHolder.getInstance().setContext(this);
-        /**
-         * 用户人脸数据库服务
-         */
-        IUserService userService = UserService.getInstance(this);
+
         /**
          * 集成Neulink
          */
@@ -169,11 +170,6 @@ public class MyApplication extends Application
          * mqtt回调
          */
         connector.setMqttCallBack(mqttCallBack);
-
-        /**
-         * 用户人脸数据库服务
-         */
-        connector.setUserService(userService);
         /**
          * neulink消息线性处理存储服务
          */
@@ -492,6 +488,18 @@ public class MyApplication extends Application
              * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
              * 具体参考Neulink 使用手册《上报消息到云端》部分
              */
+        }
+    };
+
+    IUserService userService = new IUserService() {
+        @Override
+        public void load() {
+
+        }
+
+        @Override
+        public void onChanged() {
+
         }
     };
 }

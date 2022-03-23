@@ -1,9 +1,9 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.db;
 
 import android.content.Context;
 
 import com.neucore.greendao.gen.MessageDao;
-import com.neucore.neusdk_demo.db.bean.Message;
+import com.neucore.neusdk_demo.service.db.bean.Message;
 
 import org.greenrobot.greendao.database.DatabaseStatement;
 import org.greenrobot.greendao.query.QueryBuilder;

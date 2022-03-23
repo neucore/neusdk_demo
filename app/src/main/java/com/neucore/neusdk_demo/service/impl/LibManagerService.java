@@ -1,10 +1,12 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.impl;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neusdk_demo.db.bean.LicNumber;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.db.LicNumDaoUtils;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.LicNumber;
+import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neulink.cmd.rrpc.FaceData;
 
 import java.util.ArrayList;

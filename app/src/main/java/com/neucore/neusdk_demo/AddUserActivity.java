@@ -22,9 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
-import com.neucore.neusdk_demo.db.UserDaoUtils;
-import com.neucore.neusdk_demo.db.UserService;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.impl.UserService;
+import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 
 import java.net.NetworkInterface;

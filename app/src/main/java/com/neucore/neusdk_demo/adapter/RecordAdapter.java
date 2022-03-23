@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.neucore.neusdk_demo.R;
-import com.neucore.neusdk_demo.db.bean.Record;
+import com.neucore.neusdk_demo.service.db.bean.Record;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

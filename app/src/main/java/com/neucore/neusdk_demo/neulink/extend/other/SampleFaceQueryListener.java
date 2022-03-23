@@ -11,9 +11,9 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.RequestContext;
-import com.neucore.neusdk_demo.db.LibManagerService;
-import com.neucore.neusdk_demo.db.UserDaoUtils;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.impl.LibManagerService;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.User;
 
 import java.io.File;
 import java.io.FileWriter;

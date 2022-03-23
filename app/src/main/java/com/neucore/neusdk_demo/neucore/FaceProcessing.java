@@ -31,7 +31,7 @@ import static org.opencv.core.Core.flip;
 import static org.opencv.core.Core.transpose;
 
 import com.neucore.neusdk_demo.app.MyApplication;
-import com.neucore.neusdk_demo.db.UserService;
+import com.neucore.neusdk_demo.service.impl.UserService;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.AppInfo;
 import com.neucore.neusdk_demo.utils.SPUtils;

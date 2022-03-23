@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.db.bean;
+package com.neucore.neusdk_demo.service.db.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

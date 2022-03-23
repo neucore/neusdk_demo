@@ -18,7 +18,6 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IUserService;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
@@ -34,8 +33,6 @@ import java.util.Properties;
 public class SampleConnector implements NeulinkConst{
     private String TAG = TAG_PREFIX+"SampleConnector";
     private Application application;
-    private NeulinkService neulinkService;
-    private IUserService userService;
     private IMessageService messageService;
     private ILoginCallback loginCallback;
     private IDeviceService deviceService;
@@ -49,21 +46,20 @@ public class SampleConnector implements NeulinkConst{
     private boolean mqttServiceReady =false;
 
     @Deprecated
-    public SampleConnector(Application application, IExtendCallback callback, IUserService service){
-        this(application,callback,service,new Properties());
+    public SampleConnector(Application application, IExtendCallback callback){
+        this(application,callback,new Properties());
     }
 
     @Deprecated
-    public SampleConnector(Application application, IExtendCallback callback, IUserService service, Properties extConfig){
-        this(application,service,extConfig,null,callback);
+    public SampleConnector(Application application, IExtendCallback callback, Properties extConfig){
+        this(application,extConfig,null,callback);
     }
 
     @Deprecated
-    public SampleConnector(Application application, IUserService service, Properties extConfig, ILoginCallback loginCallback, IExtendCallback callback){
+    public SampleConnector(Application application, Properties extConfig, ILoginCallback loginCallback, IExtendCallback callback){
         this.loginCallback = loginCallback;
         this.application = application;
         this.extendCallback = callback;
-        this.userService = service;
         this.extConfig = extConfig;
         start();
     }
@@ -84,10 +80,6 @@ public class SampleConnector implements NeulinkConst{
 
     public void setExtendCallback(IExtendCallback callback) {
         this.extendCallback = callback;
-    }
-
-    public void setUserService(IUserService userService) {
-        this.userService = userService;
     }
 
     public void setDeviceService(IDeviceService deviceService){
@@ -114,7 +106,6 @@ public class SampleConnector implements NeulinkConst{
 
             NeulinkService service = NeulinkService.getInstance();
             ServiceRegistrator.getInstance().setLoginCallback(loginCallback);
-            ServiceRegistrator.getInstance().setUserService(userService);
             ServiceRegistrator.getInstance().setDeviceService(deviceService);
             ServiceRegistrator.getInstance().setMessageService(messageService);
             ConfigContext.getInstance().setExtConfig(extConfig);
@@ -176,14 +167,6 @@ public class SampleConnector implements NeulinkConst{
         CarshHandler crashHandler = CarshHandler.getIntance();
         crashHandler.init();
         Log.i(TAG,"success regist crashHandler");
-
-        /**
-         * 加载人脸到内存
-         */
-        if(ServiceRegistrator.getInstance().getUserService()!=null){
-            ServiceRegistrator.getInstance().getUserService().load();
-            Log.i(TAG,"success load user info 2 mem");
-        }
 
         /**
          * 初始化MQTT
