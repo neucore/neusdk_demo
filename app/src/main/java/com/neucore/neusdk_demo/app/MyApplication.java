@@ -490,16 +490,4 @@ public class MyApplication extends Application
              */
         }
     };
-
-    IUserService userService = new IUserService() {
-        @Override
-        public void load() {
-
-        }
-
-        @Override
-        public void onChanged() {
-
-        }
-    };
 }
