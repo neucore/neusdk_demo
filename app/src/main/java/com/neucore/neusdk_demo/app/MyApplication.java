@@ -303,16 +303,25 @@ public class MyApplication extends Application
 
         @Override
         public String getImei() {
+            /**
+             * 移动设备国际身份码
+             */
             return null;
         }
 
         @Override
         public String getImsi() {
+            /**
+             * 移动用户国际识别码
+             */
             return null;
         }
 
         @Override
         public String getIccid() {
+            /**
+             * SIM卡卡号
+             */
             return null;
         }
 
@@ -334,13 +343,16 @@ public class MyApplication extends Application
 
         @Override
         public String getInterface() {
+            /**
+             * 网卡名称
+             */
             return null;
         }
 
         @Override
         public String getWifiModel() {
             /**
-             * wifi模组型号
+             * wifi模组型号:参照对照表
              */
             return null;
         }
@@ -355,56 +367,89 @@ public class MyApplication extends Application
 
         @Override
         public String getScreenSize() {
+            /**
+             * 屏幕大小:参照对照表
+             */
             return null;
         }
 
         @Override
         public String getScreenInterface() {
+            /**
+             * 屏幕接口:参照对照表
+             */
             return null;
         }
 
         @Override
         public String getScreenResolution() {
+            /**
+             * 分辨率:参照对照表
+             */
             return null;
         }
 
         @Override
         public String getBiosVersion() {
+            /**
+             * bios版本
+             */
             return null;
         }
 
         @Override
         public String getOsName() {
+            /**
+             * 操作系统名称
+             */
             return null;
         }
 
         @Override
         public String getOsVersion() {
+            /**
+             * 操作系统版本
+             */
             return null;
         }
 
         @Override
         public String getFirName() {
+            /**
+             * 固件名称
+             */
             return null;
         }
 
         @Override
         public String getFirVersion() {
+            /**
+             * 固件版本
+             */
             return null;
         }
 
         @Override
         public String getMainAppName() {
+            /**
+             * 主应用名称
+             */
             return null;
         }
 
         @Override
         public String getMainAppVersion() {
+            /**
+             * 主应用版本
+             */
             return null;
         }
 
         @Override
         public String getJvmVersion() {
+            /**
+             * JVM版本
+             */
             return null;
         }
     };
