@@ -1,12 +1,12 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.impl;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.neucore.neulink.impl.AbsUserService;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

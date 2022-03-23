@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.neucore.neusdk_demo.adapter.RecordAdapter;
-import com.neucore.neusdk_demo.db.bean.Record;
-import com.neucore.neusdk_demo.db.RecordDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.Record;
+import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 import com.neucore.neusdk_demo.view.AbOnListViewListener;

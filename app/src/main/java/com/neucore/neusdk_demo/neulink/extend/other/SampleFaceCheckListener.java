@@ -6,8 +6,8 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.QueryActionResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.MD5Utils;
-import com.neucore.neusdk_demo.db.LibManagerService;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.impl.LibManagerService;
+import com.neucore.neusdk_demo.service.db.bean.User;
 
 import java.util.HashMap;
 import java.util.Iterator;

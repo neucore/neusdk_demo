@@ -16,7 +16,7 @@ import com.neucore.neulink.extend.NeulinkEvent;
 import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neusdk_demo.db.LibManagerService;
+import com.neucore.neusdk_demo.service.impl.LibManagerService;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 
 import java.io.ByteArrayOutputStream;

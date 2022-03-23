@@ -48,7 +48,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.gson.Gson;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.neucore.FaceProcessing;
 import com.neucore.neusdk_demo.utils.FileAccess;
 import com.neucore.neusdk_demo.utils.ImageUtil;

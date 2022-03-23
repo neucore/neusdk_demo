@@ -27,10 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neusdk_demo.db.bean.Record;
-import com.neucore.neusdk_demo.db.bean.User;
-import com.neucore.neusdk_demo.db.RecordDaoUtils;
-import com.neucore.neusdk_demo.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.Record;
+import com.neucore.neusdk_demo.service.db.bean.User;
+import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
 import com.neucore.neusdk_demo.ecport.ExcelUtils;
 import com.neucore.neusdk_demo.ecport.JavaBean;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;

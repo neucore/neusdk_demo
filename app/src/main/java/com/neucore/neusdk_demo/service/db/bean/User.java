@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.db.bean;
+package com.neucore.neusdk_demo.service.db.bean;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

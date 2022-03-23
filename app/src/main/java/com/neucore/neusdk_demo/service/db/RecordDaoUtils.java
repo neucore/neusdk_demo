@@ -1,11 +1,11 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.db;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.neucore.greendao.gen.RecordDao;
-import com.neucore.neusdk_demo.db.bean.Record;
+import com.neucore.neusdk_demo.service.db.bean.Record;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 

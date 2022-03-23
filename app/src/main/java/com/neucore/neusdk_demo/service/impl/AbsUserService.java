@@ -1,6 +1,6 @@
-package com.neucore.neulink.impl;
+package com.neucore.neusdk_demo.service.impl;
 
-import com.neucore.neulink.IUserService;
+import com.neucore.neusdk_demo.service.IUserService;
 
 public abstract class AbsUserService implements IUserService {
 

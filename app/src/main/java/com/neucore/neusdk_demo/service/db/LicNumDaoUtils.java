@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.db;
+package com.neucore.neusdk_demo.service.db;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.neucore.greendao.gen.LicNumberDao;
 import com.neucore.greendao.gen.UserDao;
 import com.neucore.neulink.cmd.rrpc.QCond;
-import com.neucore.neusdk_demo.db.bean.LicNumber;
+import com.neucore.neusdk_demo.service.db.bean.LicNumber;
 
 import org.greenrobot.greendao.database.DatabaseStatement;
 import org.greenrobot.greendao.query.QueryBuilder;

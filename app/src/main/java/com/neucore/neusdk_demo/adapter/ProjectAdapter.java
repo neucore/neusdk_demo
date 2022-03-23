@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.neucore.neusdk_demo.R;
-import com.neucore.neusdk_demo.db.bean.User;
+import com.neucore.neusdk_demo.service.db.bean.User;
 
 import java.util.List;
 
