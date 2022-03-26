@@ -305,7 +305,7 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private String custid="notimpl";
-    private String getCustId(){
+    public String getCustId(){
         String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
         if(ObjectUtil.isNotEmpty(sccperId)){
             return sccperId;
@@ -313,14 +313,14 @@ public class NeulinkService implements NeulinkConst{
         return custid;
     }
     private String storeid="notimpl";
-    private String getStoreId(){
+    public String getStoreId(){
         if(ObjectUtil.isNotEmpty(storeid)){
             return storeid;
         }
         return "notimpl";
     }
     private String zoneid="0";
-    private String getZoneId(){
+    public String getZoneId(){
         if(ObjectUtil.isNotEmpty(zoneid)){
             return zoneid;
         }

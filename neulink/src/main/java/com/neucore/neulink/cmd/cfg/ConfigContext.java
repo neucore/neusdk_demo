@@ -25,6 +25,8 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class ConfigContext implements NeulinkConst{
 
+    private static ConfigContext configContext = new ConfigContext();
+
     public final static String STORAGE_OSS = "OSS";
 
     /**
@@ -93,8 +95,6 @@ public class ConfigContext implements NeulinkConst{
         defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
         defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRkFFGfiMM+IXv6Ft4mvB0Enb4z9vlvJJuPyfCaAA3EqR");
     }
-
-    private static ConfigContext configContext = new ConfigContext();
 
     private Properties extConfig = new Properties();
     private Properties configs = new Properties();
