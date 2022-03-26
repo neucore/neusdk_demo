@@ -37,7 +37,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
 
         subUpld();//信息上报
 
-        subScope();//订阅租户广播消息
+        subScopeBcst();//订阅租户广播消息
     }
 
     /**
@@ -51,9 +51,9 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subRmsg(){
 
-        String sys_ctrl_topic = "rmsg/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        String rmsg_topic = "rmsg/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
 
-        service.subscribeToTopic(sys_ctrl_topic, 0,messageListener);
+        service.subscribeToTopic(rmsg_topic, 0,messageListener);
     }
 
     /**
@@ -72,9 +72,8 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subRrpc(){
 
-        String sys_ctrl_topic = "rrpc/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
-
-        service.subscribeToTopic(sys_ctrl_topic, 0,messageListener);
+        String rrpc_topic = "rrpc/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        service.subscribeToTopic(rrpc_topic, 0,messageListener);
     }
 
     /**
@@ -83,13 +82,16 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subUpld(){
 
-        String sys_ctrl_topic = "upld/res/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        String upld_topic = "upld/res/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
 
-        service.subscribeToTopic(sys_ctrl_topic, 0, messageListener);
+        service.subscribeToTopic(upld_topic, 0, messageListener);
     }
 
-    private void subScope(){
-        String sys_ctrl_topic = "broadcast/req/" + service.getCustId() + "/#";
+    /**
+     * 广播
+     */
+    private void subScopeBcst(){
+        String sys_ctrl_topic = "bcst/req/" + service.getCustId() + "/#";
         service.subscribeToTopic(sys_ctrl_topic, 0, messageListener);
     }
 
