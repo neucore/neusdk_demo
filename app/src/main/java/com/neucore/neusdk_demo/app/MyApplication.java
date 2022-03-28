@@ -474,7 +474,10 @@ public class MyApplication extends Application
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
-
+            /**
+             * SDK默认实现扩展
+             */
+            //######################################################################################
             /**
              * 配置扩展
              */
@@ -519,9 +522,10 @@ public class MyApplication extends Application
              * 重置系统扩展
              */
             ListenerRegistrator.getInstance().setExtendListener("reset",new SampleResetActionListener());
+            //######################################################################################
 
             /**
-             * 自定义Processor注册
+             * SDK 自定义业务扩展实现
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Hello业务的实现业务就行
              */
@@ -531,7 +535,7 @@ public class MyApplication extends Application
              * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
              */
             ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
-
+            //######################################################################################
             /**
              * 上传结果给到云端
              * 这个业务一般用于端侧自动抓拍、日志自动上报
