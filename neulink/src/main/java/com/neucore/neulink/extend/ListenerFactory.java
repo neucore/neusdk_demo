@@ -10,6 +10,7 @@ import com.neucore.neulink.cmd.rmsg.AwakenCmd;
 import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
 import com.neucore.neulink.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.Cmd;
 import com.neucore.neulink.impl.ListenerRegistrator;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ListenerFactory implements NeulinkConst{
     private static ListenerFactory instance = new ListenerFactory();
 
     /**
-     * 
+     * @deprecated
      * @return
      */
     public static ListenerFactory getInstance(){
@@ -32,163 +33,95 @@ public class ListenerFactory implements NeulinkConst{
     }
 
     /**
-     * 
+     * @deprecated
      * @param alogListener
      */
     public void setAlogListener(ICmdListener alogListener) {
-        listenerRegistrator.setExtendListener("alog",alogListener);
+        setListener("alog",alogListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<ActionResult, AlogUpgrCmd> getAlogListener(){
-        return listenerRegistrator.getExtendListener("alog");
-    }
-
-    /**
-     * 
+     * @deprecated
      * @param awakenListener
      */
     public void setAwakenListener(ICmdListener awakenListener) {
-        listenerRegistrator.setExtendListener("awaken",awakenListener);
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public ICmdListener<ActionResult, AwakenCmd> getAwakenListener(){
-        return listenerRegistrator.getExtendListener("awaken");
+        setListener("awaken",awakenListener);
     }
 
     /**
      *
-     * 
+     * @deprecated
      * @param cfgListener
      */
     public void setCfgListener(ICmdListener cfgListener) {
-        listenerRegistrator.setExtendListener("cfg",cfgListener);
+        setListener("cfg",cfgListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<ActionResult, CfgCmd> getCfgListener() {
-        return listenerRegistrator.getExtendListener("cfg");
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public ICmdListener getFireware$ApkListener() {
-        return listenerRegistrator.getExtendListener("firmware");
-    }
-
-    /**
-     * 
+     * @deprecated
      * @param fireware$ApkListener
      */
     public void setFireware$ApkListener(ICmdListener fireware$ApkListener) {
-        listenerRegistrator.setExtendListener("firmware",fireware$ApkListener);
+        setListener("firmware",fireware$ApkListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener getHibrateListener(){
-        return listenerRegistrator.getExtendListener("hibrate");
-    }
-
-    /**
-     * 
+     * @deprecated
      * @param hibrateListener
      */
     public void setHibrateListener(ICmdListener hibrateListener) {
-        listenerRegistrator.setExtendListener("hibrate",hibrateListener);
+        setListener("hibrate",hibrateListener);
     }
     /**
-     * 
+     * @deprecated
      * @param faceListener
      */
     public void setFaceListener(ICmdListener faceListener) {
-        listenerRegistrator.setExtendListener("blib",faceListener);
+        setListener("blib",faceListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<UpdateActionResult<Map<String,Object>>, FaceCmd> getFaceListener() {
-        return listenerRegistrator.getExtendListener("blib");
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public ICmdListener<QueryActionResult, TLibQueryCmd> getFaceQueryListener() {
-        return listenerRegistrator.getExtendListener("qlib");
-    }
-
-    /**
-     *  
+     * @deprecated
      * @param faceQueryListener
      */
     public void setFaceQueryListener(ICmdListener faceQueryListener) {
-        listenerRegistrator.setExtendListener("qlib",faceQueryListener);
+        setListener("qlib",faceQueryListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<QueryActionResult, CheckCmd> getFaceCheckListener() {
-        return listenerRegistrator.getExtendListener("check");
-    }
-
-    /**
-     *
+     * @deprecated
      * @param faceCheckListener
      * 
      */
     public void setFaceCheckListener(ICmdListener faceCheckListener) {
-        listenerRegistrator.setExtendListener("check",faceCheckListener);
+        setListener("check",faceCheckListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<QueryActionResult, BackupCmd> getBackupListener() {
-        return listenerRegistrator.getExtendListener("backup");
-    }
-
-    /**
-     * 
+     * @deprecated
      * @param backupListener
      */
     public void setBackupListener(ICmdListener backupListener) {
-        listenerRegistrator.setExtendListener("backup",backupListener);
+        setListener("backup",backupListener);
     }
 
     /**
-     * 
-     * @return
-     */
-    public ICmdListener<QueryActionResult, RecoverCmd> getRecoverListener() {
-        return listenerRegistrator.getExtendListener("recover");
-    }
-
-    /**
-     * 
+     * @deprecated
      * @param recoverListener
      */
     public void setRecoverListener(ICmdListener recoverListener) {
-        listenerRegistrator.setExtendListener("recover",recoverListener);
+        setListener("recover",recoverListener);
+    }
+
+    /**
+     * @deprecated
+     * @param resetListener
+     */
+    public void setResetListener(ICmdListener resetListener) {
+        setListener("reset",resetListener);
+    }
+
+    public void setListener(String biz,ICmdListener resetListener) {
+        listenerRegistrator.setExtendListener(biz.toLowerCase(),resetListener);
     }
 }

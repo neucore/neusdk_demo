@@ -8,6 +8,8 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neusdk_demo.neulink.extend.other.SampleResetActionListener;
 import com.neucore.neusdk_demo.service.IUserService;
 import com.neucore.neulink.app.NeulinkConst;
 import com.neucore.neulink.cmd.cfg.ConfigContext;
@@ -476,43 +478,47 @@ public class MyApplication extends Application
             /**
              * 配置扩展
              */
-            ListenerFactory.getInstance().setCfgListener(new SampleCfgActionListener());
+            ListenerRegistrator.getInstance().setExtendListener("cfg",new SampleCfgActionListener());
             /**
              * 人脸下发 扩展
              */
-            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
+            ListenerRegistrator.getInstance().setExtendListener("blib",new SampleFaceListener());
             /**
              * 人脸比对 扩展
              */
-            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
+            ListenerRegistrator.getInstance().setExtendListener("check",new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展
              */
-            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            ListenerRegistrator.getInstance().setExtendListener("qlib",new SampleFaceQueryListener());
 
             /**
              * 唤醒 扩展
              */
-            ListenerFactory.getInstance().setAwakenListener(new SampleAwakenActionListener());
+            ListenerRegistrator.getInstance().setExtendListener("awaken",new SampleAwakenActionListener());
             /**
              * 休眠 扩展
              */
-            ListenerFactory.getInstance().setHibrateListener(new SampleHibrateActionListener());
-
+            ListenerRegistrator.getInstance().setExtendListener("hibrate",new SampleHibrateActionListener());
             /**
              * 算法升级 扩展
              */
-            ListenerFactory.getInstance().setAlogListener(new SampleAlogUpgrdActionListener());
+            ListenerRegistrator.getInstance().setExtendListener("alog",new SampleAlogUpgrdActionListener());
 
             /**
              * 固件$APK 升级扩展
              */
-            ListenerFactory.getInstance().setFireware$ApkListener(new SampleFirewareUpgrdActionListener());
+            ListenerRegistrator.getInstance().setExtendListener("firmware",new SampleFirewareUpgrdActionListener());
 
             /**
              * 备份实现
              */
-            ListenerFactory.getInstance().setBackupListener(new SampleBackupActionListener());
+            ListenerRegistrator.getInstance().setExtendListener("backup",new SampleBackupActionListener());
+
+            /**
+             * 重置系统扩展
+             */
+            ListenerRegistrator.getInstance().setExtendListener("reset",new SampleResetActionListener());
 
             /**
              * 自定义Processor注册
