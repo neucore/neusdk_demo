@@ -44,7 +44,6 @@ public class NeulinkScheduledReport implements NeulinkConst{
     void start(){
         synchronized (started){
             if(!started){
-
                 status();
                 stat();
                 lgUpld();
@@ -76,6 +75,14 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             service.publishMessage(topic, IProcessor.V1$0, payload, 0);
                         }
                         catch(Exception ex){
+                            Log.e(TAG,ex.getMessage());
+                        }
+                    }
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.heartbeat","false"))){
+                        try {
+                            service.publishConnect(1);
+                        }
+                        catch (Exception ex){
                             Log.e(TAG,ex.getMessage());
                         }
                     }
