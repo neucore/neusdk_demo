@@ -95,6 +95,17 @@ public class DeviceInfo {
         return screenResolution;
     }
 
+    @SerializedName("bno")
+    private String bno;
+
+    public String getBno() {
+        return bno;
+    }
+
+    public void setBno(String bno) {
+        this.bno = bno;
+    }
+
     public String getModel() {
         return model;
     }

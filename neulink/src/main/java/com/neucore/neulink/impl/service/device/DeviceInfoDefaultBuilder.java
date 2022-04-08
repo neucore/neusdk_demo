@@ -123,6 +123,7 @@ public class DeviceInfoDefaultBuilder {
             deviceInfo.setScreenSize(callback.getScreenSize());
             deviceInfo.setScreenInterface(callback.getScreenInterface());
             deviceInfo.setScreenResolution(callback.getScreenResolution());
+            deviceInfo.setBno(callback.getBno());
         }
         return deviceInfo;
     }
