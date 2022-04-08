@@ -2,6 +2,8 @@ package com.neucore.neulink.cmd.msg;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class SubApp {
 
     @SerializedName("rptn")
@@ -9,7 +11,7 @@ public class SubApp {
     @SerializedName("rptv")
     private String reportVersion;
     @SerializedName("alogv")
-    private String alogVersion;
+    private List<Alog> alog;
 
     public String getReportName() {
         return reportName;
@@ -27,11 +29,11 @@ public class SubApp {
         this.reportVersion = reportVersion;
     }
 
-    public String getAlogVersion() {
-        return alogVersion;
+    public List<Alog> getAlog() {
+        return alog;
     }
 
-    public void setAlogVersion(String alogVersion) {
-        this.alogVersion = alogVersion;
+    public void setAlog(List<Alog> alog) {
+        this.alog = alog;
     }
 }
