@@ -58,7 +58,7 @@ public class DeviceInfoDefaultBuilder {
          * apk版本信息
          */
         vInfo.setReportVersion(AppUtils.getVersionName(context));
-        vInfo.setAlogVersion("1.0");
+
         deviceInfo.setSoftVInfo(vInfo);
 
         deviceInfo.setCpuMode(Build.MODEL);
@@ -85,37 +85,38 @@ public class DeviceInfoDefaultBuilder {
             deviceInfo.setLng(callback.getLng());
 
             deviceInfo.setModel(callback.getModel());
-
-            deviceInfo.setSubApps(callback.getSubApps());
-
-            deviceInfo.setAttrs(callback.getAttrs());
-
             deviceInfo.setImei(callback.getImei());
             deviceInfo.setImsi(callback.getImsi());
             deviceInfo.setIccid(callback.getIccid());
+            SoftVInfo main = callback.getMain();
+            if(ObjectUtil.isNotEmpty(main)){
 
-            deviceInfo.getSoftVInfo().setBiosVersion(callback.getBiosVersion());
+                deviceInfo.getSoftVInfo().setBiosVersion(main.getBiosVersion());
 
-            if(ObjectUtil.isNotEmpty(callback.getOsName())){
-                deviceInfo.getSoftVInfo().setOsName(callback.getOsName());
+                if(ObjectUtil.isNotEmpty(main.getOsName())){
+                    deviceInfo.getSoftVInfo().setOsName(main.getOsName());
+                }
+
+                if(ObjectUtil.isNotEmpty(main.getOsVersion())){
+                    deviceInfo.getSoftVInfo().setOsVersion(main.getOsVersion());
+                }
+
+                deviceInfo.getSoftVInfo().setJvmVersion(main.getJvmVersion());
+
+                if(ObjectUtil.isNotEmpty(main.getReportName())) {
+                    deviceInfo.getSoftVInfo().setReportName(main.getReportName());
+                }
+
+                if(ObjectUtil.isNotEmpty(main.getReportVersion())){
+                    deviceInfo.getSoftVInfo().setReportVersion(main.getReportVersion());
+                }
+
+                deviceInfo.getSoftVInfo().setFirName(main.getFirName());
+
+                deviceInfo.getSoftVInfo().setFirVersion(main.getFirVersion());
+
+                deviceInfo.getSoftVInfo().setAlog(main.getAlog());
             }
-
-            if(ObjectUtil.isNotEmpty(callback.getOsVersion())){
-                deviceInfo.getSoftVInfo().setOsVersion(callback.getOsVersion());
-            }
-
-            deviceInfo.getSoftVInfo().setJvmVersion(callback.getJvmVersion());
-
-            if(ObjectUtil.isNotEmpty(callback.getMainAppName())) {
-                deviceInfo.getSoftVInfo().setReportName(callback.getMainAppName());
-            }
-
-            if(ObjectUtil.isNotEmpty(callback.getMainAppVersion())){
-                deviceInfo.getSoftVInfo().setReportVersion(callback.getMainAppVersion());
-            }
-
-            deviceInfo.setFirName(callback.getFirName());
-            deviceInfo.setFirVersion(callback.getFirVersion());
 
             deviceInfo.setInterface(callback.getInterface());
             deviceInfo.setWifiModel(callback.getWifiModel());
@@ -124,6 +125,11 @@ public class DeviceInfoDefaultBuilder {
             deviceInfo.setScreenInterface(callback.getScreenInterface());
             deviceInfo.setScreenResolution(callback.getScreenResolution());
             deviceInfo.setBno(callback.getBno());
+
+            deviceInfo.setSubApps(callback.getSubApps());
+
+            deviceInfo.setAttrs(callback.getAttrs());
+
         }
         return deviceInfo;
     }

@@ -32,23 +32,25 @@ public interface IExtendInfoCallback {
 
     String getBno();
 
-    String getBiosVersion();
-
-    String getOsName();
-
-    String getOsVersion();
-
-    String getFirName();
-
-    String getFirVersion();
-
-    String getMainAppName();
-
-    String getMainAppVersion();
-
-    String getJvmVersion();
+//    String getBiosVersion();
+//
+//    String getOsName();
+//
+//    String getOsVersion();
+//
+//    String getFirName();
+//
+//    String getFirVersion();
+//
+//    String getMainAppName();
+//
+//    String getMainAppVersion();
+//
+//    String getJvmVersion();
 
     String getNpuModel();
+
+    SoftVInfo getMain();
 
     List<SubApp> getSubApps();
 
