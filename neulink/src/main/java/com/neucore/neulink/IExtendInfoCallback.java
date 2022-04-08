@@ -30,6 +30,8 @@ public interface IExtendInfoCallback {
 
     String getScreenResolution();
 
+    String getBno();
+
     String getBiosVersion();
 
     String getOsName();
