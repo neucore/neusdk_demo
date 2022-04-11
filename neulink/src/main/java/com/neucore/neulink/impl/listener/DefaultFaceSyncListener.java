@@ -10,10 +10,8 @@ import com.neucore.neulink.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.cmd.rrpc.FaceData;
 import com.neucore.neulink.cmd.rrpc.FaceNode;
 import com.neucore.neulink.cmd.rrpc.KVPair;
-import com.neucore.neulink.cmd.rrpc.PkgActionResult;
 import com.neucore.neulink.cmd.rrpc.TLibPkgResult;
 import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.UpdateActionResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -29,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
+
 
 public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceCmd> {
 
