@@ -8,6 +8,7 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.cmd.msg.SoftVInfo;
 import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neusdk_demo.neulink.extend.other.SampleResetActionListener;
 import com.neucore.neusdk_demo.service.IUserService;
@@ -368,6 +369,11 @@ public class MyApplication extends Application
         }
 
         @Override
+        public SoftVInfo getMain() {
+            return null;
+        }
+
+        @Override
         public String getScreenSize() {
             /**
              * 屏幕大小:参照对照表
@@ -392,65 +398,9 @@ public class MyApplication extends Application
         }
 
         @Override
-        public String getBiosVersion() {
+        public String getBno(){
             /**
-             * bios版本
-             */
-            return null;
-        }
-
-        @Override
-        public String getOsName() {
-            /**
-             * 操作系统名称
-             */
-            return null;
-        }
-
-        @Override
-        public String getOsVersion() {
-            /**
-             * 操作系统版本
-             */
-            return null;
-        }
-
-        @Override
-        public String getFirName() {
-            /**
-             * 固件名称
-             */
-            return null;
-        }
-
-        @Override
-        public String getFirVersion() {
-            /**
-             * 固件版本
-             */
-            return null;
-        }
-
-        @Override
-        public String getMainAppName() {
-            /**
-             * 主应用名称
-             */
-            return null;
-        }
-
-        @Override
-        public String getMainAppVersion() {
-            /**
-             * 主应用版本
-             */
-            return null;
-        }
-
-        @Override
-        public String getJvmVersion() {
-            /**
-             * JVM版本
+             * 批次号
              */
             return null;
         }

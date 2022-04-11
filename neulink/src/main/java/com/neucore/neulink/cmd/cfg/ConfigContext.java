@@ -80,20 +80,6 @@ public class ConfigContext implements NeulinkConst{
 
     private Properties defaultConfig = new Properties();
     void loadDefault() {
-        defaultConfig.setProperty(MQTT_SERVER,"WJ8vFilazdPSHmI2C0g5kl5yIDpvMYj0odLucUl/T1Y=");
-        defaultConfig.setProperty(STORAGE_TYPE,"XBtKHrBKP7c=");//""NvfwywVaqXA=");
-        defaultConfig.setProperty(OSS_END_POINT,"YcCiqgrFpSdKjx6yQAEi+3VOA1kk3RHA6AQ/Tx0Z9bX1iQfGu8HWFw==");
-        defaultConfig.setProperty(OSS_BUCKET_NAME,"t+WPBP3ht8HWz5r7xER2+Q==");
-        defaultConfig.setProperty(OSS_ACCESS_KEY_ID,"EC16crIrduFt0x1DBK7HGN27bGR/PEyF/J8JoADcSpE=");
-        defaultConfig.setProperty(OSS_ACCESS_KEY_SECRET,"gGjc6oNIDIXeJq2aGNKW1pgSgCARrAU++1kx2PoW0GA=");
-        defaultConfig.setProperty(FTP_SERVER,"G6y37QO742CUqJaZIgubH3R6/n1CT1EF");
-        defaultConfig.setProperty(FTP_BUCKET_NAME,"1uAWhm9/bnU=");
-        defaultConfig.setProperty(FTP_USER_NAME,"xT6suMoLn1w=");
-        defaultConfig.setProperty(FTP_PASSWORD,"p7sQSFKvWKw=");
-        defaultConfig.setProperty(TOPIC_PARTITION,"HQ+EDnzpP4k=");
-        defaultConfig.setProperty(LOG_LEVEL,"ePrfOnatyOs=");
-        defaultConfig.setProperty(UPLOAD_CHANNEL,"/MDody44KHg=");//0:mqtt;1:https【默认为mqtt】
-        defaultConfig.setProperty(REGIST_SERVER,"YcCiqgrFpSewdKCbNPFxRkFFGfiMM+IXv6Ft4mvB0Enb4z9vlvJJuPyfCaAA3EqR");
     }
 
     private Properties extConfig = new Properties();
@@ -257,13 +243,6 @@ public class ConfigContext implements NeulinkConst{
             return defaultValue;
         }
         String setting = defaultConfig.getProperty(key);
-        if(ObjectUtil.isNotEmpty(setting)){
-            byte[] encrypt = new byte[0];
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                encrypt = Base64.getDecoder().decode(setting);
-            }
-            setting = new String(EnDecUtil.DESDecrypt("neucore-security-key",encrypt));
-        }
 
         return setting;
     }
