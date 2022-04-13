@@ -47,18 +47,19 @@ public class DeviceUtils implements NeulinkConst{
 	private static String TAG = TAG_PREFIX+"DeviceUtils";
 	public static final int SDCARD_TYPE = 0;			//当前的日志记录类型为存储在SD卡下面
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
+	private static String NeuPath = "/storage/emulated/0/";
 
 	private static String getFileRoot(Context context) {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
-			return Environment.getExternalStorageDirectory().getAbsolutePath();
+			return NeuPath+File.separator+"neucore";
 		}
-		return context.getFilesDir().getAbsolutePath();
+		return context.getFilesDir().getAbsolutePath()+File.separator+"neucore";
 	}
 
 	public static String getAppFilesDir(Context context){
-		String path = context.getExternalFilesDir(null).getPath() +File.separator+"neucore";
-		new File(path).mkdirs();
+		String path = getFileRoot(context);
+		if (!new File(path).exists()) {new File(path).mkdirs();}
 		return path;
 	}
 

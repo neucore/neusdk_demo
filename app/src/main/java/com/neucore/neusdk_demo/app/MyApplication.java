@@ -361,6 +361,12 @@ public class MyApplication extends Application
         }
 
         @Override
+        public String getCpuModel(){
+
+            return null;
+        }
+
+        @Override
         public String getNpuModel() {
             /**
              * npu型号
