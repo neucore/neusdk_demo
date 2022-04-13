@@ -84,10 +84,10 @@ greendao {
     daoPackage 'com.neucore.greendao.gen'
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation files('libs/NeuSDK.jar')
     implementation project(path: ':neulink')
-    implementation files('libs/jxl.jar')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    implementation files('libs/NeuSDK.jar')
+//    implementation files('libs/jxl.jar')
 //    implementation files('libs/Jama-1.0.3.jar')
     implementation project(path: ':opencv')
     implementation 'net.zetetic:android-database-sqlcipher:3.5.7@aar'

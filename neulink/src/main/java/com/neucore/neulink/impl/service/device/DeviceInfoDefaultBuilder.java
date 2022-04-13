@@ -120,6 +120,7 @@ public class DeviceInfoDefaultBuilder {
 
             deviceInfo.setInterface(callback.getInterface());
             deviceInfo.setWifiModel(callback.getWifiModel());
+            deviceInfo.setCpuMode(callback.getCpuModel());
             deviceInfo.setNpuMode(callback.getNpuModel());
             deviceInfo.setScreenSize(callback.getScreenSize());
             deviceInfo.setScreenInterface(callback.getScreenInterface());

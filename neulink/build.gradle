@@ -11,7 +11,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -57,11 +57,12 @@ dependencies {
 }
 
 task makeJar(type: Copy) {
-    delete 'build/libs/neulink.jar' //删除build/libs/文件夹下名字为TestJarV1.jar的jar包
+
+    delete 'build/libs/*' //删除build/libs/文件夹下名字为TestJarV1.jar的jar包
     from('build/intermediates/packaged-classes/release/') //从这个目录下取出默认jar包
     into('build/libs/') //将jar包输出到指定目录下
     include('classes.jar')
-    rename('classes.jar', 'neulink.jar') //自定义jar包的名字
+    rename('classes.jar', 'neulink-1.0.1.jar') //自定义jar包的名字
 }
 
 makeJar.dependsOn(build)
