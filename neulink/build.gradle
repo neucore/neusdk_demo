@@ -62,7 +62,7 @@ task makeJar(type: Copy) {
     from('build/intermediates/packaged-classes/release/') //从这个目录下取出默认jar包
     into('build/libs/') //将jar包输出到指定目录下
     include('classes.jar')
-    rename('classes.jar', 'neulink-1.0.1.jar') //自定义jar包的名字
+    rename('classes.jar', 'neulink-1.0.2.jar') //自定义jar包的名字
 }
 
 makeJar.dependsOn(build)

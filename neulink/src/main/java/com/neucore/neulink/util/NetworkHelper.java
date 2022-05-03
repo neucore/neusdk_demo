@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
 
@@ -32,7 +33,7 @@ public class NetworkHelper implements NeulinkConst{
     private final BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //Log.e(TAG, "mNetworkReceiver");
+            Log.i(TAG, "mNetworkReceiver");
             onConnectivityChange();
         }
     };
@@ -40,8 +41,7 @@ public class NetworkHelper implements NeulinkConst{
     private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-
-            //Log.e(TAG, "mPhoneStateListener");
+            Log.i(TAG, "mPhoneStateListener");
             onConnectivityChange();
         }
     };
