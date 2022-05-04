@@ -48,6 +48,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -272,6 +273,14 @@ public class MyApplication extends Application
              * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
              */
             return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
+        }
+
+        @Override
+        public Locale getLocale() {
+            /**
+             * 需要实现
+             */
+            return Locale.getDefault();
         }
     };
     /**

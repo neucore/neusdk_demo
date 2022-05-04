@@ -14,6 +14,7 @@ import com.neucore.neulink.extend.NeulinkSecurity;
 import com.neucore.neulink.extend.Result;
 import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
+import com.neucore.neulink.impl.service.device.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -34,6 +35,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -283,6 +285,14 @@ public class NeulinkService implements NeulinkConst{
                 token = token.substring(index+1);
             }
             params.put("Authorization","Bearer "+token);
+        }
+        IDeviceService deviceService = ServiceRegistrator.getInstance().getDeviceService();
+        if(ObjectUtil.isNotEmpty(deviceService)){
+            Locale locale = deviceService.getLocale();
+            if(ObjectUtil.isEmpty(locale)){
+                locale = Locale.getDefault();
+            }
+            params.put("Accept-Language",locale.getLanguage()+"-"+locale.getCountry());
         }
         return params;
     }
