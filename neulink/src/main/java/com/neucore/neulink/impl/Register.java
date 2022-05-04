@@ -36,6 +36,8 @@ public class Register implements NeulinkConst{
         this.service = service;
         this.serviceUrl = serviceUrl;
 
+        Log.i(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s","startRegister",networkReady,initRegistService));
+
         networkHelper.addListener(new NetworkHelper.Listener() {
             @Override
             public void onConnectivityChange(boolean connect) {
@@ -56,6 +58,7 @@ public class Register implements NeulinkConst{
     }
     private Boolean logined = false;
     private void initRegistService(String from){
+
         Log.i(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
 
         if(networkReady
@@ -75,7 +78,7 @@ public class Register implements NeulinkConst{
             public void run(){
 
                 int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-
+                Log.i(TAG,"do regist ...");
                 while (!logined&&channel==1) {
                     ILoginCallback loginCallback = ServiceRegistrator.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
@@ -86,7 +89,8 @@ public class Register implements NeulinkConst{
                         else{
                             logined = true;
                             NeulinkSecurity.getInstance().setToken(token);
-                            continue;
+                            Log.i(TAG,"success logined");
+                            break;
                         }
                     }
                     try {
@@ -100,6 +104,7 @@ public class Register implements NeulinkConst{
                 while(!registed){
                     try {
                         Thread.sleep(1000);
+                        Log.i(TAG,"start regist");
                         IDeviceService deviceService = ServiceRegistrator.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
                         if (ObjectUtil.isEmpty(deviceInfo)) {
@@ -114,6 +119,7 @@ public class Register implements NeulinkConst{
                         registed = true;
                         autoReporter.start();
                         initRegistService = true;
+                        Log.i(TAG,"success regist");
                     }
                     catch(Exception ex){
                         Log.e(TAG,"注册失败："+ex.getMessage());
