@@ -1,6 +1,5 @@
 package com.neucore.neulink;
 
-import com.neucore.neulink.impl.IMessage;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 
 public interface IMessageService extends IService {

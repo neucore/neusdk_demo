@@ -3,7 +3,6 @@ package com.neucore.neulink.impl.service.resume;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.util.NeuHttpHelper;
+import com.neucore.neulink.extend.ServiceRegistrator;
 
 import cn.hutool.core.util.ObjectUtil;
 import okhttp3.OkHttpClient;
@@ -42,7 +41,7 @@ import okhttp3.Response;
 public class FileDownloader implements NeulinkConst{
     private static final String TAG = TAG_PREFIX+"FileDownloader";
     private Context context;
-    private FileService fileService = FileService.getInstance();
+    private IFileService fileService = ServiceRegistrator.getInstance().getFileService();
     /* 已下载文件长度 */
     private long downloadSize = 0;
     /* 原始文件长度 */

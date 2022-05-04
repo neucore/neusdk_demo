@@ -4,6 +4,7 @@ import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.impl.service.device.DeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.IDeviceService;
+import com.neucore.neulink.impl.service.resume.IFileService;
 
 public class ServiceRegistrator {
 
@@ -41,4 +42,14 @@ public class ServiceRegistrator {
     }
 
     private IDeviceService deviceService = new DeviceServiceImpl();
+
+    public IFileService getFileService() {
+        return fileService;
+    }
+
+    public void setFileService(IFileService fileService) {
+        this.fileService = fileService;
+    }
+
+    private IFileService fileService;
 }

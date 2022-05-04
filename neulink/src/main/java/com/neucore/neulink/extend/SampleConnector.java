@@ -26,6 +26,7 @@ import com.neucore.neulink.impl.NetBroadcastReceiver;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.impl.service.device.IDeviceService;
+import com.neucore.neulink.impl.service.resume.IFileService;
 import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Properties;
@@ -38,6 +39,7 @@ public class SampleConnector implements NeulinkConst{
     private IDeviceService deviceService;
     private IMqttCallBack mqttCallBack;
     private IExtendCallback extendCallback;
+    private IFileService fileService;
     private Properties extConfig;
     private Handler tHandler;
     private Boolean started = false;
@@ -90,6 +92,10 @@ public class SampleConnector implements NeulinkConst{
         this.messageService = messageService;
     }
 
+    public void setFileService(IFileService fileService) {
+        this.fileService = fileService;
+    }
+
     /**
      * 必须先设置相关属性，然后再调用start
      * 不然不起效果
@@ -108,6 +114,7 @@ public class SampleConnector implements NeulinkConst{
             ServiceRegistrator.getInstance().setLoginCallback(loginCallback);
             ServiceRegistrator.getInstance().setDeviceService(deviceService);
             ServiceRegistrator.getInstance().setMessageService(messageService);
+            ServiceRegistrator.getInstance().setFileService(fileService);
             ConfigContext.getInstance().setExtConfig(extConfig);
 
             if(mqttCallBack!=null){

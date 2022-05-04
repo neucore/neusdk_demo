@@ -178,6 +178,10 @@ public class MyApplication extends Application
          * neulink消息线性处理存储服务
          */
         connector.setMessageService(null);
+        /**
+         * OTA文件断点续传文件服务
+         */
+        connector.setFileService(null);
         //##########################################################################################
         /**
          * 开始连接

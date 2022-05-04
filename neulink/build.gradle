@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.greenrobot.greendao'//添加
+//apply plugin: 'org.greenrobot.greendao'//添加
 apply plugin: 'android-aspectjx'
 
 def packageTime(){
@@ -37,10 +37,7 @@ android {
     }
 
 }
-greendao {
-    schemaVersion 1
-    daoPackage 'com.neucore.neulink.impl.service.file.dao'
-}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
