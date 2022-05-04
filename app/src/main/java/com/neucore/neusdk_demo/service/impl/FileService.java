@@ -1,12 +1,13 @@
-package com.neucore.neulink.impl.service.resume;
+package com.neucore.neusdk_demo.service.impl;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.neucore.neulink.impl.service.file.dao.DaoMaster;
-import com.neucore.neulink.impl.service.file.dao.DaoSession;
-import com.neucore.neulink.impl.service.file.dao.FileInfoDao;
-import com.neucore.neulink.impl.service.resume.entity.FileInfo;
+import com.neucore.greendao.gen.DaoMaster;
+import com.neucore.greendao.gen.DaoSession;
+import com.neucore.greendao.gen.FileInfoDao;
+import com.neucore.neulink.impl.service.resume.IFileService;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neusdk_demo.service.db.bean.FileInfo;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class FileService {
+public class FileService implements IFileService {
     private static FileService instance = new FileService();
     private DaoSession session;
     private FileService(){

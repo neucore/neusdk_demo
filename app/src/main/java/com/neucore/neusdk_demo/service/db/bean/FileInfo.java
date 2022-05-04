@@ -1,4 +1,6 @@
-package com.neucore.neulink.impl.service.resume.entity;
+package com.neucore.neusdk_demo.service.db.bean;
+
+import com.neucore.neulink.IFile;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -7,7 +9,7 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity(nameInDb = "dldfile",indexes = {@Index(value = "url,thid",unique = true)})
-public class FileInfo {
+public class FileInfo implements IFile {
 
     @Id(autoincrement = true)
     private Long id;
@@ -37,19 +39,19 @@ public class FileInfo {
         this.url = url;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public long getProcessed() {
+    public Long getProcessed() {
         return processed;
     }
 
-    public void setProcessed(long processed) {
+    public void setProcessed(Long processed) {
         this.processed = processed;
     }
 
@@ -67,5 +69,13 @@ public class FileInfo {
 
     public void setThid(Integer thid) {
         this.thid = thid;
+    }
+
+    public void setProcessed(long processed) {
+        this.processed = processed;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

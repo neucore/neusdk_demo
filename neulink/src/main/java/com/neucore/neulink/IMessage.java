@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl;
+package com.neucore.neulink;
 
 public interface IMessage {
 

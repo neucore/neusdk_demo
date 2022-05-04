@@ -1,7 +1,7 @@
 package com.neucore.neusdk_demo.service.db.bean;
 
 import com.google.gson.annotations.SerializedName;
-import com.neucore.neulink.impl.IMessage;
+import com.neucore.neulink.IMessage;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

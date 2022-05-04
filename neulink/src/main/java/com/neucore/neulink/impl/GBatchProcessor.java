@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.app.NeulinkConst;

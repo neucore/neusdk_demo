@@ -3,7 +3,7 @@ package com.neucore.neusdk_demo.service.impl;
 import android.content.Context;
 
 import com.neucore.neulink.IMessageService;
-import com.neucore.neulink.impl.IMessage;
+import com.neucore.neulink.IMessage;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neusdk_demo.service.db.MessageDaoUtils;

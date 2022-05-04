@@ -7,15 +7,19 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.extend.ActionResult;
 import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.resume.DownloadProgressListener;
 import com.neucore.neulink.impl.service.resume.FileDownloader;
+import com.neucore.neulink.impl.service.resume.IFileService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
 import java.text.DecimalFormat;
+
+import cn.hutool.core.util.ObjectUtil;
 
 public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResult, UgrdeCmd> {
     private String TAG = "DefaultFirewareResumeCmdListener";
@@ -34,6 +38,10 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
              * 发送响应消息给到服务端
              */
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+ RequestContext.getId();
+            IFileService fileService = ServiceRegistrator.getInstance().getFileService();
+            if(ObjectUtil.isNotEmpty(fileService)){
+                throw new NeulinkException(CODE_503,"文件服务为空");
+            }
             final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 6);
             downloader.download(new DownloadProgressListener() {
                 @Override
