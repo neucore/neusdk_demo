@@ -117,15 +117,31 @@ public class DeviceInfoDefaultBuilder {
 
                 deviceInfo.getSoftVInfo().setAlog(main.getAlog());
             }
+            if(ObjectUtil.isNotEmpty(callback.getInterface())){
+                deviceInfo.setInterface(callback.getInterface());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getWifiModel())){
+                deviceInfo.setWifiModel(callback.getWifiModel());
+            }
 
-            deviceInfo.setInterface(callback.getInterface());
-            deviceInfo.setWifiModel(callback.getWifiModel());
-            deviceInfo.setCpuMode(callback.getCpuModel());
-            deviceInfo.setNpuMode(callback.getNpuModel());
-            deviceInfo.setScreenSize(callback.getScreenSize());
-            deviceInfo.setScreenInterface(callback.getScreenInterface());
-            deviceInfo.setScreenResolution(callback.getScreenResolution());
-            deviceInfo.setBno(callback.getBno());
+            if(ObjectUtil.isNotEmpty(callback.getCpuModel())){
+                deviceInfo.setCpuMode(callback.getCpuModel());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getNpuModel())){
+                deviceInfo.setNpuMode(callback.getNpuModel());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getScreenSize())){
+                deviceInfo.setScreenSize(callback.getScreenSize());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getScreenInterface())){
+                deviceInfo.setScreenInterface(callback.getScreenInterface());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getScreenResolution())){
+                deviceInfo.setScreenResolution(callback.getScreenResolution());
+            }
+            if(ObjectUtil.isNotEmpty(callback.getBno())){
+                deviceInfo.setBno(callback.getBno());
+            }
 
             deviceInfo.setSubApps(callback.getSubApps());
 
