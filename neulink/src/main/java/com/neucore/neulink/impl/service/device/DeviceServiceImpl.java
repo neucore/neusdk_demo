@@ -4,6 +4,8 @@ import com.neucore.neulink.cmd.msg.DeviceInfo;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
+import java.util.Locale;
+
 public class DeviceServiceImpl implements IDeviceService {
 
     @Override
@@ -20,5 +22,10 @@ public class DeviceServiceImpl implements IDeviceService {
     public DeviceInfo getInfo() {
         DeviceInfo deviceInfo = DeviceInfoDefaultBuilder.getInstance().build();
         return deviceInfo;
+    }
+
+    @Override
+    public Locale getLocale(){
+        return Locale.getDefault();
     }
 }
