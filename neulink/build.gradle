@@ -2,6 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.greenrobot.greendao'//添加
 apply plugin: 'android-aspectjx'
 
+def packageTime(){
+    return new Date().format("yyyyMMddHHmmSS");
+}
+
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 3
 android {
     compileSdkVersion 30
     buildToolsVersion "28.0.3"
@@ -11,7 +18,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.1"
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -57,12 +64,14 @@ dependencies {
 }
 
 task makeJar(type: Copy) {
-
+    def SDK_BASENAME = "neulink";
+    def SDK_VERSION = "${versionMajor}.${versionMinor}.${versionPatch}"
+    def SDK_RELEASE = SDK_BASENAME+"-"+SDK_VERSION+".jar";
     delete 'build/libs/*' //删除build/libs/文件夹下名字为TestJarV1.jar的jar包
     from('build/intermediates/packaged-classes/release/') //从这个目录下取出默认jar包
     into('build/libs/') //将jar包输出到指定目录下
     include('classes.jar')
-    rename('classes.jar', 'neulink-1.0.2.jar') //自定义jar包的名字
+    rename('classes.jar', SDK_RELEASE) //自定义jar包的名字
 }
 
 makeJar.dependsOn(build)
