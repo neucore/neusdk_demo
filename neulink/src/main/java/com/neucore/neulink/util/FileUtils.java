@@ -266,35 +266,6 @@ public class FileUtils implements NeulinkConst{
         }
     }
 
-	//root自动安装应用
-		public static int execRootCmdSilent(String cmd) {  
-		       int result = -1;  
-		       DataOutputStream dos = null;  
-		  
-		       try {  
-		           Process p = Runtime.getRuntime().exec("su");  
-		           dos = new DataOutputStream(p.getOutputStream());  
-		  
-		           Log.i("TAG", cmd);  
-		           dos.writeBytes(cmd + "\n");  
-		           dos.flush();  
-		           dos.writeBytes("exit\n");  
-		           dos.flush();  
-		           p.waitFor();  
-		           result = p.exitValue();  
-		       } catch (Exception e) {
-				   Log.e(TAG, e.getMessage(), e);
-		       } finally {  
-		           if (dos != null) {  
-		               try {  
-		                   dos.close();  
-		               } catch (Exception e) {  
-
-		               }  
-		           }  
-		       }  
-		       return result;  
-		   }
 	private static byte[] readInputStream(InputStream in) throws Exception{
 		int len=0;
 		byte buf[]=new byte[1024];

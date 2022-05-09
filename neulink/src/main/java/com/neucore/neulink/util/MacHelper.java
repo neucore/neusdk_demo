@@ -8,13 +8,19 @@ import android.util.Log;
 
 import com.neucore.neulink.app.NeulinkConst;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.NetworkInterface;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static android.os.Build.VERSION.SDK_INT;
+
+import cn.hutool.core.util.ObjectUtil;
 
 public class MacHelper implements NeulinkConst{
 
@@ -80,21 +86,25 @@ public class MacHelper implements NeulinkConst{
         String str = "";
         String macSerial = "";
         try {
-            Process pp = Runtime.getRuntime().exec(
-                    "cat /sys/class/net/wlan0/address");
-            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
+            Map<String,String> result = ShellExecutor.execute(ContextHolder.getInstance().getContext(),"cat /sys/class/net/wlan0/address");
+            String success = result.get("success");
+            if("1".equals(success)){
+                //读取CPU信息
+                String stdout = result.get("stdout");
+                InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+                LineNumberReader input = new LineNumberReader(ir);
 
-            for (; null != str;) {
-                str = input.readLine();
-                if (str != null) {
-                    macSerial = str.trim();// 去空格
-                    Log.d(TAG, "getMacFromInterface wifiMac= " + macSerial);
-                    break;
+                for (; null != str;) {
+                    str = input.readLine();
+                    if (str != null) {
+                        macSerial = str.trim();// 去空格
+                        Log.d(TAG, "getMacFromInterface wifiMac= " + macSerial);
+                        break;
+                    }
                 }
+                input.close();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return macSerial;
     }
@@ -112,33 +122,38 @@ public class MacHelper implements NeulinkConst{
     private static String ifconfig(String name){
         String wifiMac = null;
         try {
-            Process pp = Runtime.getRuntime().exec("ifconfig "+name);
-            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
-            String readLine = "";
+            Map<String,String> result = ShellExecutor.execute(ContextHolder.getInstance().getContext(),"ifconfig "+name);
+            String success = result.get("success");
+            if("1".equals(success)){
+                //读取CPU信息
+                String stdout = result.get("stdout");
+                InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+                LineNumberReader input = new LineNumberReader(ir);
+                String readLine = "";
 
-            for (; null != readLine;) {
-                readLine = input.readLine();
-                //Log.d(TAG, "readLine= " + readLine);
-                if (readLine != null && readLine.contains("HWaddr")) {
-                    String macSerial = readLine.trim();// 去空格
+                for (; null != readLine;) {
+                    readLine = input.readLine();
+                    //Log.d(TAG, "readLine= " + readLine);
+                    if (readLine != null && readLine.contains("HWaddr")) {
+                        String macSerial = readLine.trim();// 去空格
 
-                    if(macSerial != null){
-                        macSerial = macSerial.substring(macSerial.indexOf("HWaddr"), macSerial.length());
-                        String[] values = macSerial.split(" ");
-                        for (String str: values){
-                            if (str != null && !str.isEmpty() && str.contains(":")){
-                                wifiMac = str;
-                                Log.d(TAG, "getMacFromIfconfig wifiMac= " + wifiMac);
-                                break;
+                        if(macSerial != null){
+                            macSerial = macSerial.substring(macSerial.indexOf("HWaddr"), macSerial.length());
+                            String[] values = macSerial.split(" ");
+                            for (String str: values){
+                                if (str != null && !str.isEmpty() && str.contains(":")){
+                                    wifiMac = str;
+                                    Log.d(TAG, "getMacFromIfconfig wifiMac= " + wifiMac);
+                                    break;
+                                }
                             }
                         }
+                        break;
                     }
-                    break;
                 }
+                input.close();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return wifiMac;
     }
@@ -160,37 +175,42 @@ public class MacHelper implements NeulinkConst{
     public static String getEthernetMac() {
 
         try {
-            Process pp = Runtime.getRuntime().exec("ifconfig eth0");
-            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
-            String readLine = "";
+            Map<String,String> result = ShellExecutor.execute(ContextHolder.getInstance().getContext(),"ifconfig eth0");
+            String success = result.get("success");
+            if("1".equals(success)){
+                //读取CPU信息
+                String stdout = result.get("stdout");
+                InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+                LineNumberReader input = new LineNumberReader(ir);
+                String readLine = "";
 
-            String mac = "";
+                String mac = "";
 
-            for (; null != readLine;) {
-                readLine = input.readLine();
-                //Log.d(TAG, "readLine= " + readLine);
-                if (readLine != null ) {
-                    String infoStr = readLine.trim();
-                    Log.d(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
-                    if(readLine.contains("HWaddr")){
+                for (; null != readLine;) {
+                    readLine = input.readLine();
+                    //Log.d(TAG, "readLine= " + readLine);
+                    if (readLine != null ) {
+                        String infoStr = readLine.trim();
+                        Log.d(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
+                        if(readLine.contains("HWaddr")){
 
-                        if(infoStr != null){
-                            infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
-                            String[] values = infoStr.split(" ");
-                            for (String str: values){
-                                if (str != null && !str.isEmpty() && str.contains(":")){
-                                    mac = str;
-                                    Log.d(TAG, "getEthernetMac Mac= " + mac);
-                                    break;
+                            if(infoStr != null){
+                                infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
+                                String[] values = infoStr.split(" ");
+                                for (String str: values){
+                                    if (str != null && !str.isEmpty() && str.contains(":")){
+                                        mac = str;
+                                        Log.d(TAG, "getEthernetMac Mac= " + mac);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                input.close();
+                return mac;
             }
-
-            return mac;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -200,75 +220,80 @@ public class MacHelper implements NeulinkConst{
     public static String[] getEthernetInfoFromIfconfig() {
 
         try {
-            Process pp = Runtime.getRuntime().exec("ifconfig eth0");
-            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
-            String readLine = "";
+            Map<String,String> result = ShellExecutor.execute(ContextHolder.getInstance().getContext(),"ifconfig eth0");
+            String success = result.get("success");
+            if("1".equals(success)){
+                //读取CPU信息
+                String stdout = result.get("stdout");
+                InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+                LineNumberReader input = new LineNumberReader(ir);
+                String readLine = "";
 
-            String mac = "";
-            String ip = "";
-            String ipv6 = "";
-            String bcast = "";
-            String mask = "";
+                String mac = "";
+                String ip = "";
+                String ipv6 = "";
+                String bcast = "";
+                String mask = "";
 
-            for (; null != readLine;) {
-                readLine = input.readLine();
-                //Log.d(TAG, "readLine= " + readLine);
-                if (readLine != null ) {
-                    String infoStr = readLine.trim();
-                    Log.d(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
-                    if(readLine.contains("HWaddr")){
+                for (; null != readLine;) {
+                    readLine = input.readLine();
+                    //Log.d(TAG, "readLine= " + readLine);
+                    if (readLine != null ) {
+                        String infoStr = readLine.trim();
+                        Log.d(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
+                        if(readLine.contains("HWaddr")){
 
-                        if(infoStr != null){
-                            infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
-                            String[] values = infoStr.split(" ");
-                            for (String str: values){
-                                if (str != null && !str.isEmpty() && str.contains(":")){
-                                    mac = str;
-                                    Log.d(TAG, "getInfoFromIfconfig wifiMac= " + mac);
-                                    break;
+                            if(infoStr != null){
+                                infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
+                                String[] values = infoStr.split(" ");
+                                for (String str: values){
+                                    if (str != null && !str.isEmpty() && str.contains(":")){
+                                        mac = str;
+                                        Log.d(TAG, "getInfoFromIfconfig wifiMac= " + mac);
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                    }else if(infoStr.contains("inet addr")){
-                        if(infoStr != null){
-                            infoStr = infoStr.replace("inet addr", "inetaddr");
-                            String[] values = infoStr.split(" ");
-                            for (String str: values){
-                                if (str != null && !str.isEmpty() && str.contains("inetaddr")){
-                                    String[] ipStr = str.split(":");
-                                    ip = ipStr[1];
-                                    Log.d(TAG, "getInfoFromIfconfig ip= " + ip);
-                                }else if (str != null && !str.isEmpty() && str.contains("Bcast")){
-                                    String[] bcastStr = str.split(":");
-                                    bcast = bcastStr[1];
-                                    Log.d(TAG, "getInfoFromIfconfig bcast= " + bcast);
-                                }else if (str != null && !str.isEmpty() && str.contains("Mask")){
-                                    String[] maskStr = str.split(":");
-                                    mask = maskStr[1];
-                                    Log.d(TAG, "getInfoFromIfconfig mask= " + mask);
+                        }else if(infoStr.contains("inet addr")){
+                            if(infoStr != null){
+                                infoStr = infoStr.replace("inet addr", "inetaddr");
+                                String[] values = infoStr.split(" ");
+                                for (String str: values){
+                                    if (str != null && !str.isEmpty() && str.contains("inetaddr")){
+                                        String[] ipStr = str.split(":");
+                                        ip = ipStr[1];
+                                        Log.d(TAG, "getInfoFromIfconfig ip= " + ip);
+                                    }else if (str != null && !str.isEmpty() && str.contains("Bcast")){
+                                        String[] bcastStr = str.split(":");
+                                        bcast = bcastStr[1];
+                                        Log.d(TAG, "getInfoFromIfconfig bcast= " + bcast);
+                                    }else if (str != null && !str.isEmpty() && str.contains("Mask")){
+                                        String[] maskStr = str.split(":");
+                                        mask = maskStr[1];
+                                        Log.d(TAG, "getInfoFromIfconfig mask= " + mask);
+                                    }
                                 }
                             }
-                        }
 
-                    }else if(infoStr.contains("inet6 addr")){
-                        if(infoStr != null){
-                            infoStr = infoStr.replace("inet6 addr", "inet6addr");
-                            String[] values = infoStr.split(" ");
-                            for (String str: values){
-                                if (str != null && !str.isEmpty() && str.contains("::")){
-                                    ipv6 = str;
-                                    Log.d(TAG, "getInfoFromIfconfig ipv6= " + ipv6);
-                                    break;
+                        }else if(infoStr.contains("inet6 addr")){
+                            if(infoStr != null){
+                                infoStr = infoStr.replace("inet6 addr", "inet6addr");
+                                String[] values = infoStr.split(" ");
+                                for (String str: values){
+                                    if (str != null && !str.isEmpty() && str.contains("::")){
+                                        ipv6 = str;
+                                        Log.d(TAG, "getInfoFromIfconfig ipv6= " + ipv6);
+                                        break;
+                                    }
                                 }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
+                input.close();
+                return new String[]{mac, ip, bcast, mask, ipv6};
             }
-
-            return new String[]{mac, ip, bcast, mask, ipv6};
         } catch (Exception ex) {
             ex.printStackTrace();
         }
