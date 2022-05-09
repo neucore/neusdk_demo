@@ -87,6 +87,7 @@ public class ShellExecutor implements NeulinkConst{
             while ((s = successResultBuffer.readLine()) != null) {
                 successMsg.append(s);
                 successMsg.append(System.lineSeparator());
+
             }
 
             while ((s = errorResultBuffer.readLine()) != null) {
@@ -95,9 +96,11 @@ public class ShellExecutor implements NeulinkConst{
             }
             if(errorMsg.length()>0){
                 response.put("stdout",errorMsg.toString());
+                response.put("success","0");
             }
             else{
                 response.put("stdout",successMsg.toString());
+                response.put("success","1");
             }
             response.put("shellRet",String.valueOf(process.exitValue()));
 

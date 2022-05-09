@@ -18,8 +18,10 @@ import com.neucore.neulink.cmd.cfg.ConfigContext;
 import com.neucore.neulink.cmd.msg.DiskInfo;
 import com.neucore.neulink.cmd.msg.SDInfo;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -32,7 +34,9 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.UUID;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -184,7 +188,6 @@ public class DeviceUtils implements NeulinkConst{
 	protected static volatile UUID uuid;
 
 	public static String getDeviceId(Context context){
-		ConfigContext.getInstance().getConfig("idType",0);
 		return getCPUSN(context);
 	}
 
@@ -192,27 +195,32 @@ public class DeviceUtils implements NeulinkConst{
 
 		String str = "", strCPU = "", cpuAddress = "0000000000000000";
 		try {
-			//读取CPU信息
-			Process pp = Runtime.getRuntime().exec("cat /proc/cpuinfo");
-			InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-			LineNumberReader input = new LineNumberReader(ir);
-			//查找CPU序列号
-			for (int i = 1; i < 100; i++) {
-				str = input.readLine();
-				if (str != null) {
-					//查找到序列号所在行
-					if (str.indexOf("Serial") > -1) {
-						//提取序列号
-						strCPU = str.substring(str.indexOf(":") + 1,
-								str.length());
-						//去空格
-						cpuAddress = strCPU.trim();
+			Map<String,String> result = ShellExecutor.execute(context,"cat /proc/cpuinfo");
+			String success = result.get("success");
+			if("1".equals(success)){
+				//读取CPU信息
+				String stdout = result.get("stdout");
+				InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+				LineNumberReader input = new LineNumberReader(ir);
+				//查找CPU序列号
+				for (int i = 1; i < 100; i++) {
+					str = input.readLine();
+					if (str != null) {
+						//查找到序列号所在行
+						if (str.indexOf("Serial") > -1) {
+							//提取序列号
+							strCPU = str.substring(str.indexOf(":") + 1,
+									str.length());
+							//去空格
+							cpuAddress = strCPU.trim();
+							break;
+						}
+					} else {
+						//文件结尾
 						break;
 					}
-				} else {
-					//文件结尾
-					break;
 				}
+				input.close();
 			}
 		} catch (Exception e) {
 			//赋予默认值
@@ -232,27 +240,34 @@ public class DeviceUtils implements NeulinkConst{
 				bufferedReader.close();
 			}
 			else{
-				Process pp = Runtime.getRuntime().exec("dmesg | grep -i 'Galcore version'");
-				InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-				LineNumberReader input = new LineNumberReader(ir);
-				//查找CPU序列号
-				for (int i = 1; i < 100; i++) {
-					str = input.readLine();
-					if (str != null) {
-						//查找到序列号所在行
-						if (str.indexOf(" version ") > -1) {
-							//提取序列号
-							strNPU = str.substring(str.indexOf(":") + 9,
-									str.length());
-							//去空格
-							npuVersion = strNPU.trim();
+				Map<String,String> result = ShellExecutor.execute(context,"dmesg | grep -i 'Galcore version'");
+				String success = result.get("success");
+				if("1".equals(success)){
+					//读取CPU信息
+					String stdout = result.get("stdout");
+					InputStreamReader ir = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(stdout.getBytes(StandardCharsets.UTF_8))));
+					LineNumberReader input = new LineNumberReader(ir);
+					//查找CPU序列号
+					for (int i = 1; i < 100; i++) {
+						str = input.readLine();
+						if (str != null) {
+							//查找到序列号所在行
+							if (str.indexOf(" version ") > -1) {
+								//提取序列号
+								strNPU = str.substring(str.indexOf(":") + 9,
+										str.length());
+								//去空格
+								npuVersion = strNPU.trim();
+								break;
+							}
+						} else {
+							//文件结尾
 							break;
 						}
-					} else {
-						//文件结尾
-						break;
 					}
+					input.close();
 				}
+
 				if(!"0000000000000000".equals(npuVersion)){
 					BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
 					bufferedWriter.write(npuVersion);
