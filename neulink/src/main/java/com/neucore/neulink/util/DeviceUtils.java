@@ -8,6 +8,7 @@ import android.os.CpuUsageInfo;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.StatFs;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -188,7 +189,11 @@ public class DeviceUtils implements NeulinkConst{
 	protected static volatile UUID uuid;
 
 	public static String getDeviceId(Context context){
-		return getCPUSN(context);
+		String cpuSn = getCPUSN(context);
+		if("0000000000000000".equalsIgnoreCase(cpuSn)){
+			cpuSn = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+		}
+		return cpuSn;
 	}
 
 	public static String getCPUSN(Context context){
