@@ -329,8 +329,8 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         response(topicPrefix,version,reqId,res,resCallback);
     }
     private void response(String topicPrefix, String version,String reqId, CmdRes res, IResCallback callback){
-        String payloadStr = JSonUtils.toString(res);
         res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        String payloadStr = JSonUtils.toString(res);
         service.publishMessage(topicPrefix,version,reqId,payloadStr,0,callback);
     }
 }
