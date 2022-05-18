@@ -109,12 +109,19 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                         result.setPages(pages);
                         result.setOffset(i);
                         Res res = responseWrapper(req,result);
-                        res.setFailed(failed);
-                        rsl = JSonUtils.toString(res);
-                        resLstRsl2Cloud(topic, rsl);
-                        Log.d(TAG,"成功完成人脸offset:"+i+"下载");
-                        if(ObjectUtil.isNotEmpty(msg)){
-                            updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, MESSAGE_SUCCESS);
+                        if(ObjectUtil.isNotEmpty(res)){
+                            if (res.getCode() == STATUS_200
+                                    ||res.getCode()==STATUS_202
+                                    ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
+                                updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, res.getMsg());
+                            }
+                            else {
+                                updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
+                            }
+                            res.setHeaders(req.getHeaders());
+                            String jsonStr = JSonUtils.toString(res);
+                            resLstRsl2Cloud(topic, jsonStr);
+                            Log.d(TAG,"成功完成人脸offset:"+i+"下载");
                         }
                     }
                     catch(NeulinkException ex){
@@ -124,8 +131,11 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                                 update(id, IMessage.STATUS_FAIL, ex.getMessage());
                             }
                             Res res = fail(req, ex.getCode(), ex.getMsg());
-                            String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(topic, jsonStr);
+                            if(ObjectUtil.isNotEmpty(res)) {
+                                res.setHeaders(req.getHeaders());
+                                String jsonStr = JSonUtils.toString(res);
+                                resLstRsl2Cloud(topic, jsonStr);
+                            }
                         }
                         catch(Exception e){
                         }
@@ -133,12 +143,17 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     catch (Exception ex){
                         Log.d(TAG,"人脸offset:"+i+"下载失败",ex);
                         Log.e(TAG,"process",ex);
-                        Res result = fail(req, STATUS_500, ex.getMessage());
-                        result.setTotal(req.getTotal());
-                        result.setPages(pages);
-                        result.setOffset(i);
                         if(ObjectUtil.isNotEmpty(msg)){
                             updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
+                        }
+                        Res res = fail(req, STATUS_500, ex.getMessage());
+                        if(ObjectUtil.isNotEmpty(res)) {
+                            res.setHeaders(req.getHeaders());
+                            res.setTotal(req.getTotal());
+                            res.setPages(pages);
+                            res.setOffset(i);
+                            String jsonStr = JSonUtils.toString(res);
+                            resLstRsl2Cloud(topic, jsonStr);
                         }
                     }
                 }
@@ -146,10 +161,16 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
             catch(NeulinkException ex){
                 try {
                     Log.e(TAG, "execute", ex);
-                    update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    if(ObjectUtil.isNotEmpty(msg)) {
+                        update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    }
                     Res res = fail(req, ex.getCode(), ex.getMsg());
-                    String jsonStr = JSonUtils.toString(res);
-                    resLstRsl2Cloud(topic, jsonStr);
+                    if(ObjectUtil.isNotEmpty(res)){
+                        res.setHeaders(req.getHeaders());
+                        String jsonStr = JSonUtils.toString(res);
+                        resLstRsl2Cloud(topic, jsonStr);
+                    }
+
                 }
                 catch(Exception e){
                 }
@@ -157,10 +178,15 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
             catch (Throwable ex) {
                 try {
                     Log.e(TAG, "execute", ex);
-                    update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    if(ObjectUtil.isNotEmpty(msg)) {
+                        update(id, IMessage.STATUS_FAIL, ex.getMessage());
+                    }
                     Res res = fail(req, ex.getMessage());
-                    String jsonStr = JSonUtils.toString(res);
-                    resLstRsl2Cloud(topic, jsonStr);
+                    if(ObjectUtil.isNotEmpty(res)) {
+                        res.setHeaders(req.getHeaders());
+                        String jsonStr = JSonUtils.toString(res);
+                        resLstRsl2Cloud(topic, jsonStr);
+                    }
                 }
                 catch(Exception e){}
             }

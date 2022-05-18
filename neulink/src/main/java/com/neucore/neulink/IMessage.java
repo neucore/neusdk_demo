@@ -1,5 +1,7 @@
 package com.neucore.neulink;
 
+import java.util.Map;
+
 public interface IMessage {
 
     final static String STATUS_PROCESS = "运行中";
