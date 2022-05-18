@@ -14,6 +14,8 @@ import com.neucore.neulink.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.extend.ServiceRegistrator;
 import com.neucore.neulink.util.JSonUtils;
 
+import java.util.Map;
+
 import cn.hutool.core.util.ObjectUtil;
 
 /**
@@ -319,12 +321,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setData(payload);
         response(topicPrefix,version,reqId,res,callback);
     }
-    void response(String topicPrefix,String biz, String version,String reqId, String mode, Integer code, String message, String payload){
+    void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads, String payload){
         CmdRes res = new CmdRes();
+        res.setHeaders(heads);
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
+
         IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
         response(topicPrefix,version,reqId,res,resCallback);
     }

@@ -2,7 +2,20 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
+
 public class Cmd {
+
+    @SerializedName("heads")
+    private Map<String,String> headers;
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
 
     private String biz;
 
