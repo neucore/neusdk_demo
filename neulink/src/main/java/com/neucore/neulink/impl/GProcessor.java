@@ -90,7 +90,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 if(ObjectUtil.isNotEmpty(actionResult)){
                     Res res = responseWrapper(req, actionResult);
                     if(ObjectUtil.isNotEmpty(res)){
-                        String jsonStr = JSonUtils.toString(res);
                         if (res.getCode() == STATUS_200
                                 ||res.getCode()==STATUS_202
                                 ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
@@ -99,6 +98,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                         else {
                             update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
                         }
+                        res.setHeaders(req.getHeaders());
+                        String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
                 }
@@ -108,8 +109,11 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                     Log.e(TAG, "execute", ex);
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getCode(), ex.getMsg());
-                    String jsonStr = JSonUtils.toString(res);
-                    resLstRsl2Cloud(topic, jsonStr);
+                    if(ObjectUtil.isNotEmpty(res)){
+                        res.setHeaders(req.getHeaders());
+                        String jsonStr = JSonUtils.toString(res);
+                        resLstRsl2Cloud(topic, jsonStr);
+                    }
                 }
                 catch(Exception e){
                 }
@@ -119,8 +123,11 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                     Log.e(TAG, "execute", ex);
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getMessage());
-                    String jsonStr = JSonUtils.toString(res);
-                    resLstRsl2Cloud(topic, jsonStr);
+                    if(ObjectUtil.isNotEmpty(res)){
+                        res.setHeaders(req.getHeaders());
+                        String jsonStr = JSonUtils.toString(res);
+                        resLstRsl2Cloud(topic, jsonStr);
+                    }
                 }
                 catch(Exception e){}
             }
