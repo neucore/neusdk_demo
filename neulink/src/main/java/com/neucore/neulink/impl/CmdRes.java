@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class CmdRes<T> {
 
-    @SerializedName("heads")
+    @SerializedName("headers")
     private Map<String,String> headers;
 
     @SerializedName("mode")
