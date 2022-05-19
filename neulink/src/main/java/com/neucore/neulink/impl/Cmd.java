@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Cmd {
 
-    @SerializedName("heads")
+    @SerializedName("headers")
     private Map<String,String> headers;
 
     public Map<String, String> getHeaders() {
