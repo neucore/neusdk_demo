@@ -19,6 +19,7 @@ import com.neucore.neulink.util.MD5Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -98,7 +99,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                         else {
                             update(id, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
                         }
-                        res.setHeaders(req.getHeaders());
+                        mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
@@ -110,7 +111,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getCode(), ex.getMsg());
                     if(ObjectUtil.isNotEmpty(res)){
-                        res.setHeaders(req.getHeaders());
+                        mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
@@ -124,7 +125,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getMessage());
                     if(ObjectUtil.isNotEmpty(res)){
-                        res.setHeaders(req.getHeaders());
+                        mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
@@ -155,6 +156,35 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         String md5 = topic.getMd5();
         MD5Utils.getInstance().getMD5String(payload);
         return payload;
+    }
+
+    protected void mergeHeaders(Req req,Res res){
+        if(ObjectUtil.isNotEmpty(req)
+                && ObjectUtil.isNotEmpty(res)){
+            /**
+             * 请求Head
+             */
+            Map<String,String> reqHeaders = req.getHeaders();
+            /**
+             * 返回Head
+             */
+            Map<String,String> resHeaders = res.getHeaders();
+            if(ObjectUtil.isNotEmpty(resHeaders)){//返回Head不为空
+                /**
+                 * res返回了header
+                 */
+                if(ObjectUtil.isNotEmpty(reqHeaders)){
+                    /**
+                     * req也带了head
+                     */
+                    reqHeaders.putAll(resHeaders);//resHeader覆盖reqHeaders
+                    res.setHeaders(reqHeaders);
+                }
+            }
+            else{
+                res.setHeaders(reqHeaders);
+            }
+        }
     }
 
     /**

@@ -118,7 +118,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                             else {
                                 updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
                             }
-                            res.setHeaders(req.getHeaders());
+                            mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
                             resLstRsl2Cloud(topic, jsonStr);
                             Log.d(TAG,"成功完成人脸offset:"+i+"下载");
@@ -132,7 +132,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                             }
                             Res res = fail(req, ex.getCode(), ex.getMsg());
                             if(ObjectUtil.isNotEmpty(res)) {
-                                res.setHeaders(req.getHeaders());
+                                mergeHeaders(req,res);
                                 String jsonStr = JSonUtils.toString(res);
                                 resLstRsl2Cloud(topic, jsonStr);
                             }
@@ -148,7 +148,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                         }
                         Res res = fail(req, STATUS_500, ex.getMessage());
                         if(ObjectUtil.isNotEmpty(res)) {
-                            res.setHeaders(req.getHeaders());
+                            mergeHeaders(req,res);
                             res.setTotal(req.getTotal());
                             res.setPages(pages);
                             res.setOffset(i);
@@ -166,7 +166,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     }
                     Res res = fail(req, ex.getCode(), ex.getMsg());
                     if(ObjectUtil.isNotEmpty(res)){
-                        res.setHeaders(req.getHeaders());
+                        mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
@@ -183,7 +183,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     }
                     Res res = fail(req, ex.getMessage());
                     if(ObjectUtil.isNotEmpty(res)) {
-                        res.setHeaders(req.getHeaders());
+                        mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
                         resLstRsl2Cloud(topic, jsonStr);
                     }
