@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
 import com.neucore.neusdk_demo.utils.CleanMessageUtil;

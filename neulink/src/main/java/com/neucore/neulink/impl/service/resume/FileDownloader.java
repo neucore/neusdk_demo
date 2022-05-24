@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 import cn.hutool.core.util.ObjectUtil;
 import okhttp3.OkHttpClient;
@@ -41,7 +41,7 @@ import okhttp3.Response;
 public class FileDownloader implements NeulinkConst{
     private static final String TAG = TAG_PREFIX+"FileDownloader";
     private Context context;
-    private IFileService fileService = ServiceRegistrator.getInstance().getFileService();
+    private IFileService fileService = ServiceRegistry.getInstance().getFileService();
     /* 已下载文件长度 */
     private long downloadSize = 0;
     /* 原始文件长度 */

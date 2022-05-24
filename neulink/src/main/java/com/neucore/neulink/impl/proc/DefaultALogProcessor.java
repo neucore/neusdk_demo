@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
-import com.neucore.neulink.cmd.rmsg.app.AlogUpgrRes;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.rmsg.app.AlogUpgrCmd;
+import com.neucore.neulink.impl.cmd.rmsg.app.AlogUpgrRes;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.listener.DefaultAlogCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -15,7 +15,7 @@ public class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, Ac
 
     public DefaultALogProcessor(Context context){
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("alog",new DefaultAlogCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("alog",new DefaultAlogCmdListener());
     }
     
     public AlogUpgrCmd parser(String payload){
@@ -24,7 +24,7 @@ public class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, Ac
 
     public AlogUpgrRes responseWrapper(AlogUpgrCmd cmd, ActionResult<String> actionResult) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
         res.setVinfo(cmd.getVinfo());
@@ -34,7 +34,7 @@ public class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, Ac
 
     public AlogUpgrRes fail(AlogUpgrCmd cmd, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
         res.setVinfo(cmd.getVinfo());
@@ -43,7 +43,7 @@ public class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, Ac
     }
     public AlogUpgrRes fail(AlogUpgrCmd cmd, int code, String message) {
         AlogUpgrRes res = new AlogUpgrRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);
         res.setVinfo(cmd.getVinfo());

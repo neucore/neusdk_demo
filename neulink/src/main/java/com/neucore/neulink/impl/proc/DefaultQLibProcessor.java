@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rrpc.QResult;
-import com.neucore.neulink.cmd.rrpc.TLQueryRes;
-import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.rrpc.QResult;
+import com.neucore.neulink.impl.cmd.rrpc.TLQueryRes;
+import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultFaceQueryListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -27,7 +27,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
         facelibDir = context.getFilesDir().getAbsolutePath()+"/facelib";
         infoFileDir = facelibDir+"/info";
         imagesFileDir = facelibDir + "/img";
-        ListenerRegistrator.getInstance().setExtendListener("qlib",new DefaultFaceQueryListener());
+        ListenerRegistry.getInstance().setExtendListener("qlib",new DefaultFaceQueryListener());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
     @Override
     protected TLQueryRes responseWrapper(TLibQueryCmd t, QResult result) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
@@ -53,7 +53,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
     @Override
     protected TLQueryRes fail(TLibQueryCmd t, String error) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
@@ -64,7 +64,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
     @Override
     protected TLQueryRes fail(TLibQueryCmd t,int code, String error) {
         TLQueryRes res = new TLQueryRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);

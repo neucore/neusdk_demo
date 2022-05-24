@@ -61,7 +61,7 @@
             android:launchMode="singleTask"></activity>
 
         <!-- Log Service -->
-        <service android:name="com.neucore.neulink.impl.LogService" />
+        <service android:name="com.neucore.neulink.impl.service.LogService" />
 
         <receiver
             android:name="com.neucore.neusdk_demo.app.EnuSDKReceiver"

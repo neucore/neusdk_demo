@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neusdk_demo.service.db.bean.Record;
 import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.service.db.RecordDaoUtils;

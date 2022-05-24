@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rmsg.log.DnloadCmd;
-import com.neucore.neulink.cmd.rmsg.log.DnloadRes;
-import com.neucore.neulink.cmd.rmsg.log.LogActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
+import com.neucore.neulink.impl.cmd.rmsg.log.DnloadRes;
+import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultQLogCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -15,7 +15,7 @@ public class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogAc
 
     public DefaultQLogProcessor(Context context){
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("qlog",new DefaultQLogCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("qlog",new DefaultQLogCmdListener());
     }
 
     @Override
@@ -26,7 +26,7 @@ public class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogAc
     @Override
     protected DnloadRes responseWrapper(DnloadCmd cmd, LogActionResult result) {
         DnloadRes res = new DnloadRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setType(cmd.getType());
         res.setCode(STATUS_200);
@@ -42,7 +42,7 @@ public class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogAc
     @Override
     protected DnloadRes fail(DnloadCmd cmd, String error) {
         DnloadRes res = new DnloadRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
@@ -54,7 +54,7 @@ public class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogAc
     @Override
     protected DnloadRes fail(DnloadCmd cmd, int code, String error) {
         DnloadRes res = new DnloadRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setType(cmd.getType());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);

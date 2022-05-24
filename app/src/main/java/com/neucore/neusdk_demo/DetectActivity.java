@@ -43,7 +43,7 @@ import com.neucore.NeuSDK.NeuHandClass1;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.camera2.NeuCameraUtil;
 import com.neucore.neusdk_demo.service.db.RecordDaoUtils;

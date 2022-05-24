@@ -3,7 +3,7 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
 import java.io.File;

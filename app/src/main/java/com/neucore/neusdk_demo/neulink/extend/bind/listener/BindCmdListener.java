@@ -1,8 +1,8 @@
 package com.neucore.neusdk_demo.neulink.extend.bind.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neusdk_demo.neulink.extend.bind.request.BindSyncCmd;
 /**
  * 云端下发至设备端的命令侦听器

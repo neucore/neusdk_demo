@@ -1,8 +1,8 @@
 package com.neucore.neulink.impl.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.Cmd;
 
 public class DefaultResetCmdListener implements ICmdListener<ActionResult, Cmd> {

@@ -1,7 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend.auth.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthActionResultData;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthItemResult;

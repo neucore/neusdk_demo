@@ -1,11 +1,11 @@
 package com.neucore.neusdk_demo.neulink.extend.other;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.cmd.rrpc.QResult;
-import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
-import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryActionResult;
-import com.neucore.neulink.extend.StorageFactory;
+import com.neucore.neulink.impl.cmd.rrpc.QResult;
+import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.NeulinkEvent;
+import com.neucore.neulink.impl.QueryActionResult;
+import com.neucore.neulink.impl.StorageFactory;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;

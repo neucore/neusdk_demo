@@ -2,7 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.auth;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
@@ -40,7 +40,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMessage());
@@ -51,7 +51,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
         res.setMsg("失败");
@@ -62,7 +62,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
         res.setMsg("失败");

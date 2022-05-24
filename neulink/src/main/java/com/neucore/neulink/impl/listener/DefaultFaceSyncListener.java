@@ -6,12 +6,12 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.cmd.rrpc.FaceCmd;
-import com.neucore.neulink.cmd.rrpc.FaceData;
-import com.neucore.neulink.cmd.rrpc.FaceNode;
-import com.neucore.neulink.cmd.rrpc.KVPair;
-import com.neucore.neulink.cmd.rrpc.TLibPkgResult;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
+import com.neucore.neulink.impl.cmd.rrpc.FaceData;
+import com.neucore.neulink.impl.cmd.rrpc.FaceNode;
+import com.neucore.neulink.impl.cmd.rrpc.KVPair;
+import com.neucore.neulink.impl.cmd.rrpc.TLibPkgResult;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -40,6 +40,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
     public DefaultFaceSyncListener(){
         libDir = DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext())+"/libDir";
     }
+
     @Override
     public TLibPkgResult doAction(NeulinkEvent<FaceCmd> event) {
         FaceCmd cmd = event.getSource();

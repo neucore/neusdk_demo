@@ -1,7 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend.file.listener;
 
 import com.google.gson.annotations.SerializedName;
-import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neulink.impl.ActionResult;
 
 /**
  * 绑定返回的数据结果

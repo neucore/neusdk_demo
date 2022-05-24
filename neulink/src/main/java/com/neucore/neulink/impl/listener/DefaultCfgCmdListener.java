@@ -1,14 +1,14 @@
 package com.neucore.neulink.impl.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.cmd.cfg.CfgCmd;
-import com.neucore.neulink.cmd.cfg.CfgItem;
-import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.cmd.rmsg.app.AlogUpgrCmd;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.cmd.cfg.CfgCmd;
+import com.neucore.neulink.impl.cmd.cfg.CfgItem;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.NeulinkEvent;
 
 public class DefaultCfgCmdListener implements ICmdListener<ActionResult, CfgCmd> {
+
     @Override
     public ActionResult doAction(NeulinkEvent<CfgCmd> event) {
         CfgCmd cmd = event.getSource();

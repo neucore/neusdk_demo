@@ -14,17 +14,15 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.cmd.msg.DiskInfo;
-import com.neucore.neulink.cmd.msg.SDInfo;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.msg.DiskInfo;
+import com.neucore.neulink.impl.cmd.msg.SDInfo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,7 +38,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.UUID;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**

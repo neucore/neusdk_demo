@@ -3,8 +3,8 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -51,7 +51,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subRmsg(){
 
-        String rmsg_topic = "rmsg/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        String rmsg_topic = "rmsg/req/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
 
         service.subscribeToTopic(rmsg_topic, 0,messageListener);
     }
@@ -72,7 +72,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subRrpc(){
 
-        String rrpc_topic = "rrpc/req/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        String rrpc_topic = "rrpc/req/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
         service.subscribeToTopic(rrpc_topic, 0,messageListener);
     }
 
@@ -82,7 +82,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subUpld(){
 
-        String upld_topic = "upld/res/" + ServiceRegistrator.getInstance().getDeviceService().getExtSN() + "/#";
+        String upld_topic = "upld/res/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
 
         service.subscribeToTopic(upld_topic, 0, messageListener);
     }

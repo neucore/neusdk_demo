@@ -1,17 +1,17 @@
 package com.neucore.neusdk_demo.neulink.extend.other;
 
 import com.neucore.neulink.IStorage;
-import com.neucore.neulink.cmd.faceupld.v12.AIData12;
-import com.neucore.neulink.cmd.faceupld.v12.AtrrInfo12;
-import com.neucore.neulink.cmd.faceupld.v12.DetectInfo12;
-import com.neucore.neulink.cmd.faceupld.v12.Face12;
-import com.neucore.neulink.cmd.faceupld.v12.FaceRect12;
-import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
-import com.neucore.neulink.cmd.faceupld.v12.Keypoints;
-import com.neucore.neulink.cmd.faceupld.v12.KeypointsInfo12;
-import com.neucore.neulink.cmd.faceupld.v12.RecogInfo12;
-import com.neucore.neulink.cmd.faceupld.v12.RrInfo12;
-import com.neucore.neulink.extend.StorageFactory;
+import com.neucore.neulink.impl.cmd.faceupld.v12.AIData12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.AtrrInfo12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.DetectInfo12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.Face12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.FaceRect12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.FaceUpload12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.Keypoints;
+import com.neucore.neulink.impl.cmd.faceupld.v12.KeypointsInfo12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.RecogInfo12;
+import com.neucore.neulink.impl.cmd.faceupld.v12.RrInfo12;
+import com.neucore.neulink.impl.StorageFactory;
 import com.neucore.neulink.impl.NeulinkPublisherFacde;
 import com.neucore.neulink.impl.NeulinkService;
 

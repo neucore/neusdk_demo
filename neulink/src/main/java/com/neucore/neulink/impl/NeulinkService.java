@@ -3,18 +3,21 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.cmd.msg.NeulinkZone;
-import com.neucore.neulink.cmd.msg.ResRegist;
-import com.neucore.neulink.extend.NeulinkSecurity;
-import com.neucore.neulink.extend.Result;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
+import com.neucore.neulink.impl.cmd.msg.ResRegist;
+import com.neucore.neulink.impl.service.MyMqttService;
+import com.neucore.neulink.impl.service.NeulinkMsgCallBackAdapter;
+import com.neucore.neulink.impl.service.NeulinkSecurity;
+import com.neucore.neulink.impl.service.Register;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
-import com.neucore.neulink.impl.service.device.IDeviceService;
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -63,6 +66,7 @@ public class NeulinkService implements NeulinkConst{
     private NeulinkSubscriberFacde subscriberFacde;
     private String mqttServiceUri, httpServiceUri;
     private UdpReceiveAndtcpSend udpReceiveAndtcpSend;
+    private IDeviceService deviceService;
     public static NeulinkService getInstance(){
         return instance;
     }
@@ -73,6 +77,7 @@ public class NeulinkService implements NeulinkConst{
     public void init() {
         Context context = ContextHolder.getInstance().getContext();
         NeulinkMsgCallBackAdapter defaultMqttCallBack = new NeulinkMsgCallBackAdapter(context,this);
+        deviceService = ServiceRegistry.getInstance().getDeviceService();
         mqttCallBacks.add(defaultMqttCallBack);
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
@@ -111,7 +116,7 @@ public class NeulinkService implements NeulinkConst{
                         //设置不清除回话session 可收到服务器之前发出的推送消息
                         .cleanSession(false)
                         //唯一标示 保证每个设备都唯一就可以 建议 imei
-                        .clientId(ServiceRegistrator.getInstance().getDeviceService().getExtSN())
+                        .clientId(ServiceRegistry.getInstance().getDeviceService().getExtSN())
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         .serverUrl(serverUri)
                         .userName(userName)
@@ -134,6 +139,14 @@ public class NeulinkService implements NeulinkConst{
 
     public NeulinkPublisherFacde getPublisherFacde(){
         return publisherFacde;
+    }
+
+    public IDeviceService getDeviceService() {
+        return deviceService;
+    }
+
+    public void setDeviceService(IDeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 
     /**
@@ -180,12 +193,11 @@ public class NeulinkService implements NeulinkConst{
      * @param payload
      * @param qos
      */
-    protected void publishMessage(String topicPrefix,String version, String payload, int qos){
-
+    public void publishMessage(String topicPrefix,String version, String payload, int qos){
         publishMessage(topicPrefix,version, payload, qos,null);
     }
 
-    protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
+    public void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
 
         publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,callback);
     }
@@ -248,7 +260,7 @@ public class NeulinkService implements NeulinkConst{
 
         StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId).append("/").append(md5);
 
-        stringBuffer.append("/").append(getCustId()).append("/").append(getStoreId()).append("/").append(getZoneId()).append("/").append(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        stringBuffer.append("/").append(getCustId()).append("/").append(getStoreId()).append("/").append(getZoneId()).append("/").append(ServiceRegistry.getInstance().getDeviceService().getExtSN());
 
         return stringBuffer.toString();
     }
@@ -286,7 +298,7 @@ public class NeulinkService implements NeulinkConst{
             }
             params.put("Authorization","Bearer "+token);
         }
-        IDeviceService deviceService = ServiceRegistrator.getInstance().getDeviceService();
+        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         if(ObjectUtil.isNotEmpty(deviceService)){
             Locale locale = deviceService.getLocale();
             if(ObjectUtil.isEmpty(locale)){
@@ -297,19 +309,19 @@ public class NeulinkService implements NeulinkConst{
         return params;
     }
 
-    protected void publishConnect(Integer flg){
+    public void publishConnect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistrator.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
+            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
             publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
 
-    protected void publishDisConnect(Integer flg){
+    public void publishDisConnect(Integer flg){
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistrator.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
+            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
             publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
         }
     }
@@ -403,7 +415,7 @@ public class NeulinkService implements NeulinkConst{
                 Log.i(TAG, "connectComplete ");
                 reentrantLock.lock();
                 subscriberFacde.subAll();
-                publishConnect(1);
+                deviceService.connect();
                 Log.d(TAG, "Server:" + mqttServiceUri + " ,connectComplete reconnect:" + reconnect);
                 if (mqttCallBacks != null) {
                     for (IMqttCallBack callback: mqttCallBacks) {
@@ -466,7 +478,7 @@ public class NeulinkService implements NeulinkConst{
         public void connectionLost(Throwable arg0) {
 
             Log.i(TAG, "connectionLost");
-            publishDisConnect(1);
+            deviceService.disconnect();
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
@@ -674,16 +686,27 @@ public class NeulinkService implements NeulinkConst{
                             result.setMsg("token过期");
                             callback.onFinished(result);
 
-                            String token = ServiceRegistrator.getInstance().getLoginCallback().login();
-                            if(ObjectUtil.isNotEmpty(token)){
-                                Log.i(TAG,"token过期，重新登录成功");
-                                NeulinkSecurity.getInstance().setToken(token);
+                            ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
+                            if(ObjectUtil.isNotEmpty(loginCallback)){
+                                String token = loginCallback.login();
+                                if(ObjectUtil.isNotEmpty(token)){
+                                    Log.i(TAG,"token过期，重新登录成功");
+                                    NeulinkSecurity.getInstance().setToken(token);
+                                }
+                                else{
+                                    result = Result.fail(e.getCode(),e.getMessage());
+                                    result.setReqId(reqId);
+                                    result.setCode(e.getCode());
+                                    result.setMsg("token过期，重新登录失败");
+                                    callback.onFinished(result);
+                                }
                             }
                             else{
+                                Log.e(TAG,"没有实现ILoginCallback");
                                 result = Result.fail(e.getCode(),e.getMessage());
                                 result.setReqId(reqId);
                                 result.setCode(e.getCode());
-                                result.setMsg("token过期，重新登录失败");
+                                result.setMsg("没有实现ILoginCallback");
                                 callback.onFinished(result);
                             }
                             count++;
