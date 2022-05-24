@@ -2,7 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.bind;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
@@ -36,7 +36,7 @@ public class BindProcessor extends GProcessor<BindSyncCmd, BindSyncCmdRes, BindA
     @Override
     protected BindSyncCmdRes responseWrapper(BindSyncCmd bindSyncCmd, BindActionResult result) {
         BindSyncCmdRes res = new BindSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(bindSyncCmd.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMessage());
@@ -48,7 +48,7 @@ public class BindProcessor extends GProcessor<BindSyncCmd, BindSyncCmdRes, BindA
     @Override
     protected BindSyncCmdRes fail(BindSyncCmd bindSyncCmd, String s) {
         BindSyncCmdRes res = new BindSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(bindSyncCmd.getCmdStr());
         res.setCode(500);
         res.setMsg("失败");
@@ -59,7 +59,7 @@ public class BindProcessor extends GProcessor<BindSyncCmd, BindSyncCmdRes, BindA
     @Override
     protected BindSyncCmdRes fail(BindSyncCmd bindSyncCmd, int i, String s) {
         BindSyncCmdRes res = new BindSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(bindSyncCmd.getCmdStr());
         res.setCode(i);
         res.setMsg("失败");

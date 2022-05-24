@@ -6,7 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import static android.os.Build.VERSION.SDK_INT;
-
-import cn.hutool.core.util.ObjectUtil;
 
 public class MacHelper implements NeulinkConst{
 

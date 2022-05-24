@@ -1,7 +1,5 @@
 package com.neucore.neulink;
 
-import com.neucore.neulink.app.NeulinkConst;
-
 public class NeulinkException extends RuntimeException implements NeulinkConst {
 
     private int code;

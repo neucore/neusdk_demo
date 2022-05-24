@@ -8,12 +8,12 @@ import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
-import com.neucore.neulink.util.IActionResult;
+import com.neucore.neulink.IActionResult;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 
@@ -219,7 +219,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     }
 
     protected IMessage insert(NeulinkTopicParser.Topic topic, String payload) {
-        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             return messageService.save(topic,payload);
         }
@@ -233,7 +233,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param msg
      */
     protected void update(long id, String status, String msg) {
-        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.update(id,status,msg);
         }
@@ -247,14 +247,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param msg
      */
     protected void updatePkg(long id, long offset,String status, String msg) {
-        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);
         }
     }
 
     protected IMessage query(String reqId) {
-        IMessageService messageService = ServiceRegistrator.getInstance().getMessageService();
+        IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             IMessage message = messageService.queryByReqNo(reqId);
             return message;
@@ -306,7 +306,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     }
 
     protected ICmdListener<ActionResult,Req> getListener(){
-        return ListenerRegistrator.getInstance().getExtendListener(biz());
+        return ListenerRegistry.getInstance().getExtendListener(biz());
     }
 
     /**

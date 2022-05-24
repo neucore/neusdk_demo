@@ -2,13 +2,13 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.bak.BackupCmd;
-import com.neucore.neulink.cmd.bak.BackupCmdRes;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.bak.BackupCmd;
+import com.neucore.neulink.impl.cmd.bak.BackupCmdRes;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
 import com.neucore.neulink.impl.listener.DefaultBackupCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -18,7 +18,7 @@ public class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, 
 
     public DefaultBackupProcessor(Context context) {
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("backup",new DefaultBackupCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("backup",new DefaultBackupCmdListener());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, 
     @Override
     protected BackupCmdRes responseWrapper(BackupCmd cmd, ActionResult<Map<String,String>> result) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_200);
         cmdRes.setMsg(MESSAGE_SUCCESS);
@@ -41,7 +41,7 @@ public class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, 
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(STATUS_500);
         cmdRes.setMsg(MESSAGE_FAILED);
@@ -52,7 +52,7 @@ public class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, 
     @Override
     protected BackupCmdRes fail(BackupCmd cmd, int code, String error) {
         BackupCmdRes cmdRes = new BackupCmdRes();
-        cmdRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(cmd.getCmdStr());
         cmdRes.setCode(code);
         cmdRes.setMsg(MESSAGE_FAILED);

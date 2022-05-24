@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.LogUtils;
@@ -17,7 +18,7 @@ import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 
-public class CarshHandler implements UncaughtExceptionHandler,NeulinkConst {
+public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 	private String TAG = TAG_PREFIX+"CarshHandler";
 	private static CarshHandler mCrashHandler;
 	private UncaughtExceptionHandler mDefaultHandler;

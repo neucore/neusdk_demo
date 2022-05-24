@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.cfg.CfgCmd;
-import com.neucore.neulink.cmd.cfg.CfgCmdRes;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.cfg.CfgCmd;
+import com.neucore.neulink.impl.cmd.cfg.CfgCmdRes;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultCfgCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -15,7 +15,7 @@ public class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionRes
 
     public DefaultCfgProcessor(Context context){
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("cfg",new DefaultCfgCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("cfg",new DefaultCfgCmdListener());
     }
 
     public CfgCmd parser(String payload){
@@ -24,7 +24,7 @@ public class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionRes
 
     public CfgCmdRes responseWrapper(CfgCmd cmd,ActionResult<String> result) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
@@ -34,7 +34,7 @@ public class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionRes
 
     public CfgCmdRes fail(CfgCmd cmd,String message) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
@@ -44,7 +44,7 @@ public class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionRes
 
     public CfgCmdRes fail(CfgCmd cmd,int code,String message) {
         CfgCmdRes res = new CfgCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);

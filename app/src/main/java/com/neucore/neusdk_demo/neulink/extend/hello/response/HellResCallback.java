@@ -3,7 +3,7 @@ package com.neucore.neusdk_demo.neulink.extend.hello.response;
 import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
-import com.neucore.neulink.extend.Result;
+import com.neucore.neulink.impl.Result;
 
 /**
  * 响应回调接口

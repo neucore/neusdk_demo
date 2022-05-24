@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.cmd.upd.UgrdeCmd;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.service.resume.DownloadProgressListener;
 import com.neucore.neulink.impl.service.resume.FileDownloader;

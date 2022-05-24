@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.rmsg.ShellCmd;
-import com.neucore.neulink.cmd.rmsg.ShellCmdRes;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.rmsg.ShellCmd;
+import com.neucore.neulink.impl.cmd.rmsg.ShellCmdRes;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultShellCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -17,7 +17,7 @@ public class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, Act
 
     public DefaultShellProcessor(Context context){
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("shell",new DefaultShellCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("shell",new DefaultShellCmdListener());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, Act
     @Override
     protected ShellCmdRes responseWrapper(ShellCmd cmd, ActionResult<Map<String, String>> actionResult) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
 
         res.setCode(STATUS_200);
@@ -42,7 +42,7 @@ public class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, Act
     @Override
     protected ShellCmdRes fail(ShellCmd cmd, String error) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
@@ -53,7 +53,7 @@ public class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, Act
     @Override
     protected ShellCmdRes fail(ShellCmd cmd,int code, String error) {
         ShellCmdRes res = new ShellCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);

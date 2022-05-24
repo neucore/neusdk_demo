@@ -7,12 +7,12 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.rrpc.PkgActionResult;
-import com.neucore.neulink.cmd.rrpc.PkgCmd;
-import com.neucore.neulink.cmd.rrpc.PkgRes;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
+import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.impl.listener.DefaultFaceSyncListener;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -31,7 +31,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
     public GBatchProcessor(Context context) {
         super(context);
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
-        ListenerRegistrator.getInstance().setExtendListener("blib",new DefaultFaceSyncListener());
+        ListenerRegistry.getInstance().setExtendListener("blib",new DefaultFaceSyncListener());
     }
 
     final public void execute(NeulinkTopicParser.Topic topic, String payload) {
@@ -211,7 +211,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
     }
 
     protected ICmdListener<ActionResult,Req> getListener(){
-        return ListenerRegistrator.getInstance().getExtendListener(biz());
+        return ListenerRegistry.getInstance().getExtendListener(biz());
     }
     /**
      * 解析处理

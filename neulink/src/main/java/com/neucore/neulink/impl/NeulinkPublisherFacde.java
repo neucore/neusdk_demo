@@ -5,13 +5,14 @@ import android.util.Log;
 
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.faceupld.v12.FaceUpload12;
-import com.neucore.neulink.cmd.lic.LicUpldCmd;
-import com.neucore.neulink.cmd.rmsg.UpgrRes;
-import com.neucore.neulink.cmd.tmptr.FaceTemp;
-import com.neucore.neulink.cmd.tmptr.FaceTempCmd;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.registry.CallbackRegistry;
+import com.neucore.neulink.impl.cmd.faceupld.v12.FaceUpload12;
+import com.neucore.neulink.impl.cmd.lic.LicUpldCmd;
+import com.neucore.neulink.impl.cmd.rmsg.UpgrRes;
+import com.neucore.neulink.impl.cmd.tmptr.FaceTemp;
+import com.neucore.neulink.impl.cmd.tmptr.FaceTempCmd;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -42,14 +43,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         req.setNum(num);
         req.setColor(color);
         req.setImageUrl(imageUrl);
-        req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         req.setCmpCode(cmpCode);
         req.setLocationCode(locationCode);
         req.setPosition(position);
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/carplateinfo";
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("carplateinfo");
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("carplateinfo");
         service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
@@ -68,7 +69,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         req.setNum(num);
         req.setColor(color);
         req.setImageUrl(imageUrl);
-        req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         req.setCmpCode(cmpCode);
         req.setLocationCode(locationCode);
         req.setPosition(position);
@@ -84,12 +85,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void upldFacetmp(FaceTemp[] data){
         FaceTempCmd req = new FaceTempCmd();
-        req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         req.setData(data);
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("facetemprature");
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("facetemprature");
         service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
     }
 
@@ -100,7 +101,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      */
     public void upldFacetmp(FaceTemp[] data, IResCallback callback){
         FaceTempCmd req = new FaceTempCmd();
-        req.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         req.setData(data);
 
         String payload = JSonUtils.toString(req);
@@ -120,7 +121,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
             if(index!=-1){
                 String dir =url.substring(0,index);
                 if(!ObjectUtil.isEmpty(dir)){
-                    info.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+                    info.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
 
                     if (info.getAiData()!=null){
                         info.getAiData().setDir(dir);
@@ -128,7 +129,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo/"+info.getDeviceId();
-                    IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback("faceinfo");
+                    IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("faceinfo");
                     service.publishMessage(topic, IProcessor.V1$2, payload, 0,resCallback);
                 }
                 else{
@@ -156,7 +157,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
             if(index!=-1){
                 String dir =url.substring(0,index);
                 if(!ObjectUtil.isEmpty(dir)){
-                    info.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+                    info.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
 
                     if (info.getAiData()!=null){
                         info.getAiData().setDir(dir);
@@ -190,10 +191,20 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upgrRes.setCode(STATUS_200);
         upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
-        upgrRes.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        upgrRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payload = JSonUtils.toString(upgrRes);
         service.publishMessage(topicPrefix,version,reqId,payload,0);
     }
+
+    /**
+     * msg/req/devinfo/v1.0/${req_no}[/${md5}][/dev_id]
+     * msg/req/status/v1.0/${req_no}[/${md5}][/${custid}][/${storeid}][/zoneid][/dev_id]
+     * msg/req/stat/v1.0/${req_no}[/${md5}][/${custid}][/${storeid}][/zoneid][/dev_id]
+     * msg/req/connect/v1.0/${req_no}[/${md5}][/${custid}][/${storeid}][/zoneid][/dev_id]
+     * msg/req/disconnect/v1.0/${req_no}[/${md5}][/${custid}][/${storeid}][/zoneid][/dev_id]
+     * msg/req/lwt/v1.0/${custid}/${dev_id}
+     */
+
     /**
      * rmsg请求异步处理响应
      * rmsg/res/${biz}/${version}
@@ -212,7 +223,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
         response(topicPrefix,version,reqId,res,resCallback);
     }
 
@@ -248,13 +259,13 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param payload
      */
     public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
-        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistry.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
         response(topicPrefix,version,reqId,res,resCallback);
     }
 
@@ -270,7 +281,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload, IResCallback callback){
-        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistry.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
@@ -297,7 +308,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
         response(topicPrefix,version,reqId,res,resCallback);
     }
 
@@ -328,11 +339,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
 
-        IResCallback resCallback = CallbackRegistrator.getInstance().getResCallback(biz.toLowerCase());
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
         response(topicPrefix,version,reqId,res,resCallback);
     }
     private void response(String topicPrefix, String version,String reqId, CmdRes res, IResCallback callback){
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
         service.publishMessage(topicPrefix,version,reqId,payloadStr,0,callback);
     }

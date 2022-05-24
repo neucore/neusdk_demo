@@ -5,24 +5,35 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
-import com.neucore.neulink.IExtendInfoCallback;
+import com.neucore.neulink.IAttachInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.cmd.msg.SoftVInfo;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.impl.DefaultExtendCallback;
+import com.neucore.neulink.impl.cmd.msg.CPUInfo;
+import com.neucore.neulink.impl.cmd.msg.DiskInfo;
+import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
+import com.neucore.neulink.impl.cmd.msg.MemInfo;
+import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
+import com.neucore.neulink.impl.cmd.msg.SDInfo;
+import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
+import com.neucore.neulink.impl.LWTInfo;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
+import com.neucore.neulink.util.CpuStat;
+import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.MemoryUtils;
 import com.neucore.neusdk_demo.neulink.extend.other.SampleResetActionListener;
-import com.neucore.neusdk_demo.service.IUserService;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.cfg.ConfigContext;
-import com.neucore.neulink.cmd.msg.DeviceInfo;
-import com.neucore.neulink.cmd.msg.SubApp;
-import com.neucore.neulink.extend.ListenerFactory;
-import com.neucore.neulink.extend.SampleConnector;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
+import com.neucore.neulink.impl.cmd.msg.SubApp;
+import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.ResCallback2Log;
 import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.impl.ProcessRegistrator;
+import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
-import com.neucore.neulink.impl.service.device.IDeviceService;
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
@@ -163,13 +174,9 @@ public class MyApplication extends Application
          */
         connector.setLoginCallback(loginCallback);
         /**
-         * 设备服务
+         * 不调用则使用默认实现
          */
         connector.setDeviceService(deviceService);
-        /**
-         * 扩展回调
-         */
-        connector.setExtendCallback(callback);
         /**
          * mqtt回调
          */
@@ -182,6 +189,7 @@ public class MyApplication extends Application
          * OTA文件断点续传文件服务
          */
         connector.setFileService(null);
+
         //##########################################################################################
         /**
          * 开始连接
@@ -257,7 +265,7 @@ public class MyApplication extends Application
     /**
      * 设备服务扩展
      */
-    IDeviceService deviceService = new IDeviceService() {
+    IDeviceService deviceService = new DefaultDeviceServiceImpl() {
         @Override
         public String getExtSN() {
             /**
@@ -276,152 +284,140 @@ public class MyApplication extends Application
              *
              * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
              */
-            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
-        }
-
-        @Override
-        public Locale getLocale() {
-            /**
-             * 需要实现
-             */
-            return Locale.getDefault();
-        }
-    };
-    /**
-     * 设备信息上报扩展
-     */
-    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+            return DeviceInfoDefaultBuilder.getInstance().build(new IAttachInfoCallback(){
 
 
-        @Override
-        public List<SubApp> getSubApps() {
-            /**
-             * 子应用列表
-             */
-            return null;
-        }
+                @Override
+                public List<SubApp> getSubApps() {
+                    /**
+                     * 子应用列表
+                     */
+                    return null;
+                }
 
-        @Override
-        public List<Map<String, String>> getAttrs() {
-            /**
-             * 扩展属性
-             */
-            return null;
-        }
+                @Override
+                public List<Map<String, String>> getAttrs() {
+                    /**
+                     * 扩展属性
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getModel() {
-            /**
-             * 产品型号
-             */
-            return null;
-        }
+                @Override
+                public String getModel() {
+                    /**
+                     * 产品型号
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getImei() {
-            /**
-             * 移动设备国际身份码
-             */
-            return null;
-        }
+                @Override
+                public String getImei() {
+                    /**
+                     * 移动设备国际身份码
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getImsi() {
-            /**
-             * 移动用户国际识别码
-             */
-            return null;
-        }
+                @Override
+                public String getImsi() {
+                    /**
+                     * 移动用户国际识别码
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getIccid() {
-            /**
-             * SIM卡卡号
-             */
-            return null;
-        }
+                @Override
+                public String getIccid() {
+                    /**
+                     * SIM卡卡号
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getLat() {
-            /**
-             * 设备所在经度
-             */
-            return null;
-        }
+                @Override
+                public String getLat() {
+                    /**
+                     * 设备所在经度
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getLng() {
-            /**
-             * 设备所在纬度
-             */
-            return null;
-        }
+                @Override
+                public String getLng() {
+                    /**
+                     * 设备所在纬度
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getInterface() {
-            /**
-             * 网卡名称
-             */
-            return null;
-        }
+                @Override
+                public String getInterface() {
+                    /**
+                     * 网卡名称
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getWifiModel() {
-            /**
-             * wifi模组型号:参照对照表
-             */
-            return null;
-        }
+                @Override
+                public String getWifiModel() {
+                    /**
+                     * wifi模组型号:参照对照表
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getCpuModel(){
+                @Override
+                public String getCpuModel(){
 
-            return null;
-        }
+                    return null;
+                }
 
-        @Override
-        public String getNpuModel() {
-            /**
-             * npu型号
-             */
-            return null;
-        }
+                @Override
+                public String getNpuModel() {
+                    /**
+                     * npu型号
+                     */
+                    return null;
+                }
 
-        @Override
-        public SoftVInfo getMain() {
-            return null;
-        }
+                @Override
+                public SoftVInfo getMain() {
+                    return null;
+                }
 
-        @Override
-        public String getScreenSize() {
-            /**
-             * 屏幕大小:参照对照表
-             */
-            return null;
-        }
+                @Override
+                public String getScreenSize() {
+                    /**
+                     * 屏幕大小:参照对照表
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getScreenInterface() {
-            /**
-             * 屏幕接口:参照对照表
-             */
-            return null;
-        }
+                @Override
+                public String getScreenInterface() {
+                    /**
+                     * 屏幕接口:参照对照表
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getScreenResolution() {
-            /**
-             * 分辨率:参照对照表
-             */
-            return null;
-        }
+                @Override
+                public String getScreenResolution() {
+                    /**
+                     * 分辨率:参照对照表
+                     */
+                    return null;
+                }
 
-        @Override
-        public String getBno(){
-            /**
-             * 批次号
-             */
-            return null;
+                @Override
+                public String getBno(){
+                    /**
+                     * 批次号
+                     */
+                    return null;
+                }
+            });
         }
     };
     /**
@@ -443,67 +439,67 @@ public class MyApplication extends Application
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
+
             /**
              * SDK默认实现扩展
              */
             //######################################################################################
             /**
-             * 配置扩展
+             * 配置下发 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("cfg",new SampleCfgActionListener());
+            //ListenerRegistry.getInstance().setExtendListener("cfg",new SampleCfgActionListener());
             /**
-             * 人脸下发 扩展
+             * 人脸下发 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("blib",new SampleFaceListener());
+            //ListenerRegistry.getInstance().setExtendListener("blib",new SampleFaceListener());
             /**
-             * 人脸比对 扩展
+             * 人脸比对 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("check",new SampleFaceCheckListener());
+            //ListenerRegistry.getInstance().setExtendListener("check",new SampleFaceCheckListener());
             /**
-             * 人脸查询 扩展
+             * 人脸查询 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("qlib",new SampleFaceQueryListener());
+            //ListenerRegistry.getInstance().setExtendListener("qlib",new SampleFaceQueryListener());
+            /**
+             * 唤醒 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("awaken",new SampleAwakenActionListener());
+            /**
+             * 休眠 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("hibrate",new SampleHibrateActionListener());
+            /**
+             * 算法升级 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("alog",new SampleAlogUpgrdActionListener());
 
             /**
-             * 唤醒 扩展
+             * 固件$APK 升级扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("awaken",new SampleAwakenActionListener());
-            /**
-             * 休眠 扩展
-             */
-            ListenerRegistrator.getInstance().setExtendListener("hibrate",new SampleHibrateActionListener());
-            /**
-             * 算法升级 扩展
-             */
-            ListenerRegistrator.getInstance().setExtendListener("alog",new SampleAlogUpgrdActionListener());
+            //ListenerRegistry.getInstance().setExtendListener("firmware",new SampleFirewareUpgrdActionListener());
 
             /**
-             * 固件$APK 升级扩展
+             * 备份 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("firmware",new SampleFirewareUpgrdActionListener());
+            //ListenerRegistry.getInstance().setExtendListener("backup",new SampleBackupActionListener());
 
             /**
-             * 备份实现
+             * 重置 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistrator.getInstance().setExtendListener("backup",new SampleBackupActionListener());
-
-            /**
-             * 重置系统扩展
-             */
-            ListenerRegistrator.getInstance().setExtendListener("reset",new SampleResetActionListener());
+            //ListenerRegistry.getInstance().setExtendListener("reset",new SampleResetActionListener());
+            
             //######################################################################################
-
             /**
              * SDK 自定义业务扩展实现
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Hello业务的实现业务就行
              */
-            ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
-            ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
+            ProcessRegistry.regist("auth",new AuthProcessor(),new AuthCmdListener());
+            ProcessRegistry.regist("binding",new BindProcessor(),new BindCmdListener());
             /**
              * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
              */
-            ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
+            ProcessRegistry.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
             //######################################################################################
             /**
              * 上传结果给到云端

@@ -1,9 +1,9 @@
 package com.neucore.neusdk_demo.neulink.extend.other;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.cmd.check.CheckCmd;
-import com.neucore.neulink.extend.NeulinkEvent;
-import com.neucore.neulink.extend.QueryActionResult;
+import com.neucore.neulink.impl.cmd.check.CheckCmd;
+import com.neucore.neulink.impl.NeulinkEvent;
+import com.neucore.neulink.impl.QueryActionResult;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neusdk_demo.service.impl.LibManagerService;

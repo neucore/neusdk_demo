@@ -50,7 +50,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     ```
 
     <!-- Log Service -->
-    <service android:name="com.neucore.neulink.impl.LogService" />
+    <service android:name="com.neucore.neulink.impl.service.LogService" />
 
     <uses-sdk
             android:minSdkVersion="21"
@@ -183,7 +183,7 @@ NeulinkService.getInstance().destroy();
              *
              * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
              */
-            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
+            return DeviceInfoDefaultBuilder.getInstance().build(attachInfoCallback);
         }
     };
 ```
@@ -193,9 +193,9 @@ NeulinkService.getInstance().destroy();
     /**
      * 设备信息上报扩展
      */
-    IExtendInfoCallback extendInfoCallback = new IExtendInfoCallback(){
+    IAttachInfoCallback attachInfoCallback = new IAttachInfoCallback(){
         @Override
-        public List<SoftVInfo> getSubApps() {
+        public List<SubApp> getSubApps() {
             /**
              * 子应用列表
              */
@@ -206,6 +206,121 @@ NeulinkService.getInstance().destroy();
         public List<Map<String, String>> getAttrs() {
             /**
              * 扩展属性
+             */
+            return null;
+        }
+
+        @Override
+        public String getModel() {
+            /**
+             * 产品型号
+             */
+            return null;
+        }
+
+        @Override
+        public String getImei() {
+            /**
+             * 移动设备国际身份码
+             */
+            return null;
+        }
+
+        @Override
+        public String getImsi() {
+            /**
+             * 移动用户国际识别码
+             */
+            return null;
+        }
+
+        @Override
+        public String getIccid() {
+            /**
+             * SIM卡卡号
+             */
+            return null;
+        }
+
+        @Override
+        public String getLat() {
+            /**
+             * 设备所在经度
+             */
+            return null;
+        }
+
+        @Override
+        public String getLng() {
+            /**
+             * 设备所在纬度
+             */
+            return null;
+        }
+
+        @Override
+        public String getInterface() {
+            /**
+             * 网卡名称
+             */
+            return null;
+        }
+
+        @Override
+        public String getWifiModel() {
+            /**
+             * wifi模组型号:参照对照表
+             */
+            return null;
+        }
+
+        @Override
+        public String getCpuModel(){
+
+            return null;
+        }
+
+        @Override
+        public String getNpuModel() {
+            /**
+             * npu型号
+             */
+            return null;
+        }
+
+        @Override
+        public SoftVInfo getMain() {
+            return null;
+        }
+
+        @Override
+        public String getScreenSize() {
+            /**
+             * 屏幕大小:参照对照表
+             */
+            return null;
+        }
+
+        @Override
+        public String getScreenInterface() {
+            /**
+             * 屏幕接口:参照对照表
+             */
+            return null;
+        }
+
+        @Override
+        public String getScreenResolution() {
+            /**
+             * 分辨率:参照对照表
+             */
+            return null;
+        }
+
+        @Override
+        public String getBno(){
+            /**
+             * 批次号
              */
             return null;
         }
@@ -231,7 +346,7 @@ package com.neucore.neusdk_demo.neulink.extend.auth;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
@@ -269,7 +384,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes responseWrapper(AuthSyncCmd t, AuthActionResult result) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(result.getCode());
         res.setMsg(result.getMessage());
@@ -280,7 +395,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(500);
         res.setMsg("失败");
@@ -291,7 +406,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
     @Override
     protected AuthSyncCmdRes fail(AuthSyncCmd t, int code, String error) {
         AuthSyncCmdRes res = new AuthSyncCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(t.getCmdStr());
         res.setCode(code);
         res.setMsg("失败");
@@ -312,7 +427,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 package com.neucore.neusdk_demo.neulink.extend.auth.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthActionResultData;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.AuthActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthItemResult;
@@ -359,7 +474,7 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
 ```
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
 
-import com.neucore.neulink.extend.ActionResult;
+import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data.AuthActionResultData;
 
 public class AuthActionResult extends ActionResult<AuthActionResultData/*响应体data部分*/> {
@@ -469,93 +584,73 @@ public class AuthActionResultData {
     IExtendCallback callback = new IExtendCallback() {
         @Override
         public void onCallBack() {
+            /**
+             * SDK默认实现扩展
+             */
+            //######################################################################################
+            /**
+             * 配置下发 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("cfg",new SampleCfgActionListener());
+            /**
+             * 人脸下发 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("blib",new SampleFaceListener());
+            /**
+             * 人脸比对 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("check",new SampleFaceCheckListener());
+            /**
+             * 人脸查询 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("qlib",new SampleFaceQueryListener());
+            /**
+             * 唤醒 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("awaken",new SampleAwakenActionListener());
+            /**
+             * 休眠 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("hibrate",new SampleHibrateActionListener());
+            /**
+             * 算法升级 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener("alog",new SampleAlogUpgrdActionListener());
 
             /**
-             * 设备序列号生成器；主要是为了扩展支持自己有业务意义的SN
+             * 固件$APK 升级扩展【取消注释，覆盖默认实现】
              */
-            ServiceFactory.getInstance().setDeviceService(new IDeviceService() {
-                /**
-                 * 这个主要是为了支持非neucore生产的硬件；
-                 * 规则：必须客户代码开头：这个从neucore云注册开通后获取
-                 * @return
-                 */
-                @Override
-                public String getExtSN() {
-                    /
-                    return DeviceUtils.getCPUSN(getContext());
-                }
-                public DeviceInfo getInfo(){
-                    /**
-                     * @TODO 需要实现
-                     */
-                    return null;
-                }
-            });
+            //ListenerRegistry.getInstance().setExtendListener("firmware",new SampleFirewareUpgrdActionListener());
 
             /**
-             * 配置扩展
+             * 备份 扩展【取消注释，覆盖默认实现】
              */
-            ListenerFactory.getInstance().setCfgListener(new SampleCfgActionListener());
-            /**
-             * 人脸下发 扩展
-             */
-            ListenerFactory.getInstance().setFaceListener(new SampleFaceListener());
-            /**
-             * 人脸比对 扩展
-             */
-            ListenerFactory.getInstance().setFaceCheckListener(new SampleFaceCheckListener());
-            /**
-             * 人脸查询 扩展
-             */
-            ListenerFactory.getInstance().setFaceQueryListener(new SampleFaceQueryListener());
+            //ListenerRegistry.getInstance().setExtendListener("backup",new SampleBackupActionListener());
 
             /**
-             * 唤醒 扩展
+             * 重置 扩展【取消注释，覆盖默认实现】
              */
-            ListenerFactory.getInstance().setAwakenListener(new SampleAwakenActionListener());
+            //ListenerRegistry.getInstance().setExtendListener("reset",new SampleResetActionListener());
+            
+            //######################################################################################
             /**
-             * 休眠 扩展
-             */
-            ListenerFactory.getInstance().setHibrateListener(new SampleHibrateActionListener());
-
-            /**
-             * 算法升级 扩展
-             */
-            ListenerFactory.getInstance().setAlogListener(new SampleAlogUpgrdActionListener());
-
-            /**
-             * 固件$APK 升级扩展
-             */
-            ListenerFactory.getInstance().setFireware$ApkListener(new SampleFirewareUpgrdActionListener());
-
-            /**
-             * 备份实现
-             */
-            ListenerFactory.getInstance().setBackupListener(new SampleBackupActionListener());
-
-            /**
-             * neulink消息线性处理存储服务
-             */
-            ServiceFactory.getInstance().setMessageService(new MessageService(getContext()));
-
-            /**
-             * 自定义Processor注册
+             * SDK 自定义业务扩展实现
              * 框架已经实现消息的接收及响应处理机制
              * 新业务可以参考Hello业务的实现业务就行
              */
-            ProcessRegistrator.regist("auth",new AuthProcessor(),new AuthCmdListener());
-            ProcessRegistrator.regist("binding",new BindProcessor(),new BindCmdListener());
+            ProcessRegistry.regist("auth",new AuthProcessor(),new AuthCmdListener());
+            ProcessRegistry.regist("binding",new BindProcessor(),new BindCmdListener());
             /**
              * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
              */
-            ProcessRegistrator.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
-
+            ProcessRegistry.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
+            //######################################################################################
             /**
              * 上传结果给到云端
              * 这个业务一般用于端侧自动抓拍、日志自动上报
              * 端侧审核操作【同意、拒绝】结果给到云端
              * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
-             * 《上报消息到云端》部分
+             * 具体参考Neulink 使用手册《上报消息到云端》部分
              */
         }
     };

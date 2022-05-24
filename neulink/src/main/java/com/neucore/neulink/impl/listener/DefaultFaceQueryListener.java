@@ -1,11 +1,12 @@
 package com.neucore.neulink.impl.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.cmd.rrpc.QResult;
-import com.neucore.neulink.cmd.rrpc.TLibQueryCmd;
-import com.neucore.neulink.extend.NeulinkEvent;
+import com.neucore.neulink.impl.cmd.rrpc.QResult;
+import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.NeulinkEvent;
 
 public class DefaultFaceQueryListener implements ICmdListener<QResult, TLibQueryCmd> {
+
     @Override
     public QResult doAction(NeulinkEvent<TLibQueryCmd> event) {
         try {
@@ -13,7 +14,7 @@ public class DefaultFaceQueryListener implements ICmdListener<QResult, TLibQuery
             String objtype = cmd.getObjtype();
             QResult result = new QResult();
             if("face".equalsIgnoreCase(objtype)){
-                //QueryActionResult queryResult = ListenerRegistrator.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
+                //QueryActionResult queryResult = ListenerRegistry.getInstance().getFaceQueryListener().doAction(new NeulinkEvent(cmd));
                 //result.setCount(count);
                 throw new RuntimeException("人脸目标库查询还在建设中");
             }

@@ -3,9 +3,7 @@ package com.neucore.neulink.impl.service;
 import android.util.Log;
 
 import com.neucore.neulink.IOnNetStatusListener;
-import com.neucore.neulink.app.NeulinkConst;
-
-import java.lang.annotation.Target;
+import com.neucore.neulink.NeulinkConst;
 
 public class OnNetStatusListener implements IOnNetStatusListener ,NeulinkConst{
     private String TAG = TAG_PREFIX+"OnNetStatusListener";

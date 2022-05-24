@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neusdk_demo.app.MyApplication;

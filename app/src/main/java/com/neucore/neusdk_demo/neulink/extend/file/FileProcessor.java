@@ -2,7 +2,7 @@ package com.neucore.neusdk_demo.neulink.extend.file;
 
 import android.content.Context;
 
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
@@ -39,7 +39,7 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(fileActionResult.getCode());
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setMsg(fileActionResult.getMessage());
         return res;
     }
@@ -50,7 +50,7 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(500);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setData(s);
         res.setMsg("失败");
         return res;
@@ -62,7 +62,7 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(i);
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setData(s);
         res.setMsg("失败");
         return res;

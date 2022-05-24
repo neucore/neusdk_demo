@@ -2,7 +2,7 @@ package com.neucore.neulink.util;
 
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 public class LogUtils implements NeulinkConst{
   private static final String TAG = TAG_PREFIX+"LogUtils";

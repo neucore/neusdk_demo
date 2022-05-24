@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Debug;
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

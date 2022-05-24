@@ -2,12 +2,12 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.cmd.upd.UgrdeCmd;
-import com.neucore.neulink.cmd.upd.UgrdeCmdRes;
-import com.neucore.neulink.extend.ActionResult;
-import com.neucore.neulink.extend.ServiceRegistrator;
+import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
+import com.neucore.neulink.impl.cmd.upd.UgrdeCmdRes;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.ListenerRegistrator;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultFirewareResumeCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -18,7 +18,7 @@ public class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCm
 
     public DefaultFirewareProcessorResume(Context context){
         super(context);
-        ListenerRegistrator.getInstance().setExtendListener("firmwareresume",new DefaultFirewareResumeCmdListener());
+        ListenerRegistry.getInstance().setExtendListener("firmwareresume",new DefaultFirewareResumeCmdListener());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCm
     @Override
     protected UgrdeCmdRes responseWrapper(UgrdeCmd cmd, ActionResult<String> result) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_200);
         res.setMsg(MESSAGE_SUCCESS);
@@ -40,7 +40,7 @@ public class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCm
     @Override
     protected UgrdeCmdRes fail(UgrdeCmd cmd, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
@@ -51,7 +51,7 @@ public class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCm
     @Override
     protected UgrdeCmdRes fail(UgrdeCmd cmd,int code, String error) {
         UgrdeCmdRes res = new UgrdeCmdRes();
-        res.setDeviceId(ServiceRegistrator.getInstance().getDeviceService().getExtSN());
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);

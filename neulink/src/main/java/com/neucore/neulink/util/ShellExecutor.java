@@ -3,7 +3,7 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,7 +29,7 @@ public class ShellExecutor implements NeulinkConst{
         StringBuffer result = new StringBuffer();
         try {
             // 创建操作系统进程（也可以由Runtime.exec()启动）
-            // Runtime runtime = Runtime.getRuntime();
+            // RuntimeInfo runtime = RuntimeInfo.getRuntime();
             // Process proc = runtime.exec(cmd);
             // InputStream inputstream = proc.getInputStream();
             ProcessBuilder builder = new ProcessBuilder(cmd);

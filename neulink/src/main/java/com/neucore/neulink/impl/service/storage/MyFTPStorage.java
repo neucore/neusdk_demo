@@ -3,8 +3,7 @@ package com.neucore.neulink.impl.service.storage;
 import android.util.Log;
 
 import com.neucore.neulink.IStorage;
-import com.neucore.neulink.app.NeulinkConst;
-import com.neucore.neulink.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 
 import java.io.File;
 import java.io.FileInputStream;

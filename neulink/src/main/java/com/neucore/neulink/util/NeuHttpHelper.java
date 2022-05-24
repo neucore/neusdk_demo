@@ -5,16 +5,13 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,9 +20,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.util.ObjectUtil;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.greendao.gen.UserDao;
-import com.neucore.neulink.cmd.rrpc.QCond;
+import com.neucore.neulink.impl.cmd.rrpc.QCond;
 import com.neucore.neusdk_demo.service.db.bean.User;
 
 import org.greenrobot.greendao.database.DatabaseStatement;

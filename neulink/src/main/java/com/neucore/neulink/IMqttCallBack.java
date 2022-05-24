@@ -1,7 +1,5 @@
 package com.neucore.neulink;
 
-import com.neucore.neulink.app.NeulinkConst;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 

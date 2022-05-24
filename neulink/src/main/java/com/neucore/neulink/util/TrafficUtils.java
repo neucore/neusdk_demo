@@ -2,7 +2,7 @@ package com.neucore.neulink.util;
 
 import android.util.Log;
 
-import com.neucore.neulink.app.NeulinkConst;
+import com.neucore.neulink.NeulinkConst;
 
 import java.io.RandomAccessFile;
 
