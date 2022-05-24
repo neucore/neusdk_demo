@@ -170,15 +170,15 @@ public class MyApplication extends Application
          * 扩展实现。。。
          */
         /**
-         * http登录授权回调
+         * http登录授权回调[当系统不需要安全认证时，可以不设置]
          */
         connector.setLoginCallback(loginCallback);
         /**
-         * 不调用则使用默认实现
+         * 设备服务，当没有扩展需要时，可以不设置，即：默认实现
          */
         connector.setDeviceService(deviceService);
         /**
-         * mqtt回调
+         * mqtt回调，当需要监控mqtt状态时，需要设置
          */
         connector.setMqttCallBack(mqttCallBack);
         /**
