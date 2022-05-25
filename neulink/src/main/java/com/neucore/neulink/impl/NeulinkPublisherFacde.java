@@ -335,7 +335,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         response(topicPrefix,version,reqId,res,callback);
     }
 
-    public void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
+    void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
         CmdRes res = new CmdRes();
         res.setHeaders(heads);
         res.setCode(code);
