@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service;
+package com.neucore.neulink.impl.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,8 +6,8 @@ import android.util.Log;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
-import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.RequestContext;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
