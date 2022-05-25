@@ -10,7 +10,7 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.impl.proc.DefaultALogProcessor;
 import com.neucore.neulink.impl.proc.DefaultAwakenProcessor;
-import com.neucore.neulink.impl.proc.DefaultBLibProcessor;
+import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultBackupProcessor;
 import com.neucore.neulink.impl.proc.DefaultCfgProcessor;
 import com.neucore.neulink.impl.proc.DefaultCheckProcessor;
@@ -65,52 +65,52 @@ public class ProcessRegistry implements NeulinkConst {
         if(processors.containsKey(biz)){
             return processors.get(biz);
         }
-        if("reboot".equalsIgnoreCase(biz)){//设备重启
+        if(NEULINK_BIZ_REBOOT.equalsIgnoreCase(biz)){//设备重启
             regist(biz,new DefaultRebootProcessor(context));
         }
-        else if("firmware".equalsIgnoreCase(biz)){//设备固件升级
+        else if(NEULINK_BIZ_FIRMWARE.equalsIgnoreCase(biz)){//设备固件升级
             regist(biz,new DefaultFirewareProcessor(context));
         }
-        else if("firmwareresume".equalsIgnoreCase(biz)){//设备固件升级
+        else if(NEULINK_BIZ_FIRMWARE_RESUME.equalsIgnoreCase(biz)){//设备固件升级
             regist(biz,new DefaultFirewareProcessorResume(context));
         }
-        else if("hibrate".equalsIgnoreCase(biz)){//设备休眠
+        else if(NEULINK_BIZ_HIBRATE.equalsIgnoreCase(biz)){//设备休眠
             regist(biz,new DefaultHibrateProcessor(context));
         }
-        else if("awaken".equalsIgnoreCase(biz)){//设备唤醒
+        else if(NEULINK_BIZ_AWAKEN.equalsIgnoreCase(biz)){//设备唤醒
             regist(biz,new DefaultAwakenProcessor(context));
         }
-        else if("debug".equalsIgnoreCase(biz)){//Shell命令处理器
+        else if(NEULINK_BIZ_DEBUG.equalsIgnoreCase(biz)){//Shell命令处理器
             regist(biz,new DefaultDebugProcessor(context));
         }
-        else if("shell".equalsIgnoreCase(biz)){//Shell命令处理器
+        else if(NEULINK_BIZ_SHELL.equalsIgnoreCase(biz)){//Shell命令处理器
             regist(biz,new DefaultShellProcessor(context));
         }
-        else if("alog".equalsIgnoreCase(biz)){//算法升级处理器
+        else if(NEULINK_BIZ_ALOG.equalsIgnoreCase(biz)){//算法升级处理器
             regist(biz, new DefaultALogProcessor(context));
         }
-        else if("qlog".equalsIgnoreCase(biz)){//日志请求处理器
+        else if(NEULINK_BIZ_QLOG.equalsIgnoreCase(biz)){//日志请求处理器
             regist(biz, new DefaultQLogProcessor(context));
         }
-        else if("blib".equalsIgnoreCase(biz)){//目标库批量处理器
-            regist(biz,new DefaultBLibProcessor(context));
+        else if(NEULINK_BIZ_BLIB.equalsIgnoreCase(biz)){//目标库批量处理器
+            regist(biz,new DefaultFaceSyncProcessor(context));
         }
-        else if("qlib".equalsIgnoreCase(biz)){//目标库单记录处理器
+        else if(NEULINK_BIZ_QLIB.equalsIgnoreCase(biz)){//目标库单记录处理器
             regist(biz,new DefaultQLibProcessor(context));
         }
-        else if("cfg".equalsIgnoreCase(biz)){//配置管理处理器
+        else if(NEULINK_BIZ_CFG.equalsIgnoreCase(biz)){//配置管理处理器
             regist(biz,new DefaultCfgProcessor(context));
         }
-        else if("qcfg".equalsIgnoreCase(biz)){//配置管理处理器
+        else if(NEULINK_BIZ_QCFG.equalsIgnoreCase(biz)){//配置管理处理器
             regist(biz,new DefaultQCfgProcessor(context));
         }
-        else if("backup".equalsIgnoreCase(biz)){//备份处理器
+        else if(NEULINK_BIZ_BACKUP.equalsIgnoreCase(biz)){//备份处理器
             regist(biz,new DefaultBackupProcessor(context));
         }
-        else if("recover".equalsIgnoreCase(biz)){//备份恢复处理器
+        else if(NEULINK_BIZ_RECOVER.equalsIgnoreCase(biz)){//备份恢复处理器
             regist(biz,new DefaultRecoverProcessor(context));
         }
-        else if("check".equalsIgnoreCase(biz)){//数据校验处理器
+        else if(NEULINK_BIZ_CHECK.equalsIgnoreCase(biz)){//数据校验处理器
             regist(biz,new DefaultCheckProcessor(context));
         }
         IProcessor processor = processors.get(biz);

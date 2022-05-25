@@ -83,6 +83,53 @@ public interface NeulinkConst {
      * 解绑
      */
     String NEULINK_MODE_UNBIND = "unbind";
+
+    String NEULINK_BIZ_REBOOT = "reboot";
+
+    String NEULINK_BIZ_AWAKEN = "awaken";
+
+    String NEULINK_BIZ_HIBRATE = "hibrate";
+
+    String NEULINK_BIZ_SHELL = "shell";
+
+    String NEULINK_BIZ_ALOG = "alog";
+
+    String NEULINK_BIZ_QLOG = "qlog";
+
+    String NEULINK_BIZ_CFG = "cfg";
+
+    String NEULINK_BIZ_QCFG = "qcfg";
+
+    String NEULINK_BIZ_BLIB = "blib";
+
+    String NEULINK_BIZ_CHECK = "check";
+
+    String NEULINK_BIZ_QLIB = "qlib";
+
+    String NEULINK_BIZ_FIRMWARE = "firmware";
+
+    String NEULINK_BIZ_FIRMWARE_RESUME = "firewareresume";
+
+    String NEULINK_BIZ_BACKUP = "backup";
+
+    String NEULINK_BIZ_RECOVER = "recover";
+
+    String NEULINK_BIZ_RESET = "reset";
+
+    String NEULINK_BIZ_DEBUG = "debug";
+
+    String NEULINK_BIZ_BINDING = "binding";
+
+    String NEULINK_BIZ_AUTH = "auth";
+
+    String NEULINK_BIZ_FILE = "file";
+
+    String NEULINK_BIZ_BFILE = "bfile";
+
+    String NEULINK_BIZ_TODOLIST = "todolist";
+
+    String NEULINK_BIZ_BTODOLIST = "btodolist";
+
     /**
      * 成功
      */
