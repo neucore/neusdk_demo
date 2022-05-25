@@ -36,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -267,7 +268,10 @@ public class MyApplication extends Application
              */
             return DeviceUtils.getCPUSN(getContext());
         }
-
+        @Override
+        public Locale getLocale(){
+            return Locale.getDefault();
+        }
         @Override
         public DeviceInfo getInfo() {
             /**
