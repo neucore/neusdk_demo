@@ -270,6 +270,9 @@ public class MyApplication extends Application
         }
         @Override
         public Locale getLocale(){
+            /**
+             * 需要读取apk国际化设置后的值
+             */
             return Locale.getDefault();
         }
         @Override
