@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.util.SSLSocketClient;
 
 import cn.hutool.core.util.ObjectUtil;
 import okhttp3.OkHttpClient;
@@ -61,6 +62,8 @@ public class FileDownloader implements NeulinkConst{
                 .connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
                 .readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
                 .writeTimeout(readTimeout,TimeUnit.MINUTES)
+                .sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
+                .hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
                 .build();
         return okHttpClient;
     }
