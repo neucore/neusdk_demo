@@ -67,7 +67,7 @@ public class DeviceUtils implements NeulinkConst{
 
 	private static String getNeucore(Context context){
 		String path = getAppFilesDir(context);
-		return mkidrs(path,"neucore");
+		return path;
 	}
 
 	private static String mkidrs(String path,String sub){
