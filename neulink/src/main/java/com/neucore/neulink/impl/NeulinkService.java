@@ -5,17 +5,18 @@ import android.util.Log;
 
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
 import com.neucore.neulink.impl.cmd.msg.ResRegist;
 import com.neucore.neulink.impl.service.MyMqttService;
-import com.neucore.neulink.impl.service.NeulinkMsgCallBackAdapter;
+import com.neucore.neulink.impl.adapter.NeulinkMsgCallBackAdapter;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
-import com.neucore.neulink.impl.service.Register;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
@@ -176,6 +177,38 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    public boolean regist(DeviceInfo deviceInfo){
+        String payload = JSonUtils.toString(deviceInfo);
+        String devinfo_topic = "msg/req/devinfo";
+        publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+        return true;
+    }
+
+    public void connect(Integer flg){
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
+        if("true".equalsIgnoreCase(manualReport)){
+            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
+            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
+        }
+    }
+
+    public void disconnect(Integer flg){
+
+        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
+        if("true".equalsIgnoreCase(manualReport)){
+            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
+            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
+        }
+    }
+
+    public LWTInfo lwt(){
+        LWTInfo info = new LWTInfo();
+        info.setTopicPrefix("msg/req/lwt/v1.0");
+        String payload = "{\"dev_id\":\""+ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":-1}";
+        info.setPayload(payload);
+        return info;
+    }
+
     /**
      *
      * @param topic
@@ -193,11 +226,11 @@ public class NeulinkService implements NeulinkConst{
      * @param payload
      * @param qos
      */
-    public void publishMessage(String topicPrefix,String version, String payload, int qos){
+    protected void publishMessage(String topicPrefix,String version, String payload, int qos){
         publishMessage(topicPrefix,version, payload, qos,null);
     }
 
-    public void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
+    protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
 
         publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,callback);
     }
@@ -307,23 +340,6 @@ public class NeulinkService implements NeulinkConst{
             params.put("Accept-Language",locale.getLanguage()+"-"+locale.getCountry());
         }
         return params;
-    }
-
-    public void publishConnect(Integer flg){
-        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
-        if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
-        }
-    }
-
-    public void publishDisConnect(Integer flg){
-
-        String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
-        if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
-        }
     }
 
     private String custid="notimpl";

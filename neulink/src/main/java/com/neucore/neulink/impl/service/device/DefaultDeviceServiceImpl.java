@@ -1,7 +1,6 @@
 package com.neucore.neulink.impl.service.device;
 
 import com.neucore.neulink.IDeviceService;
-import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.cmd.msg.CPUInfo;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
@@ -14,7 +13,6 @@ import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MemoryUtils;
 
 import java.util.Locale;
@@ -82,28 +80,21 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
 
     @Override
     public boolean regist(DeviceInfo deviceInfo) {
-        String payload = JSonUtils.toString(deviceInfo);
-        String devinfo_topic = "msg/req/devinfo";
-        NeulinkService.getInstance().publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
-        return true;
+        return NeulinkService.getInstance().regist(deviceInfo);
     }
 
     @Override
     public void connect() {
-        NeulinkService.getInstance().publishConnect(1);
+        NeulinkService.getInstance().connect(1);
     }
 
     @Override
     public void disconnect() {
-        NeulinkService.getInstance().publishDisConnect(1);
+        NeulinkService.getInstance().disconnect(1);
     }
 
     @Override
     public LWTInfo lwt() {
-        LWTInfo info = new LWTInfo();
-        info.setTopicPrefix("msg/req/lwt/v1.0");
-        String payload = "{\"dev_id\":\""+getExtSN()+"\",\"status\":-1}";
-        info.setPayload(payload);
-        return info;
+        return NeulinkService.getInstance().lwt();
     }
 }

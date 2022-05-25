@@ -54,20 +54,17 @@ public class DeviceUtils implements NeulinkConst{
 	private static String getFileRoot(Context context) {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
-			return NeuPath+File.separator+"neucore";
+			return NeuPath;
 		}
-		return context.getFilesDir().getAbsolutePath()+File.separator+"neucore";
-	}
-
-	public static String getAppFilesDir(Context context){
-		String path = getFileRoot(context);
-		if (!new File(path).exists()) {new File(path).mkdirs();}
-		return path;
+		return context.getFilesDir().getAbsolutePath();
 	}
 
 	private static String getNeucore(Context context){
-		String path = getAppFilesDir(context);
-		return mkidrs(path,"neucore");
+		String rootPath = getFileRoot(context);
+		String sub = "neucore";
+		mkidrs(rootPath,sub);
+		String path = rootPath+File.separator+sub;
+		return path;
 	}
 
 	private static String mkidrs(String path,String sub){

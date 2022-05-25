@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service;
+package com.neucore.neulink.impl.adapter;
 
 import android.util.Log;
 
@@ -9,7 +9,7 @@ import com.neucore.neulink.impl.Result;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-class MqttActionListenerAdapter implements IMqttActionListener, NeulinkConst {
+public class MqttActionListenerAdapter implements IMqttActionListener, NeulinkConst {
 
     private String TAG = TAG_PREFIX+"MqttActionListenerAdapter";
     private String reqId;

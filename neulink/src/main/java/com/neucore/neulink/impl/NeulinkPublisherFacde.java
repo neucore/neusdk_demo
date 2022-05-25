@@ -6,6 +6,7 @@ import android.util.Log;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.registry.CallbackRegistry;
 import com.neucore.neulink.impl.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.impl.cmd.lic.LicUpldCmd;
@@ -13,6 +14,7 @@ import com.neucore.neulink.impl.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTemp;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -332,6 +334,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setData(payload);
         response(topicPrefix,version,reqId,res,callback);
     }
+
     void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
         CmdRes res = new CmdRes();
         res.setHeaders(heads);
