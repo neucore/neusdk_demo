@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service;
+package com.neucore.neulink.impl;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,10 +6,12 @@ import android.util.Log;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.NeulinkScheduledReport;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.NetworkHelper;

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.impl.NeulinkService;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service;
+package com.neucore.neulink.impl;
 
 import android.content.Context;
 import android.util.Log;
