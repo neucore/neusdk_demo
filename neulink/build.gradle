@@ -8,16 +8,16 @@ def packageTime(){
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 8
+def versionPatch = 9
 android {
-    compileSdkVersion 30
-    buildToolsVersion "28.0.3"
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.build_tools_version
 
 
     defaultConfig {
-        minSdkVersion 26
-        targetSdkVersion 30
-        versionCode 1
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
+        versionCode rootProject.ext.version_code
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -50,7 +50,9 @@ dependencies {
     implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    //implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.qianwen:okhttp-utils:3.8.0'
