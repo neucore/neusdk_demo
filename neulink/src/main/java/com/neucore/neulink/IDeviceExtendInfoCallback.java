@@ -6,7 +6,10 @@ import com.neucore.neulink.impl.cmd.msg.SubApp;
 import java.util.List;
 import java.util.Map;
 
-public interface IAttachInfoCallback {
+/**
+ * 设备扩展信息回调接口
+ */
+public interface IDeviceExtendInfoCallback {
 
     String getModel();
 

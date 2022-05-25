@@ -6,7 +6,7 @@ import android.os.Build;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.MiscInfo;
 import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
-import com.neucore.neulink.IAttachInfoCallback;
+import com.neucore.neulink.IDeviceExtendInfoCallback;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -76,7 +76,7 @@ public class DeviceInfoDefaultBuilder {
      * @param callback
      * @return
      */
-    public DeviceInfo build(IAttachInfoCallback callback){
+    public DeviceInfo build(IDeviceExtendInfoCallback callback){
         DeviceInfo deviceInfo = build();
         if(callback!=null){
 

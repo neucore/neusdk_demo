@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neucore.neulink.IExtendCallback;
-import com.neucore.neulink.IAttachInfoCallback;
+import com.neucore.neulink.IDeviceExtendInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
@@ -278,7 +278,7 @@ public class MyApplication extends Application
              *
              * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
              */
-            return DeviceInfoDefaultBuilder.getInstance().build(new IAttachInfoCallback(){
+            return DeviceInfoDefaultBuilder.getInstance().build(new IDeviceExtendInfoCallback(){
 
 
                 @Override
