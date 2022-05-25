@@ -105,6 +105,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
+            Log.e(TAG,cmdStr+"持久化没有实现...");
         }
         else if(DEL.equalsIgnoreCase(cmdStr)){
             //删除人脸到 twocamera/photo/ 文件夹下
@@ -113,6 +114,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
+            Log.e(TAG,cmdStr+"持久化为实现。。。");
         }
 
         /**
@@ -124,6 +126,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
              * 最后一个包时，需要执行清理历史数据【无效数据】，可替换自己的代码
              * @TODO 根据自己需要自行定义，可替换自己的代码，建议根据请求时间进行清理；sample根据数据的更新时间进行处理
              */
+            Log.e(TAG,"清除过期数据没有实现。。。");
         }
 
         TLibPkgResult result = new TLibPkgResult();
@@ -166,13 +169,49 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
             imageData.put("file",tmp);
             imagesData.put(ext_id,imageData);
 
-            FaceNode node = getFaceNode(tmp);
+            try {
+                /**
+                 * 单张图片信息
+                 *
+                 */
+                FaceNode faceNode = getFaceNode(tmp, options);
+                if(faceNode.isFeatureValid() == false){
+                    if (ObjectUtil.isNotEmpty(faceNode.getFailedReason())) {
+                        Log.e(TAG,tmpName+","+faceNode.getFailedReason());
+                        failed.add(ext_id + ":" + faceNode.getFailedReason());
+                    }
+                    else {
+                        failed.add(ext_id + ":" + "图片特征无效");
+                    }
+                }
+                else{
+                    /**
+                     * 获取特征值
+                     */
+                    imageData.put("face_sid", faceNode.getFaceSid());
+                    imageData.put("face_sid_mask", faceNode.getFaceSidMask());
+                    /**
+                     * 保存图片数据
+                     */
+                    imagesData.put(ext_id,imageData);
+                }
+            }
+            catch(IOException ex){
+                failed.add(ext_id+":"+ex.getMessage());
+            }
 
-            imageData.put("face_sid",node.getFaceSid());
-            imageData.put("face_sid_mask", node.getFaceSidMask());
-            imagesData.put(ext_id,imageData);
-            if(ObjectUtil.isNotEmpty(node.getFailedReason())){
-                failed.add(ext_id+":"+node.getFailedReason());
+            try {
+                FaceNode node = getFaceNode(tmp, options);
+
+                imageData.put("face_sid", node.getFaceSid());
+                imageData.put("face_sid_mask", node.getFaceSidMask());
+                imagesData.put(ext_id, imageData);
+                if (ObjectUtil.isNotEmpty(node.getFailedReason())) {
+                    failed.add(ext_id + ":" + node.getFailedReason());
+                }
+            }
+            catch (Exception ex){
+
             }
         }
         imagesData.put("failed",failed);
@@ -180,10 +219,11 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
         return imagesData;
     }
 
-    private FaceNode getFaceNode(File tmp) {
+    private FaceNode getFaceNode(File tmp,BitmapFactory.Options options) throws IOException{
         /**
          * @TODO: 算法实现图片解析
          */
+        Log.e(TAG,"AI算法没有集成。。。");
         return new FaceNode();
     }
 
@@ -206,7 +246,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
                 bytesToImage(bitmap,ext_id);
             }
             catch(IOException e){
-                e.printStackTrace();
+                Log.e(TAG,e.getMessage());
             }
         }
     }
