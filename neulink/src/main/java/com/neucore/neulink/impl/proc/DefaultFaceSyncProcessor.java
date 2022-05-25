@@ -5,11 +5,11 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.impl.cmd.rrpc.BTLibSyncRes;
+import com.neucore.neulink.impl.cmd.rrpc.FaceCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
 import com.neucore.neulink.impl.cmd.rrpc.SyncInfo;
-import com.neucore.neulink.impl.cmd.rrpc.TLibPkgResult;
+import com.neucore.neulink.impl.cmd.rrpc.FacePkgActionResult;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.GBatchProcessor;
@@ -34,10 +34,10 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class DefaultBLibProcessor extends GBatchProcessor<FaceCmd, BTLibSyncRes, TLibPkgResult> {
+public class DefaultFaceSyncProcessor extends GBatchProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
 
     private String libDir;
-    public DefaultBLibProcessor(Context context){
+    public DefaultFaceSyncProcessor(Context context){
         super(context);
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
         ListenerRegistry.getInstance().setExtendListener("blib",new DefaultFaceSyncListener());
@@ -173,8 +173,8 @@ public class DefaultBLibProcessor extends GBatchProcessor<FaceCmd, BTLibSyncRes,
         return imagesData;
     }
 
-    public BTLibSyncRes responseWrapper(FaceCmd cmd, TLibPkgResult result) {
-        BTLibSyncRes res = new BTLibSyncRes();
+    public FaceCmdRes responseWrapper(FaceCmd cmd, FacePkgActionResult result) {
+        FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(result.getCode());
@@ -187,8 +187,8 @@ public class DefaultBLibProcessor extends GBatchProcessor<FaceCmd, BTLibSyncRes,
         return res;
     }
 
-    public BTLibSyncRes fail(FaceCmd cmd, String message) {
-        BTLibSyncRes res = new BTLibSyncRes();
+    public FaceCmdRes fail(FaceCmd cmd, String message) {
+        FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
@@ -200,8 +200,8 @@ public class DefaultBLibProcessor extends GBatchProcessor<FaceCmd, BTLibSyncRes,
         return res;
     }
 
-    public BTLibSyncRes fail(FaceCmd cmd, int code, String message) {
-        BTLibSyncRes res = new BTLibSyncRes();
+    public FaceCmdRes fail(FaceCmd cmd, int code, String message) {
+        FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);

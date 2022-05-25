@@ -10,7 +10,7 @@ import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
 import com.neucore.neulink.impl.cmd.rrpc.FaceNode;
 import com.neucore.neulink.impl.cmd.rrpc.KVPair;
-import com.neucore.neulink.impl.cmd.rrpc.TLibPkgResult;
+import com.neucore.neulink.impl.cmd.rrpc.FacePkgActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -29,7 +29,7 @@ import java.util.Map;
 import cn.hutool.core.util.ObjectUtil;
 
 
-public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceCmd> {
+public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult,FaceCmd> {
 
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
 
@@ -42,7 +42,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
     }
 
     @Override
-    public TLibPkgResult doAction(NeulinkEvent<FaceCmd> event) {
+    public FacePkgActionResult doAction(NeulinkEvent<FaceCmd> event) {
         FaceCmd cmd = event.getSource();
         FaceCmd faceCmd = event.getSource();
         String cmdStr = faceCmd.getCmd();//add：添加|del：删除|update：更新|sync：同步
@@ -129,7 +129,7 @@ public class DefaultFaceSyncListener implements ICmdListener<TLibPkgResult,FaceC
             Log.e(TAG,"清除过期数据没有实现。。。");
         }
 
-        TLibPkgResult result = new TLibPkgResult();
+        FacePkgActionResult result = new FacePkgActionResult();
         result.setCode(200);
         result.setMessage("success");
         result.setData(failed);
