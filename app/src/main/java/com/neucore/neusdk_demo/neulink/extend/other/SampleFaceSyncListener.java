@@ -30,19 +30,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SampleFaceListener implements ICmdListener<UpdateActionResult,FaceCmd> {
+import cn.hutool.core.util.ObjectUtil;
+
+public class SampleFaceSyncListener implements ICmdListener<UpdateActionResult,FaceCmd> {
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private LibManagerService libManagerService;
     private NeuFace mNeucore_face;
-    private String TAG = "SampleFaceListener";
-    public SampleFaceListener(){
+    private String TAG = "SampleFaceSyncListener";
+    public SampleFaceSyncListener(){
         this.libManagerService = new LibManagerService(ContextHolder.getInstance().getContext());
+        mNeucore_face  = NeuFaceFactory.getInstance().create();
     }
     @Override
     public UpdateActionResult doAction(NeulinkEvent<FaceCmd> event) {
         FaceCmd faceCmd = event.getSource();
         String cmd = faceCmd.getCmd();//add：添加|del：删除|update：更新|sync：同步
-        mNeucore_face  = NeuFaceFactory.getInstance().create();
+
         long reqTime = faceCmd.getReqtime();
         /**
          * 总包数
@@ -136,25 +139,19 @@ public class SampleFaceListener implements ICmdListener<UpdateActionResult,FaceC
         return result;
     }
 
-    /**
-     * 计算图片faceId
-     * @param image
-     * @param options
-     * @return
-     * @throws IOException
-     */
-    private FaceNode getImageFaceSid(Bitmap image, BitmapFactory.Options options) {
+    private FaceNode getFaceNode(File tmp,BitmapFactory.Options options) throws IOException{
+        byte[] image = facelibImageReader(tmp);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         /**
          * @TODO: 算法实现图片解析
          */
-        NeuFaceRegisterNode registerNode = mNeucore_face.neu_iva_get_picture_face_feature_bitmap(image);
+        NeuFaceRegisterNode registerNode = mNeucore_face.neu_iva_get_picture_face_feature_bitmap(bitmap);
         FaceNode faceNode = new FaceNode();
         faceNode.setFeatureValid(registerNode.getFeatureValid());
         faceNode.setFaceSid(JSonUtils.toJson(registerNode.getFeature()));
         faceNode.setFaceSidMask(JSonUtils.toJson(registerNode.getFeature()));
         return faceNode;
     }
-
     /**
      * 解析每张图片获得每张图片的ext_id,image_type,face_sid,face_sid_mask
      * 当图片特征无效时，进入到failed列表内
@@ -189,19 +186,19 @@ public class SampleFaceListener implements ICmdListener<UpdateActionResult,FaceC
             imagesData.put(ext_id,imageData);
 
             try {
-                byte[] image = facelibImageReader(tmp);
-
-                Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-                //保存人脸到 twocamera/photo/ 文件夹下
-                //bytesToImage(bitmap,ext_id);
                 /**
                  * 单张图片信息
                  *
                  */
-                FaceNode faceNode = getImageFaceSid(bitmap, options);
+                FaceNode faceNode = getFaceNode(tmp, options);
                 if(faceNode.isFeatureValid() == false){
-                    Log.e(TAG,tmpName+",图片特征无效");
-                    failed.add(ext_id+":"+"图片特征无效");
+                    if (ObjectUtil.isNotEmpty(faceNode.getFailedReason())) {
+                        Log.e(TAG,tmpName+","+faceNode.getFailedReason());
+                        failed.add(ext_id + ":" + faceNode.getFailedReason());
+                    }
+                    else {
+                        failed.add(ext_id + ":" + "图片特征无效");
+                    }
                 }
                 else{
                     /**

@@ -8,22 +8,8 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IAttachInfoCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.impl.DefaultExtendCallback;
-import com.neucore.neulink.impl.cmd.msg.CPUInfo;
-import com.neucore.neulink.impl.cmd.msg.DiskInfo;
-import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
-import com.neucore.neulink.impl.cmd.msg.MemInfo;
-import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
-import com.neucore.neulink.impl.cmd.msg.SDInfo;
 import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
-import com.neucore.neulink.impl.LWTInfo;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
-import com.neucore.neulink.util.CpuStat;
-import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.MemoryUtils;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleResetActionListener;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
@@ -44,22 +30,12 @@ import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleAlogUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleAwakenActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleBackupActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleCfgActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceCheckListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceQueryListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFirewareUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleHibrateActionListener;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -451,7 +427,7 @@ public class MyApplication extends Application
             /**
              * 人脸下发 扩展【取消注释，覆盖默认实现】
              */
-            //ListenerRegistry.getInstance().setExtendListener("blib",new SampleFaceListener());
+            //ListenerRegistry.getInstance().setExtendListener("blib",new SampleFaceSyncListener());
             /**
              * 人脸比对 扩展【取消注释，覆盖默认实现】
              */
