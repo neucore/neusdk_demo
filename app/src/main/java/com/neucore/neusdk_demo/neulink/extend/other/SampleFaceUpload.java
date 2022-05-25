@@ -33,7 +33,10 @@ public class SampleFaceUpload {
         String path = "/sdcard/twocamera/572836928.jpg";//待上传的图片路径
         //图片上传【FTP】
         //调整配置Storage.Type=FTP
-        IStorage storage = StorageFactory.getInstance();//目前只实现了OSS|FTP[]
+        /**
+         *
+         */
+        IStorage storage = StorageFactory.getInstance();//目前只实现了【OSS｜FTP】
         //上传人脸图片至存储服务器上
         String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
         if(urlStr!=null){
