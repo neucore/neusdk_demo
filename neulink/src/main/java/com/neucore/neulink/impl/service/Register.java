@@ -114,12 +114,12 @@ public class Register implements NeulinkConst{
                         if (ObjectUtil.isEmpty(deviceInfo)) {
                             throw new RuntimeException("设备服务 getInfo没有实现。。。");
                         }
-
                         String extSN = deviceService.getExtSN();
-                        extSN = extSN==null?DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()):extSN;
+                        if(ObjectUtil.isEmpty(extSN)){
+                            extSN = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+                        }
                         String devId = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()) + "@@" + extSN + "@@" + ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE, 0);
                         deviceInfo.setDeviceId(devId);
-
                         boolean successed = deviceService.regist(deviceInfo);
                         if(successed){
                             registed = true;

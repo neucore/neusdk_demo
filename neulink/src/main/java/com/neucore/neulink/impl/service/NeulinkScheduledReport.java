@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
+
 /**
  * 定期收集上报信息
  */
@@ -64,10 +66,15 @@ public class NeulinkScheduledReport implements NeulinkConst{
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.heartbeat","false"))){
                         try {
                             HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
-                            heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                            String payload = JSonUtils.toString(heatbeatInfo);
-                            String topic = "msg/req/status";
-                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                            if(ObjectUtil.isNotEmpty(heatbeatInfo)){
+                                heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                String payload = JSonUtils.toString(heatbeatInfo);
+                                String topic = "msg/req/status";
+                                service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                            }
+                            else{
+                                Log.e(TAG,"deviceService的heatbeat没有实现");
+                            }
                         }
                         catch(Exception ex){
                             Log.e(TAG,ex.getMessage());
@@ -95,10 +102,16 @@ public class NeulinkScheduledReport implements NeulinkConst{
                     if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.runtime","false"))){
                         try {
                             RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
-                            runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
-                            String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
-                            String topic = "msg/req/stat";
-                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                            if(ObjectUtil.isNotEmpty(runtimeInfo)){
+                                runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
+                                String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
+                                String topic = "msg/req/stat";
+                                service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                            }
+                            else{
+                                Log.e(TAG,"deviceService的runtime没有实现");
+                            }
+
                         }catch (Exception ex){
                             Log.e(TAG,ex.getMessage());
                         }
