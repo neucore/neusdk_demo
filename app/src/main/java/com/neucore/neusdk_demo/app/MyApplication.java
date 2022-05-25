@@ -489,6 +489,7 @@ public class MyApplication extends Application
              * 新业务可以参考Hello业务的实现业务就行
              */
             ProcessRegistry.regist("auth",new AuthProcessor(),new AuthCmdListener());
+
             ProcessRegistry.regist("binding",new BindProcessor(),new BindCmdListener());
             /**
              * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
