@@ -78,7 +78,8 @@ public class MyApplication extends Application
                 String version = "v1.0";
                 String reqId = "3214323ewadfdsad";
                 String mode = "bind";
-                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "", new ResCallback2Log());
+                String payload = "{}";//绑定响应协议体
+                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
             }
         }.start();
     }
@@ -106,20 +107,21 @@ public class MyApplication extends Application
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"14");//默认为客流机器
         /**
-         * 设置设备端2Cloud的通信通道；默认为mqtt
+         * 设置设备端与云端的通信通道；
+         * 默认为mqtt【下发、上报都走mqtt】；
+         * 即：所有End2Cloud的neulink上报都是mqtt消息；Cloud2End的neulink的下发都是mqtt消息；
+         *
+         * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         //##########################################################################################
         /**
-         * mqtt
+         * ⚠️注意；mqtt通道启用时打开
          * 设置登录用户名密码
          */
-        extConfig.setProperty(ConfigContext.USERNAME,"admin");
-        extConfig.setProperty(ConfigContext.PASSWORD,"password");
-        /**
-         * 配置扩展: key可以参考ConfigContext内的定义
-         */
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+        //extConfig.setProperty(ConfigContext.USERNAME,"admin");
+        //extConfig.setProperty(ConfigContext.PASSWORD,"password");
+        //extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
@@ -133,10 +135,26 @@ public class MyApplication extends Application
         //##########################################################################################
         /**
          * FTP 实现
+         * ConfigContext.FTP_SERVER：服务器地址
+         * ConfigContext.FTP_USER_NAME：用户名
+         * ConfigContext.FTP_PASSWORD：密码
+         * ConfigContext.CONN_TIME_OUT：连接超时
+         * ConfigContext.READ_TIME_OUT：执行超时
          */
         extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
-
         extConfig.setProperty(ConfigContext.FTP_SERVER,"dev.neucore.com");
+        //##########################################################################################
+        /**
+         * OSS存储服务开启注释
+         * ConfigContext.OSS_ACCESS_KEY_ID
+         * ConfigContext.OSS_ACCESS_KEY_SECRET
+         * ConfigContext.OSS_END_POINT
+         * ConfigContext.OSS_BUCKET_NAME
+         * ConfigContext.CONN_TIME_OUT
+         * ConfigContext.READ_TIME_OUT
+         */
+        //extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_OSS);
+        //##########################################################################################
         /**
          * 连接器
          */
