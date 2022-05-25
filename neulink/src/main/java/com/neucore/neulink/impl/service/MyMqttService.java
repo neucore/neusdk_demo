@@ -6,6 +6,7 @@ import android.util.Log;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.LWTInfo;
+import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
