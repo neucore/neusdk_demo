@@ -16,9 +16,9 @@ import com.neucore.neulink.NeulinkConst;
 
 import java.util.ArrayList;
 
-public class NetworkHelper implements NeulinkConst{
+public class NetworkHelper implements NeulinkConst {
 
-    private static String TAG = TAG_PREFIX+"NetworkHelper";
+    private static String TAG = TAG_PREFIX + "NetworkHelper";
 
     public interface Listener {
         void onConnectivityChange(boolean connect);
@@ -27,7 +27,7 @@ public class NetworkHelper implements NeulinkConst{
     private final Context mContext;
     private ArrayList<Listener> mListeners = new ArrayList<>();
     private final ConnectivityManager mConnectivityManager;
-    private final TelephonyManager telephonyManager;
+    private TelephonyManager telephonyManager;
     private int mNetworkType;
 
     private final BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
@@ -47,26 +47,29 @@ public class NetworkHelper implements NeulinkConst{
     };
 
     private static NetworkHelper instance;
-    
-    public static NetworkHelper getInstance(){
-        if(instance == null){
+
+    public static NetworkHelper getInstance() {
+        if (instance == null) {
             instance = new NetworkHelper();
         }
         return instance;
     }
-    
+
     public NetworkHelper() {
         mContext = ContextHolder.getInstance().getContext();
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
-        telephonyManager = mContext.getSystemService(TelephonyManager.class);
+        try {
+            telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        } catch (Exception e) {
+        }
     }
 
-    public void addListener(Listener listener){
+    public void addListener(Listener listener) {
         mListeners.add(listener);
     }
 
-    public void reMoveListener(Listener listener){
+    public void reMoveListener(Listener listener) {
         mListeners.remove(listener);
     }
 
@@ -80,13 +83,9 @@ public class NetworkHelper implements NeulinkConst{
         networkIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         try {
             onStop();
-        } catch (Exception e) {
-        }
-        try {
             mContext.registerReceiver(mNetworkReceiver, networkIntentFilter);
         } catch (Exception e) {
         }
-
 
         if (telephonyManager != null) {
             telephonyManager.listen(mPhoneStateListener,
@@ -94,23 +93,20 @@ public class NetworkHelper implements NeulinkConst{
         }
     }
 
-    
     public void onStop() {
         try {
             mContext.unregisterReceiver(mNetworkReceiver);
+            //final TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE); //mContext.getSystemService(TelephonyManager.class);
+            if (telephonyManager != null) {
+                telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            }
         } catch (Exception e) {
-        }
-
-        final TelephonyManager telephonyManager = mContext
-                .getSystemService(TelephonyManager.class);
-        if (telephonyManager != null) {
-            telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
     }
 
     private void onConnectivityChange() {
         updateConnectivityStatus();
-        for (Listener listener: mListeners){
+        for (Listener listener : mListeners) {
             listener.onConnectivityChange(getNetworkConnected());
         }
     }
@@ -143,7 +139,7 @@ public class NetworkHelper implements NeulinkConst{
     }
 
     public boolean getNetworkConnected() {
-        return  isEthernetConnected() || isCellConnected() || isWifiConnected();
+        return isEthernetConnected() || isCellConnected() || isWifiConnected();
     }
 
     private boolean isEthernetConnected() {
