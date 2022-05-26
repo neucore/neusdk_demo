@@ -82,7 +82,7 @@ public class DefaultFaceQueryProcessor implements IQlib$ObjtypeProcessor<TLibQue
     }
 
     @Override
-    public TLibQueryCmd buildPkg(String cmdStr, String dataUrl, long offset) throws NeulinkException {
-        return null;
+    public TLibQueryCmd buildPkg(TLibQueryCmd cmd) throws NeulinkException {
+        return cmd;
     }
 }

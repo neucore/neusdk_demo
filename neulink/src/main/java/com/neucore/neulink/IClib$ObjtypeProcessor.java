@@ -24,5 +24,5 @@ public interface IClib$ObjtypeProcessor<Req extends CheckCmd, Res extends CheckC
      * @return
      * @throws NeulinkException
      */
-    Req buildPkg(String cmdStr) throws NeulinkException;
+    Req buildPkg(CheckCmd cmd) throws NeulinkException;
 }

@@ -71,7 +71,7 @@ public class DefaultFaceCheckProcessor implements IClib$ObjtypeProcessor<CheckCm
     }
 
     @Override
-    public CheckCmd buildPkg(String cmdStr) throws NeulinkException {
-        return null;
+    public CheckCmd buildPkg(CheckCmd cmd) throws NeulinkException {
+        return cmd;
     }
 }
