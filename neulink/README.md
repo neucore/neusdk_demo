@@ -604,13 +604,37 @@ public class AuthActionResultData {
              */
             //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_FACE,new SampleFaceSyncListener());
             /**
+             * 车辆下发 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_CAR,new SampleCarSyncListener());
+            /**
+             * 车牌下发 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_LIC,new SampleFaceSyncListener());
+            /**
              * 人脸比对 扩展【取消注释，覆盖默认实现】
              */
             //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_FACE,new SampleFaceCheckListener());
             /**
+             * 车辆比对 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_CAR,new SampleCarCheckListener());
+            /**
+             * 车牌比对 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_LIC,new SampleLicCheckListener());
+            /**
              * 人脸查询 扩展【取消注释，覆盖默认实现】
              */
             //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_FACE,new SampleFaceQueryListener());
+            /**
+             * 车辆查询 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_CAR,new SampleCarQueryListener());
+            /**
+             * 车牌查询 扩展【取消注释，覆盖默认实现】
+             */
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_LIC,new SampleLicQueryListener());
 
             /**
              * 重启 扩展【取消注释，覆盖默认实现】

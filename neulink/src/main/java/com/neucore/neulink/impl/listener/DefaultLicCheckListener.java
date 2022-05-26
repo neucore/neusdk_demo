@@ -1,14 +1,14 @@
 package com.neucore.neulink.impl.listener;
 
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.QueryActionResult;
+import com.neucore.neulink.impl.cmd.check.CheckCmd;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultFaceCheckListener implements ICmdListener<QueryActionResult, CheckCmd> {
+public class DefaultLicCheckListener implements ICmdListener<QueryActionResult, CheckCmd> {
 
     @Override
     public QueryActionResult doAction(NeulinkEvent<CheckCmd> event) {

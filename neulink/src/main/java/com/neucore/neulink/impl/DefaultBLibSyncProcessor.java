@@ -282,6 +282,6 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
-        return processor.buildPkg(cmd.getCmdStr(),dataUrl,offset);
+        return processor.buildPkg(cmd);
     }
 }

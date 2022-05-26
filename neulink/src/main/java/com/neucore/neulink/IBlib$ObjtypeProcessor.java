@@ -18,11 +18,9 @@ public interface IBlib$ObjtypeProcessor<Req extends PkgCmd, Res extends PkgRes, 
 
     /**
      * 下载包数据并构建包请求
-     * @param cmdStr
-     * @param dataUrl
-     * @param offset
+     * @param cmd
      * @return
      * @throws NeulinkException
      */
-    Req buildPkg(String cmdStr, String dataUrl, long offset) throws NeulinkException;
+    Req buildPkg(Req cmd) throws NeulinkException;
 }
