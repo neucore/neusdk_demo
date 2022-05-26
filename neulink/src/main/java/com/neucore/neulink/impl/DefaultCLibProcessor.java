@@ -171,8 +171,8 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
         if(listener==null){
             throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
         }
-        CheckCmd pkgCmd = buildPkg(cmd);
-        QueryActionResult actionResult = listener.doAction(new NeulinkEvent<>(pkgCmd));
+        CheckCmd checkCmd = buildPkg(cmd);
+        QueryActionResult actionResult = listener.doAction(new NeulinkEvent<>(checkCmd));
         return actionResult;
     }
 
@@ -247,6 +247,6 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
-        return processor.buildPkg(cmd.getCmdStr());
+        return processor.buildPkg(cmd);
     }
 }

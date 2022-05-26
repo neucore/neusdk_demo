@@ -204,8 +204,8 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, Q
         if(listener==null){
             throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
         }
-        TLibQueryCmd pkgCmd = buildPkg(cmd,cmd.getDataUrl(), cmd.getOffset());
-        QResult actionResult = listener.doAction(new NeulinkEvent<>(pkgCmd));
+        TLibQueryCmd queryCmd = buildPkg(cmd);
+        QResult actionResult = listener.doAction(new NeulinkEvent<>(queryCmd));
         return actionResult;
     }
 
@@ -272,16 +272,14 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, Q
     /**
      * 下载包数据并构建包请求
      * @param cmd
-     * @param dataUrl
-     * @param offset
      * @return
      * @throws NeulinkException
      */
-    protected TLibQueryCmd buildPkg(TLibQueryCmd cmd, String dataUrl, long offset) throws NeulinkException{
+    protected TLibQueryCmd buildPkg(TLibQueryCmd cmd) throws NeulinkException{
         IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
-        return processor.buildPkg(cmd.getCmdStr(),dataUrl,offset);
+        return processor.buildPkg(cmd);
     }
 }
