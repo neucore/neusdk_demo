@@ -4,22 +4,20 @@ import android.content.Context;
 
 import com.neucore.neulink.IClib$ObjtypeProcessor;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.impl.QueryActionResult;
 import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.cmd.check.CheckCmdRes;
-import com.neucore.neulink.impl.QueryActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
-import com.neucore.neulink.impl.listener.DefaultFaceCheckListener;
 import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Map;
 
-public class DefaultFaceCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
+public class DefaultLicCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
     private Context context;
-    public DefaultFaceCheckProcessor() {
+    public DefaultLicCheckProcessor() {
         this.context = ContextHolder.getInstance().getContext();
     }
-    public DefaultFaceCheckProcessor(Context context) {
+    public DefaultLicCheckProcessor(Context context) {
         this.context = context;
     }
 

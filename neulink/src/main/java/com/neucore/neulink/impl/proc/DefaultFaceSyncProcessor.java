@@ -103,9 +103,13 @@ public class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd,
         return res;
     }
     @Override
-    public FaceCmd buildPkg(String cmdStr, String jsonUrl, long offset) throws NeulinkException {
+    public FaceCmd buildPkg(FaceCmd cmd) throws NeulinkException {
         //推送消息到达
         FaceCmd faceCmd = new FaceCmd();
+        String cmdStr = cmd.getCmdStr();
+        String jsonUrl = cmd.getDataUrl();
+        long offset = cmd.getOffset();
+
         int index = jsonUrl.lastIndexOf("/");
         String baseUrl = jsonUrl.substring(0,index+1);//包含'/'
 

@@ -13,7 +13,7 @@ import com.neucore.neulink.util.ContextHolder;
 /**
  * 目标库处理器
  */
-public class DefaultFaceQueryProcessor implements IQlib$ObjtypeProcessor<TLibQueryCmd, TLQueryRes, QResult> {
+public class DefaultLicQueryProcessor implements IQlib$ObjtypeProcessor<TLibQueryCmd, TLQueryRes, QResult> {
 
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private String facelibDir;
@@ -21,17 +21,11 @@ public class DefaultFaceQueryProcessor implements IQlib$ObjtypeProcessor<TLibQue
     private String infoFileDir = null;
     private String imagesFileDir = null;
     private Context context;
-    public DefaultFaceQueryProcessor(){
+    public DefaultLicQueryProcessor(){
         context = ContextHolder.getInstance().getContext();
-        facelibDir = context.getFilesDir().getAbsolutePath()+"/facelib";
-        infoFileDir = facelibDir+"/info";
-        imagesFileDir = facelibDir + "/img";
     }
-    public DefaultFaceQueryProcessor(Context context){
+    public DefaultLicQueryProcessor(Context context){
         this.context = context;
-        facelibDir = context.getFilesDir().getAbsolutePath()+"/facelib";
-        infoFileDir = facelibDir+"/info";
-        imagesFileDir = facelibDir + "/img";
     }
 
     @Override
