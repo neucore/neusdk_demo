@@ -57,7 +57,7 @@ public class LogService extends Service implements NeulinkConst{
 
     private static final int MEMORY_LOG_FILE_MAX_SIZE = 10 * 1024 * 1024;			//内存中日志文件最大值，10M
     private static final int MEMORY_LOG_FILE_MONITOR_INTERVAL = 10 * 60 * 1000;		//内存中的日志文件大小监控时间间隔，10分钟
-    private static final int SDCARD_LOG_FILE_SAVE_DAYS = 5;							//sd卡中日志文件的最多保存天数
+    private static final int SDCARD_LOG_FILE_SAVE_DAYS = 2;							//sd卡中日志文件的最多保存天数
 
     private String LOG_PATH_MEMORY_DIR;		//日志文件在内存中的路径(日志文件在安装目录中的路径)
     private String LOG_PATH_SDCARD_DIR;		//日志文件在sdcard中的路径
@@ -409,7 +409,7 @@ public class LogService extends Service implements NeulinkConst{
      * 处理日志文件
      * 1.如果日志文件存储位置切换到内存中，删除除了正在写的日志文件
      *   并且部署日志大小监控任务，控制日志大小不超过规定值
-     * 2.如果日志文件存储位置切换到SDCard中，删除7天之前的日志，移
+     * 2.如果日志文件存储位置切换到SDCard中，删除SDCARD_LOG_FILE_SAVE_DAYS天之前的日志，移
      * 	   动所有存储在内存中的日志到SDCard中，并将之前部署的日志大小
      *   监控取消
      */
@@ -567,7 +567,7 @@ public class LogService extends Service implements NeulinkConst{
     public boolean canDeleteSDLog(String createDateStr) {
         boolean canDel = false;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1 * ConfigContext.getInstance().getConfig("Log.File.Num",SDCARD_LOG_FILE_SAVE_DAYS));//删除5天之前日志
+        calendar.add(Calendar.DAY_OF_MONTH, -1 * ConfigContext.getInstance().getConfig("Log.File.Num",SDCARD_LOG_FILE_SAVE_DAYS));//删除2天之前日志
         Date expiredDate = calendar.getTime();
         try {
             Date createDate = null;
@@ -595,7 +595,7 @@ public class LogService extends Service implements NeulinkConst{
         if (file.isDirectory()) {
             File[] allFiles = file.listFiles();
             Arrays.sort(allFiles, new FileComparator());
-            for (int i=0;i<allFiles.length-2;i++) {	//"-2"保存最近的两个日志文件
+            for (int i=0;i<allFiles.length-SDCARD_LOG_FILE_SAVE_DAYS;i++) {	//"-2"保存最近的两个日志文件
                 File _file =  allFiles[i];
                 if (logServiceLogName.equals(_file.getName()) ||  _file.getName().equals(CURR_INSTALL_LOG_NAME)) {
                     continue;
