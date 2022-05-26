@@ -308,7 +308,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
     protected ICmdListener<ActionResult,Req> getListener(){
         return ListenerRegistry.getInstance().getExtendListener(biz());
     }
-
     /**
      * 解析处理
      * @param payload

@@ -5,16 +5,15 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
-import com.neucore.neulink.impl.cmd.rrpc.SyncInfo;
 import com.neucore.neulink.impl.cmd.rrpc.FacePkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.SyncInfo;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GBatchProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
-import com.neucore.neulink.impl.listener.DefaultFaceSyncListener;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -34,21 +33,77 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class DefaultFaceSyncProcessor extends GBatchProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
+public class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
 
     private String libDir;
+    private Context context;
+    protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
+    public DefaultFaceSyncProcessor(){
+        Context context = ContextHolder.getInstance().getContext();
+        libDir = DeviceUtils.getTmpPath(context)+"/faceDir";
+    }
     public DefaultFaceSyncProcessor(Context context){
-        super(context);
+        this.context = context;
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
-        ListenerRegistry.getInstance().setExtendListener("blib",new DefaultFaceSyncListener());
     }
 
-    public FaceCmd parser(String payload){
-        return JSonUtils.toObject(payload, FaceCmd.class);
+    public Context getContext() {
+        return context;
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public String getBiz(){
+        return NEULINK_BIZ_BLIB;
+    }
+
+    public String getObjType(){
+        return NEULINK_BIZ_BLIB_FACE;
+    }
+
+    public FaceCmdRes responseWrapper(FaceCmd cmd, FacePkgActionResult result) {
+        FaceCmdRes res = new FaceCmdRes();
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
+        res.setCode(result.getCode());
+        res.setMsg(result.getMessage());
+        res.setObjtype(cmd.getObjtype());
+        res.setTotal(cmd.getTotal());
+        res.setPages(cmd.getPages());
+        res.setOffset(result.getOffset());
+        res.setFailed(result.getData());
+        return res;
+    }
+
+    public FaceCmdRes fail(FaceCmd cmd, String message) {
+        FaceCmdRes res = new FaceCmdRes();
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
+        res.setCode(STATUS_500);
+        res.setMsg(message);
+        res.setObjtype(cmd.getObjtype());
+        res.setTotal(cmd.getTotal());
+        res.setPages(cmd.getPages());
+        res.setOffset(cmd.getOffset());
+        return res;
+    }
+
+    public FaceCmdRes fail(FaceCmd cmd, int code, String message) {
+        FaceCmdRes res = new FaceCmdRes();
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        res.setCmdStr(cmd.getCmdStr());
+        res.setCode(code);
+        res.setMsg(message);
+        res.setObjtype(cmd.getObjtype());
+        res.setTotal(cmd.getTotal());
+        res.setPages(cmd.getPages());
+        res.setOffset(cmd.getOffset());
+        return res;
+    }
     @Override
-    protected FaceCmd buildPkg(String cmdStr, String jsonUrl, long offset) throws NeulinkException {
+    public FaceCmd buildPkg(String cmdStr, String jsonUrl, long offset) throws NeulinkException {
         //推送消息到达
         FaceCmd faceCmd = new FaceCmd();
         int index = jsonUrl.lastIndexOf("/");
@@ -88,9 +143,9 @@ public class DefaultFaceSyncProcessor extends GBatchProcessor<FaceCmd, FaceCmdRe
 
         Map images = null;
         ActionResult<Map<String,Object>> actionResult = null;
-        if(ADD.equalsIgnoreCase(cmdStr)||
-                UPDATE.equalsIgnoreCase(cmdStr)||
-                SYNC.equalsIgnoreCase(cmdStr)){
+        if(NEULINK_MODE_ADD.equalsIgnoreCase(cmdStr)||
+                NEULINK_MODE_UPDATE.equalsIgnoreCase(cmdStr)||
+                NEULINK_MODE_SYNC.equalsIgnoreCase(cmdStr)){
             /**
              * exit_id
              * image_type
@@ -102,11 +157,11 @@ public class DefaultFaceSyncProcessor extends GBatchProcessor<FaceCmd, FaceCmdRe
             faceCmd.setStringKVMap(images);
 
         }
-        else if(PUSH.equalsIgnoreCase(cmdStr)){
+        else if(NEULINK_MODE_PUSH.equalsIgnoreCase(cmdStr)){
             faceCmd.setOffset(offset);
             faceCmd.setData(params);
         }
-        else if(DEL.equalsIgnoreCase(cmdStr)){
+        else if(NEULINK_MODE_DEL.equalsIgnoreCase(cmdStr)){
             faceCmd.setOffset(offset);
             faceCmd.setData(params);
         }
@@ -171,45 +226,5 @@ public class DefaultFaceSyncProcessor extends GBatchProcessor<FaceCmd, FaceCmdRe
         }
 
         return imagesData;
-    }
-
-    public FaceCmdRes responseWrapper(FaceCmd cmd, FacePkgActionResult result) {
-        FaceCmdRes res = new FaceCmdRes();
-        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-        res.setCmdStr(cmd.getCmdStr());
-        res.setCode(result.getCode());
-        res.setMsg(result.getMessage());
-        res.setObjtype(cmd.getObjtype());
-        res.setTotal(cmd.getTotal());
-        res.setPages(cmd.getPages());
-        res.setOffset(result.getOffset());
-        res.setFailed(result.getData());
-        return res;
-    }
-
-    public FaceCmdRes fail(FaceCmd cmd, String message) {
-        FaceCmdRes res = new FaceCmdRes();
-        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-        res.setCmdStr(cmd.getCmdStr());
-        res.setCode(STATUS_500);
-        res.setMsg(message);
-        res.setObjtype(cmd.getObjtype());
-        res.setTotal(cmd.getTotal());
-        res.setPages(cmd.getPages());
-        res.setOffset(cmd.getOffset());
-        return res;
-    }
-
-    public FaceCmdRes fail(FaceCmd cmd, int code, String message) {
-        FaceCmdRes res = new FaceCmdRes();
-        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-        res.setCmdStr(cmd.getCmdStr());
-        res.setCode(code);
-        res.setMsg(message);
-        res.setObjtype(cmd.getObjtype());
-        res.setTotal(cmd.getTotal());
-        res.setPages(cmd.getPages());
-        res.setOffset(cmd.getOffset());
-        return res;
     }
 }

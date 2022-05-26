@@ -3,7 +3,7 @@ package com.neucore.neulink.impl.cmd.rrpc;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.impl.ArgCmd;
 
-public class TLibQueryCmd extends ArgCmd {
+public class TLibQueryCmd extends PkgCmd {
 
     @SerializedName("objtype")
     private String objtype;

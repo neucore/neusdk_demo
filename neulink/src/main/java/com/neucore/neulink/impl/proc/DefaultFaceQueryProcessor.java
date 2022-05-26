@@ -2,41 +2,50 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.IQlib$ObjtypeProcessor;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.rrpc.QResult;
 import com.neucore.neulink.impl.cmd.rrpc.TLQueryRes;
 import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
-import com.neucore.neulink.impl.listener.DefaultFaceQueryListener;
-import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.ContextHolder;
 
 /**
  * 目标库处理器
  */
-public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QResult> {
+public class DefaultFaceQueryProcessor implements IQlib$ObjtypeProcessor<TLibQueryCmd, TLQueryRes, QResult> {
 
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private String facelibDir;
 
     private String infoFileDir = null;
     private String imagesFileDir = null;
-
-    public DefaultQLibProcessor(Context context){
-        super(context);
+    private Context context;
+    public DefaultFaceQueryProcessor(){
+        context = ContextHolder.getInstance().getContext();
         facelibDir = context.getFilesDir().getAbsolutePath()+"/facelib";
         infoFileDir = facelibDir+"/info";
         imagesFileDir = facelibDir + "/img";
-        ListenerRegistry.getInstance().setExtendListener("qlib",new DefaultFaceQueryListener());
+    }
+    public DefaultFaceQueryProcessor(Context context){
+        this.context = context;
+        facelibDir = context.getFilesDir().getAbsolutePath()+"/facelib";
+        infoFileDir = facelibDir+"/info";
+        imagesFileDir = facelibDir + "/img";
     }
 
     @Override
-    public TLibQueryCmd parser(String payload) {
-        return JSonUtils.toObject(payload, TLibQueryCmd.class);
+    public String getBiz() {
+        return NEULINK_BIZ_QLIB;
     }
 
     @Override
-    protected TLQueryRes responseWrapper(TLibQueryCmd t, QResult result) {
+    public String getObjType() {
+        return NEULINK_BIZ_QLIB_FACE;
+    }
+
+    @Override
+    public TLQueryRes responseWrapper(TLibQueryCmd t, QResult result) {
         TLQueryRes res = new TLQueryRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
@@ -51,7 +60,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
     }
 
     @Override
-    protected TLQueryRes fail(TLibQueryCmd t, String error) {
+    public TLQueryRes fail(TLibQueryCmd t, String error) {
         TLQueryRes res = new TLQueryRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
@@ -62,7 +71,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
     }
 
     @Override
-    protected TLQueryRes fail(TLibQueryCmd t,int code, String error) {
+    public TLQueryRes fail(TLibQueryCmd t,int code, String error) {
         TLQueryRes res = new TLQueryRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setObjtype(t.getObjtype());
@@ -70,5 +79,10 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes,QR
         res.setMsg(MESSAGE_FAILED);
         res.setData(error);
         return res;
+    }
+
+    @Override
+    public TLibQueryCmd buildPkg(String cmdStr, String dataUrl, long offset) throws NeulinkException {
+        return null;
     }
 }

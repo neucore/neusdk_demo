@@ -17,7 +17,11 @@ import com.neucore.neulink.impl.listener.DefaultRebootCmdListener;
 import com.neucore.neulink.impl.listener.DefaultRecoverCmdListener;
 import com.neucore.neulink.impl.listener.DefaultResetCmdListener;
 import com.neucore.neulink.impl.listener.DefaultShellCmdListener;
+import com.neucore.neulink.impl.proc.DefaultFaceCheckProcessor;
+import com.neucore.neulink.impl.proc.DefaultFaceQueryProcessor;
+import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ProcessRegistry;
 
 public class DefaultExtendCallback implements IExtendCallback {
     @Override
@@ -37,15 +41,17 @@ public class DefaultExtendCallback implements IExtendCallback {
         /**
          * 人脸下发 扩展【取消注释，覆盖默认实现】
          */
-        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB,new DefaultFaceSyncListener());
-        /**
-         * 人脸比对 扩展【取消注释，覆盖默认实现】
-         */
-        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CHECK,new DefaultFaceCheckListener());
+        ProcessRegistry.registBlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+
         /**
          * 人脸查询 扩展【取消注释，覆盖默认实现】
          */
-        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB,new DefaultFaceQueryListener());
+        ProcessRegistry.registQlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+
+        /**
+         * 人脸比对 扩展【取消注释，覆盖默认实现】
+         */
+        ProcessRegistry.registClibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
 
         /**
          * 重启 扩展【取消注释，覆盖默认实现】

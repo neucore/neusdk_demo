@@ -2,31 +2,39 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.IClib$ObjtypeProcessor;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.cmd.check.CheckCmdRes;
 import com.neucore.neulink.impl.QueryActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultFaceCheckListener;
-import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Map;
 
-public class DefaultCheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
-
-    public DefaultCheckProcessor(Context context) {
-        super(context);
-        ListenerRegistry.getInstance().setExtendListener("check",new DefaultFaceCheckListener());
+public class DefaultFaceCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
+    private Context context;
+    public DefaultFaceCheckProcessor() {
+        this.context = ContextHolder.getInstance().getContext();
+    }
+    public DefaultFaceCheckProcessor(Context context) {
+        this.context = context;
     }
 
     @Override
-    public CheckCmd parser(String payload) {
-        return JSonUtils.toObject(payload, CheckCmd.class);
+    public String getBiz() {
+        return NEULINK_BIZ_CLIB;
     }
 
     @Override
-    protected CheckCmdRes responseWrapper(CheckCmd t, QueryActionResult<Map<String,Object>> result) {
+    public String getObjType() {
+        return NEULINK_BIZ_CLIB_FACE;
+    }
+
+    @Override
+    public CheckCmdRes responseWrapper(CheckCmd t, QueryActionResult<Map<String,Object>> result) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
@@ -39,7 +47,7 @@ public class DefaultCheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, Que
     }
 
     @Override
-    protected CheckCmdRes fail(CheckCmd t, String error) {
+    public CheckCmdRes fail(CheckCmd t, String error) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
@@ -51,7 +59,7 @@ public class DefaultCheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, Que
     }
 
     @Override
-    protected CheckCmdRes fail(CheckCmd t, int code, String error) {
+    public CheckCmdRes fail(CheckCmd t, int code, String error) {
         CheckCmdRes cmdRes = new CheckCmdRes();
         cmdRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         cmdRes.setCmdStr(t.getCmdStr());
@@ -60,5 +68,10 @@ public class DefaultCheckProcessor extends GProcessor<CheckCmd, CheckCmdRes, Que
         cmdRes.setObjtype(t.getObjtype());
         cmdRes.setData(error);
         return cmdRes;
+    }
+
+    @Override
+    public CheckCmd buildPkg(String cmdStr) throws NeulinkException {
+        return null;
     }
 }
