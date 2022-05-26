@@ -102,9 +102,17 @@ public interface NeulinkConst {
 
     String NEULINK_BIZ_BLIB = "blib";
 
-    String NEULINK_BIZ_CHECK = "check";
+    String NEULINK_BIZ_OBJTYPE_FACE = "face";
+
+    String NEULINK_BIZ_BLIB_FACE = "blib.face";
+
+    String NEULINK_BIZ_CLIB = "check";
+
+    String NEULINK_BIZ_CLIB_FACE = "check.face";
 
     String NEULINK_BIZ_QLIB = "qlib";
+
+    String NEULINK_BIZ_QLIB_FACE = "qlib.face";
 
     String NEULINK_BIZ_FIRMWARE = "firmware";
 

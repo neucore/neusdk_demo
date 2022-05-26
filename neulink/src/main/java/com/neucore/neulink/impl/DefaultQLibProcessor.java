@@ -6,13 +6,14 @@ import android.util.Log;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.IQlib$ObjtypeProcessor;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
-import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
-import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
-import com.neucore.neulink.impl.listener.DefaultFaceSyncListener;
+import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.impl.cmd.rrpc.TLQueryRes;
+import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
+import com.neucore.neulink.impl.cmd.rrpc.QResult;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -21,17 +22,15 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, ActionResult extends PkgActionResult> extends GProcessor<Req, Res, ActionResult> implements IProcessor {
+public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
 
-    final protected String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync",PUSH = "push";
     private String libDir;
-    public GBatchProcessor() {
+    public DefaultQLibProcessor() {
         super();
     }
-    public GBatchProcessor(Context context) {
+    public DefaultQLibProcessor(Context context) {
         super(context);
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
-        ListenerRegistry.getInstance().setExtendListener("blib",new DefaultFaceSyncListener());
     }
 
     final public void execute(NeulinkTopicParser.Topic topic, String payload) {
@@ -59,7 +58,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
             }
 
             long id = 0;
-            Req req = null;
+            TLibQueryCmd req = null;
             try {
                 if (msg == null) {
                     msg = insert(topic, payload);
@@ -104,11 +103,11 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     Log.d(TAG,"开始进入人脸offset:"+i+"下载");
                     try {
                         req.setOffset(i);
-                        ActionResult result = process(topic,req);
-                        result.setTotal(req.getTotal());
-                        result.setPages(pages);
+                        QResult result = process(topic,req);
+                        result.setCount(req.getTotal());
+                        result.setPage(pages);
                         result.setOffset(i);
-                        Res res = responseWrapper(req,result);
+                        TLQueryRes res = responseWrapper(req,result);
                         if(ObjectUtil.isNotEmpty(res)){
                             if (res.getCode() == STATUS_200
                                     ||res.getCode()==STATUS_202
@@ -130,7 +129,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                             if(ObjectUtil.isNotEmpty(msg)){
                                 update(id, IMessage.STATUS_FAIL, ex.getMessage());
                             }
-                            Res res = fail(req, ex.getCode(), ex.getMsg());
+                            TLQueryRes res = fail(req, ex.getCode(), ex.getMsg());
                             if(ObjectUtil.isNotEmpty(res)) {
                                 mergeHeaders(req,res);
                                 String jsonStr = JSonUtils.toString(res);
@@ -146,7 +145,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                         if(ObjectUtil.isNotEmpty(msg)){
                             updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
                         }
-                        Res res = fail(req, STATUS_500, ex.getMessage());
+                        TLQueryRes res = fail(req, STATUS_500, ex.getMessage());
                         if(ObjectUtil.isNotEmpty(res)) {
                             mergeHeaders(req,res);
                             res.setTotal(req.getTotal());
@@ -164,7 +163,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }
-                    Res res = fail(req, ex.getCode(), ex.getMsg());
+                    TLQueryRes res = fail(req, ex.getCode(), ex.getMsg());
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
@@ -181,7 +180,7 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }
-                    Res res = fail(req, ex.getMessage());
+                    TLQueryRes res = fail(req, ex.getMessage());
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
@@ -200,39 +199,89 @@ public abstract class GBatchProcessor<Req extends PkgCmd, Res extends PkgRes, Ac
      * @param cmd
      * @return
      */
-    protected ActionResult process(NeulinkTopicParser.Topic topic, Req cmd) {
-        ICmdListener<ActionResult,Req> listener = getListener();
+    protected QResult process(NeulinkTopicParser.Topic topic, TLibQueryCmd cmd) {
+        ICmdListener<QResult,TLibQueryCmd> listener = getListener(cmd.getObjtype());
         if(listener==null){
             throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
         }
-        buildPkg(cmd.getCmdStr(),cmd.getDataUrl(), cmd.getOffset());
-        ActionResult actionResult = listener.doAction(new NeulinkEvent<>(cmd));
+        TLibQueryCmd pkgCmd = buildPkg(cmd,cmd.getDataUrl(), cmd.getOffset());
+        QResult actionResult = listener.doAction(new NeulinkEvent<>(pkgCmd));
         return actionResult;
     }
 
-    protected ICmdListener<ActionResult,Req> getListener(){
-        return ListenerRegistry.getInstance().getExtendListener(biz());
+    /**
+     *
+     * @param objType
+     * @return
+     */
+    protected ICmdListener<QResult,TLibQueryCmd> getListener(String objType){
+        return ListenerRegistry.getInstance().getExtendListener(NEULINK_BIZ_QLIB+"."+objType);
     }
     /**
      * 解析处理
      * @param payload
      * @return
      */
-    protected abstract Req parser(String payload);
+    protected TLibQueryCmd parser(String payload){
+        return JSonUtils.toObject(payload,TLibQueryCmd.class);
+    }
+    /**
+     *
+     * @param cmd
+     * @param actionResult
+     * @return
+     */
+    @Override
+    protected TLQueryRes responseWrapper(TLibQueryCmd cmd, QResult actionResult) {
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        if(processor==null){
+            throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
+        }
+        return processor.responseWrapper(cmd,actionResult);
+    }
 
-    protected abstract Res responseWrapper(Req t, ActionResult actionResult);
+    /**
+     *
+     * @param cmd
+     * @param error
+     * @return
+     */
+    protected TLQueryRes fail(TLibQueryCmd cmd, String error){
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        if(processor==null){
+            throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
+        }
+        return processor.fail(cmd,error);
+    }
 
-    protected abstract Res fail(Req t, String error);
-
-    protected abstract Res fail(Req t,int code, String error);
+    /**
+     *
+     * @param cmd
+     * @param code
+     * @param error
+     * @return
+     */
+    protected TLQueryRes fail(TLibQueryCmd cmd,int code, String error){
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        if(processor==null){
+            throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
+        }
+        return processor.fail(cmd,code,error);
+    }
 
     /**
      * 下载包数据并构建包请求
-     * @param cmdStr
+     * @param cmd
      * @param dataUrl
      * @param offset
      * @return
      * @throws NeulinkException
      */
-    protected abstract Req buildPkg(String cmdStr, String dataUrl, long offset) throws NeulinkException;
+    protected TLibQueryCmd buildPkg(TLibQueryCmd cmd, String dataUrl, long offset) throws NeulinkException{
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        if(processor==null){
+            throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
+        }
+        return processor.buildPkg(cmd.getCmdStr(),dataUrl,offset);
+    }
 }

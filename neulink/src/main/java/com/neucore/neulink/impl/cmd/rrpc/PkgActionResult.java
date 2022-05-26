@@ -1,7 +1,7 @@
 package com.neucore.neulink.impl.cmd.rrpc;
 
-import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.IActionResult;
+import com.neucore.neulink.impl.ActionResult;
 
 public class PkgActionResult<T> extends ActionResult<T> implements IActionResult {
 

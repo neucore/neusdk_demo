@@ -3,23 +3,26 @@ package com.neucore.neulink.impl.registry;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.IBlib$ObjtypeProcessor;
+import com.neucore.neulink.IClib$ObjtypeProcessor;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.IQlib$ObjtypeProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.DefaultBLibSyncProcessor;
+import com.neucore.neulink.impl.DefaultCLibProcessor;
+import com.neucore.neulink.impl.DefaultQLibProcessor;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.impl.proc.DefaultALogProcessor;
 import com.neucore.neulink.impl.proc.DefaultAwakenProcessor;
-import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultBackupProcessor;
 import com.neucore.neulink.impl.proc.DefaultCfgProcessor;
-import com.neucore.neulink.impl.proc.DefaultCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultDebugProcessor;
 import com.neucore.neulink.impl.proc.DefaultFirewareProcessor;
 import com.neucore.neulink.impl.proc.DefaultFirewareProcessorResume;
 import com.neucore.neulink.impl.proc.DefaultHibrateProcessor;
 import com.neucore.neulink.impl.proc.DefaultQCfgProcessor;
-import com.neucore.neulink.impl.proc.DefaultQLibProcessor;
 import com.neucore.neulink.impl.proc.DefaultQLogProcessor;
 import com.neucore.neulink.impl.proc.DefaultRebootProcessor;
 import com.neucore.neulink.impl.proc.DefaultRecoverProcessor;
@@ -32,6 +35,9 @@ import cn.hutool.core.util.StrUtil;
 
 public class ProcessRegistry implements NeulinkConst {
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
+    private static ConcurrentHashMap<String, IBlib$ObjtypeProcessor> blibBatchProcessors = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, IQlib$ObjtypeProcessor> qlibBatchProcessors = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, IClib$ObjtypeProcessor> clibBatchProcessors = new ConcurrentHashMap<>();
     private static String TAG = TAG_PREFIX+"ProcessRegistry";
     /**
      *
@@ -93,7 +99,7 @@ public class ProcessRegistry implements NeulinkConst {
             regist(biz, new DefaultQLogProcessor(context));
         }
         else if(NEULINK_BIZ_BLIB.equalsIgnoreCase(biz)){//目标库批量处理器
-            regist(biz,new DefaultFaceSyncProcessor(context));
+            regist(biz,new DefaultBLibSyncProcessor(context));
         }
         else if(NEULINK_BIZ_QLIB.equalsIgnoreCase(biz)){//目标库单记录处理器
             regist(biz,new DefaultQLibProcessor(context));
@@ -110,8 +116,8 @@ public class ProcessRegistry implements NeulinkConst {
         else if(NEULINK_BIZ_RECOVER.equalsIgnoreCase(biz)){//备份恢复处理器
             regist(biz,new DefaultRecoverProcessor(context));
         }
-        else if(NEULINK_BIZ_CHECK.equalsIgnoreCase(biz)){//数据校验处理器
-            regist(biz,new DefaultCheckProcessor(context));
+        else if(NEULINK_BIZ_CLIB.equalsIgnoreCase(biz)){//数据校验处理器
+            regist(biz,new DefaultCLibProcessor(context));
         }
         IProcessor processor = processors.get(biz);
         if(ObjectUtil.isEmpty(processor)){
@@ -129,6 +135,71 @@ public class ProcessRegistry implements NeulinkConst {
     }
 
     /**
+     *
+     * @param objType
+     * @param batchProcessor
+     * @param cmdListener
+     */
+    public static void registBlibBatch(String objType,IBlib$ObjtypeProcessor batchProcessor,ICmdListener cmdListener){
+        String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
+        blibBatchProcessors.put(batchBiz,batchProcessor);
+        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+    }
+
+    /**
+     *
+     * @param objType
+     * @return
+     */
+    public static IBlib$ObjtypeProcessor getBlibBatch(String objType){
+        String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
+        return blibBatchProcessors.get(batchBiz);
+    }
+
+    /**
+     *
+     * @param objType
+     * @param batchProcessor
+     * @param cmdListener
+     */
+    public static void registQlibBatch(String objType, IQlib$ObjtypeProcessor batchProcessor, ICmdListener cmdListener){
+        String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
+        qlibBatchProcessors.put(batchBiz,batchProcessor);
+        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+    }
+
+    /**
+     *
+     * @param objType
+     * @return
+     */
+    public static IQlib$ObjtypeProcessor getQlibBatch(String objType){
+        String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
+        return qlibBatchProcessors.get(batchBiz);
+    }
+
+    /**
+     *
+     * @param objType
+     * @param batchProcessor
+     * @param cmdListener
+     */
+    public static void registClibBatch(String objType,IClib$ObjtypeProcessor batchProcessor,ICmdListener cmdListener){
+        String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
+        clibBatchProcessors.put(batchBiz,batchProcessor);
+        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+    }
+
+    /**
+     *
+     * @param objType
+     * @return
+     */
+    public static IClib$ObjtypeProcessor getClibBatch(String objType){
+        String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
+        return clibBatchProcessors.get(batchBiz);
+    }
+    /**
      * 注册扩展处理器
      * @param biz
      * @param processor
@@ -145,7 +216,8 @@ public class ProcessRegistry implements NeulinkConst {
      * @param cmdListener
      */
     public static void regist(String biz, IProcessor processor, ICmdListener cmdListener){
-        processors.put(biz.toLowerCase(),processor);
+        biz = biz.toLowerCase();
+        processors.put(biz,processor);
         ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
     }
 
@@ -157,7 +229,8 @@ public class ProcessRegistry implements NeulinkConst {
      * @param iResCallback 响应回调
      */
     public static void regist(String biz, IProcessor processor, ICmdListener cmdListener, IResCallback iResCallback){
-        processors.put(biz.toLowerCase(),processor);
+        biz = biz.toLowerCase();
+        processors.put(biz,processor);
         ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
         CallbackRegistry.getInstance().setResCallback(biz,iResCallback);
     }
