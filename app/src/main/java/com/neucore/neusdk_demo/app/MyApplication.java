@@ -468,15 +468,15 @@ public class MyApplication extends Application
             /**
              * 人脸下发 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_FACE,new SampleFaceSyncListener());
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_FACE,new SampleFaceSyncListener());
             /**
              * 人脸比对 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_FACE,new SampleFaceCheckListener());
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_FACE,new SampleFaceCheckListener());
             /**
              * 人脸查询 扩展【取消注释，覆盖默认实现】
              */
-            ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_FACE,new SampleFaceQueryListener());
+            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_FACE,new SampleFaceQueryListener());
 
             /**
              * 重启 扩展【取消注释，覆盖默认实现】
