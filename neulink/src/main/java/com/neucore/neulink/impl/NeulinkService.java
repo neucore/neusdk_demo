@@ -112,18 +112,18 @@ public class NeulinkService implements NeulinkConst{
             if(!mqttInited){
                 Context context = ContextHolder.getInstance().getContext();
                 myMqttService = new MyMqttService.Builder()
-                        //设置自动重连
-                        .autoReconnect(true)
-                        //设置不清除回话session 可收到服务器之前发出的推送消息
-                        .cleanSession(false)
-                        //唯一标示 保证每个设备都唯一就可以 建议 imei
-                        .clientId(ServiceRegistry.getInstance().getDeviceService().getExtSN())
-                        //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         .serverUrl(serverUri)
                         .userName(userName)
                         .passWord(password)
+                        //唯一标示 保证每个设备都唯一就可以 建议 imei
+                        .clientId(ServiceRegistry.getInstance().getDeviceService().getExtSN())
+                        //设置自动重连
+                        .autoReconnect(ConfigContext.getInstance().getConfig(ConfigContext.AUTO_RECONNECT,true))
+                        //设置不清除回话session 可收到服务器之前发出的推送消息
+                        .cleanSession(ConfigContext.getInstance().getConfig(ConfigContext.CLEAN_SESSION,false))
+                        //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         //心跳包默认的发送间隔
-                        .keepAliveInterval(20)
+                        .keepAliveInterval(ConfigContext.getInstance().getConfig(ConfigContext.KEEP_ALIVE_INTERVAL,30))
                         //设置发布和订阅回调接口
                         .mqttCallback(defaultMqttCallback)
                         //设置连接或者发布动作侦听器
@@ -562,11 +562,15 @@ public class NeulinkService implements NeulinkConst{
         public void run() {
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
+                /**
+                 * MQTT机制
+                 */
                 if(mqttServiceUri ==null){
-                    mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
+                    mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
                 }
-                String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
-                String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
+                String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
+                String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
+
                 initMqttService(mqttServiceUri,userName,password);
                 /**
                  * MQTT机制
@@ -658,22 +662,26 @@ public class NeulinkService implements NeulinkConst{
         }
         @Override
         public void run() {
+            /**
+             * End2Cloud
+             */
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
+                /**
+                 * MQTT机制
+                 */
                 if(mqttServiceUri ==null){
                     mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
                 }
                 String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
                 String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
                 initMqttService(mqttServiceUri,userName,password);
-                /**
-                 * MQTT机制
-                 */
+
                 myMqttService.publish(reqId,payload,topStr, qos, retained,callback);
             }
             else{
                 /**
-                 * 设备端2cloud
+                 * HTTP机制
                  */
                 httpServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, httpServiceUri);
                 Boolean done = false;

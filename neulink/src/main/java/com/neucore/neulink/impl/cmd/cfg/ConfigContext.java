@@ -62,6 +62,14 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String PASSWORD = "login.password";
 
+    public final static String KEEP_ALIVE_INTERVAL= "keepAliveInterval";
+
+    public final static String TIMEOUT= "timeout";
+
+    public final static String CLEAN_SESSION = "cleanSession";
+
+    public final static String AUTO_RECONNECT = "autoReconnect";
+
     public final static String REGIST_SERVER = "regist.server";
 
     public final static String DEVICE_TYPE = "device.type";
@@ -230,6 +238,10 @@ public class ConfigContext implements NeulinkConst{
 
     public double getConfig(String key, double defaultValue){
         return Long.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
+    }
+
+    public Boolean getConfig(String key, boolean defaultValue){
+        return Boolean.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
     }
 
     private String getDefault(String key,String defaultValue){
