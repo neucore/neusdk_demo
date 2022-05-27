@@ -31,18 +31,19 @@ public class MyMqttService implements NeulinkConst{
     private MqttConnectOptions conOpt;
 
     private Context context;
-    private String serverUrl = "";
-    private String userName = "admin";
-    private String passWord = "password";
-    private String clientId = "";
-    private int timeOut = 10;
-    private int keepAliveInterval = 60;
-    private boolean retained = false;
+    private String serverUrl;
+    private String userName;
+    private String passWord;
+    private String clientId;
+    private Integer timeOut;
+    private Integer keepAliveInterval;
+    private Boolean retained;
     //客户端掉线后是否清楚客户端session
-    private boolean cleanSession = false;
+    private Boolean cleanSession;
+    private Boolean autoReconnect;
+
     private boolean close = false;
     private boolean disconnect = false;
-    private boolean autoReconnect = true;
     private MqttCallback mqttCallback = null;
     private IMqttActionListener mqttActionListener;
 
@@ -74,14 +75,15 @@ public class MyMqttService implements NeulinkConst{
 
         private Context context;
         private String serverUrl;
-        private String userName = "admin";
-        private String passWord = "password";
+        private String userName;
+        private String passWord;
         private String clientId;
-        private int timeOut = 10;
-        private int keepAliveInterval = 10;
-        private boolean retained = false;
-        private boolean cleanSession = false;
-        private boolean autoReconnect = false;
+        private Integer timeOut;
+        private Integer keepAliveInterval;
+        private Boolean retained;
+        private Boolean cleanSession;
+        private Boolean autoReconnect;
+
         private MqttCallback mqttCallback = null;
         private IMqttActionListener mqttActionListener;
         private IMqttMessageListener mqttMessageListener;
@@ -204,9 +206,9 @@ public class MyMqttService implements NeulinkConst{
             // 心跳包发送间隔，单位：秒
             conOpt.setKeepAliveInterval(keepAliveInterval);
             // 用户名
-            conOpt.setUserName(ConfigContext.getInstance().getConfig(ConfigContext.USERNAME, "admin"));
+            conOpt.setUserName(userName);
             // 密码
-            conOpt.setPassword(ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD, "password").toCharArray());
+            conOpt.setPassword(passWord.toCharArray());
             conOpt.setAutomaticReconnect(autoReconnect);
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
