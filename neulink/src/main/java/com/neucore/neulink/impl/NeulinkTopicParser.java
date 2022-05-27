@@ -1,5 +1,7 @@
 package com.neucore.neulink.impl;
 
+import com.neucore.neulink.impl.registry.ServiceRegistry;
+
 public class NeulinkTopicParser {
 
     //msg/req/devinfo/v1.0/${req_no}/[/${md5}]
@@ -20,30 +22,44 @@ public class NeulinkTopicParser {
 
         topic.setPrefix(prefix);
         topic.setReq$res(paths[1]);
-
-        //msg/req/devinfo/v1.0/${req_no}/[/${md5}]
-        if("msg".equalsIgnoreCase(prefix)) {
-            topic.setBiz(paths[2]);
-            topic.setVersion(paths[3]);
-            topic.setReqId(paths[3]);
-            if(len>5){
-                topic.setMd5(paths[5]);
-            }
-        }
-        else{
-            //rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}/[/${md5}]
-            //rrpc/req/${dev_id}/facelib/v1.0/${req_no}[/${md5}
-            //upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
-            //upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
-            topic.setDevId(paths[2]);
+        if(topStr.startsWith("bcst/")){
+            /**
+             * 广播设备
+             */
             topic.setBiz(paths[3]);
             topic.setVersion(paths[4]);
             topic.setReqId(paths[5]);
-
             if(len>6){
                 topic.setMd5(paths[6]);
             }
             topic.setQos(qos);
+        }
+        else{
+            /**
+             * 单台设备
+             */
+            //msg/req/devinfo/v1.0/${req_no}/[/${md5}]
+            if("msg".equalsIgnoreCase(prefix)) {
+                topic.setBiz(paths[2]);
+                topic.setVersion(paths[3]);
+                topic.setReqId(paths[3]);
+                if(len>5){
+                    topic.setMd5(paths[5]);
+                }
+            }
+            else{
+                //rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}/[/${md5}]
+                //rrpc/req/${dev_id}/facelib/v1.0/${req_no}[/${md5}
+                //upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
+                //upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
+                topic.setBiz(paths[3]);
+                topic.setVersion(paths[4]);
+                topic.setReqId(paths[5]);
+                if(len>6){
+                    topic.setMd5(paths[6]);
+                }
+                topic.setQos(qos);
+            }
         }
         return topic;
     }
@@ -100,14 +116,6 @@ public class NeulinkTopicParser {
 
         public void setBiz(String biz) {
             this.biz = biz;
-        }
-
-        public String getDevId() {
-            return devId;
-        }
-
-        public void setDevId(String devId) {
-            this.devId = devId;
         }
 
         public String getVersion() {
