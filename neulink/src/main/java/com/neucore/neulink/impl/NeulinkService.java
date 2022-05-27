@@ -124,6 +124,10 @@ public class NeulinkService implements NeulinkConst{
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         //心跳包默认的发送间隔
                         .keepAliveInterval(ConfigContext.getInstance().getConfig(ConfigContext.KEEP_ALIVE_INTERVAL,30))
+                        //超时
+                        .connectTimeout(ConfigContext.getInstance().getConfig(ConfigContext.CONNECT_TIMEOUT,15))
+                        //执行超时
+                        .executorServiceTimeout(ConfigContext.getInstance().getConfig(ConfigContext.EXECUTOR_SERVICE_TIMEOUT,1))
                         //设置发布和订阅回调接口
                         .mqttCallback(defaultMqttCallback)
                         //设置连接或者发布动作侦听器

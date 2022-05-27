@@ -64,7 +64,9 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String KEEP_ALIVE_INTERVAL= "keepAliveInterval";
 
-    public final static String TIMEOUT= "timeout";
+    public final static String CONNECT_TIMEOUT= "connectTimeout";
+
+    public final static String EXECUTOR_SERVICE_TIMEOUT= "executorServiceTimeout";
 
     public final static String CLEAN_SESSION = "cleanSession";
 
