@@ -35,7 +35,8 @@ public class MyMqttService implements NeulinkConst{
     private String userName;
     private String passWord;
     private String clientId;
-    private Integer timeOut;
+    private Integer connectTimeout;
+    private Integer executorServiceTimeout;
     private Integer keepAliveInterval;
     private Boolean retained;
     //客户端掉线后是否清楚客户端session
@@ -58,7 +59,8 @@ public class MyMqttService implements NeulinkConst{
         this.userName = builder.userName;
         this.passWord = builder.passWord;
         this.clientId = builder.clientId;
-        this.timeOut = builder.timeOut;
+        this.connectTimeout = builder.connectTimeout;
+        this.executorServiceTimeout = builder.executorServiceTimeout;
         this.keepAliveInterval = builder.keepAliveInterval;
         this.retained = builder.retained;
         this.cleanSession = builder.cleanSession;
@@ -78,7 +80,8 @@ public class MyMqttService implements NeulinkConst{
         private String userName;
         private String passWord;
         private String clientId;
-        private Integer timeOut;
+        private Integer connectTimeout;
+        private Integer executorServiceTimeout;
         private Integer keepAliveInterval;
         private Boolean retained;
         private Boolean cleanSession;
@@ -108,8 +111,13 @@ public class MyMqttService implements NeulinkConst{
             return this;
         }
 
-        public Builder timeOut(int timeOut) {
-            this.timeOut = timeOut;
+        public Builder connectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        public Builder executorServiceTimeout(int executorServiceTimeout){
+            this.executorServiceTimeout = executorServiceTimeout;
             return this;
         }
 
@@ -201,8 +209,10 @@ public class MyMqttService implements NeulinkConst{
             conOpt = new MqttConnectOptions();
             // 清除缓存
             conOpt.setCleanSession(cleanSession);
-            // 设置超时时间，单位：秒
-            conOpt.setConnectionTimeout(timeOut);
+            // 设置连接超时时间，单位：秒
+            conOpt.setConnectionTimeout(connectTimeout);
+            //设置执行服务超时时间，单位秒
+            conOpt.setExecutorServiceTimeout(executorServiceTimeout);
             // 心跳包发送间隔，单位：秒
             conOpt.setKeepAliveInterval(keepAliveInterval);
             // 用户名
