@@ -16,7 +16,8 @@ public class DefaultShellCmdListener implements ICmdListener<ActionResult<Map<St
         String[] cmds = null;
         try {
             ShellCmd cmd = event.getSource();
-            Map<String,String> resultMap = ShellExecutor.run(ContextHolder.getInstance().getContext(), cmd.toArrays());
+            String cmdStr = cmd.toString();
+            Map<String, String> resultMap = ShellExecutor.execute(ContextHolder.getInstance().getContext(), cmdStr);
             ActionResult<Map<String, String>> actionResult = new ActionResult<>();
             actionResult.setData(resultMap);
             return actionResult;
