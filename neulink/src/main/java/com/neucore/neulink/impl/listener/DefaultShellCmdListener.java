@@ -14,12 +14,10 @@ public class DefaultShellCmdListener implements ICmdListener<ActionResult<Map<St
     @Override
     public ActionResult<Map<String, String>> doAction(NeulinkEvent<ShellCmd> event) {
         String[] cmds = null;
-        Map<String, String> resultMap = null;
         try {
             ShellCmd cmd = event.getSource();
-            String cmdA = cmd.toString();
+            Map<String,String> resultMap = ShellExecutor.run(ContextHolder.getInstance().getContext(), cmd.toArrays());
             ActionResult<Map<String, String>> actionResult = new ActionResult<>();
-            resultMap = ShellExecutor.execute(ContextHolder.getInstance().getContext(), cmdA);
             actionResult.setData(resultMap);
             return actionResult;
         }

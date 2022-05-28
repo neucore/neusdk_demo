@@ -21,8 +21,8 @@ public class SampleShellCmdListener implements ICmdListener<ActionResult<Map<Str
         try {
             ShellCmd cmd = event.getSource();
             String cmdA = cmd.toString();
-            ActionResult<Map<String, String>> actionResult = new ActionResult<>();
             resultMap = ShellExecutor.execute(ContextHolder.getInstance().getContext(), cmdA);
+            ActionResult<Map<String, String>> actionResult = new ActionResult<>();
             actionResult.setData(resultMap);
             return actionResult;
         }
