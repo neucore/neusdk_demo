@@ -89,7 +89,6 @@ public class MyMqttService implements NeulinkConst{
 
         private MqttCallback mqttCallback = null;
         private IMqttActionListener mqttActionListener;
-        private IMqttMessageListener mqttMessageListener;
 
         public Builder serverUrl(String serverUrl) {
             this.serverUrl = serverUrl;
@@ -126,11 +125,6 @@ public class MyMqttService implements NeulinkConst{
             return this;
         }
 
-        public Builder retained(boolean retained) {
-            this.retained = retained;
-            return this;
-        }
-
         public Builder autoReconnect(boolean autoReconnect) {
             this.autoReconnect = autoReconnect;
             return this;
@@ -148,11 +142,6 @@ public class MyMqttService implements NeulinkConst{
 
         public Builder mqttActionListener(IMqttActionListener mqttActionListener){
             this.mqttActionListener = mqttActionListener;
-            return this;
-        }
-
-        public Builder mqttMessageListener(IMqttMessageListener mqttMessageListener){
-            this.mqttMessageListener = mqttMessageListener;
             return this;
         }
 
@@ -224,7 +213,7 @@ public class MyMqttService implements NeulinkConst{
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
             LWTInfo info = ServiceRegistry.getInstance().getDeviceService().lwt();
             String payload = info.getPayload();
-            conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), 1, true);
+            conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), info.getQos(), info.getRetained());
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
