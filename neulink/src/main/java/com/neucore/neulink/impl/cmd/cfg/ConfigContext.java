@@ -82,6 +82,10 @@ public class ConfigContext implements NeulinkConst{
 
     private String TAG = TAG_PREFIX+"ConfigContext";
 
+    public final static String MQTT_QOS = "mqtt.qos";
+
+    public final static String MQTT_RETAINED = "mqtt.retained";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }
