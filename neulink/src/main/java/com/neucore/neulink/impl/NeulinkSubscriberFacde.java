@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.NeulinkService;
 
@@ -54,7 +55,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
 
         String rmsg_topic = "rmsg/req/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
 
-        service.subscribeToTopic(rmsg_topic, 0,messageListener);
+        service.subscribeToTopic(rmsg_topic, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0),messageListener);
     }
 
     /**
@@ -74,7 +75,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
     private void subRrpc(){
 
         String rrpc_topic = "rrpc/req/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
-        service.subscribeToTopic(rrpc_topic, 0,messageListener);
+        service.subscribeToTopic(rrpc_topic, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0),messageListener);
     }
 
     /**
@@ -85,7 +86,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
 
         String upld_topic = "upld/res/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
 
-        service.subscribeToTopic(upld_topic, 0, messageListener);
+        service.subscribeToTopic(upld_topic, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0), messageListener);
     }
 
     /**
@@ -93,7 +94,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     private void subScopeBcst(){
         String sys_ctrl_topic = "bcst/req/" + service.getCustId() + "/#";
-        service.subscribeToTopic(sys_ctrl_topic, 0, messageListener);
+        service.subscribeToTopic(sys_ctrl_topic, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0), messageListener);
     }
 
     /**

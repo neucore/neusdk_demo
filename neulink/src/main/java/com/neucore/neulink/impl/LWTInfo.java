@@ -1,11 +1,13 @@
 package com.neucore.neulink.impl;
 
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+
 public class LWTInfo {
 
     private String topicPrefix;
     private String payload;
-    private int qos = 1;
-    private boolean retained=false;
+    private int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1);
+    private boolean retained=ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false);
 
     public int getQos() {
         return qos;

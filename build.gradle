@@ -1,6 +1,6 @@
 ext {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {

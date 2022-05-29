@@ -184,7 +184,7 @@ public class NeulinkService implements NeulinkConst{
     public boolean regist(DeviceInfo deviceInfo){
         String payload = JSonUtils.toString(deviceInfo);
         String devinfo_topic = "msg/req/devinfo";
-        publishMessage(devinfo_topic, IProcessor.V1$0, payload, 0);
+        publishMessage(devinfo_topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1));
         return true;
     }
 
@@ -192,7 +192,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,1,true);
+            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -201,7 +201,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,1,true);
+            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -248,11 +248,11 @@ public class NeulinkService implements NeulinkConst{
      * @param qos
      */
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
-        publishMessage(topicPrefix,version,reqId,payload,qos,false,null);
+        publishMessage(topicPrefix,version,reqId,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),null);
     }
 
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos, IResCallback callback){
-        publishMessage(topicPrefix,version,reqId,payload,qos,false,callback);
+        publishMessage(topicPrefix,version,reqId,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){

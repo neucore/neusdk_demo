@@ -38,7 +38,6 @@ public class MyMqttService implements NeulinkConst{
     private Integer connectTimeout;
     private Integer executorServiceTimeout;
     private Integer keepAliveInterval;
-    private Boolean retained;
     //客户端掉线后是否清楚客户端session
     private Boolean cleanSession;
     private Boolean autoReconnect;
@@ -62,7 +61,6 @@ public class MyMqttService implements NeulinkConst{
         this.connectTimeout = builder.connectTimeout;
         this.executorServiceTimeout = builder.executorServiceTimeout;
         this.keepAliveInterval = builder.keepAliveInterval;
-        this.retained = builder.retained;
         this.cleanSession = builder.cleanSession;
         this.autoReconnect = builder.autoReconnect;
         this.mqttCallback = builder.mqttCallback;
@@ -83,7 +81,6 @@ public class MyMqttService implements NeulinkConst{
         private Integer connectTimeout;
         private Integer executorServiceTimeout;
         private Integer keepAliveInterval;
-        private Boolean retained;
         private Boolean cleanSession;
         private Boolean autoReconnect;
 
