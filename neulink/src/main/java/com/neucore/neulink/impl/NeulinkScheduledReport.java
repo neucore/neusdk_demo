@@ -70,7 +70,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
                                 String payload = JSonUtils.toString(heatbeatInfo);
                                 String topic = "msg/req/status";
-                                service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                                service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
                                 Log.e(TAG,"deviceService的heatbeat没有实现");
@@ -106,7 +106,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
                                 String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
                                 String topic = "msg/req/stat";
-                                service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                                service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
                                 Log.e(TAG,"deviceService的runtime没有实现");
@@ -170,7 +170,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             req.setTime(name.substring(0, index));
                             String payload = JSonUtils.toString(req);
                             String topic = "upld/req/rlog";
-                            service.publishMessage(topic, IProcessor.V1$0, payload, 0);
+                            service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                         }
                     }
                     catch (Exception ex){

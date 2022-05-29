@@ -7,6 +7,7 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.CmdRes;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.CallbackRegistry;
 import com.neucore.neulink.impl.cmd.faceupld.v12.FaceUpload12;
 import com.neucore.neulink.impl.cmd.lic.LicUpldCmd;
@@ -53,7 +54,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/carplateinfo";
         IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("carplateinfo");
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
+        service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),resCallback);
     }
 
     /**
@@ -78,7 +79,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/carplateinfo";
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0,callback);
+        service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
     /**
@@ -93,7 +94,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
         IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("facetemprature");
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0,resCallback);
+        service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),resCallback);
     }
 
     /**
@@ -108,7 +109,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
-        service.publishMessage(topic, IProcessor.V1$0, payload, 0,callback);
+        service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
     /**
@@ -132,7 +133,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo/"+info.getDeviceId();
                     IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("faceinfo");
-                    service.publishMessage(topic, IProcessor.V1$2, payload, 0,resCallback);
+                    service.publishMessage(topic, IProcessor.V1$2, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),resCallback);
                 }
                 else{
                     Log.i(TAG,String.format("url=%s",url));
@@ -167,7 +168,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo/"+info.getDeviceId();
-                    service.publishMessage(topic, IProcessor.V1$2, payload, 0,callback);
+                    service.publishMessage(topic, IProcessor.V1$2, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
                 }
                 else{
                     Log.i(TAG,String.format("url=%s",url));
@@ -195,7 +196,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payload = JSonUtils.toString(upgrRes);
-        service.publishMessage(topicPrefix,version,reqId,payload,0);
+        service.publishMessage(topicPrefix,version,reqId,payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1));
     }
 
     /**
@@ -348,6 +349,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     private void response(String topicPrefix, String version,String reqId, CmdRes res, IResCallback callback){
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
-        service.publishMessage(topicPrefix,version,reqId,payloadStr,0,callback);
+        service.publishMessage(topicPrefix,version,reqId,payloadStr,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 }
