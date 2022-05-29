@@ -61,10 +61,33 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upldLic(num,color,imageUrl,cmpCode,locationCode,position,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
+    /**
+     *
+     * @param num
+     * @param color
+     * @param imageUrl
+     * @param cmpCode
+     * @param locationCode
+     * @param position
+     * @param qos
+     * @param callback
+     */
     public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position,int qos, IResCallback callback){
         upldLic(num,color,imageUrl,cmpCode,locationCode,position,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
+    /**
+     *
+     * @param num
+     * @param color
+     * @param imageUrl
+     * @param cmpCode
+     * @param locationCode
+     * @param position
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     public void upldLic(String num, String color, String imageUrl, String cmpCode, String locationCode, String position,int qos,boolean retained,IResCallback callback) {
         LicUpldCmd req = new LicUpldCmd();
         req.setNum(num);
@@ -161,10 +184,25 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upldFaceInfo$1$2(url,info,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
+    /**
+     *
+     * @param url
+     * @param info
+     * @param qos
+     * @param callback
+     */
     public void upldFaceInfo$1$2(String url, FaceUpload12 info,int qos, IResCallback callback){
         upldFaceInfo$1$2(url,info,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
+    /**
+     *
+     * @param url
+     * @param info
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     public void upldFaceInfo$1$2(String url, FaceUpload12 info, int qos,boolean retained,IResCallback callback){
         if(!ObjectUtil.isEmpty(url)){
             int index = url.lastIndexOf("/");
@@ -257,6 +295,17 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         rmsgResponse(biz,version,reqId,mode,code,message,payload,resCallback);
     }
 
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param callback
+     */
     public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload,IResCallback callback){
         rmsgResponse(biz,version,reqId,mode,code,message,payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
@@ -275,6 +324,19 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         rmsgResponse(biz,version,reqId,mode,code,message,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload,int qos,boolean retained, IResCallback callback){
         String topicPrefix = String.format("rmsg/res/%s",biz);
         CmdRes res = new CmdRes();
@@ -315,10 +377,35 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upldRequest(biz,version,reqId,mode,code,message,payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param qos
+     * @param callback
+     */
     public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,int qos,IResCallback callback){
         upldRequest(biz,version,reqId,mode,code,message,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
+    /**
+     *
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param payload
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,int qos,boolean retained,IResCallback callback){
         String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistry.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
@@ -398,6 +485,17 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         response(topicPrefix,version,reqId,res,qos,retained,callback);
     }
 
+    /**
+     *
+     * @param topicPrefix
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param heads
+     */
     void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
         CmdRes res = new CmdRes();
         res.setHeaders(heads);
@@ -408,6 +506,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         response(topicPrefix,version,reqId,res,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false), resCallback);
     }
 
+    /**
+     *
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param res
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     private void response(String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
