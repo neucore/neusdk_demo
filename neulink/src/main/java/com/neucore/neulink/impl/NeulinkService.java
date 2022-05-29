@@ -234,9 +234,30 @@ public class NeulinkService implements NeulinkConst{
         publishMessage(topicPrefix,version, payload, qos,null);
     }
 
+    /**
+     *
+     * @param topicPrefix
+     * @param version
+     * @param payload
+     * @param qos
+     * @param callback
+     */
     protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
 
         publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,callback);
+    }
+
+    /**
+     *
+     * @param topicPrefix
+     * @param version
+     * @param payload
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    protected void publishMessage(String topicPrefix, String version, String payload, int qos,boolean retained, IResCallback callback){
+        publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,retained,callback);
     }
 
     /**
