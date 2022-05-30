@@ -49,7 +49,7 @@ public class DeviceUtils implements NeulinkConst{
 	private static String TAG = TAG_PREFIX+"DeviceUtils";
 	public static final int SDCARD_TYPE = 0;			//当前的日志记录类型为存储在SD卡下面
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
-	private static String NeuPath = "/storage/emulated/0/";
+	private static String NeuPath = "/storage/emulated/0";
 
 	private static String getFileRoot(Context context) {
 		if (Environment.getExternalStorageState().equals(
