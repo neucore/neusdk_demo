@@ -49,7 +49,6 @@ public class DeviceUtils implements NeulinkConst{
 	private static String TAG = TAG_PREFIX+"DeviceUtils";
 	public static final int SDCARD_TYPE = 0;			//当前的日志记录类型为存储在SD卡下面
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
-	private static String NeuPath = "/storage/emulated/0";
 
 	private static String getFileRoot(Context context) {
 		File sdDir = null;
@@ -66,14 +65,14 @@ public class DeviceUtils implements NeulinkConst{
 			if (path.equals("/storage/emulated/0"))
 				path = "/storage/sdcard0";
 		}
-
+		Log.i(TAG,"rootPath: "+path);
 		return path; //"/storage/sdcard0";
 	}
 
 	private static String getNeucore(Context context){
 		String rootPath = getFileRoot(context);
 
-		if(rootPath.startsWith("/")){
+		if(rootPath.endsWith("/")){
 			rootPath = rootPath.substring(0,rootPath.length()-1);
 		}
 		String sub = "neucore";
