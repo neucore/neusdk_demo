@@ -213,6 +213,7 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,info.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,info.getRetained());
             conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), qos, retained);
+            Log.i(TAG,String.format("end init: %s",clientId));
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
