@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.LWTInfo;
 import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
@@ -202,8 +203,14 @@ public class MyMqttService implements NeulinkConst{
             // 心跳包发送间隔，单位：秒
             conOpt.setKeepAliveInterval(keepAliveInterval);
             // 用户名
+            if(ObjectUtil.isEmpty(userName)){
+                throw new NeulinkException(408,"用户名为空");
+            }
             conOpt.setUserName(userName);
             // 密码
+            if(ObjectUtil.isEmpty(passWord)){
+                throw new NeulinkException(408,"密码为空");
+            }
             conOpt.setPassword(passWord.toCharArray());
             conOpt.setAutomaticReconnect(autoReconnect);
             // 监控Client的状态 $share/{ShareName}/{filter}
