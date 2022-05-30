@@ -664,7 +664,9 @@ public class NeulinkService implements NeulinkConst{
                     result.setMsg(e.getMsg());
                     defaultResCallback.onFinished(result);
                 }
-                catch (Exception ex){}
+                catch (Exception ex){
+                    Log.e(TAG,"注册失败",ex);
+                }
             }
         }
     }
