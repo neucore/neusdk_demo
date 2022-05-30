@@ -648,6 +648,8 @@ public class NeulinkService implements NeulinkConst{
                     Integer port = zone.getMqttPort();
                     String userName = zone.getMqttUserName();
                     String password = zone.getMqttPassword();
+                    userName = userName==null?ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"):userName;
+                    password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
                     //tcp://dev.neucore.com:1883
                     mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
 
