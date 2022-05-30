@@ -88,12 +88,15 @@ public class NeulinkService implements NeulinkConst{
     }
 
     public void initMqttService(String mqttServiceUri, String userName, String password){
+        Log.i(TAG,"initMqttService");
         if(!mqttInited){
             createMqttService(mqttServiceUri,userName,password);
             int cnt = 0;
             while (!getMqttConnSuccessed()){
                 try {
+                    Log.i(TAG,"start connectMqtt");
                     connectMqtt();
+                    Log.i(TAG,"end connectMqtt");
                     cnt++;
                     Thread.sleep(1000);
                     Log.i(TAG,"try "+cnt+"次连接。。。。");
@@ -107,7 +110,7 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private void createMqttService(String serverUri, String userName, String password){
-        Log.i(TAG,String.format("inited %s", mqttInited));
+        Log.i(TAG,String.format("createMqttService inited %s", mqttInited));
         synchronized (mqttInited){
             if(!mqttInited){
                 Context context = ContextHolder.getInstance().getContext();
@@ -138,6 +141,7 @@ public class NeulinkService implements NeulinkConst{
                         .bulid(context);
                 mqttInited = true;
                 new HouseKeeping().start();
+                Log.i(TAG,String.format("end createMqttService inited %s", mqttInited));
             }
         }
     }
