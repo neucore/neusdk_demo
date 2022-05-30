@@ -52,15 +52,36 @@ public class DeviceUtils implements NeulinkConst{
 	private static String NeuPath = "/storage/emulated/0";
 
 	private static String getFileRoot(Context context) {
-		if (Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED)) {
-			return NeuPath;
+		File sdDir = null;
+		boolean sdCardExist = true;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			sdCardExist = Environment.getExternalStorageState()
+					.equals(Environment.MEDIA_MOUNTED);
 		}
-		return context.getFilesDir().getAbsolutePath();
-	}
+		if (sdCardExist) {
+			sdDir = Environment.getExternalStorageDirectory();
+		}
+		String path = sdDir.toString();
+		if (Build.VERSION.SDK_INT < 23) {
+			if (path.equals("/storage/emulated/0"))
+				path = "/storage/sdcard0";
+		}
 
+		return path; //"/storage/sdcard0";
+	}
+	public static String completePath(String path) {
+		if (!path.endsWith("/")) {
+			return path + "/";
+		} else {
+			return path;
+		}
+	}
 	private static String getNeucore(Context context){
 		String rootPath = getFileRoot(context);
+
+		if(rootPath.startsWith("/")){
+			rootPath = rootPath.substring(0,rootPath.length()-1);
+		}
 		String sub = "neucore";
 		mkidrs(rootPath,sub);
 		String path = rootPath+File.separator+sub;
