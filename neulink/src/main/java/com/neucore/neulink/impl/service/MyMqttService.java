@@ -215,7 +215,10 @@ public class MyMqttService implements NeulinkConst{
             conOpt.setPassword(passWord.toCharArray());
             // 自动重连
             conOpt.setAutomaticReconnect(autoReconnect);
-
+            /**
+             *
+             */
+            conOpt.setMaxReconnectDelay(Integer.MAX_VALUE);
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
             LWTInfo info = ServiceRegistry.getInstance().getDeviceService().lwt();
