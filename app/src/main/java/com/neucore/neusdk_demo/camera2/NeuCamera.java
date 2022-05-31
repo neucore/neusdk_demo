@@ -28,8 +28,7 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
-import com.neucore.neulink.util.LogUtils;
-import com.neucore.neusdk_demo.R;
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.SPUtils;
@@ -109,12 +108,12 @@ public class NeuCamera {
 
             @Override
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                Log.d(TAG,"onSurfaceTextureUpdated");
+                LogUtils.dTag(TAG,"onSurfaceTextureUpdated");
             }
         };
 
         if (mTextureview.isAvailable()) {
-            Log.d(TAG,"open Camera IR");
+            LogUtils.dTag(TAG,"open Camera IR");
             openCamera(camera_idx, mTextureview.getWidth(), mTextureview.getHeight());
         } else {
             mTextureview.setSurfaceTextureListener(mIRTextureListener);
@@ -135,7 +134,7 @@ public class NeuCamera {
             }
 
             if(manager.getCameraIdList().length < 2) {
-                Log.e(TAG,"required two camera");
+                LogUtils.eTag(TAG,"required two camera");
                 return;
             }
 
@@ -144,7 +143,7 @@ public class NeuCamera {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(CameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-            Log.i(TAG,"mSensorOrientation_IR:"+ mSensorOrientation);
+            LogUtils.i(TAG,"mSensorOrientation_IR:"+ mSensorOrientation);
             if (map == null) {
                 throw new RuntimeException("Cannot get available preview/video sizes");
             }
@@ -169,7 +168,7 @@ public class NeuCamera {
             configureTransform(camera_idx,width, height);
 
         } catch (CameraAccessException | InterruptedException e) {
-            Log.e(TAG,"open camera failed");
+            LogUtils.eTag(TAG,"open camera failed");
         }
 
         try {
@@ -194,7 +193,7 @@ public class NeuCamera {
                 }
             }, null);
         } catch (CameraAccessException e) {
-            Log.e(TAG,e.getMessage());
+            LogUtils.eTag(TAG,e.getMessage());
         }
     }
 
@@ -231,7 +230,7 @@ public class NeuCamera {
 //                matrix.postScale(scale, scale, centerX, centerY);
                 //matrix.postRotate(90 * (rotation - 2), centerX, centerY);
             }
-            LogUtils.i("TAG","rotation:"+rotation);
+            LogUtils.iTag("TAG","rotation:"+rotation);
             mTextureview.setTransform(matrix);
         }else {
             System.out.println("    rotation: "+rotation);
@@ -254,7 +253,7 @@ public class NeuCamera {
 //                matrix.postScale(scale, scale, centerX, centerY);
 //                matrix.postRotate(270, centerX, centerY);
             }
-            LogUtils.i("TAG","rotation:"+rotation);
+            LogUtils.iTag("TAG","rotation:"+rotation);
             mTextureview.setTransform(matrix);
         }
 
@@ -291,7 +290,7 @@ public class NeuCamera {
                                 //thread.start();
                                 session.setRepeatingRequest(mPreviewBuilder.build(), null, mHandler);
                             } catch (CameraAccessException e) {
-                                Log.e(TAG,"onConfigured",e);
+                                LogUtils.eTag(TAG,"onConfigured",e);
                             }
                         }
                         @Override
@@ -300,7 +299,7 @@ public class NeuCamera {
                         }
                     }, mHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG,"createCaptureSession",e);
+            LogUtils.eTag(TAG,"createCaptureSession",e);
         }
     }
 

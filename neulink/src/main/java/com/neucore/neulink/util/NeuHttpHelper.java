@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
@@ -84,7 +85,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				return response.body().string();
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}
@@ -168,7 +169,7 @@ public class NeuHttpHelper implements NeulinkConst{
 			tmpFile = File.createTempFile(prefix,suffix,path);
 			tmpFile.deleteOnExit();
 		}
-		Log.d(TAG,"本地文件名："+tmpFile.getAbsolutePath());
+		LogUtils.dTag(TAG,"本地文件名："+tmpFile.getAbsolutePath());
 
 		Response response = null;
 		int trys = 1;
@@ -194,7 +195,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				break;
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"次下载"+fileUrl+"文件失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}
@@ -205,7 +206,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				throw ex;
 			}
 			catch (RuntimeException ex){
-				Log.e(TAG,"第"+trys+"下载"+fileUrl+"文件失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"下载"+fileUrl+"文件失败：",ex);
 				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 			}
 			finally {
@@ -249,7 +250,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				return responseData;
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"下载"+url+"失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"下载"+url+"失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}
@@ -260,7 +261,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				throw ex;
 			}
 			catch (RuntimeException ex){
-				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
 				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 			}
 			finally {
@@ -311,7 +312,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				return responseData;
 			}
 			catch (IOException ex){
-				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
 				if(trys==tryNum) {
 					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 				}
@@ -322,7 +323,7 @@ public class NeuHttpHelper implements NeulinkConst{
 				throw ex;
 			}
 			catch (RuntimeException ex){
-				Log.e(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				LogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
 				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 			}
 			finally {

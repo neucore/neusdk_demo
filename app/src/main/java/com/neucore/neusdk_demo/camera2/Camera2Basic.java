@@ -23,6 +23,7 @@ import android.view.TextureView;
 
 import androidx.core.app.ActivityCompat;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.view.AutoFitTextureView;
 
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class Camera2Basic {
             mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
-            Log.e(TAG,e.getMessage());
+            LogUtils.eTag(TAG,e.getMessage());
         }
     }
 
@@ -152,7 +153,7 @@ public class Camera2Basic {
 
             mImageReader_size = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height);
 
-            Log.d(TAG, "mImageReader_size="+mImageReader_size.getWidth()+" "+mImageReader_size.getHeight());
+            LogUtils.dTag(TAG, "mImageReader_size="+mImageReader_size.getWidth()+" "+mImageReader_size.getHeight());
             int orientation = mcontext.getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 mTextureView.setAspectRatio(mImageReader_size.getWidth(), mImageReader_size.getHeight());
@@ -160,12 +161,12 @@ public class Camera2Basic {
                 mTextureView.setAspectRatio(mImageReader_size.getHeight(), mImageReader_size.getWidth());
             }
         } else{
-            Log.e(TAG,"Could not get configuration map.");
+            LogUtils.eTag(TAG,"Could not get configuration map.");
             return;
         }
 
         if (ActivityCompat.checkSelfPermission(mcontext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG,"You don't have the required permissions.");
+            LogUtils.eTag(TAG,"You don't have the required permissions.");
             return;
         }
 
@@ -186,7 +187,7 @@ public class Camera2Basic {
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG,e.getMessage());
+            LogUtils.eTag(TAG,e.getMessage());
         }
     }
 
@@ -199,7 +200,7 @@ public class Camera2Basic {
 
             mCameraCaptureSession.setRepeatingRequest(mCaptureRequestBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG,e.getMessage());
+            LogUtils.eTag(TAG,e.getMessage());
         }
     }
 
@@ -235,11 +236,11 @@ public class Camera2Basic {
 
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
-                    Log.e(TAG,"Could not configure capture session.");
+                    LogUtils.eTag(TAG,"Could not configure capture session.");
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG, e.getMessage());
+            LogUtils.eTag(TAG, e.getMessage());
         } catch (NullPointerException n) {
             n.printStackTrace();
         }

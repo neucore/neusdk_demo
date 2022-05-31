@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
 import com.neucore.neusdk_demo.service.db.bean.User;
@@ -76,7 +77,7 @@ final public class UserService extends AbsUserService {
                     feature_org.add(c);
                 }
             }catch (Exception e){
-                Log.e(TAG,"CardId: "+user.getCardId(),e );
+                LogUtils.eTag(TAG,"CardId: "+user.getCardId(),e );
             }
 
 
@@ -95,7 +96,7 @@ final public class UserService extends AbsUserService {
                     name_org.add(user.getUserId());
                 }
             }catch (Exception e){
-                Log.e(TAG,"CardId: "+user.getCardId(),e );
+                LogUtils.eTag(TAG,"CardId: "+user.getCardId(),e );
             }
         }
         synchronized (lock){

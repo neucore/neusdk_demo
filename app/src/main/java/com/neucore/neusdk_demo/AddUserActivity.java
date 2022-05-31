@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
@@ -207,7 +208,7 @@ public class AddUserActivity extends AppCompatActivity implements PermissionInte
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

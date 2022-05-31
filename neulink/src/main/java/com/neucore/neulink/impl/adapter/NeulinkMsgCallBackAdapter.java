@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.adapter;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
@@ -37,7 +38,7 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
 
-        Log.d(TAG,"start topic:"+ topicStr+",message:"+message);
+        LogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
 
         IProcessor processor = NeulinkProcessorFactory.build(context,topic);
 
@@ -50,10 +51,10 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
             }
         }
         catch (Throwable ex){
-            Log.e(TAG,"messageArrived",ex);
+            LogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
-            Log.d(TAG,"finished topic:"+ topicStr+",message:"+message);
+            LogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
             RequestContext.remove();
         }
     }
@@ -65,24 +66,24 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
     @Override
     public void connectionLost(Throwable arg0) {
         //连接断开
-        Log.d(TAG,"connectionLost");
-        Log.e(TAG,"connectFailed",arg0);
+        LogUtils.dTag(TAG,"connectionLost");
+        LogUtils.eTag(TAG,"connectFailed",arg0);
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken arg0) {
-        Log.d(TAG,"deliveryComplete");
+        LogUtils.dTag(TAG,"deliveryComplete");
     }
 
     @Override
     public void connectSuccess(IMqttToken arg0) {
-        Log.d(TAG,"connectSuccess");
+        LogUtils.dTag(TAG,"connectSuccess");
     }
 
     @Override
     public void connectFailed(IMqttToken arg0, Throwable arg1) {
         //连接失败
-        Log.e(TAG,"connectFailed: "+arg1.getMessage());
+        LogUtils.eTag(TAG,"connectFailed: "+arg1.getMessage());
     }
 
 }

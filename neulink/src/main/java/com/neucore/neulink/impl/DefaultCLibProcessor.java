@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IProcessor;
@@ -97,7 +98,7 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
                 }
                 catch(NeulinkException ex){
                     try {
-                        Log.e(TAG, "execute", ex);
+                        LogUtils.eTag(TAG, "execute", ex);
                         if(ObjectUtil.isNotEmpty(msg)){
                             update(id, IMessage.STATUS_FAIL, ex.getMessage());
                         }
@@ -112,7 +113,7 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
                     }
                 }
                 catch (Exception ex){
-                    Log.e(TAG,"process",ex);
+                    LogUtils.eTag(TAG,"process",ex);
                     if(ObjectUtil.isNotEmpty(msg)){
                         update(msg.getId(),IMessage.STATUS_FAIL, ex.getMessage());
                     }
@@ -126,7 +127,7 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
             }
             catch(NeulinkException ex){
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }
@@ -143,7 +144,7 @@ public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, Quer
             }
             catch (Throwable ex) {
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }

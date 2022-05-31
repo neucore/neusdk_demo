@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.listener;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
@@ -32,7 +33,7 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
         try {
             final UgrdeCmd cmd = event.getSource();
             final String upgrade_url = cmd.getUrl();
-            Log.i(TAG,"开始下载："+upgrade_url);
+            LogUtils.iTag(TAG,"开始下载："+upgrade_url);
             final String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
             String md5 = cmd.getMd5();
             /**
@@ -51,12 +52,12 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
 
-                    Log.i(TAG,cmd.getReqId()+ " progress: "+progress);
+                    LogUtils.iTag(TAG,cmd.getReqId()+ " progress: "+progress);
                     NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqId(),progress);
                 }
             });
-            Log.i(TAG,"成功下载完成："+downloader.getFileSize());
-            Log.i(TAG,"存储位置: "+downloader.getSaveFile().getAbsolutePath());
+            LogUtils.iTag(TAG,"成功下载完成："+downloader.getFileSize());
+            LogUtils.iTag(TAG,"存储位置: "+downloader.getSaveFile().getAbsolutePath());
 
             /**
              * @TODO: 业务实现

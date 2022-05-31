@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.cmd.cfg;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;
@@ -44,7 +45,7 @@ public class ConfigContext implements NeulinkConst{
     public final static String FTP_USER_NAME = "FTP.UserName";
     public final static String FTP_PASSWORD = "FTP.Password";
     public final static String TOPIC_PARTITION = "Topic.Partition";
-    public final static String LOG_LEVEL = "Log.Level";
+    public final static String LOG_LEVEL = "LogUtils.Level";
 
     public final static String CONN_TIME_OUT = "connectTimeOut";
 
@@ -134,7 +135,7 @@ public class ConfigContext implements NeulinkConst{
             }
             configs = properties;
         } catch (IOException e) {
-            Log.e(TAG,"load",e);
+            LogUtils.eTag(TAG,"load",e);
         }
         finally {
             if(reader!=null){

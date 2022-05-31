@@ -60,6 +60,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.8.0'
     implementation 'cn.hutool:hutool-all:5.6.0'
     implementation 'org.greenrobot:greendao:3.3.0' // add library
+    implementation 'com.blankj:utilcode:1.30.6'
 }
 
 task makeJar(type: Copy) {

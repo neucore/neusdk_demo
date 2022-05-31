@@ -2,6 +2,8 @@ package com.bzcommon.utils;
 
 import android.content.Context;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.File;
 
 /**
@@ -30,7 +32,7 @@ public class BZAssetsFileManager {
             BZFileUtils.fileCopy(context.getAssets().open(path), finalPath);
             return finalPath;
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
         return path;
     }

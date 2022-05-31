@@ -6,6 +6,7 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.util.DeviceUtils;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class DataBaseContext extends ContextWrapper {
                 dbFile.createNewFile();
             }
         } catch (IOException e) {
-            Log.e(TAG,"getDatabasePath",e);
+            LogUtils.eTag(TAG,"getDatabasePath",e);
         }
 
         return dbFile;

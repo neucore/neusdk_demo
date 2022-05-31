@@ -8,6 +8,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
 
@@ -138,7 +139,7 @@ public class FileUtils implements NeulinkConst{
 					options.inSampleSize =num;
 				}
 			}catch (Exception e){
-				Log.e(TAG,"getImageBitmap",e);
+				LogUtils.eTag(TAG,"getImageBitmap",e);
 			}
 	     options.inJustDecodeBounds = false;
           /*  int sign=1;
@@ -146,7 +147,7 @@ public class FileUtils implements NeulinkConst{
              if (!isAd && sign > 0)
                  options.inSampleSize = sign;   //width，hight设为原来的2分一*/
 	     Bitmap bm =BitmapFactory.decodeStream(is,null,options);
-//	     LogUtils.i("TAG","原始："+num+"压缩："+sign+"压缩后："+bm.getByteCount()/1024.);
+//	     LogUtils.iTag("TAG","原始："+num+"压缩："+sign+"压缩后："+bm.getByteCount()/1024.);
 		 return bm;
 		}else{
 			return null;
@@ -187,7 +188,7 @@ public class FileUtils implements NeulinkConst{
 			FileInputStream fis = new FileInputStream(url);
 			return BitmapFactory.decodeStream(fis); // /把流转化为Bitmap图片
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -283,7 +284,7 @@ public class FileUtils implements NeulinkConst{
 		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 		// 使用获取到的inSampleSize值再次解析图片
 		options.inJustDecodeBounds = false;
-		Log.v("decode","返回bitmap");
+		LogUtils.v("decode","返回bitmap");
 		return BitmapFactory.decodeByteArray(b, 0, b.length, options);
 	}
 	/*private static int calculateInSampleSize(BitmapFactory.Options options,
@@ -300,7 +301,7 @@ public class FileUtils implements NeulinkConst{
 			// 一定都会大于等于目标的宽和高。
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 		}
-		Log.v("calculate"," "+inSampleSize);
+		LogUtils.v("calculate"," "+inSampleSize);
 		return inSampleSize;
 	}*/
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -334,7 +335,7 @@ public class FileUtils implements NeulinkConst{
 			stream.write(b);
 		} catch (Exception e) {
 			// log.error("helper:get file from byte process error!");
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		} finally {
 			if (stream != null) {
 				try {

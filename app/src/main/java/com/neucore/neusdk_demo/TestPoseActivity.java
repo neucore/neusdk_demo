@@ -1,7 +1,5 @@
 package com.neucore.neusdk_demo;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.media.Image;
 import android.media.ImageReader;
@@ -11,9 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.NeuSDK.NeuPose;
 import com.neucore.NeuSDK.NeuPoseNode;
-import com.neucore.neulink.util.LogUtils;
 import com.neucore.neusdk_demo.camera2.Camera2Basic;
 import com.neucore.neusdk_demo.camera2.OnImageAvailableListener;
 import com.neucore.neusdk_demo.neucore.NeuPoseFactory;
@@ -33,7 +31,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.opencv.core.Core.flip;
 import static org.opencv.core.Core.transpose;
 
 
@@ -198,7 +195,7 @@ public class TestPoseActivity extends AppCompatActivity {
     private int paintViewUIPoseNum = 0;
     //Pose检测
     private void setPaintViewUIPose(Image image) {
-        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0 ImageToByte  start" );
         if (width == 0){
             width = image.getWidth();
         }
@@ -207,25 +204,25 @@ public class TestPoseActivity extends AppCompatActivity {
         }
 
         mPendingRGBFrameData = ImageToByte(image);
-        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
         Mat rgbMat = new Mat(height, width, CvType.CV_8UC3);
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
+        LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时
         Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.d(TAG,"rgb  6666" );
+        //LogUtils.dTag(TAG,"rgb  6666" );
         transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
-        LogUtils.d(TAG,"rgb  7777" );
+        LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.dTag(TAG,"rgb  8888" );
         //获取Pose数据
         NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,true); // withTracking 是否进行人脸追踪
-        LogUtils.d(TAG,"rgb  9999" );
+        LogUtils.dTag(TAG,"rgb  9999" );
 
 
 
@@ -244,7 +241,7 @@ public class TestPoseActivity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIPoseNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewUIPoseNum == 0){
                 paintViewUIPoseNum++;

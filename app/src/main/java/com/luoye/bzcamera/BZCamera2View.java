@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import com.bzcommon.utils.BZLogUtil;
+import com.blankj.utilcode.util.LogUtils;
 import com.luoye.bzcamera.listener.OnTransformChangeListener;
 import com.luoye.bzcamera.utils.CameraCapacityCheckResult;
 import com.luoye.bzcamera.utils.CameraCapacityCheckUtil;
@@ -100,7 +100,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
     }
 
     public void onResume() {
-        BZLogUtil.d(TAG, "onResume");
+        LogUtils.dTag(TAG, "onResume");
         startPreview();
     }
 
@@ -111,13 +111,13 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
     }
 
     public void onPause() {
-        BZLogUtil.d(TAG, "onPause");
+        LogUtils.dTag(TAG, "onPause");
         stopPreview();
     }
 
     public void setPreviewTargetSize(int previewTargetSizeWidth, int previewTargetSizeHeight) {
         if (previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0) {
-            BZLogUtil.e(TAG, "setPreviewTargetSize previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0");
+            LogUtils.e(TAG, "setPreviewTargetSize previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0");
             return;
         }
         this.previewTargetSizeWidth = previewTargetSizeWidth;
@@ -125,20 +125,20 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
     }
 
     private synchronized void startPreview(final SurfaceTexture surfaceTexture) {
-        BZLogUtil.d(TAG, "startPreview mCurrentCameraLensFacing=" + mCurrentCameraLensFacing);
+        LogUtils.dTag(TAG, "startPreview mCurrentCameraLensFacing=" + mCurrentCameraLensFacing);
         if (null == surfaceTexture) {
-            BZLogUtil.w(TAG, "null == surfaceTexture");
+            LogUtils.w(TAG, "null == surfaceTexture");
             return;
         }
         //Granted Permission
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            BZLogUtil.d(TAG, "no permission.CAMERA");
+            LogUtils.dTag(TAG, "no permission.CAMERA");
             return;
         }
         if (checkCameraCapacity) {
             if (CameraCapacityCheckUtil.isSupportDFXSDK(getContext(), mCurrentCameraLensFacing) != CameraCapacityCheckResult.GOOD) {
-                BZLogUtil.e(TAG, "CameraCapacityCheckUtil.isSupportDFXSDK(getContext(), mCurrentCameraLensFacing) != CameraCapacityCheckResult.GOOD mCurrentCameraLensFacing=" + mCurrentCameraLensFacing);
+                LogUtils.e(TAG, "CameraCapacityCheckUtil.isSupportDFXSDK(getContext(), mCurrentCameraLensFacing) != CameraCapacityCheckResult.GOOD mCurrentCameraLensFacing=" + mCurrentCameraLensFacing);
                 return;
             }
         }
@@ -146,7 +146,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
         int width = getWidth();
         int height = getHeight();
         if (width <= 0 || height <= 0) {
-            BZLogUtil.e(TAG, "width<=0||height<=0");
+            LogUtils.e(TAG, "width<=0||height<=0");
             return;
         }
         stopPreview();
@@ -208,14 +208,14 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                 return;
             }
             Range<Integer>[] fpsRanges = characteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
-            BZLogUtil.d(TAG, "fpsRanges: " + Arrays.toString(fpsRanges));
+            LogUtils.dTag(TAG, "fpsRanges: " + Arrays.toString(fpsRanges));
             Range<Integer> isoRange = characteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
             if (null != isoRange) {
                 isoUpper = isoRange.getUpper();
                 isoLower = isoRange.getLower();
-                BZLogUtil.d(TAG, "isoRange: RangeUpper=" + isoUpper + " getLower=" + isoLower);
+                LogUtils.dTag(TAG, "isoRange: RangeUpper=" + isoUpper + " getLower=" + isoLower);
             } else {
-                BZLogUtil.w("Can't get isoRange");
+                LogUtils.w("Can't get isoRange");
             }
             final Integer sensor_orientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (null != sensor_orientation) {
@@ -259,23 +259,23 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                         surfaceArrayList.add(mImageReader.getSurface());
                         camera.createCaptureSession(surfaceArrayList, stateCallback, mCameraHandler);
                     } catch (Exception e) {
-                        BZLogUtil.e(TAG, e);
+                        LogUtils.e(TAG, e);
                     }
                 }
 
                 @Override
                 public void onDisconnected(@NonNull CameraDevice camera) {
-                    BZLogUtil.e(TAG, "onDisconnected");
+                    LogUtils.e(TAG, "onDisconnected");
                 }
 
                 @Override
                 public void onError(@NonNull CameraDevice camera, int error) {
-                    BZLogUtil.e(TAG, "onError error=" + error);
+                    LogUtils.e(TAG, "onError error=" + error);
                 }
             }, mCameraHandler);
 
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
@@ -304,7 +304,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                 mCurrentISO = sensorSensitivity;
             }
             if (frameCount % 30 == 0) {
-                BZLogUtil.v(TAG, "mCurrentISO =" + mCurrentISO);
+                LogUtils.v(TAG, "mCurrentISO =" + mCurrentISO);
             }
         }
     };
@@ -314,7 +314,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             return;
         }
         mCameraCaptureSession = cameraCaptureSession;
-        BZLogUtil.d(TAG, "startRepeatingRequest");
+        LogUtils.dTag(TAG, "startRepeatingRequest");
         try {
             //TODO auto get
             captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, false);
@@ -334,12 +334,12 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             mPreviewRequest = captureRequestBuilder.build();
             cameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
     public synchronized void stopPreview() {
-        BZLogUtil.d(TAG, "stopPreview");
+        LogUtils.dTag(TAG, "stopPreview");
         if (null != mCameraHandler) {
             mCameraHandler.post(new Runnable() {
                 @Override
@@ -351,7 +351,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                             mCameraCaptureSession = null;
                         }
                     } catch (Throwable e) {
-                        BZLogUtil.e(TAG, e);
+                        LogUtils.e(TAG, e);
                     }
                     try {
                         if (null != mCameraDevice) {
@@ -359,7 +359,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                             mCameraDevice = null;
                         }
                     } catch (Throwable e) {
-                        BZLogUtil.e(TAG, e);
+                        LogUtils.e(TAG, e);
                     }
                 }
             });
@@ -374,9 +374,9 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                 }
                 long startTime = System.currentTimeMillis();
                 mCameraHandlerThread.join();
-                BZLogUtil.d(TAG, "mCameraHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
+                LogUtils.dTag(TAG, "mCameraHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
             } catch (Exception e) {
-                BZLogUtil.e(TAG, e);
+                LogUtils.e(TAG, e);
             }
             mCameraHandlerThread = null;
         }
@@ -389,9 +389,9 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                 }
                 long startTime = System.currentTimeMillis();
 //                mYUVHandlerThread.join();
-                BZLogUtil.d(TAG, "mYUVHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
+                LogUtils.dTag(TAG, "mYUVHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
             } catch (Exception e) {
-                BZLogUtil.e(TAG, e);
+                LogUtils.e(TAG, e);
             }
             mYUVHandlerThread = null;
         }
@@ -401,13 +401,13 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mSurfaceTexture = surface;
-        BZLogUtil.d(TAG, "onSurfaceTextureAvailable");
+        LogUtils.dTag(TAG, "onSurfaceTextureAvailable");
         startPreview(surface);
     }
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        BZLogUtil.d(TAG, "onSurfaceTextureSizeChanged width=" + width + " height=" + height);
+        LogUtils.dTag(TAG, "onSurfaceTextureSizeChanged width=" + width + " height=" + height);
     }
 
     @Override
@@ -519,7 +519,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
         }
         image.close();
         if (frameCount % 30 == 0) {
-            BZLogUtil.v(TAG, "onPreviewDataUpdate width=" + width + " height=" + height + " fps=" + fps);
+            LogUtils.v(TAG, "onPreviewDataUpdate width=" + width + " height=" + height + " fps=" + fps);
         }
 //        if (fps < 29) {
 //            repeatingRequest();
@@ -548,13 +548,13 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             return;
         }
         if (iso < isoLower || iso > isoUpper) {
-            BZLogUtil.w(TAG, "iso < isoLower || iso > isoUpper");
+            LogUtils.w(TAG, "iso < isoLower || iso > isoUpper");
             return;
         }
         if (iso == lastSetIso) {
             equalAmount++;
             if (equalAmount >= 2) {
-                BZLogUtil.w(TAG, "iso==lastSetIso");
+                LogUtils.w(TAG, "iso==lastSetIso");
                 return;
             }
         } else {
@@ -567,11 +567,11 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
         captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, FRAME_EXPOSURE_TIME);
         captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, iso);
         mPreviewRequest = captureRequestBuilder.build();
-        BZLogUtil.d(TAG, "Setting setISO " + iso);
+        LogUtils.dTag(TAG, "Setting setISO " + iso);
         try {
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
 
     }
@@ -583,7 +583,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
         try {
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
@@ -596,9 +596,9 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
     }
 
     public synchronized void lockFocus() {
-        BZLogUtil.d(TAG, "lockFocus");
+        LogUtils.dTag(TAG, "lockFocus");
         if (null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession) {
-            BZLogUtil.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
+            LogUtils.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
             return;
         }
         try {
@@ -607,14 +607,14 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             mPreviewRequest = captureRequestBuilder.build();
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
     public synchronized void unLockFocus() {
-        BZLogUtil.d(TAG, "unLockFocus");
+        LogUtils.dTag(TAG, "unLockFocus");
         if (null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession) {
-            BZLogUtil.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
+            LogUtils.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
             return;
         }
         try {
@@ -624,14 +624,14 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             mPreviewRequest = captureRequestBuilder.build();
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
     public synchronized void lockAWB() {
-        BZLogUtil.d(TAG, "lockAWB");
+        LogUtils.dTag(TAG, "lockAWB");
         if (null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession) {
-            BZLogUtil.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
+            LogUtils.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
             return;
         }
         try {
@@ -639,14 +639,14 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             mPreviewRequest = captureRequestBuilder.build();
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
     public synchronized void unLockAWB() {
-        BZLogUtil.d(TAG, "unLockAWB");
+        LogUtils.dTag(TAG, "unLockAWB");
         if (null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession) {
-            BZLogUtil.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
+            LogUtils.e(TAG, "null == captureRequestBuilder || null == mPreviewRequest || null == mCameraCaptureSession");
             return;
         }
         try {
@@ -654,7 +654,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             mPreviewRequest = captureRequestBuilder.build();
             mCameraCaptureSession.setRepeatingRequest(mPreviewRequest, captureCallback, mCameraHandler);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 

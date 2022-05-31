@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
 import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;
@@ -49,7 +50,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
             throw new RuntimeException(cmd.getType()+"日志类型不支持");
         }
         catch (Throwable ex){
-            Log.e(TAG,"process",ex);
+            LogUtils.eTag(TAG,"process",ex);
             throw new RuntimeException(ex);
         }
     }
@@ -124,7 +125,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
                         return true;
                     }
                 } catch (ParseException e) {
-                    Log.e(TAG,"getSys",e);
+                    LogUtils.eTag(TAG,"getSys",e);
                 }
                 return false;
             }

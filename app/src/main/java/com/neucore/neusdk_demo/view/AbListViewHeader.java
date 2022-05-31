@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.R;
 
 import java.text.SimpleDateFormat;
@@ -241,7 +242,7 @@ public class AbListViewHeader extends LinearLayout {
 			Calendar c = new GregorianCalendar();
 			curDateTime = mSimpleDateFormat.format(c.getTime());
 		} catch (Exception e) {
-			Log.e(TAG,e.getMessage(),e);
+			LogUtils.eTag(TAG,e.getMessage(),e);
 		}
 		return curDateTime;
 

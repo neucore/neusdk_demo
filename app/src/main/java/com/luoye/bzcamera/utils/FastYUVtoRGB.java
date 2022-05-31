@@ -10,6 +10,8 @@ import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 /**
  * Created by jack_liu on 2019-09-04 11:44.
  * Function:
@@ -44,12 +46,12 @@ public class FastYUVtoRGB {
         count++;
         spaceTime += (System.currentTimeMillis() - startTime);
         long time = spaceTime / count;
-        Log.d("convertYUVtoRGB", "convert 耗时=" + time);
+        LogUtils.dTag("convertYUVtoRGB", "convert 耗时=" + time);
 
         Bitmap bmpout = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 //        startTime = System.currentTimeMillis();
         out.copyTo(bmpout);
-//        Log.d("convertYUVtoRGB", "Bitmap 耗时=" + (System.currentTimeMillis() - startTime));
+//        LogUtils.dTag("convertYUVtoRGB", "Bitmap 耗时=" + (System.currentTimeMillis() - startTime));
 
 
         Matrix matrix = new Matrix();

@@ -2,6 +2,8 @@ package com.neucore.neusdk_demo.ecport;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -58,7 +60,7 @@ public class ExcelUtils {
             if(!file.exists())file.createNewFile();
             writableWorkbook = Workbook.createWorkbook(file);
         } catch (IOException e) {
-            Log.e(TAG,"create",e);
+            LogUtils.eTag(TAG,"create",e);
         }
 
         return this;
@@ -141,7 +143,7 @@ public class ExcelUtils {
                     workbookSheet.addCell(label);
 
                 } catch (WriteException e) {
-                    Log.e(TAG,"fillStringData",e);
+                    LogUtils.eTag(TAG,"fillStringData",e);
                 }
             }
         }
@@ -190,7 +192,7 @@ public class ExcelUtils {
                     workbookSheet.setColumnView(y, (width > MIN_WIDTH ? width : MIN_WIDTH));
                     workbookSheet.addCell(label);
                 } catch (Exception e) {
-                    Log.e(TAG,"fillData",e);
+                    LogUtils.eTag(TAG,"fillData",e);
                 }
             }
         }
@@ -225,7 +227,7 @@ public class ExcelUtils {
             writableWorkbook.write();
             writableWorkbook.close();
         } catch (Exception e) {
-            Log.e(TAG,"close",e);
+            LogUtils.eTag(TAG,"close",e);
         }
     }
 

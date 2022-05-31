@@ -8,6 +8,7 @@ import android.media.Image;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
@@ -68,11 +69,11 @@ public class FaceProcessing extends Thread {
                     if (!mNeucore_face.getNeuSDKInitStatus()) {
                         mNeucore_face = null;
                         Toast.makeText(context,"NeuFace 初始化失败",Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "NeuFace 初始化失败");
+                        LogUtils.eTag(TAG, "NeuFace 初始化失败");
                         instance = null;
                     }else {
                         Toast.makeText(context,"NeuFace 初始化成功",Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "NeuFace 初始化成功");
+                        LogUtils.eTag(TAG, "NeuFace 初始化成功");
                     }
                 }
             }
@@ -92,7 +93,7 @@ public class FaceProcessing extends Thread {
     //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
     public void copyAssetResource2File(Context context)
     {
-        Log.d(TAG, "开始拷贝nb文件");
+        LogUtils.dTag(TAG, "开始拷贝nb文件");
         long begin = System.currentTimeMillis();
 
         String OrgFilepath = "/storage/emulated/0/neucore/";
@@ -176,7 +177,7 @@ public class FaceProcessing extends Thread {
                 outF.setReadable(true);
             }
 
-            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+            LogUtils.dTag(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -277,7 +278,7 @@ public class FaceProcessing extends Thread {
                             // don't have it yet.
                             mLock.wait();
                         } catch (InterruptedException e) {
-                            Log.e(TAG, "Frame processing loop terminated.", e);
+                            LogUtils.eTag(TAG, "Frame processing loop terminated.", e);
                             return;
                         }
                     }
@@ -368,7 +369,7 @@ public class FaceProcessing extends Thread {
                     for (int i = 0; i < result.length; i++) {
 
                         if(result[i].getIslive() == false) {
-                            Log.e(TAG,"result[i].getIslive()==false");
+                            LogUtils.eTag(TAG,"result[i].getIslive()==false");
                             continue;
                         }
 
@@ -384,7 +385,7 @@ public class FaceProcessing extends Thread {
                         ArrayList<byte[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
                         ArrayList<String> name_org = UserService.getInstance(mContext).getNames();
 
-                        //Log.e(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
+                        //LogUtils.eTag(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
                         //        +" isglass="+result[i].getIsglass()+" angle="+result[i].getFaceAngle()[0]+" "+result[i].getFaceAngle()[1]+" "+result[i].getFaceAngle()[2]);
 
                         //如果特征值有效,进行人脸识别
@@ -415,11 +416,11 @@ public class FaceProcessing extends Thread {
                                 }
                             }
 
-                            Log.e(TAG,"maxSum="+maxSum);
+                            LogUtils.eTag(TAG,"maxSum="+maxSum);
                             if (maxSum > 0.8) {
                                 onFaceSuccessListener.success(face,name_org.get(maxID));
                                 System.out.println("------------999  7777  得到人脸--------上方 name is " + name_org.get(maxID));
-                                Log.d(TAG, "###### found one registered person, name is " + name_org.get(maxID));
+                                LogUtils.dTag(TAG, "###### found one registered person, name is " + name_org.get(maxID));
                             }else {
                                 onFaceSuccessListener.success(face,"检测到人脸");
                                 System.out.println("------------999  7777  得到人脸--------下方 ");
@@ -549,7 +550,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            Log.i(TAG, e.toString());
+            LogUtils.i(TAG, e.toString());
         }
         return null;
     }
@@ -636,7 +637,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            Log.i(TAG, e.toString());
+            LogUtils.i(TAG, e.toString());
         }
         return null;
     }
@@ -748,7 +749,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            Log.i(TAG, e.toString());
+            LogUtils.i(TAG, e.toString());
         }
         return null;
     }

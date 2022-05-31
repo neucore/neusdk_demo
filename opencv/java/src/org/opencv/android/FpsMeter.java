@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 public class FpsMeter {
     private static final String TAG               = "FpsMeter";
     private static final int    STEP              = 20;
@@ -59,7 +61,7 @@ public class FpsMeter {
     }
 
     public void draw(Canvas canvas, float offsetx, float offsety) {
-        Log.d(TAG, mStrfps);
+        LogUtils.dTag(TAG, mStrfps);
         canvas.drawText(mStrfps, offsetx, offsety, mPaint);
     }
 

@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.registry;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
 import com.neucore.neulink.ICmdListener;
@@ -128,7 +129,7 @@ public class ProcessRegistry implements NeulinkConst {
                 regist(biz,processor);
             }
             catch (Exception ex){
-                Log.e(TAG,ex.getMessage());
+                LogUtils.eTag(TAG,ex.getMessage());
             }
         }
         return processor;

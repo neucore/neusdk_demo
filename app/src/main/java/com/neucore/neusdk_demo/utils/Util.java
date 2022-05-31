@@ -2,7 +2,6 @@ package com.neucore.neusdk_demo.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
@@ -13,12 +12,8 @@ import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
-import com.neucore.neulink.util.LogUtils;
-import com.neucore.neusdk_demo.Camera2Activity;
-import com.neucore.neusdk_demo.Camera2PortraitActivity;
-import com.neucore.neusdk_demo.MenuActivity;
-import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 import com.neucore.neusdk_demo.utility.Constants;
 
@@ -251,33 +246,33 @@ public class Util {
         if (reader != null) {
             Image image = reader.acquireLatestImage();//最后一帧
             if (image == null) return;
-            //LogUtils.d(TAG,"rgb  0 0 0 0 " );
+            //LogUtils.dTag(TAG,"rgb  0 0 0 0 " );
             int mRGBimageWidth = image.getWidth();
             int mRGBimageHeight = image.getHeight();
 
-            LogUtils.d(TAG, "rgb  1111"); //下面这句最耗时  15毫秒
+            LogUtils.dTag(TAG, "rgb  1111"); //下面这句最耗时  15毫秒
             byte[] mPendingRGBFrameData = Util.getBytesFromImageAsTypeRGB(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
             //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式  这个快1毫秒
-            LogUtils.d(TAG, "rgb  2222");
+            LogUtils.dTag(TAG, "rgb  2222");
             Mat mat2 = new Mat((int) (mRGBimageHeight * 1.5), mRGBimageWidth, CvType.CV_8UC1);
-            //LogUtils.d(TAG,"rgb  3333" );
+            //LogUtils.dTag(TAG,"rgb  3333" );
             mat2.put(0, 0, mPendingRGBFrameData);
             //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-            //LogUtils.d(TAG,"rgb  4444" );
+            //LogUtils.dTag(TAG,"rgb  4444" );
             Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-            //LogUtils.d(TAG,"rgb  5555" );
+            //LogUtils.dTag(TAG,"rgb  5555" );
             Imgproc.cvtColor(mat2, rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 
-            LogUtils.d(TAG, "rgb  6666");
+            LogUtils.dTag(TAG, "rgb  6666");
             transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-            //LogUtils.d(TAG,"rgb  7777" );
+            //LogUtils.dTag(TAG,"rgb  7777" );
             //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
             //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-            LogUtils.d(TAG, "rgb  8888");
+            LogUtils.dTag(TAG, "rgb  8888");
 
             //NeuFaceNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect(rgb_mat);
             NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgb_mat,true); //withTracking 是否进行人脸追踪
-            LogUtils.d(TAG,"rgb  9999" );
+            LogUtils.dTag(TAG,"rgb  9999" );
 
             List<Rect> rectList = new ArrayList<>();
             rectList.clear();
@@ -305,7 +300,7 @@ public class Util {
             }
             if (rectList.size() > 0){
                 Util.sendIntEventMessge(Constants.FACE_START, rectList);
-                //LogUtils.d(TAG,"rgb  10 10 10 10" );
+                //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
             }else {
                 rectList.clear();
                 rectList.add(new Rect(0,0,0,0));

@@ -27,6 +27,8 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -406,7 +408,7 @@ public class BZBitmapUtil {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         int widthRatio = display.getWidth() / imgWidth;
-        BZLogUtil.d("imgWidth:" + imgWidth + " Constants.screenWidth:" + display.getWidth() + "-------widthRatio:" + widthRatio);
+        LogUtils.dTag("imgWidth:" + imgWidth + " Constants.screenWidth:" + display.getWidth() + "-------widthRatio:" + widthRatio);
 
         if (widthRatio > 1) {
             opts.inSampleSize = widthRatio;
@@ -518,7 +520,7 @@ public class BZBitmapUtil {
 
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
             return null;
         }
 
@@ -637,7 +639,7 @@ public class BZBitmapUtil {
             return BitmapFactory.decodeStream(is, null, opt);
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
             return null;
         }
     }
@@ -670,7 +672,7 @@ public class BZBitmapUtil {
             return shadowImage;
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
         return bitmap; // if error return the original bitmap
     }
@@ -699,7 +701,7 @@ public class BZBitmapUtil {
             return true;
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
         return false;
     }
@@ -718,7 +720,7 @@ public class BZBitmapUtil {
             bufferOutStream.close();
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
     }
 
@@ -817,7 +819,7 @@ public class BZBitmapUtil {
             bm = BitmapFactory.decodeFile(absolutePath, opt);
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
         return bm;
     }
@@ -855,7 +857,7 @@ public class BZBitmapUtil {
             bm = BitmapFactory.decodeFile(absolutePath, opt);
         } catch (Exception e) {
 
-            BZLogUtil.e(TAG, e);
+            LogUtils.e(TAG, e);
         }
         return bm;
     }
@@ -925,7 +927,7 @@ public class BZBitmapUtil {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "Image rotation=" + rotation);
+                LogUtils.dTag(TAG, "Image rotation=" + rotation);
             } else {
                 inputStream = context.getAssets().open(fileName);
             }
@@ -941,13 +943,13 @@ public class BZBitmapUtil {
                 long startTime = System.currentTimeMillis();
                 scaleBitmap = BZBitmapUtil.scaleBitmap(bitmap, targetSize, targetSize);
                 targetBitmap = scaleBitmap;
-                BZLogUtil.d(TAG, "scaleBitmap耗时=" + (System.currentTimeMillis() - startTime) + " srcWidth=" + bitmap.getWidth() + " srcHeight=" + bitmap.getHeight() + " targetWidth=" + targetBitmap.getWidth() + " targetHeight=" + targetBitmap.getHeight());
+                LogUtils.dTag(TAG, "scaleBitmap耗时=" + (System.currentTimeMillis() - startTime) + " srcWidth=" + bitmap.getWidth() + " srcHeight=" + bitmap.getHeight() + " targetWidth=" + targetBitmap.getWidth() + " targetHeight=" + targetBitmap.getHeight());
             }
             Bitmap rotationBitmap = null;
             if (rotation > 10) {
                 long startTime = System.currentTimeMillis();
                 rotationBitmap = BZBitmapUtil.rotateBitmap(targetBitmap, rotation);
-                BZLogUtil.d(TAG, "rotateBitmap耗时=" + (System.currentTimeMillis() - startTime) + " srcWidth=" + targetBitmap.getWidth() + " srcHeight=" + targetBitmap.getHeight() + " rotationWidth=" + rotationBitmap.getWidth() + " rotationHeight=" + rotationBitmap.getHeight());
+                LogUtils.dTag(TAG, "rotateBitmap耗时=" + (System.currentTimeMillis() - startTime) + " srcWidth=" + targetBitmap.getWidth() + " srcHeight=" + targetBitmap.getHeight() + " rotationWidth=" + rotationBitmap.getWidth() + " rotationHeight=" + rotationBitmap.getHeight());
                 targetBitmap = rotationBitmap;
             }
             //转化成RGBA
@@ -967,7 +969,7 @@ public class BZBitmapUtil {
                 rotationBitmap.recycle();
             }
         } catch (Throwable e) {
-            Log.d(TAG, "getTexture fileName=" + fileName);
+            LogUtils.dTag(TAG, "getTexture fileName=" + fileName);
         }
         return targetBitmap;
     }

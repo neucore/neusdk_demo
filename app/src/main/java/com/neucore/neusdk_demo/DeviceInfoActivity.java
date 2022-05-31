@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
@@ -79,7 +80,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements PermissionI
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

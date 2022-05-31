@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.service.broadcast;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
@@ -63,9 +64,9 @@ public class UdpReceiveAndtcpSend extends  Thread implements NeulinkConst{
                     final String quest_ip = dp.getAddress().toString();
                     final String target_ip = quest_ip.substring(1);
 
-                    Log.i(TAG,"host_ip:  --------------------  " + host_ip);
-                    Log.i(TAG,"quest_ip: --------------------  " + quest_ip);
-                    Log.i(TAG,"target_ip: --------------------  " + target_ip);
+                    LogUtils.iTag(TAG,"host_ip:  --------------------  " + host_ip);
+                    LogUtils.iTag(TAG,"quest_ip: --------------------  " + quest_ip);
+                    LogUtils.iTag(TAG,"target_ip: --------------------  " + target_ip);
 
                     if( (!host_ip.equals(""))  && host_ip.equals(quest_ip.substring(1)) ) {
                         continue;
@@ -73,8 +74,8 @@ public class UdpReceiveAndtcpSend extends  Thread implements NeulinkConst{
 
                     final String codeString = new String(data, 0, dp.getLength());
 
-                    Log.i(TAG,"收到来自: \n" + quest_ip.substring(1) + "\n" + "的udp请求\n");
-                    Log.i(TAG,"请求内容: " + codeString + "\n\n");
+                    LogUtils.iTag(TAG,"收到来自: \n" + quest_ip.substring(1) + "\n" + "的udp请求\n");
+                    LogUtils.iTag(TAG,"请求内容: " + codeString + "\n\n");
 
                     try {
                         socket = new Socket(target_ip, 6788);
@@ -84,13 +85,13 @@ public class UdpReceiveAndtcpSend extends  Thread implements NeulinkConst{
                         writer.flush();
                         socket.shutdownOutput();
                     } catch (IOException e) {
-                        Log.e(TAG,e.getMessage());
+                        LogUtils.eTag(TAG,e.getMessage());
                     } finally {
                         try {
                             if (socket != null)
                                 socket.close();
                         } catch (IOException e) {
-                            Log.e(TAG,e.getMessage());
+                            LogUtils.eTag(TAG,e.getMessage());
                         }
                     }
                 }

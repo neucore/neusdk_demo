@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
@@ -88,29 +89,29 @@ public class NeulinkService implements NeulinkConst{
     }
 
     public void initMqttService(String mqttServiceUri, String userName, String password){
-        Log.i(TAG,"initMqttService");
+        LogUtils.iTag(TAG,"initMqttService");
         if(!mqttInited){
             createMqttService(mqttServiceUri,userName,password);
             int cnt = 0;
             while (!getMqttConnSuccessed()){
                 try {
-                    Log.i(TAG,"start connectMqtt");
+                    LogUtils.iTag(TAG,"start connectMqtt");
                     connectMqtt();
-                    Log.i(TAG,"end connectMqtt");
+                    LogUtils.iTag(TAG,"end connectMqtt");
                     cnt++;
                     Thread.sleep(1000);
-                    Log.i(TAG,"try "+cnt+"次连接。。。。");
+                    LogUtils.iTag(TAG,"try "+cnt+"次连接。。。。");
                 }
                 catch (Exception ex){
-                    Log.e(TAG,"连接失败：",ex);
+                    LogUtils.eTag(TAG,"连接失败：",ex);
                 }
             }
-            Log.i(TAG,"mqttInited");
+            LogUtils.iTag(TAG,"mqttInited");
         }
     }
 
     private void createMqttService(String serverUri, String userName, String password){
-        Log.i(TAG,String.format("createMqttService inited %s", mqttInited));
+        LogUtils.iTag(TAG,String.format("createMqttService inited %s", mqttInited));
         synchronized (mqttInited){
             if(!mqttInited){
                 Context context = ContextHolder.getInstance().getContext();
@@ -141,7 +142,7 @@ public class NeulinkService implements NeulinkConst{
                         .bulid(context);
                 mqttInited = true;
                 new HouseKeeping().start();
-                Log.i(TAG,String.format("end createMqttService inited %s", mqttInited));
+                LogUtils.iTag(TAG,String.format("end createMqttService inited %s", mqttInited));
             }
         }
     }
@@ -171,7 +172,7 @@ public class NeulinkService implements NeulinkConst{
         if(!destroy && !ObjectUtil.isEmpty(myMqttService)){
             myMqttService.disconnect();
             destroy = true;
-            Log.i(TAG,"断开Mqtt Service");
+            LogUtils.iTag(TAG,"断开Mqtt Service");
         }
     }
 
@@ -292,7 +293,7 @@ public class NeulinkService implements NeulinkConst{
 
         final String topic = buildTopic(topicPrefix,version,reqId,md5);
 
-        Log.d(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topic);
+        LogUtils.dTag(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topic);
 
         if (channel==0){//向下兼容
             if(topic.startsWith("msg/req/devinfo")) {
@@ -334,7 +335,7 @@ public class NeulinkService implements NeulinkConst{
     private void publish(String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
 
         if(ObjectUtil.isEmpty(callback)){
-            Log.i(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
+            LogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
             callback = defaultResCallback;
         }
 
@@ -414,7 +415,7 @@ public class NeulinkService implements NeulinkConst{
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-            Log.i(TAG, "onSuccess ");
+            LogUtils.iTag(TAG, "onSuccess ");
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
@@ -422,7 +423,7 @@ public class NeulinkService implements NeulinkConst{
                         callback.connectSuccess(arg0);
                     }
                     catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                        LogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }
@@ -437,7 +438,7 @@ public class NeulinkService implements NeulinkConst{
                         callback.connectFailed(arg0, arg1);
                     }
                     catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                        LogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }
@@ -457,18 +458,18 @@ public class NeulinkService implements NeulinkConst{
         public void connectComplete(boolean reconnect, String serverURI) {
             try {
 
-                Log.i(TAG, "connectComplete ");
+                LogUtils.iTag(TAG, "connectComplete ");
                 reentrantLock.lock();
                 subscriberFacde.subAll();
                 deviceService.connect();
-                Log.d(TAG, "Server:" + mqttServiceUri + " ,connectComplete reconnect:" + reconnect);
+                LogUtils.dTag(TAG, "Server:" + mqttServiceUri + " ,connectComplete reconnect:" + reconnect);
                 if (mqttCallBacks != null) {
                     for (IMqttCallBack callback: mqttCallBacks) {
                         try {
                             callback.connectComplete(reconnect, serverURI);
                         }
                         catch (Exception ex){
-                            Log.e(TAG,ex.getMessage());
+                            LogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }
@@ -488,8 +489,8 @@ public class NeulinkService implements NeulinkConst{
             int messageId = receivedMessage.getMessageId();
             String detailLog = topic + ";qos:" + receivedMessage.getQos() + ";retained:" + receivedMessage.isRetained() + "messageId:"+messageId;
             String msgContent = new String(receivedMessage.getPayload());
-            Log.i(TAG, "messageArrived:" + msgContent);
-            Log.i(TAG, detailLog);
+            LogUtils.iTag(TAG, "messageArrived:" + msgContent);
+            LogUtils.iTag(TAG, detailLog);
 
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
@@ -497,7 +498,7 @@ public class NeulinkService implements NeulinkConst{
                         callback.messageArrived(topic, msgContent, receivedMessage.getQos());
                     }
                     catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                        LogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }
@@ -513,7 +514,7 @@ public class NeulinkService implements NeulinkConst{
                         callback.deliveryComplete(arg0);
                     }
                     catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                        LogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }
@@ -522,7 +523,7 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void connectionLost(Throwable arg0) {
 
-            Log.i(TAG, "connectionLost");
+            LogUtils.iTag(TAG, "connectionLost");
             deviceService.disconnect();
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
@@ -530,7 +531,7 @@ public class NeulinkService implements NeulinkConst{
                         callback.connectionLost(arg0);
                     }
                     catch (Exception ex){
-                        Log.e(TAG,ex.getMessage());
+                        LogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }
@@ -554,7 +555,7 @@ public class NeulinkService implements NeulinkConst{
                     for (File file:files) {
                         if(file.lastModified()>=time){
                             file.delete();
-                            Log.i(TAG,file.getAbsolutePath()+"清除掉");
+                            LogUtils.iTag(TAG,file.getAbsolutePath()+"清除掉");
                         }
                     }
                 }
@@ -614,14 +615,14 @@ public class NeulinkService implements NeulinkConst{
                  */
                 Context context = ContextHolder.getInstance().getContext();
                 String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
-                Log.d(TAG,"registServer："+registServer);
+                LogUtils.dTag(TAG,"registServer："+registServer);
 
                 String response = null;
                 try {
                     String topic = URLEncoder.encode(topStr,"UTF-8");
                     response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
 
-                    Log.d(TAG,"设备注册响应："+response);
+                    LogUtils.dTag(TAG,"设备注册响应："+response);
 
                     /**
                      * {
@@ -659,7 +660,7 @@ public class NeulinkService implements NeulinkConst{
 
                 }
                 catch (NeulinkException e) {
-                    Log.e(TAG,"注册失败",e);
+                    LogUtils.eTag(TAG,"注册失败",e);
                     Result result = new Result();
                     result.setReqId(reqId);
                     result.setCode(e.getCode());
@@ -667,7 +668,7 @@ public class NeulinkService implements NeulinkConst{
                     defaultResCallback.onFinished(result);
                 }
                 catch (Exception ex){
-                    Log.e(TAG,"注册失败",ex);
+                    LogUtils.eTag(TAG,"注册失败",ex);
                 }
             }
         }
@@ -723,14 +724,14 @@ public class NeulinkService implements NeulinkConst{
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
                         String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
-                        Log.d(TAG,"设备upload2cloud请求："+payload);
-                        Log.d(TAG,"响应topic:"+topStr);
-                        Log.d(TAG,"设备upload2cloud响应："+response);
+                        LogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
+                        LogUtils.dTag(TAG,"响应topic:"+topStr);
+                        LogUtils.dTag(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
                             Result result = JSonUtils.toObject(response,Result.class);
                             result.setReqId(reqId);
                             callback.onFinished(result);
-                            Log.d(TAG,"onFinished");
+                            LogUtils.dTag(TAG,"onFinished");
                         }
                         done = true;
                     }
@@ -747,7 +748,7 @@ public class NeulinkService implements NeulinkConst{
                             if(ObjectUtil.isNotEmpty(loginCallback)){
                                 String token = loginCallback.login();
                                 if(ObjectUtil.isNotEmpty(token)){
-                                    Log.i(TAG,"token过期，重新登录成功");
+                                    LogUtils.iTag(TAG,"token过期，重新登录成功");
                                     NeulinkSecurity.getInstance().setToken(token);
                                 }
                                 else{
@@ -759,7 +760,7 @@ public class NeulinkService implements NeulinkConst{
                                 }
                             }
                             else{
-                                Log.e(TAG,"没有实现ILoginCallback");
+                                LogUtils.eTag(TAG,"没有实现ILoginCallback");
                                 result = Result.fail(e.getCode(),e.getMessage());
                                 result.setReqId(reqId);
                                 result.setCode(e.getCode());
@@ -778,7 +779,7 @@ public class NeulinkService implements NeulinkConst{
                         }
                     }
                     catch (Exception e) {
-                        Log.d(TAG,"upload2cloud error with: "+e.getMessage());
+                        LogUtils.dTag(TAG,"upload2cloud error with: "+e.getMessage());
                         if(ObjectUtil.isNotEmpty(callback)){
                             Result result = Result.fail(STATUS_500,e.getMessage());
                             result.setReqId(reqId);

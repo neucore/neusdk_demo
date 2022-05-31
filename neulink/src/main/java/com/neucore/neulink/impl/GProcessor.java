@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IProcessor;
@@ -107,7 +108,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
             }
             catch(NeulinkException ex){
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getCode(), ex.getMsg());
                     if(ObjectUtil.isNotEmpty(res)){
@@ -121,7 +122,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
             }
             catch (Throwable ex) {
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     Res res = fail(req, ex.getMessage());
                     if(ObjectUtil.isNotEmpty(res)){

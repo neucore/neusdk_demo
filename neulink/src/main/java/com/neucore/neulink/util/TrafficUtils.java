@@ -2,6 +2,7 @@ package com.neucore.neulink.util;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.RandomAccessFile;
@@ -45,7 +46,7 @@ public class TrafficUtils implements NeulinkConst{
             sndTraffic = Long.parseLong(rafSnd.readLine());
             rafSnd.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         if (rcvTraffic == -1 || sndTraffic == -1) {
             return -1;

@@ -2,13 +2,11 @@ package com.neucore.neulink.app;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.LogUtils;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -74,7 +72,7 @@ public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 			printWriter.close();
 			String result = writer.toString();
 			sb.append(result);
-			LogUtils.e("error"+result);
+			LogUtils.eTag("error"+result);
 			String path = DeviceUtils.getLogPath(context) +File.separator+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(System.currentTimeMillis()) + LOG_CARSH;
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File dir = new File(path);
@@ -88,7 +86,7 @@ public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 			}
 			return path;
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return null;
 	}

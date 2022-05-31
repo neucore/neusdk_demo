@@ -6,6 +6,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 /**
  */
 public class NetworkUtils {
@@ -34,7 +36,7 @@ public class NetworkUtils {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return false;
 

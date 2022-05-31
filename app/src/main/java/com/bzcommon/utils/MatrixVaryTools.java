@@ -2,6 +2,8 @@ package com.bzcommon.utils;
 
 import android.opengl.Matrix;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -67,7 +69,7 @@ public class MatrixVaryTools {
 
     public void ortho(float left, float right, float bottom, float top, float near, float far) {
         if (left >= right || bottom >= top) {
-            BZLogUtil.w(TAG, "left >= right || bottom >= top");
+            LogUtils.wTag(TAG, "left >= right || bottom >= top");
             return;
         }
         Matrix.orthoM(mMatrixProjection, 0, left, right, bottom, top, near, far);

@@ -1,8 +1,6 @@
 package com.bzcommon.glutils;
 
 
-import com.bzcommon.utils.BZLogUtil;
-
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_COLOR_ATTACHMENT0;
 import static android.opengl.GLES20.GL_FRAMEBUFFER;
@@ -27,6 +25,8 @@ import static android.opengl.GLES20.glIsFramebuffer;
 import static android.opengl.GLES20.glIsTexture;
 import static android.opengl.GLES20.glTexImage2D;
 import static android.opengl.GLES20.glTexParameterf;
+
+import com.blankj.utilcode.util.LogUtils;
 
 /**
  * Created by jack_liu on 2017-12-08 09:11.
@@ -57,7 +57,7 @@ public class FrameBufferUtil {
     }
 
     private void initFrameBuffer(int width, int height) {
-//        BZLogUtil.d(TAG, "initFrameBuffer width=" + width + " height=" + height);
+//        LogUtils.dTag(TAG, "initFrameBuffer width=" + width + " height=" + height);
 
         BZOpenGlUtils.checkEglError("bz_FrameBufferUtil initFrameBuffer start");
 
@@ -93,7 +93,7 @@ public class FrameBufferUtil {
         if (glIsFramebuffer(frameBuffer[0])) {
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0]);
         } else {
-            BZLogUtil.e(TAG, "Framebuffer unavailable recreate");
+            LogUtils.e(TAG, "Framebuffer unavailable recreate");
             release();
             initFrameBuffer(width, height);
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0]);
@@ -122,7 +122,7 @@ public class FrameBufferUtil {
             glDeleteTextures(1, frameBufferTextureId, 0);
             frameBufferTextureId[0] = 0;
         }
-//        BZLogUtil.d(TAG, "release finish");
+//        LogUtils.dTag(TAG, "release finish");
         GLUtil.checkGlError("FrameBufferUtil release end");
     }
 }

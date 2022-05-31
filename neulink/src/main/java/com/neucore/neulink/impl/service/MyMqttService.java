@@ -3,6 +3,7 @@ package com.neucore.neulink.impl.service;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
@@ -169,7 +170,7 @@ public class MyMqttService implements NeulinkConst{
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "publish: "+e.toString(),e);
+            LogUtils.eTag(TAG, "publish: "+e.toString(),e);
         }
     }
 
@@ -188,7 +189,7 @@ public class MyMqttService implements NeulinkConst{
         // 服务器地址（协议+地址+端口号）
         MemoryPersistence memoryPersistence = new MemoryPersistence();
         try {
-            Log.i(TAG,String.format("init ClientId: %s",clientId));
+            LogUtils.iTag(TAG,String.format("init ClientId: %s",clientId));
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
@@ -220,11 +221,11 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,info.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,info.getRetained());
             conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), qos, retained);
-            Log.i(TAG,String.format("end init: %s",clientId));
+            LogUtils.iTag(TAG,String.format("end init: %s",clientId));
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
-            Log.e(TAG,"MQTT Init failed",ex);
+            LogUtils.eTag(TAG,"MQTT Init failed",ex);
         }
     }
 
@@ -237,10 +238,10 @@ public class MyMqttService implements NeulinkConst{
 //                client.unregisterResources();
                 client.close();
                 close = true;
-                Log.i(TAG,"MQTT Closed");
+                LogUtils.iTag(TAG,"MQTT Closed");
             }
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            LogUtils.eTag(TAG, e.toString());
         }
     }
 
@@ -250,7 +251,7 @@ public class MyMqttService implements NeulinkConst{
                 client.disconnect();
                 close();
                 disconnect = true;
-                Log.i(TAG,"MQTT Disconnect");
+                LogUtils.iTag(TAG,"MQTT Disconnect");
             }
         } catch (MqttException e) {
             e.printStackTrace();
@@ -262,11 +263,11 @@ public class MyMqttService implements NeulinkConst{
     public void connect() {
         if (canDoConnect && !client.isConnected()) {
             try {
-                Log.i(TAG,String.format("connect by %s",clientId));
+                LogUtils.iTag(TAG,String.format("connect by %s",clientId));
                 client.connect(conOpt, null, mqttActionListener);
-                Log.i(TAG,"connected");
+                LogUtils.iTag(TAG,"connected");
             } catch (Exception e) {
-                Log.e(TAG, e.toString());
+                LogUtils.eTag(TAG, e.toString());
             }
         }
     }
@@ -274,10 +275,10 @@ public class MyMqttService implements NeulinkConst{
     public void subscribe(String topic, int qos,IMqttMessageListener mqttMessageListener) {
         try {
             // 订阅topic话题
-            Log.i(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
+            LogUtils.iTag(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
             client.subscribe(topic, qos,mqttMessageListener);
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            LogUtils.eTag(TAG, e.toString());
         }
     }
 
@@ -288,7 +289,7 @@ public class MyMqttService implements NeulinkConst{
         try {
             return client.isConnected();
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            LogUtils.eTag(TAG, e.toString());
         }
         return false;
     }

@@ -19,6 +19,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Surface;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -74,7 +76,7 @@ public class HelpUtil {
                     .openInputStream(uri));
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
             bitmap = null;
         }
         return bitmap;
@@ -144,7 +146,7 @@ public class HelpUtil {
             bitmapArray = Base64.decode(imgBase64Str, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return null;
 
@@ -200,7 +202,7 @@ public class HelpUtil {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return bitmap;
     }
@@ -258,7 +260,7 @@ public class HelpUtil {
             prop.load(in);
             key = prop.getProperty("SMS.account").trim();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return key;
     }
@@ -354,7 +356,7 @@ public class HelpUtil {
                 return false;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return false;
     }
@@ -384,7 +386,7 @@ public class HelpUtil {
                 cardno = cardLong + "";
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return cardno;
     }
@@ -392,7 +394,7 @@ public class HelpUtil {
     //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
     public static void copyAssetResource2File(Context context)
     {
-        Log.d(TAG, "开始拷贝nb文件");
+        LogUtils.dTag(TAG, "开始拷贝nb文件");
         long begin = System.currentTimeMillis();
 
         String OrgFilepath = "/storage/emulated/0/neucore/";
@@ -476,7 +478,7 @@ public class HelpUtil {
                 outF.setReadable(true);
             }
 
-            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+            LogUtils.dTag(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
         }
