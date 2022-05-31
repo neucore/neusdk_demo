@@ -213,7 +213,9 @@ public class MyMqttService implements NeulinkConst{
                 throw new NeulinkException(408,"密码为空");
             }
             conOpt.setPassword(passWord.toCharArray());
+            // 自动重连
             conOpt.setAutomaticReconnect(autoReconnect);
+
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
             LWTInfo info = ServiceRegistry.getInstance().getDeviceService().lwt();
