@@ -2,6 +2,8 @@ package com.neucore.neusdk_demo.aop;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.After;
@@ -33,7 +35,7 @@ public class MethodAspect {
     @AfterThrowing(pointcut = "execution(* com.neucore.neusdk_demo..*(..))" , throwing = "ex")
     public void afterThrowMethodCall(JoinPoint joinPoint,Throwable ex) throws Throwable{
         Signature signature = joinPoint.getSignature();
-        Log.e(TAG,signature.getDeclaringType().getSimpleName()+"."+signature.getName(),ex); //④
+        LogUtils.eTag(TAG,signature.getDeclaringType().getSimpleName()+"."+signature.getName(),ex); //④
         throw ex;
     }
 }

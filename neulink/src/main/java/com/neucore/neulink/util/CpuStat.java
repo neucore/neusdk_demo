@@ -3,6 +3,7 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
@@ -81,7 +82,7 @@ public class CpuStat implements NeulinkConst {
             mProcessCpu = Long.parseLong(tok[13]) + Long.parseLong(tok[14]);
             processCpuInfo.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
 
         try {
@@ -94,7 +95,7 @@ public class CpuStat implements NeulinkConst {
                     + Long.parseLong(toks[8]);
             cpuInfo.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
     }
 
@@ -110,7 +111,7 @@ public class CpuStat implements NeulinkConst {
             cpu_stat.close();
             return cpu[1];
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return "";
     }
@@ -171,7 +172,7 @@ public class CpuStat implements NeulinkConst {
             cpuUsedRatio.add(mTotalCpuRatio);
             cpuUsedRatio.add(String.valueOf(mTraffic));
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         }
         return cpuUsedRatio;
     }
@@ -187,7 +188,7 @@ public class CpuStat implements NeulinkConst {
             try {
                 Thread.sleep(360);
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
+                LogUtils.eTag(TAG, e.getMessage(), e);
             }
             reader.seek(0);
             load = reader.readLine();
@@ -272,7 +273,7 @@ public class CpuStat implements NeulinkConst {
                 br.close();
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.eTag(TAG, e.getMessage(), e);
         } finally {
             if (fr != null) {
                 try {

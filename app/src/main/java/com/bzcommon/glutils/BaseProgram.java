@@ -24,7 +24,7 @@ package com.bzcommon.glutils;
 
 import android.opengl.GLES20;
 
-import com.bzcommon.utils.BZLogUtil;
+import com.blankj.utilcode.util.LogUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -157,7 +157,7 @@ public class BaseProgram {
      */
     public void release() {
         GLUtil.checkGlError("BaseProgram release start");
-        BZLogUtil.d(TAG, "release");
+        LogUtils.dTag(TAG, "release");
         if (hProgram > 0 && GLES20.glIsProgram(hProgram)) {
             GLES20.glDeleteProgram(hProgram);
             hProgram = -1;
@@ -180,7 +180,7 @@ public class BaseProgram {
      */
     public void draw(final int tex_id) {
         if (!GLES20.glIsProgram(hProgram)) {
-            BZLogUtil.e(TAG, "Program is not enable create a new");
+            LogUtils.e(TAG, "Program is not enable create a new");
             release();
             createProgram(rotation, flipHorizontal, flipVertical);
         }
@@ -218,7 +218,7 @@ public class BaseProgram {
      * delete specific texture
      */
     public static void deleteTex(final int hTex) {
-        BZLogUtil.d(TAG, "deleteTex:");
+        LogUtils.dTag(TAG, "deleteTex:");
         final int[] tex = new int[]{hTex};
         GLES20.glDeleteTextures(1, tex, 0);
     }
@@ -231,7 +231,7 @@ public class BaseProgram {
      * @return
      */
     protected int loadShader(final String vss, final String fss) {
-        BZLogUtil.d(TAG, "loadShader:");
+        LogUtils.dTag(TAG, "loadShader:");
         BZOpenGlUtils.checkEglError("bz_BaseProgram loadShader start");
         int vs = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vs, vss);
@@ -239,7 +239,7 @@ public class BaseProgram {
         final int[] compiled = new int[1];
         GLES20.glGetShaderiv(vs, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            BZLogUtil.e(TAG, "Failed to compile vertex shader:"
+            LogUtils.e(TAG, "Failed to compile vertex shader:"
                     + GLES20.glGetShaderInfoLog(vs));
             GLES20.glDeleteShader(vs);
             vs = 0;
@@ -250,7 +250,7 @@ public class BaseProgram {
         GLES20.glCompileShader(fs);
         GLES20.glGetShaderiv(fs, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            BZLogUtil.d(TAG, "Failed to compile fragment shader:"
+            LogUtils.dTag(TAG, "Failed to compile fragment shader:"
                     + GLES20.glGetShaderInfoLog(fs));
             GLES20.glDeleteShader(fs);
             fs = 0;

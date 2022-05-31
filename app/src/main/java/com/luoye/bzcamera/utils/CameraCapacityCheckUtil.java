@@ -12,7 +12,7 @@ import android.util.Size;
 
 import androidx.annotation.RequiresApi;
 
-import com.bzcommon.utils.BZLogUtil;
+import com.blankj.utilcode.util.LogUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ public class CameraCapacityCheckUtil {
 
     public static CameraCapacityCheckResult isSupportDFXSDK(Context context) {
         if (null == context) {
-            BZLogUtil.e(TAG, "null==context");
+            LogUtils.eTag(TAG, "null==context");
             return CameraCapacityCheckResult.ERROR;
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -37,7 +37,7 @@ public class CameraCapacityCheckUtil {
 
     public static CameraCapacityCheckResult isSupportDFXSDK(Context context, int lensFacing) {
         if (null == context || lensFacing < 0) {
-            BZLogUtil.e(TAG, "null == context || cameraId < 0");
+            LogUtils.eTag(TAG, "null == context || cameraId < 0");
             return CameraCapacityCheckResult.ERROR;
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -65,7 +65,7 @@ public class CameraCapacityCheckUtil {
             }
 
             Range<Integer>[] fpsRanges = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
-            BZLogUtil.d(TAG, "fpsRanges: " + Arrays.toString(fpsRanges));
+            LogUtils.dTag(TAG, "fpsRanges: " + Arrays.toString(fpsRanges));
             if (!isSupportFpsRange(fpsRanges)) {
                 return CameraCapacityCheckResult.NOT_ENOUGH_FPS;
             }
@@ -78,14 +78,14 @@ public class CameraCapacityCheckUtil {
                     long tempPixel;
                     for (Size size : sizes) {
                         tempPixel = size.getHeight() * size.getWidth();
-                        BZLogUtil.d(TAG, "previewSize width=" + size.getWidth() + " height=" + size.getHeight());
+                        LogUtils.dTag(TAG, "previewSize width=" + size.getWidth() + " height=" + size.getHeight());
                         if (tempPixel > maxPixel) {
                             maxPixel = tempPixel;
                         }
                     }
                 }
             }
-            BZLogUtil.d(TAG, "maxPixel=" + maxPixel);
+            LogUtils.dTag(TAG, "maxPixel=" + maxPixel);
             if (maxPixel < 2000000) {
                 return CameraCapacityCheckResult.MAX_PIXEL_LESS;
             }
@@ -94,13 +94,13 @@ public class CameraCapacityCheckUtil {
             boolean enableAdjustIso = false;
             List<CaptureRequest.Key<?>> availableCaptureRequestKeys = cameraCharacteristics.getAvailableCaptureRequestKeys();
             for (CaptureRequest.Key<?> availableCaptureRequestKey : availableCaptureRequestKeys) {
-                BZLogUtil.d(TAG, "availableCaptureRequestKey=" + availableCaptureRequestKey);
+                LogUtils.dTag(TAG, "availableCaptureRequestKey=" + availableCaptureRequestKey);
                 if (CaptureRequest.SENSOR_SENSITIVITY.equals(availableCaptureRequestKey)) {
                     enableAdjustIso = true;
                 }
             }
             if (!enableAdjustIso) {
-                BZLogUtil.w(TAG, "!enableAdjustIso " + CameraCapacityCheckResult.ISO_ADJUST_UNAVAILABLE);
+                LogUtils.wTag(TAG, "!enableAdjustIso " + CameraCapacityCheckResult.ISO_ADJUST_UNAVAILABLE);
 //                return CameraCapacityCheckResult.ISO_ADJUST_UNAVAILABLE;
             }
 
@@ -108,13 +108,13 @@ public class CameraCapacityCheckUtil {
             if (null != isoRange) {
                 Integer isoUpper = isoRange.getUpper();
                 Integer isoLower = isoRange.getLower();
-                BZLogUtil.d(TAG, "isoRange: RangeUpper=" + isoUpper + " getLower=" + isoLower);
+                LogUtils.dTag(TAG, "isoRange: RangeUpper=" + isoUpper + " getLower=" + isoLower);
             } else {
-                BZLogUtil.w("Can't get isoRange");
+                LogUtils.wTag("Can't get isoRange");
                 return CameraCapacityCheckResult.ISO_ADJUSTABLE_RANGE_UNAVAILABLE;
             }
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
             return CameraCapacityCheckResult.ERROR;
         }
         return CameraCapacityCheckResult.GOOD;
@@ -124,21 +124,21 @@ public class CameraCapacityCheckUtil {
     private static int getCameraDeviceLevel(CameraCharacteristics characteristics) {
         Integer deviceLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
         if (deviceLevel == null) {
-            BZLogUtil.e(TAG, "can not get INFO_SUPPORTED_HARDWARE_LEVEL");
+            LogUtils.eTag(TAG, "can not get INFO_SUPPORTED_HARDWARE_LEVEL");
             return -1;
         }
         switch (deviceLevel) {
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
-                BZLogUtil.d(TAG, "hardware supported level:LEVEL_FULL");
+                LogUtils.dTag(TAG, "hardware supported level:LEVEL_FULL");
                 break;
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY:
-                BZLogUtil.w(TAG, "hardware supported level:LEVEL_LEGACY");
+                LogUtils.wTag(TAG, "hardware supported level:LEVEL_LEGACY");
                 break;
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3:
-                BZLogUtil.d(TAG, "hardware supported level:LEVEL_3");
+                LogUtils.dTag(TAG, "hardware supported level:LEVEL_3");
                 break;
             case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED:
-                BZLogUtil.d(TAG, "hardware supported level:LEVEL_LIMITED");
+                LogUtils.dTag(TAG, "hardware supported level:LEVEL_LIMITED");
                 break;
         }
         return deviceLevel;

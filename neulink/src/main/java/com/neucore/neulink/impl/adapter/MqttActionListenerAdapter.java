@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.adapter;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Result;
@@ -20,7 +21,7 @@ public class MqttActionListenerAdapter implements IMqttActionListener, NeulinkCo
     }
     @Override
     public void onSuccess(IMqttToken asyncActionToken) {
-        Log.i(TAG,"onSuccess");
+        LogUtils.iTag(TAG,"onSuccess");
         Result result = Result.ok();
         result.setReqId(reqId);
         iResCallback.onFinished(result);
@@ -28,7 +29,7 @@ public class MqttActionListenerAdapter implements IMqttActionListener, NeulinkCo
 
     @Override
     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-        Log.i(TAG,"onFailure");
+        LogUtils.iTag(TAG,"onFailure");
         Result result = Result.fail(exception.getMessage());
         result.setReqId(reqId);
         iResCallback.onFinished(result);

@@ -9,6 +9,7 @@ import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvider;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
@@ -56,11 +57,11 @@ public class OSSStorage extends AbsStorage implements IStorage {
             //获取可访问的url
             String url = client.presignPublicObjectURL(ConfigContext.getInstance().getConfig(ConfigContext.OSS_BUCKET_NAME), objectKey);
             //格式打印输出
-            //MyLog.e(String.format("PublicObjectURL:%s", url));
+            //MyLogUtils.eTag(String.format("PublicObjectURL:%s", url));
             return url;
         }
         catch(Exception ex){
-            Log.e(TAG,ex.getMessage());
+            LogUtils.eTag(TAG,ex.getMessage());
         }
         return null;
     }

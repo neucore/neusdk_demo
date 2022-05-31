@@ -11,7 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.bzcommon.utils.BZLogUtil;
+import com.blankj.utilcode.util.LogUtils;
 import com.luoye.bzcamera.listener.CameraStateListener;
 import com.luoye.bzcamera.model.FocusObj;
 import com.luoye.bzcamera.model.StartPreviewObj;
@@ -114,10 +114,10 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
     private void lockFocus() {
         if (null == mCamera) {
-            BZLogUtil.e(TAG, "lockFocus null == mCamera");
+            LogUtils.eTag(TAG, "lockFocus null == mCamera");
             return;
         }
-        BZLogUtil.d(TAG, "lockFocus");
+        LogUtils.dTag(TAG, "lockFocus");
         Camera.Parameters parameters = mCamera.getParameters();
         List<String> supportedFocusModes = parameters.getSupportedFocusModes();
 
@@ -127,9 +127,9 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
                 try {
                     mCamera.setParameters(parameters);
                 } catch (Throwable e) {
-                    BZLogUtil.e(TAG, e);
+                    LogUtils.eTag(TAG, e);
                 }
-                BZLogUtil.d(TAG, "lockFocus supportedFocusMode:" + supportedFocusMode);
+                LogUtils.dTag(TAG, "lockFocus supportedFocusMode:" + supportedFocusMode);
                 break;
             }
         }
@@ -137,17 +137,17 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
     private void unlockFocus() {
         if (null == mCamera) {
-            BZLogUtil.e(TAG, "unlockFocus null == mCamera");
+            LogUtils.eTag(TAG, "unlockFocus null == mCamera");
             return;
         }
-        BZLogUtil.d(TAG, "unlockFocus");
+        LogUtils.dTag(TAG, "unlockFocus");
         Camera.Parameters parameters = mCamera.getParameters();
         List<String> supportedFocusModes = parameters.getSupportedFocusModes();
         for (String supportedFocusMode : supportedFocusModes) {
             if (Camera.Parameters.FOCUS_MODE_AUTO.equals(supportedFocusMode)) {
                 parameters.setFocusMode(supportedFocusMode);
                 mCamera.setParameters(parameters);
-                BZLogUtil.d(TAG, "unlockFocus supportedFocusMode:" + supportedFocusMode);
+                LogUtils.dTag(TAG, "unlockFocus supportedFocusMode:" + supportedFocusMode);
                 break;
             }
         }
@@ -155,13 +155,13 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
     private void lockEWB() {
         if (null == mCamera) {
-            BZLogUtil.e(TAG, "lockEWB null == mCamera");
+            LogUtils.eTag(TAG, "lockEWB null == mCamera");
             return;
         }
         Camera.Parameters parameters = mCamera.getParameters();
         boolean autoExposureLockSupported = parameters.isAutoExposureLockSupported();
         boolean autoWhiteBalanceLockSupported = parameters.isAutoWhiteBalanceLockSupported();
-        BZLogUtil.d(TAG, "lockEWB autoExposureLockSupported=" + autoExposureLockSupported + " autoWhiteBalanceLockSupported=" + autoWhiteBalanceLockSupported);
+        LogUtils.dTag(TAG, "lockEWB autoExposureLockSupported=" + autoExposureLockSupported + " autoWhiteBalanceLockSupported=" + autoWhiteBalanceLockSupported);
 
         if (autoExposureLockSupported) {
             parameters.setAutoWhiteBalanceLock(true);
@@ -172,19 +172,19 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         try {
             mCamera.setParameters(parameters);
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
     private void unlockEWB() {
         if (null == mCamera) {
-            BZLogUtil.e(TAG, "unlockEWB null == mCamera");
+            LogUtils.eTag(TAG, "unlockEWB null == mCamera");
             return;
         }
         Camera.Parameters parameters = mCamera.getParameters();
         boolean autoExposureLockSupported = parameters.isAutoExposureLockSupported();
         boolean autoWhiteBalanceLockSupported = parameters.isAutoWhiteBalanceLockSupported();
-        BZLogUtil.d(TAG, "unlockEWB autoExposureLockSupported=" + autoExposureLockSupported + " autoWhiteBalanceLockSupported=" + autoWhiteBalanceLockSupported);
+        LogUtils.dTag(TAG, "unlockEWB autoExposureLockSupported=" + autoExposureLockSupported + " autoWhiteBalanceLockSupported=" + autoWhiteBalanceLockSupported);
 
         if (autoExposureLockSupported) {
             parameters.setAutoWhiteBalanceLock(false);
@@ -195,7 +195,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         try {
             mCamera.setParameters(parameters);
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
@@ -210,12 +210,12 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         int minExposureCompensation = parameters.getMinExposureCompensation();
         float exposureCompensationStep = parameters.getExposureCompensationStep();
         int exposureLevel = (int) (maxExposureCompensation + (minExposureCompensation - maxExposureCompensation) / (1.0f - 0) * (progress - 0) + 0.5);
-        BZLogUtil.d(TAG, "exposureLevel=" + exposureLevel + " minExposureCompensation=" + minExposureCompensation + " maxExposureCompensation=" + maxExposureCompensation + " exposureCompensationStep=" + exposureCompensationStep);
+        LogUtils.dTag(TAG, "exposureLevel=" + exposureLevel + " minExposureCompensation=" + minExposureCompensation + " maxExposureCompensation=" + maxExposureCompensation + " exposureCompensationStep=" + exposureCompensationStep);
         parameters.setExposureCompensation(exposureLevel);
         try {
             mCamera.setParameters(parameters);
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
@@ -229,10 +229,10 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
                 parameters.setFlashMode(flashMode);
                 mCamera.setParameters(parameters);
             } else {
-                BZLogUtil.e(TAG, "setFlashMode fail flashMode=" + flashMode);
+                LogUtils.eTag(TAG, "setFlashMode fail flashMode=" + flashMode);
             }
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
@@ -254,7 +254,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
     private void startPreview(StartPreviewObj startPreviewObj) {
         if (null == startPreviewObj.getSurfaceTexture() || startPreviewObj.getTargetWidth() <= 0 || startPreviewObj.getTargetHeight() <= 0) {
-            BZLogUtil.e(TAG, "start_preview params error");
+            LogUtils.eTag(TAG, "start_preview params error");
             return;
         }
         if (null != mCamera) {
@@ -262,7 +262,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         }
         this.startPreviewObj = startPreviewObj;
 
-        BZLogUtil.d(TAG, "startPreview");
+        LogUtils.dTag(TAG, "startPreview");
         try {
             long startTime = System.currentTimeMillis();
             mCamera = Camera.open(startPreviewObj.getCameraId());
@@ -294,7 +294,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
                 fpsRange = ints;
             }
             if (null != fpsRange) {
-                BZLogUtil.d(TAG, "setPreviewFpsRange " + fpsRange[0] + "x" + fpsRange[1]);
+                LogUtils.dTag(TAG, "setPreviewFpsRange " + fpsRange[0] + "x" + fpsRange[1]);
                 parameters.setPreviewFpsRange(fpsRange[0], fpsRange[1]);
             }
             List<Integer> previewFormats = parameters.getSupportedPreviewFormats();
@@ -309,7 +309,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
             List<String> supportedSceneModes = parameters.getSupportedSceneModes();
             if (null != supportedSceneModes && supportedSceneModes.size() > 0) {
                 for (String supportedSceneMode : supportedSceneModes) {
-                    BZLogUtil.d(TAG, "supportedSceneMode=" + supportedSceneMode);
+                    LogUtils.dTag(TAG, "supportedSceneMode=" + supportedSceneMode);
                     if (Camera.Parameters.SCENE_MODE_PORTRAIT.equals(supportedSceneMode)) {
                         parameters.setSceneMode(supportedSceneMode);
                     }
@@ -318,7 +318,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
             String valueFlatten = parameters.flatten();
             if (null != valueFlatten) {
-                BZLogUtil.d(TAG, "valueFlatten=" + valueFlatten);
+                LogUtils.dTag(TAG, "valueFlatten=" + valueFlatten);
             }
             mCamera.setParameters(parameters);
             mCamera.setDisplayOrientation(mDisplayOrientation);
@@ -352,9 +352,9 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
                     mCameraStateListener.onPreviewSuccess(mCamera, mPreviewSize.width, mPreviewSize.height);
                 }
             }
-            BZLogUtil.d(TAG, "startPreview time consuming=" + (System.currentTimeMillis() - startTime));
+            LogUtils.dTag(TAG, "startPreview time consuming=" + (System.currentTimeMillis() - startTime));
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
             if (null != mCameraStateListener) {
                 mCameraStateListener.onPreviewFail("Camera.open fail");
             }
@@ -365,23 +365,23 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         if (null == mCamera) {
             return;
         }
-        BZLogUtil.d(TAG, "stopPreview");
+        LogUtils.dTag(TAG, "stopPreview");
         long startTime = System.currentTimeMillis();
         try {
             mCamera.stopPreview();
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
         try {
             mCamera.release();
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
         mCamera = null;
         if (null != mCameraStateListener) {
             mCameraStateListener.onCameraClose();
         }
-        BZLogUtil.d(TAG, "stopPreview time consuming=" + (System.currentTimeMillis() - startTime));
+        LogUtils.dTag(TAG, "stopPreview time consuming=" + (System.currentTimeMillis() - startTime));
     }
 
 
@@ -392,7 +392,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
         List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
         Collections.sort(supportedPreviewSizes, comparatorBigger);
         for (Camera.Size supportedPreviewSize : supportedPreviewSizes) {
-            BZLogUtil.v(TAG, "supportedPreviewSize w=" + supportedPreviewSize.width + " supportedPreviewSize h=" + supportedPreviewSize.height);
+            LogUtils.v(TAG, "supportedPreviewSize w=" + supportedPreviewSize.width + " supportedPreviewSize h=" + supportedPreviewSize.height);
         }
 
         Camera.Size targetSize = null;
@@ -508,9 +508,9 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
             setFocusArea(rect);
             mCamera.autoFocus(null);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
-        BZLogUtil.d(TAG, "pointF=" + pointF.toString() + " rect=" + rect);
+        LogUtils.dTag(TAG, "pointF=" + pointF.toString() + " rect=" + rect);
     }
 
     private float clamp(float value) {
@@ -539,7 +539,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
             }
             mCamera.setParameters(parameters);
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
@@ -571,10 +571,10 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
                 parameters.setWhiteBalance(whiteBalance);
                 mCamera.setParameters(parameters);
             } else {
-                BZLogUtil.e(TAG, "not supported whiteBalance:" + whiteBalance);
+                LogUtils.eTag(TAG, "not supported whiteBalance:" + whiteBalance);
             }
         } catch (Exception e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
     }
 
@@ -611,7 +611,7 @@ public class CameraHandler extends Handler implements Camera.PreviewCallback {
 
     public static boolean useOneShot() {
         if (!TextUtils.isEmpty(Build.BRAND) && Build.BRAND.toLowerCase().contains("huawei")) {
-            BZLogUtil.d(TAG, "brand is huawei");
+            LogUtils.dTag(TAG, "brand is huawei");
             return true;
         } else {
             return false;

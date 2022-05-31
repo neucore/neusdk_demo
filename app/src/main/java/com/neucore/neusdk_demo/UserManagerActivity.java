@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.adapter.ProjectAdapter;
 import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
@@ -143,7 +145,7 @@ public class UserManagerActivity extends AppCompatActivity implements Permission
     }
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

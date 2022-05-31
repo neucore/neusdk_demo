@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
@@ -85,7 +86,7 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
                 Long lastOffset = null;
 
                 if(ObjectUtil.isNotEmpty(msg)){
-                    Log.i(TAG,"pages="+pages+",offset="+offset+",MsgOffset="+lastOffset+",PkgStatus="+msg.getPkgStatus());
+                    LogUtils.iTag(TAG,"pages="+pages+",offset="+offset+",MsgOffset="+lastOffset+",PkgStatus="+msg.getPkgStatus());
 
                     lastOffset = msg.getOffset();
 
@@ -100,7 +101,7 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
                 long i=offset;
                 List failed = null;
                 for(;i<pages+1;i++){
-                    Log.d(TAG,"开始进入人脸offset:"+i+"下载");
+                    LogUtils.dTag(TAG,"开始进入人脸offset:"+i+"下载");
                     try {
                         req.setOffset(i);
                         PkgActionResult result = process(topic,req);
@@ -120,12 +121,12 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
                             resLstRsl2Cloud(topic, jsonStr);
-                            Log.d(TAG,"成功完成人脸offset:"+i+"下载");
+                            LogUtils.dTag(TAG,"成功完成人脸offset:"+i+"下载");
                         }
                     }
                     catch(NeulinkException ex){
                         try {
-                            Log.e(TAG, "execute", ex);
+                            LogUtils.eTag(TAG, "execute", ex);
                             if(ObjectUtil.isNotEmpty(msg)){
                                 update(id, IMessage.STATUS_FAIL, ex.getMessage());
                             }
@@ -140,8 +141,8 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
                         }
                     }
                     catch (Exception ex){
-                        Log.d(TAG,"人脸offset:"+i+"下载失败",ex);
-                        Log.e(TAG,"process",ex);
+                        LogUtils.dTag(TAG,"人脸offset:"+i+"下载失败",ex);
+                        LogUtils.eTag(TAG,"process",ex);
                         if(ObjectUtil.isNotEmpty(msg)){
                             updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
                         }
@@ -159,7 +160,7 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
             }
             catch(NeulinkException ex){
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }
@@ -176,7 +177,7 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
             }
             catch (Throwable ex) {
                 try {
-                    Log.e(TAG, "execute", ex);
+                    LogUtils.eTag(TAG, "execute", ex);
                     if(ObjectUtil.isNotEmpty(msg)) {
                         update(id, IMessage.STATUS_FAIL, ex.getMessage());
                     }

@@ -2,6 +2,8 @@ package com.bzcommon.utils;
 
 import android.content.Context;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +27,7 @@ public class TextResourceReader {
             }
             return body.toString();
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
         return null;
     }
@@ -46,7 +48,7 @@ public class TextResourceReader {
             }
             return body.toString();
         } catch (Throwable e) {
-            BZLogUtil.e(TAG, e);
+            LogUtils.eTag(TAG, e);
         }
         return null;
     }

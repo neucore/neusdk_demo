@@ -13,7 +13,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.luoye.bzcamera.BZCamera2View;
 import com.neucore.NeuSDK.NeuFaceQuality;
@@ -31,7 +31,6 @@ import com.neucore.NeuSDK.NeuHandClass1;
 import com.neucore.NeuSDK.NeuHandNode;
 import com.neucore.NeuSDK.NeuHandSwipe;
 import com.neucore.NeuSDK.NeuPoseNode;
-import com.neucore.neulink.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.camera2.YUVConvertUtil;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
@@ -43,7 +42,6 @@ import com.neucore.neusdk_demo.utils.NCModeSelectEvent;
 import com.neucore.neusdk_demo.utils.NeuHandInfo;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
-import com.neucore.neusdk_demo.utils.Size;
 import com.neucore.neusdk_demo.utils.Util;
 import com.neucore.neusdk_demo.view.CustomPoseSurfaceView;
 import com.neucore.neusdk_demo.view.CustomSurfaceView;
@@ -54,8 +52,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
@@ -67,9 +63,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static org.opencv.core.Core.flip;
-import static org.opencv.core.Core.transpose;
 
 
 public class Camera2Activity extends AppCompatActivity {
@@ -318,7 +311,7 @@ public class Camera2Activity extends AppCompatActivity {
     private long faceTime = 0;
     //人脸框
     private void setPaintViewUI(Image image) {
-        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0 ImageToByte  start" );
         if (width == 0){
             width = image.getWidth();
         }
@@ -327,7 +320,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
 
         mPendingRGBFrameData = ImageToByte(image);
-        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
@@ -336,18 +329,18 @@ public class Camera2Activity extends AppCompatActivity {
         }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.d(TAG,"rgb  6666" );
+        //LogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
-        LogUtils.d(TAG,"rgb  7777" );
+        LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.dTag(TAG,"rgb  8888" );
         //获取人脸数据
         NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,true); //withTracking 是否进行人脸追踪
-        LogUtils.d(TAG,"rgb  9999" );
+        LogUtils.dTag(TAG,"rgb  9999" );
 
 
 
@@ -374,7 +367,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
         if (rectList.size() > 0){
             Util.sendIntEventMessge(Constants.FACE_START, rectList);
-            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             rectList.clear();
             rectList.add(new Rect(0,0,0,0));
@@ -415,7 +408,7 @@ public class Camera2Activity extends AppCompatActivity {
                     }
 
                     if (name_org.size() != 0) {
-                        Log.d(TAG, "max sum name=" + name_org.get(maxID) + "  maxSum=" + maxSum);
+                        LogUtils.dTag(TAG, "max sum name=" + name_org.get(maxID) + "  maxSum=" + maxSum);
                     }
 
                     if (maxSum > 0.8) {
@@ -446,7 +439,7 @@ public class Camera2Activity extends AppCompatActivity {
     private Mat rgbMat;
     //手势识别
     private void setPaintViewUIHand(Image image) {
-        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0 ImageToByte  start" );
         if (width == 0){
             width = image.getWidth();
         }
@@ -455,7 +448,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
 
         mPendingRGBFrameData = ImageToByte(image);
-        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
@@ -464,18 +457,18 @@ public class Camera2Activity extends AppCompatActivity {
         }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时
+        LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.d(TAG,"rgb  6666" );
+        //LogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
-        LogUtils.d(TAG,"rgb  7777" );
+        LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.dTag(TAG,"rgb  8888" );
         //获取手势数据
         NeuHandNode[] resultRgb = NeuHandFactory.getInstance().create().neu_iva_hand_detect(rgbMat);
-        LogUtils.d(TAG,"rgb  9999" );
+        LogUtils.dTag(TAG,"rgb  9999" );
 
         List<NeuHandInfo> rectList = new ArrayList<>();
         rectList.clear();
@@ -526,7 +519,7 @@ public class Camera2Activity extends AppCompatActivity {
             //调用分类网络,手势分类
             int status = NeuHandFactory.getInstance().create().neu_iva_hand_class_1(rgbMat, resultRgb[i]);
             if (status != 0) {
-                Log.e(TAG,"error at mNeuHand.neu_iva_hand_class()");
+                LogUtils.eTag(TAG,"error at mNeuHand.neu_iva_hand_class()");
                 rectList.add(neuHandInfo);
                 continue;
             }
@@ -594,7 +587,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIHandNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewUIHandNum == 0){
                 paintViewUIHandNum++;
@@ -617,7 +610,7 @@ public class Camera2Activity extends AppCompatActivity {
     private int paintViewUIPoseNum = 0;
     //Pose检测
     private void setPaintViewUIPose(Image image) {
-        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0 ImageToByte  start" );
         if (width == 0){
             width = image.getWidth();
         }
@@ -626,7 +619,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
 
         mPendingRGBFrameData = ImageToByte(image);
-        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
@@ -635,7 +628,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
-        LogUtils.d(TAG,"rgb  1111" );
+        LogUtils.dTag(TAG,"rgb  1111" );
         //这里,查看图片,要求图片人是朝上的
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgb_mat);
 
@@ -645,28 +638,28 @@ public class Camera2Activity extends AppCompatActivity {
 //        int mRGBimageHeight = image.getHeight();
 //
 //        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-//        //LogUtils.d(TAG,"rgb  2222" );
+//        //LogUtils.dTag(TAG,"rgb  2222" );
 //        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-//        //LogUtils.d(TAG,"rgb  3333" );
+//        //LogUtils.dTag(TAG,"rgb  3333" );
 //        mat2.put(0,0,mPendingRGBFrameData);
 //        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-//        //LogUtils.d(TAG,"rgb  4444" );
+//        //LogUtils.dTag(TAG,"rgb  4444" );
 //        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-//        //LogUtils.d(TAG,"rgb  5555" );
+//        //LogUtils.dTag(TAG,"rgb  5555" );
 //        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 //
 //        Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgb_mat);
 
 
-        //LogUtils.d(TAG,"rgb  6666" );
+        //LogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒(旋转图片)  此处,只有我们项目中有需要
-        LogUtils.d(TAG,"rgb  7777" );
+        LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.dTag(TAG,"rgb  8888" );
         //获取Pose数据
         NeuPoseNode[] resultRgb = NeuPoseFactory.getInstance().create().neu_iva_pose_detect(rgbMat,false); // withTracking 是否进行人脸追踪
-        LogUtils.d(TAG,"rgb  9999  ");
+        LogUtils.dTag(TAG,"rgb  9999  ");
 
 
 
@@ -675,7 +668,7 @@ public class Camera2Activity extends AppCompatActivity {
         for (int i = 0; i < resultRgb.length; i++) {
             float[] pose_node = resultRgb[i].getOne_pose_keypoints();
             float[] pose_node_score = resultRgb[i].getOne_pose_keypoints_score();
-            LogUtils.d(TAG,"rgb  9999   pose_node_score: " + pose_node_score +"   pose_node: "+pose_node );
+            LogUtils.dTag(TAG,"rgb  9999   pose_node_score: " + pose_node_score +"   pose_node: "+pose_node );
 
             NeuHandInfo neuHandInfo = new NeuHandInfo();
             neuHandInfo.setPose_node(pose_node);
@@ -686,7 +679,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIPoseNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            LogUtils.d(TAG,"rgb  10 10 10 10" + rectList.size() );
+            LogUtils.dTag(TAG,"rgb  10 10 10 10" + rectList.size() );
         }else {
             if (paintViewUIPoseNum == 0){
                 paintViewUIPoseNum++;
@@ -707,7 +700,7 @@ public class Camera2Activity extends AppCompatActivity {
     private int paintViewFacePointNum = 0;
     //人脸关键点
     private void setPaintViewUIFacePoint(Image image) {
-        LogUtils.d(TAG,"rgb  0 0 0 0 ImageToByte  start" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0 ImageToByte  start" );
         if (width == 0){
             width = image.getWidth();
         }
@@ -716,7 +709,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
 
         mPendingRGBFrameData = ImageToByte(image);
-        LogUtils.d(TAG,"rgb  0 0 0 0  ImageToByte  end" );
+        LogUtils.dTag(TAG,"rgb  0 0 0 0  ImageToByte  end" );
 
         Mat yuvMat = new Mat(height + (height / 2), width, CvType.CV_8UC1);
         yuvMat.put(0, 0, mPendingRGBFrameData);
@@ -725,18 +718,18 @@ public class Camera2Activity extends AppCompatActivity {
         }
         Imgproc.cvtColor(yuvMat, rgbMat, Imgproc.COLOR_YUV2RGB_NV21, 3);
         yuvMat.release();
-        LogUtils.d(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
+        LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.d(TAG,"rgb  6666" );
+        //LogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
-        LogUtils.d(TAG,"rgb  7777" );
+        LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
-        LogUtils.d(TAG,"rgb  8888" );
+        LogUtils.dTag(TAG,"rgb  8888" );
         //获取人脸关键点数据
         NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,false); // withTracking 是否进行人脸追踪
-        LogUtils.d(TAG,"rgb  9999" );
+        LogUtils.dTag(TAG,"rgb  9999" );
 
 
 
@@ -755,7 +748,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewFacePointNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.d(TAG,"rgb  10 10 10 10" );
+            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewFacePointNum == 0){
                 paintViewFacePointNum++;
@@ -810,37 +803,37 @@ public class Camera2Activity extends AppCompatActivity {
 
     //imagereader 获取的image 从yuv_420_888 转到 yuv 的byte[]
     public byte[] getBytesFromImageAsType(Image image) {
-        LogUtils.d(TAG,"rgb  1111   asType  1111" );
+        LogUtils.dTag(TAG,"rgb  1111   asType  1111" );
         Image.Plane Y = image.getPlanes()[0];
-        //LogUtils.d(TAG,"rgb  1111   asType  2222" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  2222" );
         Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
-        //LogUtils.d(TAG,"rgb  1111   asType  3333" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  3333" );
         Image.Plane V = image.getPlanes()[2];
-        //LogUtils.d(TAG,"rgb  1111   asType  4444" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  4444" );
 
         int Yb = Y.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  5555" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  5555" );
         int Ub = U.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  6666" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  6666" );
         int Vb = V.getBuffer().remaining();
-        //LogUtils.d(TAG,"rgb  1111   asType  7777" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  7777" );
 
         byte[] data = new byte[Yb + Ub + Vb];
-        //LogUtils.d(TAG,"rgb  1111   asType  8888" );
+        //LogUtils.dTag(TAG,"rgb  1111   asType  8888" );
 
         for(int a=1,b=2,c=3;a<b;c++,a++,b--){
-            LogUtils.d(TAG,"rgb  1111   asType  9999  3个变量:  a="+a+"  b="+b+"   c="+c );
+            LogUtils.dTag(TAG,"rgb  1111   asType  9999  3个变量:  a="+a+"  b="+b+"   c="+c );
             if (c == 3){
                 V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
-                LogUtils.d(TAG,"rgb  1111   asType  9999  2222" );
+                LogUtils.dTag(TAG,"rgb  1111   asType  9999  2222" );
             }
             if (b == 2){
                 U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
-                LogUtils.d(TAG,"rgb  1111   asType  9999  1111" );
+                LogUtils.dTag(TAG,"rgb  1111   asType  9999  1111" );
             }
             if (a == 1){
                 Y.getBuffer().get(data, 0, Yb);  //耗时2毫秒
-                LogUtils.d(TAG,"rgb  1111   asType  9999 0000" );
+                LogUtils.dTag(TAG,"rgb  1111   asType  9999 0000" );
             }
         }
 
@@ -848,7 +841,7 @@ public class Camera2Activity extends AppCompatActivity {
 //        U.getBuffer().get(data, Yb, Ub);    //耗时2毫秒
 //        V.getBuffer().get(data, Yb+ Ub, Vb);  //耗时5毫秒
 
-        LogUtils.d(TAG,"rgb  1111   asType  9999  end" );
+        LogUtils.dTag(TAG,"rgb  1111   asType  9999  end" );
         return data;
     }
 
@@ -990,10 +983,10 @@ public class Camera2Activity extends AppCompatActivity {
                         feature_org.add(register_face.getFeature());
                         feature_mask.add(register_face.getMaskFeature());
                         name_org.add(face.getName().split("\\.")[0]);
-                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                        LogUtils.dTag(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
                     }
                 }else{
-                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+                    LogUtils.eTag(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
                 }
             }
 
@@ -1017,10 +1010,10 @@ public class Camera2Activity extends AppCompatActivity {
                         feature_org.add(register_face.getFeature());
                         feature_mask.add(register_face.getMaskFeature());
                         name_org.add(face.getName().split("\\.")[0]);
-                        Log.d(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
+                        LogUtils.dTag(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
                     }
                 }else{
-                    Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
+                    LogUtils.eTag(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
                 }
             }
         }

@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.util.Set;
 
 @SuppressLint("NewApi")
@@ -21,7 +23,7 @@ public class PrefsUtils {
 			editor.putString(prefsName, prefsValue);
 			editor.commit();
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 	}
 
@@ -31,7 +33,7 @@ public class PrefsUtils {
 			SharedPreferences sharedata = context.getSharedPreferences(SHARED_TXY, Context.MODE_PRIVATE);
 			prefsValue = sharedata.getString(prefsName, "");
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return prefsValue;
 	}
@@ -41,7 +43,7 @@ public class PrefsUtils {
 			SharedPreferences sharedata = context.getSharedPreferences(SHARED_TXY, Context.MODE_PRIVATE);
 			prefsValue = sharedata.getString(prefsName, def);
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return prefsValue;
 	}
@@ -52,7 +54,7 @@ public class PrefsUtils {
 			SharedPreferences sharedata = context.getSharedPreferences(SHARED_TXY, Context.MODE_PRIVATE);
 			prefsValue = sharedata.getBoolean(prefsName, true);
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return prefsValue;
 	}
@@ -64,7 +66,7 @@ public class PrefsUtils {
 			editor.putBoolean(prefsName, prefsValue);
 			editor.commit();
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 	}
 	public static void writeSetPrefs(Context context, String prefsName, Set<String> prefsValue) {
@@ -74,7 +76,7 @@ public class PrefsUtils {
 			editor.putStringSet(prefsName, prefsValue);
 			editor.commit();
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 	}
 	public static Set<String> readSetPrefs(Context context, String prefsName) {
@@ -83,7 +85,7 @@ public class PrefsUtils {
 			SharedPreferences sharedata = context.getSharedPreferences(SHARED_TXY, Context.MODE_PRIVATE);
 			prefsValue = sharedata.getStringSet(prefsName, null);
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return prefsValue;
 	}
@@ -94,7 +96,7 @@ public class PrefsUtils {
 			editor.putFloat(prefsName, prefsValue);
 			editor.commit();
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 	}
 
@@ -104,7 +106,7 @@ public class PrefsUtils {
 			SharedPreferences sharedata = context.getSharedPreferences(SHARED_TXY, Context.MODE_PRIVATE);
 			prefsValue = sharedata.getFloat(prefsName, 0);
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return prefsValue;
 	}
@@ -129,7 +131,7 @@ public class PrefsUtils {
 	       }  
 	       return builder.toString();  
 	   } catch (PackageManager.NameNotFoundException e) {
-		   Log.e(TAG, e.getMessage(), e);
+		   LogUtils.eTag(TAG, e.getMessage(), e);
 	   }  
 	   return "";  
 	  }

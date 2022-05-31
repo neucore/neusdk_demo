@@ -19,6 +19,8 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
+import com.blankj.utilcode.util.LogUtils;
+
 @TargetApi(21)
 public class Camera2Renderer extends CameraGLRendererBase {
 
@@ -39,7 +41,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
 
     @Override
     protected void doStart() {
-        Log.d(LOGTAG, "doStart");
+        LogUtils.dTag(LOGTAG, "doStart");
         startBackgroundThread();
         super.doStart();
     }
@@ -47,15 +49,15 @@ public class Camera2Renderer extends CameraGLRendererBase {
 
     @Override
     protected void doStop() {
-        Log.d(LOGTAG, "doStop");
+        LogUtils.dTag(LOGTAG, "doStop");
         super.doStop();
         stopBackgroundThread();
     }
 
     boolean cacPreviewSize(final int width, final int height) {
-        Log.i(LOGTAG, "cacPreviewSize: "+width+"x"+height);
+        LogUtils.i(LOGTAG, "cacPreviewSize: "+width+"x"+height);
         if(mCameraID == null) {
-            Log.e(LOGTAG, "Camera isn't initialized!");
+            LogUtils.eTag(LOGTAG, "Camera isn't initialized!");
             return false;
         }
         CameraManager manager = (CameraManager) mView.getContext()
@@ -69,7 +71,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
             float aspect = (float)width / height;
             for (Size psize : map.getOutputSizes(SurfaceTexture.class)) {
                 int w = psize.getWidth(), h = psize.getHeight();
-                Log.d(LOGTAG, "trying size: "+w+"x"+h);
+                LogUtils.dTag(LOGTAG, "trying size: "+w+"x"+h);
                 if ( width >= w && height >= h &&
                      bestWidth <= w && bestHeight <= h &&
                      Math.abs(aspect - (float)w/h) < 0.2 ) {
@@ -77,7 +79,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
                     bestHeight = h;
                 }
             }
-            Log.i(LOGTAG, "best size: "+bestWidth+"x"+bestHeight);
+            LogUtils.i(LOGTAG, "best size: "+bestWidth+"x"+bestHeight);
             if( bestWidth == 0 || bestHeight == 0 ||
                 mPreviewSize.getWidth() == bestWidth &&
                 mPreviewSize.getHeight() == bestHeight )
@@ -87,23 +89,23 @@ public class Camera2Renderer extends CameraGLRendererBase {
                 return true;
             }
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "cacPreviewSize - Camera Access Exception");
+            LogUtils.eTag(LOGTAG, "cacPreviewSize - Camera Access Exception");
         } catch (IllegalArgumentException e) {
-            Log.e(LOGTAG, "cacPreviewSize - Illegal Argument Exception");
+            LogUtils.eTag(LOGTAG, "cacPreviewSize - Illegal Argument Exception");
         } catch (SecurityException e) {
-            Log.e(LOGTAG, "cacPreviewSize - Security Exception");
+            LogUtils.eTag(LOGTAG, "cacPreviewSize - Security Exception");
         }
         return false;
     }
 
     @Override
     protected void openCamera(int id) {
-        Log.i(LOGTAG, "openCamera");
+        LogUtils.i(LOGTAG, "openCamera");
         CameraManager manager = (CameraManager) mView.getContext().getSystemService(Context.CAMERA_SERVICE);
         try {
             String camList[] = manager.getCameraIdList();
             if(camList.length == 0) {
-                Log.e(LOGTAG, "Error: camera isn't detected.");
+                LogUtils.eTag(LOGTAG, "Error: camera isn't detected.");
                 return;
             }
             if(id == CameraBridgeViewBase.CAMERA_ID_ANY) {
@@ -125,23 +127,23 @@ public class Camera2Renderer extends CameraGLRendererBase {
                     throw new RuntimeException(
                             "Time out waiting to lock camera opening.");
                 }
-                Log.i(LOGTAG, "Opening camera: " + mCameraID);
+                LogUtils.i(LOGTAG, "Opening camera: " + mCameraID);
                 manager.openCamera(mCameraID, mStateCallback, mBackgroundHandler);
             }
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "OpenCamera - Camera Access Exception");
+            LogUtils.eTag(LOGTAG, "OpenCamera - Camera Access Exception");
         } catch (IllegalArgumentException e) {
-            Log.e(LOGTAG, "OpenCamera - Illegal Argument Exception");
+            LogUtils.eTag(LOGTAG, "OpenCamera - Illegal Argument Exception");
         } catch (SecurityException e) {
-            Log.e(LOGTAG, "OpenCamera - Security Exception");
+            LogUtils.eTag(LOGTAG, "OpenCamera - Security Exception");
         } catch (InterruptedException e) {
-            Log.e(LOGTAG, "OpenCamera - Interrupted Exception");
+            LogUtils.eTag(LOGTAG, "OpenCamera - Interrupted Exception");
         }
     }
 
     @Override
     protected void closeCamera() {
-        Log.i(LOGTAG, "closeCamera");
+        LogUtils.i(LOGTAG, "closeCamera");
         try {
             mCameraOpenCloseLock.acquire();
             if (null != mCaptureSession) {
@@ -186,24 +188,24 @@ public class Camera2Renderer extends CameraGLRendererBase {
 
     private void createCameraPreviewSession() {
         int w=mPreviewSize.getWidth(), h=mPreviewSize.getHeight();
-        Log.i(LOGTAG, "createCameraPreviewSession("+w+"x"+h+")");
+        LogUtils.i(LOGTAG, "createCameraPreviewSession("+w+"x"+h+")");
         if(w<0 || h<0)
             return;
         try {
             mCameraOpenCloseLock.acquire();
             if (null == mCameraDevice) {
                 mCameraOpenCloseLock.release();
-                Log.e(LOGTAG, "createCameraPreviewSession: camera isn't opened");
+                LogUtils.eTag(LOGTAG, "createCameraPreviewSession: camera isn't opened");
                 return;
             }
             if (null != mCaptureSession) {
                 mCameraOpenCloseLock.release();
-                Log.e(LOGTAG, "createCameraPreviewSession: mCaptureSession is already started");
+                LogUtils.eTag(LOGTAG, "createCameraPreviewSession: mCaptureSession is already started");
                 return;
             }
             if(null == mSTexture) {
                 mCameraOpenCloseLock.release();
-                Log.e(LOGTAG, "createCameraPreviewSession: preview SurfaceTexture is null");
+                LogUtils.eTag(LOGTAG, "createCameraPreviewSession: preview SurfaceTexture is null");
                 return;
             }
             mSTexture.setDefaultBufferSize(w, h);
@@ -224,9 +226,9 @@ public class Camera2Renderer extends CameraGLRendererBase {
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
                                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
-                                Log.i(LOGTAG, "CameraPreviewSession has been started");
+                                LogUtils.i(LOGTAG, "CameraPreviewSession has been started");
                             } catch (CameraAccessException e) {
-                                Log.e(LOGTAG, "createCaptureSession failed");
+                                LogUtils.eTag(LOGTAG, "createCaptureSession failed");
                             }
                             mCameraOpenCloseLock.release();
                         }
@@ -234,12 +236,12 @@ public class Camera2Renderer extends CameraGLRendererBase {
                         @Override
                         public void onConfigureFailed(
                                 CameraCaptureSession cameraCaptureSession) {
-                            Log.e(LOGTAG, "createCameraPreviewSession failed");
+                            LogUtils.eTag(LOGTAG, "createCameraPreviewSession failed");
                             mCameraOpenCloseLock.release();
                         }
                     }, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "createCameraPreviewSession");
+            LogUtils.eTag(LOGTAG, "createCameraPreviewSession");
         } catch (InterruptedException e) {
             throw new RuntimeException(
                     "Interrupted while createCameraPreviewSession", e);
@@ -250,7 +252,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
     }
 
     private void startBackgroundThread() {
-        Log.i(LOGTAG, "startBackgroundThread");
+        LogUtils.i(LOGTAG, "startBackgroundThread");
         stopBackgroundThread();
         mBackgroundThread = new HandlerThread("CameraBackground");
         mBackgroundThread.start();
@@ -258,7 +260,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
     }
 
     private void stopBackgroundThread() {
-        Log.i(LOGTAG, "stopBackgroundThread");
+        LogUtils.i(LOGTAG, "stopBackgroundThread");
         if(mBackgroundThread == null)
             return;
         mBackgroundThread.quitSafely();
@@ -267,13 +269,13 @@ public class Camera2Renderer extends CameraGLRendererBase {
             mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
-            Log.e(LOGTAG, "stopBackgroundThread");
+            LogUtils.eTag(LOGTAG, "stopBackgroundThread");
         }
     }
 
     @Override
     protected void setCameraPreviewSize(int width, int height) {
-        Log.i(LOGTAG, "setCameraPreviewSize("+width+"x"+height+")");
+        LogUtils.i(LOGTAG, "setCameraPreviewSize("+width+"x"+height+")");
         if(mMaxCameraWidth  > 0 && mMaxCameraWidth  < width)  width  = mMaxCameraWidth;
         if(mMaxCameraHeight > 0 && mMaxCameraHeight < height) height = mMaxCameraHeight;
         try {
@@ -288,7 +290,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
                 return;
             }
             if (null != mCaptureSession) {
-                Log.d(LOGTAG, "closing existing previewSession");
+                LogUtils.dTag(LOGTAG, "closing existing previewSession");
                 mCaptureSession.close();
                 mCaptureSession = null;
             }

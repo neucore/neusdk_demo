@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
@@ -123,7 +124,7 @@ public class DataManagerActivity extends AppCompatActivity implements Permission
     }
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
@@ -219,15 +220,15 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                     service.publishMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
                 }
                 else{
-                    Log.i(TAG,String.format("url=%s",url));
+                    LogUtils.iTag(TAG,String.format("url=%s",url));
                 }
             }
             else {
-                Log.i(TAG,String.format("url=%s",url));
+                LogUtils.iTag(TAG,String.format("url=%s",url));
             }
         }
         else {
-            Log.i(TAG,"url为空");
+            LogUtils.iTag(TAG,"url为空");
         }
     }
 

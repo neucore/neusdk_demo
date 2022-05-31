@@ -14,6 +14,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
@@ -65,7 +66,7 @@ public class DeviceUtils implements NeulinkConst{
 			if (path.equals("/storage/emulated/0"))
 				path = "/storage/sdcard0";
 		}
-		Log.i(TAG,"rootPath: "+path);
+		LogUtils.iTag(TAG,"rootPath: "+path);
 		return path; //"/storage/sdcard0";
 	}
 
@@ -237,7 +238,7 @@ public class DeviceUtils implements NeulinkConst{
 			}
 		} catch (Exception e) {
 			//赋予默认值
-			Log.e(TAG, e.getMessage(), e);
+			LogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return cpuAddress;
 	}
@@ -321,7 +322,7 @@ public class DeviceUtils implements NeulinkConst{
 				}
 			}
 		} catch (SocketException e) {
-			Log.e(TAG,e.getMessage(),e);
+			LogUtils.eTag(TAG,e.getMessage(),e);
 		}
 		return hostIp;
 	}
@@ -372,7 +373,7 @@ public class DeviceUtils implements NeulinkConst{
 		try {
 			Method systemProperties_get = Class.forName("android.os.SystemProperties").getMethod("get", String.class);
 			String ret = (String) systemProperties_get.invoke(null, key);
-			Log.d(TAG, key + "= " + ret);
+			LogUtils.dTag(TAG, key + "= " + ret);
 			if (ret != null && !StrUtil.isEmpty(ret)){
 				return ret;
 			}
@@ -415,7 +416,7 @@ public class DeviceUtils implements NeulinkConst{
 				}
 			}
 		}
-		Log.d(TAG, "SkuToken="+line);
+		LogUtils.dTag(TAG, "SkuToken="+line);
 		return line;
 	}
 }

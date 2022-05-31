@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.adapter.RecordAdapter;
 import com.neucore.neusdk_demo.service.db.bean.Record;
 import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
@@ -158,7 +159,7 @@ public class RecordSearchListActivity extends AppCompatActivity implements Permi
     }
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

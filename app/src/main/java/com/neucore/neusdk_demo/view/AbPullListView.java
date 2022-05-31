@@ -29,6 +29,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Scroller;
 
+import com.blankj.utilcode.util.LogUtils;
+
 // TODO: Auto-generated Javadoc
 
 /**
@@ -255,7 +257,7 @@ public class AbPullListView extends ListView implements OnScrollListener {
 	 * 开始加载更多.
 	 */
 	private void startLoadMore() {
-		Log.d("TAG", "startLoadMore");
+		LogUtils.dTag("TAG", "startLoadMore");
 		mFooterView.show();
 		mPullLoading = true;
 		mFooterView.setState(AbListViewFooter.STATE_LOADING);

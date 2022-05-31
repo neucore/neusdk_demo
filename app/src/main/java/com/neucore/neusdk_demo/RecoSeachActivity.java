@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
@@ -67,7 +68,7 @@ public class RecoSeachActivity extends AppCompatActivity implements PermissionIn
                             startTime=dateStart.getTime();
                             endTime=dateEnd.getTime();
                         } catch (ParseException e) {
-                            Log.e(TAG,"listener",e);
+                            LogUtils.eTag(TAG,"listener",e);
                         }
                     }
                     }else if(type==1){
@@ -236,7 +237,7 @@ public class RecoSeachActivity extends AppCompatActivity implements PermissionIn
     }
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

@@ -17,7 +17,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.WindowManager;
 
-import com.bzcommon.utils.BZLogUtil;
+import com.blankj.utilcode.util.LogUtils;
 import com.luoye.bzcamera.listener.CameraPreviewListener;
 import com.luoye.bzcamera.listener.CameraStateListener;
 import com.luoye.bzcamera.listener.OnTransformChangeListener;
@@ -64,7 +64,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     }
 
     public void onResume() {
-        BZLogUtil.d(TAG, "onResume");
+        LogUtils.dTag(TAG, "onResume");
         startPreview();
     }
 
@@ -75,7 +75,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     }
 
     public void onPause() {
-        BZLogUtil.d(TAG, "onPause");
+        LogUtils.dTag(TAG, "onPause");
         stopPreview();
     }
 
@@ -85,7 +85,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
 
     public void setPreviewTargetSize(int previewTargetSizeWidth, int previewTargetSizeHeight) {
         if (previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0) {
-            BZLogUtil.e(TAG, "setPreviewTargetSize previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0");
+            LogUtils.eTag(TAG, "setPreviewTargetSize previewTargetSizeWidth <= 0 || previewTargetSizeHeight <= 0");
             return;
         }
         this.previewTargetSizeWidth = previewTargetSizeWidth;
@@ -93,21 +93,21 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     }
 
     private synchronized void startPreview(final SurfaceTexture surfaceTexture) {
-        BZLogUtil.d(TAG, "startPreview");
+        LogUtils.dTag(TAG, "startPreview");
         if (null == surfaceTexture) {
-            BZLogUtil.w(TAG, "null == surfaceTexture");
+            LogUtils.wTag(TAG, "null == surfaceTexture");
             return;
         }
         //Granted Permission
         if (!PermissionUtil.isPermissionGranted(getContext(), Manifest.permission.CAMERA)) {
-            BZLogUtil.e(TAG, "no camera permission");
+            LogUtils.eTag(TAG, "no camera permission");
             return;
         }
 
         int width = getWidth();
         int height = getHeight();
         if (width <= 0 || height <= 0) {
-            BZLogUtil.e(TAG, "width<=0||height<=0");
+            LogUtils.eTag(TAG, "width<=0||height<=0");
             return;
         }
         stopPreview();
@@ -131,7 +131,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     }
 
     public synchronized void stopPreview() {
-        BZLogUtil.d(TAG, "stopPreview");
+        LogUtils.dTag(TAG, "stopPreview");
         if (null != mCameraHandler) {
             mCameraHandler.removeMessages(CameraHandler.MSG_START_PREVIEW);
             mCameraHandler.removeMessages(CameraHandler.MSG_STOP_PREVIEW);
@@ -147,9 +147,9 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
                 }
                 long startTime = System.currentTimeMillis();
                 mCameraHandlerThread.join();
-                BZLogUtil.d(TAG, "mCameraHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
+                LogUtils.dTag(TAG, "mCameraHandlerThread.join() time consuming=" + (System.currentTimeMillis() - startTime));
             } catch (Exception e) {
-                BZLogUtil.e(TAG, e);
+                LogUtils.eTag(TAG, e);
             }
             mCameraHandlerThread = null;
         }
@@ -158,13 +158,13 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mSurfaceTexture = surface;
-        BZLogUtil.d(TAG, "onSurfaceTextureAvailable");
+        LogUtils.dTag(TAG, "onSurfaceTextureAvailable");
         startPreview(surface);
     }
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        BZLogUtil.d(TAG, "onSurfaceTextureSizeChanged width=" + width + " height=" + height);
+        LogUtils.dTag(TAG, "onSurfaceTextureSizeChanged width=" + width + " height=" + height);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
     private CameraPreviewListener cameraPreviewListener = new CameraPreviewListener() {
         @Override
         public void onPreviewSuccess(Camera camera, final int width, final int height) {
-            BZLogUtil.d(TAG, "onPreviewSuccess width=" + width + " height=" + height);
+            LogUtils.dTag(TAG, "onPreviewSuccess width=" + width + " height=" + height);
             post(new Runnable() {
                 @Override
                 public void run() {
@@ -358,7 +358,7 @@ public class BZCameraView extends TextureView implements TextureView.SurfaceText
         }
         x -= rectDst.left;
         y -= rectDst.top;
-        BZLogUtil.d(TAG, "setFocusPoint dis x=" + x + " y=" + y);
+        LogUtils.dTag(TAG, "setFocusPoint dis x=" + x + " y=" + y);
 
         FocusObj focusObj = new FocusObj();
         focusObj.setFocusPointF(new PointF(x, y));

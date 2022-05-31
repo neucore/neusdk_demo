@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
@@ -105,7 +106,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            Log.e(TAG,cmdStr+"持久化没有实现...");
+            LogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
         }
         else if(DEL.equalsIgnoreCase(cmdStr)){
             //删除人脸到 twocamera/photo/ 文件夹下
@@ -114,7 +115,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            Log.e(TAG,cmdStr+"持久化为实现。。。");
+            LogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
         }
 
         /**
@@ -126,7 +127,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 最后一个包时，需要执行清理历史数据【无效数据】，可替换自己的代码
              * @TODO 根据自己需要自行定义，可替换自己的代码，建议根据请求时间进行清理；sample根据数据的更新时间进行处理
              */
-            Log.e(TAG,"清除过期数据没有实现。。。");
+            LogUtils.eTag(TAG,"清除过期数据没有实现。。。");
         }
 
         FacePkgActionResult result = new FacePkgActionResult();
@@ -177,7 +178,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
                 FaceNode faceNode = getFaceNode(tmp, options);
                 if(faceNode.isFeatureValid() == false){
                     if (ObjectUtil.isNotEmpty(faceNode.getFailedReason())) {
-                        Log.e(TAG,tmpName+","+faceNode.getFailedReason());
+                        LogUtils.eTag(TAG,tmpName+","+faceNode.getFailedReason());
                         failed.add(ext_id + ":" + faceNode.getFailedReason());
                     }
                     else {
@@ -223,7 +224,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
         /**
          * @TODO: 算法实现图片解析
          */
-        Log.e(TAG,"AI算法没有集成。。。");
+        LogUtils.eTag(TAG,"AI算法没有集成。。。");
         return new FaceNode();
     }
 
@@ -246,7 +247,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
                 bytesToImage(bitmap,ext_id);
             }
             catch(IOException e){
-                Log.e(TAG,e.getMessage());
+                LogUtils.eTag(TAG,e.getMessage());
             }
         }
     }
@@ -264,9 +265,9 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
-            Log.d("neu", "File not found: " + e.getMessage());
+            LogUtils.dTag("neu", "File not found: " + e.getMessage());
         } catch (IOException e) {
-            Log.d("neu", "Error accessing file: " + e.getMessage());
+            LogUtils.dTag("neu", "Error accessing file: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

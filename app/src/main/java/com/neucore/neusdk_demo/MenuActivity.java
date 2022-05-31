@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.NeuHttpHelper;
@@ -361,7 +362,7 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         NeulinkService.getInstance().destroy();
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
@@ -406,10 +407,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
     protected void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            LogUtils.dTag(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
         } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            LogUtils.dTag(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -420,7 +421,7 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully");
+                    LogUtils.i(TAG, "OpenCV loaded successfully");
 //                    mOpenCvCameraView.enableView();
 //                    mOpenCvCameraView.setOnTouchListener(ColorBlobDetectionActivity.this);
                 }

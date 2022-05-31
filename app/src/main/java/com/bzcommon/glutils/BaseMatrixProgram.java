@@ -1,10 +1,10 @@
 package com.bzcommon.glutils;
 
 
-import com.bzcommon.utils.BZLogUtil;
-
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniformMatrix4fv;
+
+import com.blankj.utilcode.util.LogUtils;
 
 /**
  * Created by jack_liu on 2018-12-03 10:42.
@@ -53,7 +53,7 @@ public class BaseMatrixProgram extends BaseProgram {
 
     public void setMatrix(float matrix[]) {
         if (null == matrix || matrix.length != 16) {
-            BZLogUtil.e(TAG, "setMatrix null==matrix||matrix.length!=16");
+            LogUtils.eTag(TAG, "setMatrix null==matrix||matrix.length!=16");
             return;
         }
         this.matrix = matrix;

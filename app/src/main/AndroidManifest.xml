@@ -58,10 +58,6 @@
             android:launchMode="singleTask"></activity>
         <activity android:name="com.neucore.neusdk_demo.Camera2PortraitActivity"
             android:launchMode="singleTask"></activity>
-
-        <!-- Log Service -->
-        <service android:name="com.neucore.neulink.impl.service.LogService" />
-
         <receiver
             android:name="com.neucore.neusdk_demo.app.EnuSDKReceiver"
             android:enabled="true"

@@ -22,6 +22,8 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.ViewGroup.LayoutParams;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -79,7 +81,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
-            Log.e(LOGTAG, "stopBackgroundThread", e);
+            LogUtils.eTag(LOGTAG, "stopBackgroundThread", e);
         }
     }
 
@@ -89,11 +91,11 @@ public class JavaCamera2View extends CameraBridgeViewBase {
         try {
             String camList[] = manager.getCameraIdList();
             if (camList.length == 0) {
-                Log.e(LOGTAG, "Error: camera isn't detected.");
+                LogUtils.eTag(LOGTAG, "Error: camera isn't detected.");
                 return false;
             }
             if (mCameraIndex == CameraBridgeViewBase.CAMERA_ID_ANY) {
-                Log.e(LOGTAG, "come here camList.length= " + camList.length);
+                LogUtils.eTag(LOGTAG, "come here camList.length= " + camList.length);
                 mCameraID = camList[0];
             } else {
                 for (String cameraID : camList) {
@@ -103,14 +105,14 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                         (mCameraIndex == CameraBridgeViewBase.CAMERA_ID_FRONT &&
                             characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT)
                     ) {
-                        Log.e(LOGTAG, "come here 2");
+                        LogUtils.eTag(LOGTAG, "come here 2");
                         mCameraID = cameraID;
                         break;
                     }
                 }
             }
             if (mCameraID != null) {
-                Log.i(LOGTAG, "Opening camera: " + mCameraID);
+                LogUtils.iTag(LOGTAG, "Opening camera: " + mCameraID);
                 manager.openCamera(mCameraID, mStateCallback, mBackgroundHandler);
             } else { // make JavaCamera2View behaves in the same way as JavaCameraView
                 Log.i(LOGTAG, "Trying to open camera with the value (" + mCameraIndex + ")");
@@ -124,11 +126,11 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             }
             return true;
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "OpenCamera - Camera Access Exception", e);
+            LogUtils.eTag(LOGTAG, "OpenCamera - Camera Access Exception", e);
         } catch (IllegalArgumentException e) {
-            Log.e(LOGTAG, "OpenCamera - Illegal Argument Exception", e);
+            LogUtils.eTag(LOGTAG, "OpenCamera - Illegal Argument Exception", e);
         } catch (SecurityException e) {
-            Log.e(LOGTAG, "OpenCamera - Security Exception", e);
+            LogUtils.eTag(LOGTAG, "OpenCamera - Security Exception", e);
         }
         return false;
     }
@@ -162,11 +164,11 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             return;
         try {
             if (null == mCameraDevice) {
-                Log.e(LOGTAG, "createCameraPreviewSession: camera isn't opened");
+                LogUtils.eTag(LOGTAG, "createCameraPreviewSession: camera isn't opened");
                 return;
             }
             if (null != mCaptureSession) {
-                Log.e(LOGTAG, "createCameraPreviewSession: mCaptureSession is already started");
+                LogUtils.eTag(LOGTAG, "createCameraPreviewSession: mCaptureSession is already started");
                 return;
             }
 
@@ -222,19 +224,19 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                             mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
                             Log.i(LOGTAG, "CameraPreviewSession has been started");
                         } catch (Exception e) {
-                            Log.e(LOGTAG, "createCaptureSession failed", e);
+                            LogUtils.eTag(LOGTAG, "createCaptureSession failed", e);
                         }
                     }
 
                     @Override
                     public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
-                        Log.e(LOGTAG, "createCameraPreviewSession failed");
+                        LogUtils.eTag(LOGTAG, "createCameraPreviewSession failed");
                     }
                 },
                 null
             );
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "createCameraPreviewSession", e);
+            LogUtils.eTag(LOGTAG, "createCameraPreviewSession", e);
         }
     }
 
@@ -263,7 +265,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
     boolean calcPreviewSize(final int width, final int height) {
         Log.i(LOGTAG, "calcPreviewSize: " + width + "x" + height);
         if (mCameraID == null) {
-            Log.e(LOGTAG, "Camera isn't initialized!");
+            LogUtils.eTag(LOGTAG, "Camera isn't initialized!");
             return false;
         }
         CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
@@ -277,7 +279,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             bestHeight = sizes[0].getHeight();
             for (android.util.Size sz : sizes) {
                 int w = sz.getWidth(), h = sz.getHeight();
-                Log.d(LOGTAG, "trying size: " + w + "x" + h);
+                LogUtils.dTag(LOGTAG, "trying size: " + w + "x" + h);
                 if (width >= w && height >= h && bestWidth <= w && bestHeight <= h
                         && Math.abs(aspect - (float) w / h) < 0.2) {
                     bestWidth = w;
@@ -293,11 +295,11 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                 return true;
             }
         } catch (CameraAccessException e) {
-            Log.e(LOGTAG, "calcPreviewSize - Camera Access Exception", e);
+            LogUtils.eTag(LOGTAG, "calcPreviewSize - Camera Access Exception", e);
         } catch (IllegalArgumentException e) {
-            Log.e(LOGTAG, "calcPreviewSize - Illegal Argument Exception", e);
+            LogUtils.eTag(LOGTAG, "calcPreviewSize - Illegal Argument Exception", e);
         } catch (SecurityException e) {
-            Log.e(LOGTAG, "calcPreviewSize - Security Exception", e);
+            LogUtils.eTag(LOGTAG, "calcPreviewSize - Security Exception", e);
         }
         return false;
     }
@@ -321,7 +323,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 
             if (needReconfig) {
                 if (null != mCaptureSession) {
-                    Log.d(LOGTAG, "closing existing previewSession");
+                    LogUtils.dTag(LOGTAG, "closing existing previewSession");
                     mCaptureSession.close();
                     mCaptureSession = null;
                 }

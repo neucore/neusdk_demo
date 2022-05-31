@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
 import com.neucore.neulink.ICmdListener;
@@ -196,7 +197,7 @@ public class SampleCarSyncListener implements ICmdListener<UpdateActionResult, C
                 FaceNode faceNode = getFaceNode(tmp, options);
                 if(faceNode.isFeatureValid() == false){
                     if (ObjectUtil.isNotEmpty(faceNode.getFailedReason())) {
-                        Log.e(TAG,tmpName+","+faceNode.getFailedReason());
+                        LogUtils.eTag(TAG,tmpName+","+faceNode.getFailedReason());
                         failed.add(ext_id + ":" + faceNode.getFailedReason());
                     }
                     else {
@@ -262,9 +263,9 @@ public class SampleCarSyncListener implements ICmdListener<UpdateActionResult, C
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
-            Log.d("neu", "File not found: " + e.getMessage());
+            LogUtils.dTag("neu", "File not found: " + e.getMessage());
         } catch (IOException e) {
-            Log.d("neu", "Error accessing file: " + e.getMessage());
+            LogUtils.dTag("neu", "Error accessing file: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

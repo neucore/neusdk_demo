@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neusdk_demo.service.db.bean.Record;
 import com.neucore.neusdk_demo.service.db.bean.User;
@@ -35,7 +36,6 @@ import com.neucore.neusdk_demo.ecport.ExcelUtils;
 import com.neucore.neusdk_demo.ecport.JavaBean;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 import com.neucore.neusdk_demo.utils.FileUtils2;
-import com.neucore.neulink.util.LogUtils;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 
 import java.io.File;
@@ -165,7 +165,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
             excelUtils.createSheetSetTitle(tableName, new String[]{"姓名", "工号", "卡号","部门","时间","类型","验证方式"}, titleFormat)
                     .fillData(javaBeans, dataFormat).close();
         } catch (WriteException e) {
-            Log.e(TAG,"exportExcel",e);
+            LogUtils.eTag(TAG,"exportExcel",e);
         }
         MediaScannerConnection.scanFile(this, new String[] { NeulinkConst.fileExport+tableName+".xls" }, null, null);
         Message msg= new Message();
@@ -211,7 +211,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
             excelUtils.createSheetSetTitle(tableName, new String[]{"姓名", "工号", "卡号","部门","时间","是否上传","上传时间"}, titleFormat)
                     .fillData(javaBeans, dataFormat).close();
         } catch (WriteException e) {
-            Log.e(TAG,"exportRecordExcel",e);
+            LogUtils.eTag(TAG,"exportRecordExcel",e);
         }
         Message msg= new Message();
         msg.what=0;
@@ -334,7 +334,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
             try {
                 excelPath = getPath(this, data.getData());
             } catch (URISyntaxException e) {
-                Log.e(TAG,"onActivityResult",e);
+                LogUtils.eTag(TAG,"onActivityResult",e);
             }
             LogUtils.e(TAG, "excelPath = " + excelPath);//    /storage/emulated/0/test.xls
             if (excelPath.contains(".xls") || excelPath.contains(".xlsx")) {
@@ -380,7 +380,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
         }
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.e(TAG,"readExcel",ex);
+            LogUtils.eTag(TAG,"readExcel",ex);
             showSnack("导入失败");
         }
     }
@@ -398,7 +398,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
                     return cursor.getString(column_index);
                 }
             } catch (Exception e) {
-                Log.e(TAG,"getPath",e);
+                LogUtils.eTag(TAG,"getPath",e);
                 // Eat it  Or Log it.
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
@@ -440,7 +440,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
     }
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        LogUtils.eTag(TAG, "onDestroy");
         super.onDestroy();
     }
 

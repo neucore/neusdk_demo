@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.SSLSocketClient;
@@ -99,7 +100,7 @@ public class FileDownloader implements NeulinkConst{
     protected synchronized void append(int size) {
         downloadSize += size;
         if(downloadSize>=fileSize){
-            Log.i(TAG,String.format("fileSize=%s, downloadSize=%s",fileSize,downloadSize));
+            LogUtils.iTag(TAG,String.format("fileSize=%s, downloadSize=%s",fileSize,downloadSize));
             downloadSize = fileSize;
         }
     }
@@ -136,19 +137,19 @@ public class FileDownloader implements NeulinkConst{
             headers.put("Connection", "Keep-Alive");
             response = getClient(5,15).newCall(createRequest(downloadUrl,headers)).execute();
             int code = response.code();
-            Log.i(TAG,code+"");
+            LogUtils.iTag(TAG,code+"");
             if (code == 206||code == 200) {
                 this.fileSize = Long.valueOf(response.header("Content-Length"));//根据响应获取文件大小
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
                 String filename = getFileName(response);//获取文件名称
                 this.saveFile = new File(fileSaveDir, filename);//构建保存文件
-                Log.i(TAG,"开始下载到："+saveFile.getAbsolutePath());
+                LogUtils.iTag(TAG,"开始下载到："+saveFile.getAbsolutePath());
                 /**
                  * 获取历史下载进度
                  */
                 Map<Integer, Long> logdata = fileService.getData(downloadUrl);//获取下载记录
-                Log.i(TAG,"历史下载记录 "+logdata);
+                LogUtils.iTag(TAG,"历史下载记录 "+logdata);
                 if(logdata.size()>0){//如果存在下载记录
                     for(Map.Entry<Integer, Long> entry : logdata.entrySet())
                         data.put(entry.getKey(), entry.getValue());//把各条线程已经下载的数据长度放入data中
@@ -165,7 +166,7 @@ public class FileDownloader implements NeulinkConst{
                 throw new RuntimeException("server no response "+code);
             }
         } catch (Exception e) {
-            Log.e(TAG,"下载失败",e);
+            LogUtils.eTag(TAG,"下载失败",e);
             print(e.toString());
             throw new RuntimeException(e);
         }
@@ -292,7 +293,7 @@ public class FileDownloader implements NeulinkConst{
     }
 
     private static void print(String msg){
-        Log.i(TAG, msg);
+        LogUtils.iTag(TAG, msg);
     }
 
     public File getSaveFile() {

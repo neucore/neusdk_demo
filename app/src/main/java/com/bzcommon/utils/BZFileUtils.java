@@ -3,6 +3,8 @@ package com.bzcommon.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,7 @@ public class BZFileUtils {
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            BZLogUtil.e("BZFileUtils", "Exception while getting digest", e);
+            LogUtils.eTag("BZFileUtils", "Exception while getting digest", e);
             return null;
         }
 
@@ -37,7 +39,7 @@ public class BZFileUtils {
         try {
             is = new FileInputStream(updateFile);
         } catch (FileNotFoundException e) {
-            BZLogUtil.e("BZFileUtils", "Exception while getting FileInputStream", e);
+            LogUtils.eTag("BZFileUtils", "Exception while getting FileInputStream", e);
             return null;
         }
 
@@ -61,7 +63,7 @@ public class BZFileUtils {
             try {
                 is.close();
             } catch (IOException e) {
-                BZLogUtil.e("BZFileUtils", "Exception on closing MD5 input stream", e);
+                LogUtils.eTag("BZFileUtils", "Exception on closing MD5 input stream", e);
             }
         }
     }
@@ -74,7 +76,7 @@ public class BZFileUtils {
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            BZLogUtil.e("BZFileUtils", "Exception while getting digest", e);
+            LogUtils.eTag("BZFileUtils", "Exception while getting digest", e);
             return null;
         }
 
@@ -82,7 +84,7 @@ public class BZFileUtils {
         try {
             is = new FileInputStream(updateFile);
         } catch (FileNotFoundException e) {
-            BZLogUtil.e("BZFileUtils", "Exception while getting FileInputStream", e);
+            LogUtils.eTag("BZFileUtils", "Exception while getting FileInputStream", e);
             return null;
         }
 
@@ -115,7 +117,7 @@ public class BZFileUtils {
             try {
                 is.close();
             } catch (IOException e) {
-                BZLogUtil.e("BZFileUtils", "Exception on closing MD5 input stream", e);
+                LogUtils.eTag("BZFileUtils", "Exception on closing MD5 input stream", e);
             }
         }
     }

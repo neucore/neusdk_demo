@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.cmd.rrpc.CarCmd;
@@ -104,7 +105,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            Log.e(TAG,cmdStr+"持久化没有实现...");
+            LogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
         }
         else if(DEL.equalsIgnoreCase(cmdStr)){
             //删除人脸到 twocamera/photo/ 文件夹下
@@ -113,7 +114,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            Log.e(TAG,cmdStr+"持久化为实现。。。");
+            LogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
         }
 
         /**
@@ -125,7 +126,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 最后一个包时，需要执行清理历史数据【无效数据】，可替换自己的代码
              * @TODO 根据自己需要自行定义，可替换自己的代码，建议根据请求时间进行清理；sample根据数据的更新时间进行处理
              */
-            Log.e(TAG,"清除过期数据没有实现。。。");
+            LogUtils.eTag(TAG,"清除过期数据没有实现。。。");
         }
 
         CarPkgActionResult result = new CarPkgActionResult();

@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
-import com.neucore.neulink.util.LogUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.utils.Util;
 import com.neucore.neusdk_demo.view.AutoFitTextureView;
 
@@ -94,14 +94,14 @@ public class Camera2Util {
         this.mTextureview_IR = textureview_IR;
 
         if (mTextureview_IR.isAvailable()) {
-            Log.d(TAG,"open Camera IR");
+            LogUtils.dTag(TAG,"open Camera IR");
             openCamera(IR_CAMERA, mTextureview_IR.getWidth(), mTextureview_IR.getHeight());
         } else {
             mTextureview_IR.setSurfaceTextureListener(mIRTextureListener);
         }
 
         if (mTextureview_RGB.isAvailable()) {
-            Log.d(TAG,"open Camera RGB");
+            LogUtils.dTag(TAG,"open Camera RGB");
             openCamera(RGB_CAMERA, mTextureview_RGB.getWidth(), mTextureview_RGB.getHeight());
         } else {
             mTextureview_RGB.setSurfaceTextureListener(mRGBTextureListener);
@@ -180,7 +180,7 @@ public class Camera2Util {
             }
 
             if(manager.getCameraIdList().length < 2) {
-                Log.e(TAG,"required two camera");
+                LogUtils.eTag(TAG,"required two camera");
                 return;
             }
 
@@ -228,7 +228,7 @@ public class Camera2Util {
                 configureTransform(RGB_CAMERA,width, height);
             }
         } catch (CameraAccessException | InterruptedException e) {
-                Log.e(TAG,"open camera failed");
+                LogUtils.eTag(TAG,"open camera failed");
         }
 
         try {
@@ -253,7 +253,7 @@ public class Camera2Util {
                 }
             }, null);
         } catch (CameraAccessException e) {
-            Log.e(TAG,e.getMessage());
+            LogUtils.eTag(TAG,e.getMessage());
         }
     }
 
@@ -315,7 +315,7 @@ public class Camera2Util {
                                 //thread.start();
                                 session.setRepeatingRequest(mPreviewBuilder.build(), null, mHandler);
                             } catch (CameraAccessException e) {
-                                Log.e(TAG,"onConfigured",e);
+                                LogUtils.eTag(TAG,"onConfigured",e);
                             }
                         }
 
@@ -325,7 +325,7 @@ public class Camera2Util {
                         }
                     }, mHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG,"createCaptureSession",e);
+            LogUtils.eTag(TAG,"createCaptureSession",e);
         }
     }
 
@@ -401,7 +401,7 @@ public class Camera2Util {
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
-        LogUtils.i("TAG","rotation:"+rotation);
+        LogUtils.iTag("TAG","rotation:"+rotation);
         textureView.setTransform(matrix);
     }
 
@@ -474,11 +474,11 @@ public class Camera2Util {
         public void onImageAvailable(ImageReader reader) {
             if (onImageAvailableListener_RGB != null) {
                 if (reader != null){
-                    LogUtils.d("ImageAvailableListener","rgb  1111" );
+                    LogUtils.dTag("ImageAvailableListener","rgb  1111" );
                     Image image = reader.acquireLatestImage();//最后一帧
                     image.close();
                     byte[] rgb = Util.getBytesFromImageAsTypeRGB(image);
-                    LogUtils.d("ImageAvailableListener","rgb  1111" );
+                    LogUtils.dTag("ImageAvailableListener","rgb  1111" );
                 }
                 onImageAvailableListener_RGB.onImageAvailable(reader);
             }

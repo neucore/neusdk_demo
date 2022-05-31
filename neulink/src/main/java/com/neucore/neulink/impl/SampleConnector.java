@@ -14,6 +14,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
@@ -137,10 +138,10 @@ public class SampleConnector implements NeulinkConst{
              */
             if(extendCallback!=null){
                 this.extendCallback.onCallBack();
-                Log.i(TAG,"success regist extend implmention");
+                LogUtils.iTag(TAG,"success regist extend implmention");
             }
             else{
-                Log.i(TAG,"success regist 默认 implmention");
+                LogUtils.iTag(TAG,"success regist 默认 implmention");
             }
 
             init(service);
@@ -163,16 +164,16 @@ public class SampleConnector implements NeulinkConst{
                 @Override
                 public boolean handleMessage(Message msg) {
                     Intent intent = new Intent(application, LogService.class);
-                    Log.i(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
-                    Log.i(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
+                    LogUtils.iTag(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
+                    LogUtils.iTag(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Log.i(TAG,"startForegroundService");
+                        LogUtils.iTag(TAG,"startForegroundService");
                         application.startForegroundService(intent);
                     } else {
-                        Log.i(TAG,"startService");
+                        LogUtils.iTag(TAG,"startService");
                         application.startService(intent);
                     }
-                    Log.i(TAG,"success startLogService");
+                    LogUtils.iTag(TAG,"success startLogService");
                     return true;
                 }
             });
@@ -185,7 +186,7 @@ public class SampleConnector implements NeulinkConst{
         //处理初始化应用carsh
         CarshHandler crashHandler = CarshHandler.getIntance();
         crashHandler.init();
-        Log.i(TAG,"success regist crashHandler");
+        LogUtils.iTag(TAG,"success regist crashHandler");
 
         /**
          * 初始化MQTT
@@ -199,7 +200,7 @@ public class SampleConnector implements NeulinkConst{
 
         service.init();
 
-        Log.i(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
+        LogUtils.iTag(TAG,"success start Mqtt service timeused: "+(System.currentTimeMillis()-start));
     }
     /**
      * 网络恢复事件侦听器

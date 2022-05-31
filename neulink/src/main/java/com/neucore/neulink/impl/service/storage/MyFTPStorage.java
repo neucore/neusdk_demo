@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.service.storage;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 
@@ -65,9 +66,9 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
             successed = ftp.upload(savePath, saveFileName, inputStream);
             url = savePath+"/"+saveFileName;
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage() + "  " + e);
+            LogUtils.eTag(TAG, e.getMessage() + "  " + e);
         }
-        Log.i(TAG,"uploadFile: "+successed);
+        LogUtils.iTag(TAG,"uploadFile: "+successed);
         if(successed){
             return url;
         }
