@@ -40,6 +40,7 @@ public class MyMqttService implements NeulinkConst{
     private Integer connectTimeout;
     private Integer executorServiceTimeout;
     private Integer keepAliveInterval;
+    private Integer maxReconnectDelay;
     //客户端掉线后是否清楚客户端session
     private Boolean cleanSession;
     private Boolean autoReconnect;
@@ -65,6 +66,7 @@ public class MyMqttService implements NeulinkConst{
         this.keepAliveInterval = builder.keepAliveInterval;
         this.cleanSession = builder.cleanSession;
         this.autoReconnect = builder.autoReconnect;
+        this.maxReconnectDelay = builder.maxReconnectDelay;
         this.mqttCallback = builder.mqttCallback;
         this.mqttActionListener = builder.mqttActionListener;
         init();
@@ -85,6 +87,7 @@ public class MyMqttService implements NeulinkConst{
         private Integer keepAliveInterval;
         private Boolean cleanSession;
         private Boolean autoReconnect;
+        private Integer maxReconnectDelay;
 
         private MqttCallback mqttCallback = null;
         private IMqttActionListener mqttActionListener;
@@ -141,6 +144,11 @@ public class MyMqttService implements NeulinkConst{
 
         public Builder mqttActionListener(IMqttActionListener mqttActionListener){
             this.mqttActionListener = mqttActionListener;
+            return this;
+        }
+
+        public Builder maxReconnectDelay(Integer maxReconnectDelay){
+            this.maxReconnectDelay = maxReconnectDelay;
             return this;
         }
 
@@ -215,10 +223,8 @@ public class MyMqttService implements NeulinkConst{
             conOpt.setPassword(passWord.toCharArray());
             // 自动重连
             conOpt.setAutomaticReconnect(autoReconnect);
-            /**
-             *
-             */
-            conOpt.setMaxReconnectDelay(Integer.MAX_VALUE);
+            //最大重连间隔
+            conOpt.setMaxReconnectDelay(maxReconnectDelay);
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
             LWTInfo info = ServiceRegistry.getInstance().getDeviceService().lwt();
