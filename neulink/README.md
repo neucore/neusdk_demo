@@ -48,10 +48,6 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     在AndroidManifest.xml中添加下列内容
 
     ```
-
-    <!-- Log Service -->
-    <service android:name="com.neucore.neulink.impl.service.LogService" />
-
     <uses-sdk
             android:minSdkVersion="21"
             android:targetSdkVersion="28" />
