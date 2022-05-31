@@ -73,6 +73,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String AUTO_RECONNECT = "autoReconnect";
 
+    public final static String MAX_RECONNECT_DELAY= "maxReconnectDelay";
+
     public final static String REGIST_SERVER = "regist.server";
 
     public final static String DEVICE_TYPE = "device.type";
