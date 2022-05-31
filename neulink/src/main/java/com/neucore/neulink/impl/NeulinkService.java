@@ -124,7 +124,7 @@ public class NeulinkService implements NeulinkConst{
                         //设置自动重连
                         .autoReconnect(ConfigContext.getInstance().getConfig(ConfigContext.AUTO_RECONNECT,true))
                         //最大延时时间
-                        .maxReconnectDelay(ConfigContext.getInstance().getConfig(ConfigContext.MAX_RECONNECT_DELAY,1000))
+                        .maxReconnectDelay(ConfigContext.getInstance().getConfig(ConfigContext.MAX_RECONNECT_DELAY,30000))
                         //设置不清除回话session 可收到服务器之前发出的推送消息
                         .cleanSession(ConfigContext.getInstance().getConfig(ConfigContext.CLEAN_SESSION,false))
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
