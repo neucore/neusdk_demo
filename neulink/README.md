@@ -68,7 +68,10 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     <uses-permission android:name="android.permission.INTERNET"/>
   
     ```
+
 #### 代码集成
+
+参照：MyApplication内initLog()方法；
 
 参照：MyApplication内installSDK()方法；
 
