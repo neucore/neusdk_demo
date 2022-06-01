@@ -601,73 +601,75 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void run() {
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-            if(channel==0){
-                /**
-                 * MQTT机制
-                 */
-                if(mqttServiceUri ==null){
-                    mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
-                }
-                String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
-                String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
-
-                initMqttService(mqttServiceUri,userName,password);
-                /**
-                 * MQTT机制
-                 */
-                myMqttService.publish(reqId,payload,topStr, qos, retained,null);
-
-                neulinkServiceInited = true;
-            }
-            else{
-                /**
-                 * HTTP机制
-                 */
-                Context context = ContextHolder.getInstance().getContext();
-                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
-                LogUtils.dTag(TAG,"registServer："+registServer);
-
-                String response = null;
+            while (!neulinkServiceInited){
                 try {
-                    String topic = URLEncoder.encode(topStr,"UTF-8");
-                    response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
+                    if(channel==0){
+                        /**
+                         * MQTT机制
+                         */
+                        if(mqttServiceUri ==null){
+                            mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+                        }
+                        String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
+                        String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
 
-                    LogUtils.dTag(TAG,"设备注册响应："+response);
+                        initMqttService(mqttServiceUri,userName,password);
+                        /**
+                         * MQTT机制
+                         */
+                        myMqttService.publish(reqId,payload,topStr, qos, retained,null);
 
-                    /**
-                     * {
-                     * 	"code": 200,
-                     * 	"msg": "注册成功",
-                     * 	"zone": {
-                     * 		"zoneid": 3,
-                     * 		"custcode": "saic",
-                     * 		"placecode": "test",
-                     * 		"server": "mqtt.neucore.com",
-                     * 		"port": 1883,
-                     * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
-                     *   }
-                     * }
-                     */
-                    ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
-                    NeulinkZone zone = resRegist.getZone();
-                    custid = zone.getCustid();
-                    storeid = zone.getStoreid();
-                    zoneid = zone.getId();
+                        neulinkServiceInited = true;
+                    }
+                    else{
+                        /**
+                         * HTTP机制
+                         */
+                        Context context = ContextHolder.getInstance().getContext();
+                        String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
+                        LogUtils.dTag(TAG,"registServer："+registServer);
 
-                    httpServiceUri = zone.getUploadServer();
-                    String mqttHost = zone.getMqttServer();
-                    Integer port = zone.getMqttPort();
-                    String userName = zone.getMqttUserName();
-                    String password = zone.getMqttPassword();
-                    userName = userName==null?ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"):userName;
-                    password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
-                    //tcp://dev.neucore.com:1883
-                    mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
+                        String response = null;
 
-                    initMqttService(mqttServiceUri,userName,password);
+                        String topic = URLEncoder.encode(topStr,"UTF-8");
+                        response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
 
-                    neulinkServiceInited = true;
+                        LogUtils.dTag(TAG,"设备注册响应："+response);
 
+                        /**
+                         * {
+                         * 	"code": 200,
+                         * 	"msg": "注册成功",
+                         * 	"zone": {
+                         * 		"zoneid": 3,
+                         * 		"custcode": "saic",
+                         * 		"placecode": "test",
+                         * 		"server": "mqtt.neucore.com",
+                         * 		"port": 1883,
+                         * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
+                         *   }
+                         * }
+                         */
+                        ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
+                        NeulinkZone zone = resRegist.getZone();
+                        custid = zone.getCustid();
+                        storeid = zone.getStoreid();
+                        zoneid = zone.getId();
+
+                        httpServiceUri = zone.getUploadServer();
+                        String mqttHost = zone.getMqttServer();
+                        Integer port = zone.getMqttPort();
+                        String userName = zone.getMqttUserName();
+                        String password = zone.getMqttPassword();
+                        userName = userName==null?ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"):userName;
+                        password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
+                        //tcp://dev.neucore.com:1883
+                        mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
+
+                        initMqttService(mqttServiceUri,userName,password);
+
+                        neulinkServiceInited = true;
+                    }
                 }
                 catch (NeulinkException e) {
                     LogUtils.eTag(TAG,"注册失败",e);
@@ -684,6 +686,15 @@ public class NeulinkService implements NeulinkConst{
                     result.setCode(STATUS_500);
                     result.setMsg(ex.getMessage());
                     defaultResCallback.onFinished(result);
+
+                }
+                finally {
+                    if(!neulinkServiceInited){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException interruptedException) {
+                        }
+                    }
                 }
             }
         }
