@@ -213,6 +213,10 @@ public class MyApplication extends Application
          * OTA文件断点续传文件服务
          */
         connector.setFileService(null);
+        /**
+         * neulink执行结果回调处理接口
+         */
+        connector.setDefaultResCallback(null);
 
         //##########################################################################################
         /**
