@@ -33,7 +33,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
 import java.io.File;
@@ -43,11 +42,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
 
 public class NeulinkService implements NeulinkConst{
@@ -120,6 +119,11 @@ public class NeulinkService implements NeulinkConst{
                                 if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
                                         ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
                                         || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
+                                    Result result = new Result();
+                                    result.setReqId(UUID.fastUUID().toString());
+                                    result.setCode(STATUS_403);
+                                    result.setMsg(throwable.getMessage());
+                                    defaultResCallback.onFinished(result);
                                     LogUtils.eTag(TAG,"授权失败："+ getFailException().getMessage());
                                     break;
                                 }
@@ -229,7 +233,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishMessage("msg/req/connect","v1.0",UUID.randomUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishMessage("msg/req/connect","v1.0",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -238,7 +242,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishMessage("msg/req/disconnect","v1.0",UUID.randomUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishMessage("msg/req/disconnect","v1.0",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -281,7 +285,7 @@ public class NeulinkService implements NeulinkConst{
      */
     protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
 
-        publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,callback);
+        publishMessage(topicPrefix,version, UUID.fastUUID().toString(),payload, qos,callback);
     }
 
     /**
@@ -294,7 +298,7 @@ public class NeulinkService implements NeulinkConst{
      * @param callback
      */
     protected void publishMessage(String topicPrefix, String version, String payload, int qos,boolean retained, IResCallback callback){
-        publishMessage(topicPrefix,version, UUID.randomUUID().toString(),payload, qos,retained,callback);
+        publishMessage(topicPrefix,version, UUID.fastUUID().toString(),payload, qos,retained,callback);
     }
 
     /**
