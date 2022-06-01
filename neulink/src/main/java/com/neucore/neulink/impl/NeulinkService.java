@@ -124,7 +124,7 @@ public class NeulinkService implements NeulinkConst{
                                     result.setCode(STATUS_403);
                                     result.setMsg(throwable.getMessage());
                                     defaultResCallback.onFinished(result);
-                                    LogUtils.eTag(TAG,"授权失败："+ getFailException().getMessage());
+                                    LogUtils.eTag(TAG,"Mqtt鉴权失败："+ getFailException().getMessage());
                                     break;
                                 }
                             }
