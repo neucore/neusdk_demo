@@ -1,26 +1,24 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
-import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
-import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.impl.adapter.NeulinkMsgCallBackAdapter;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
 import com.neucore.neulink.impl.cmd.msg.ResRegist;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.MyMqttService;
-import com.neucore.neulink.impl.adapter.NeulinkMsgCallBackAdapter;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
-import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -33,7 +31,9 @@ import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
 import java.io.File;
@@ -62,6 +62,7 @@ public class NeulinkService implements NeulinkConst{
     private Boolean neulinkServiceInited = false;
     private Boolean mqttInited = false;
     private Boolean mqttConnSuccessed = false;
+    private Throwable failException;
     private Register register = null;
     private Boolean destroy = false;
 
@@ -100,12 +101,30 @@ public class NeulinkService implements NeulinkConst{
                     LogUtils.iTag(TAG,"start connectMqtt");
                     connectMqtt();
                     LogUtils.iTag(TAG,"end connectMqtt");
-                    cnt++;
-                    Thread.sleep(1000);
-                    LogUtils.iTag(TAG,"try "+cnt+"次连接。。。。");
                 }
                 catch (Exception ex){
                     LogUtils.eTag(TAG,"连接失败：",ex);
+                }
+                finally {
+                    cnt++;
+                    LogUtils.iTag(TAG,"try "+cnt+"次连接。。。。");
+                    if(!getMqttConnSuccessed()){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                        }
+                        if(isFailed()){
+                            Throwable throwable = getFailException();
+                            if(throwable instanceof MqttException){
+                                int code = ((MqttException)throwable).getReasonCode();
+                                if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
+                                        ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION){
+                                    LogUtils.eTag(TAG,"授权失败："+ getFailException().getMessage());
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
             LogUtils.iTag(TAG,"mqttInited");
@@ -412,6 +431,13 @@ public class NeulinkService implements NeulinkConst{
             return mqttConnSuccessed;
         }
     }
+    boolean isFailed(){
+        return ObjectUtil.isNotEmpty(failException);
+    }
+
+    Throwable getFailException(){
+        return failException;
+    }
 
     void setMqttConnSuccessed(Boolean connSuccessed){
         synchronized (this) {
@@ -428,7 +454,7 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void onSuccess(IMqttToken arg0) {
             LogUtils.iTag(TAG, "onSuccess ");
-
+            failException = null;
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
@@ -444,6 +470,7 @@ public class NeulinkService implements NeulinkConst{
 
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
+            failException = arg1;
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
@@ -735,16 +762,6 @@ public class NeulinkService implements NeulinkConst{
              */
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
-                /**
-                 * MQTT机制
-                 */
-                if(mqttServiceUri ==null){
-                    mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
-                }
-                String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME);
-                String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD);
-                initMqttService(mqttServiceUri,userName,password);
-
                 myMqttService.publish(reqId,payload,topStr, qos, retained,callback);
             }
             else{
