@@ -24,7 +24,7 @@ public class Register implements NeulinkConst{
     private String TAG = TAG_PREFIX+"Register";
     private Context context;
     private NeulinkService service;
-    private NeulinkScheduledReport autoReporter = null;
+
     private boolean networkReady = false;
     private boolean initRegistService = false;
     private boolean registed=false;
@@ -55,8 +55,6 @@ public class Register implements NeulinkConst{
         if(networkHelper.getNetworkConnected()){
             initRegistService("getNetworkConnected");
         }
-
-        autoReporter = new NeulinkScheduledReport(context,service);
     }
     private Boolean logined = false;
     private void initRegistService(String from){
@@ -126,7 +124,6 @@ public class Register implements NeulinkConst{
                         boolean successed = deviceService.regist(deviceInfo);
                         if(successed){
                             registed = true;
-                            autoReporter.start();
                             initRegistService = true;
                             LogUtils.iTag(TAG,"success regist");
                         }
