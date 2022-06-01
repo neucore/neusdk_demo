@@ -118,7 +118,8 @@ public class NeulinkService implements NeulinkConst{
                             if(throwable instanceof MqttException){
                                 int code = ((MqttException)throwable).getReasonCode();
                                 if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
-                                        ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION){
+                                        ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
+                                        || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
                                     LogUtils.eTag(TAG,"授权失败："+ getFailException().getMessage());
                                     break;
                                 }
