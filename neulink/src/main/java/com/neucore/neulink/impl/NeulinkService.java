@@ -90,7 +90,7 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
-    public void initMqttService(String mqttServiceUri, String userName, String password){
+    public void initMqttService(String mqttServiceUri, String userName, String password) throws MqttException{
         LogUtils.iTag(TAG,"initMqttService");
         if(!mqttInited){
             createMqttService(mqttServiceUri,userName,password);
@@ -119,13 +119,7 @@ public class NeulinkService implements NeulinkConst{
                                 if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
                                         ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
                                         || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
-                                    Result result = new Result();
-                                    result.setReqId(UUID.fastUUID().toString());
-                                    result.setCode(STATUS_403);
-                                    result.setMsg(throwable.getMessage());
-                                    defaultResCallback.onFinished(result);
-                                    LogUtils.eTag(TAG,"Mqtt鉴权失败："+ getFailException().getMessage());
-                                    break;
+                                    throw (MqttException)throwable;
                                 }
                             }
                         }
@@ -701,10 +695,22 @@ public class NeulinkService implements NeulinkConst{
                         password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
                         //tcp://dev.neucore.com:1883
                         mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
-
                         initMqttService(mqttServiceUri,userName,password);
-
                         neulinkServiceInited = true;
+                    }
+                }
+                catch (MqttException ex){
+                    int code = ex.getReasonCode();
+                    if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
+                            ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
+                            || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
+                        Result result = new Result();
+                        result.setReqId(UUID.fastUUID().toString());
+                        result.setCode(STATUS_403);
+                        result.setMsg(ex.getMessage());
+                        defaultResCallback.onFinished(result);
+                        LogUtils.eTag(TAG,"Mqtt鉴权失败："+ getFailException().getMessage());
+                        break;
                     }
                 }
                 catch (NeulinkException e) {
@@ -722,7 +728,6 @@ public class NeulinkService implements NeulinkConst{
                     result.setCode(STATUS_500);
                     result.setMsg(ex.getMessage());
                     defaultResCallback.onFinished(result);
-
                 }
                 finally {
                     if(!neulinkServiceInited){
