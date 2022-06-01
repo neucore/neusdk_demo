@@ -19,6 +19,7 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
@@ -44,6 +45,7 @@ public class SampleConnector implements NeulinkConst{
     private IMqttCallBack mqttCallBack;
     private IExtendCallback extendCallback;
     private IFileService fileService;
+    private IResCallback defaultResCallback;
 
     private Properties extConfig;
     private Handler tHandler;
@@ -101,6 +103,10 @@ public class SampleConnector implements NeulinkConst{
         this.fileService = fileService;
     }
 
+    public void setDefaultResCallback(IResCallback defaultResCallback) {
+        this.defaultResCallback = defaultResCallback;
+    }
+
     /**
      * 必须先设置相关属性，然后再调用start
      * 不然不起效果
@@ -129,6 +135,9 @@ public class SampleConnector implements NeulinkConst{
             if(mqttCallBack!=null){
                 service.addMQTTCallBack(mqttCallBack);
             }
+            if(defaultResCallback!=null){
+                service.setDefaultResCallback(defaultResCallback);
+            }
             /**
              * 默认实现
              */
@@ -143,7 +152,6 @@ public class SampleConnector implements NeulinkConst{
             else{
                 LogUtils.iTag(TAG,"success regist 默认 implmention");
             }
-
             init(service);
         }
         started = true;

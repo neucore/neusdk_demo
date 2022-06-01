@@ -149,6 +149,14 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    public IResCallback getDefaultResCallback() {
+        return defaultResCallback;
+    }
+
+    public void setDefaultResCallback(IResCallback defaultResCallback) {
+        this.defaultResCallback = defaultResCallback;
+    }
+
     public NeulinkPublisherFacde getPublisherFacde(){
         return publisherFacde;
     }
@@ -671,6 +679,11 @@ public class NeulinkService implements NeulinkConst{
                 }
                 catch (Exception ex){
                     LogUtils.eTag(TAG,"注册失败",ex);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(STATUS_500);
+                    result.setMsg(ex.getMessage());
+                    defaultResCallback.onFinished(result);
                 }
             }
         }
