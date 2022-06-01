@@ -175,6 +175,10 @@ public interface NeulinkConst {
      */
     Integer STATUS_401 = 401;
     /**
+     * 参数不能为空
+     */
+    Integer STATUS_402 = 402;
+    /**
      * 被禁止｜拒绝
      */
     Integer STATUS_403 = 403;

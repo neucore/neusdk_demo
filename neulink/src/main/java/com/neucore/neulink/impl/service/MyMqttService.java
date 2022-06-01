@@ -213,12 +213,12 @@ public class MyMqttService implements NeulinkConst{
             conOpt.setKeepAliveInterval(keepAliveInterval);
             // 用户名
             if(ObjectUtil.isEmpty(userName)){
-                throw new NeulinkException(408,"用户名为空");
+                throw new NeulinkException(STATUS_402,"用户名为空");
             }
             conOpt.setUserName(userName);
             // 密码
             if(ObjectUtil.isEmpty(passWord)){
-                throw new NeulinkException(408,"密码为空");
+                throw new NeulinkException(STATUS_402,"密码为空");
             }
             conOpt.setPassword(passWord.toCharArray());
             // 自动重连
