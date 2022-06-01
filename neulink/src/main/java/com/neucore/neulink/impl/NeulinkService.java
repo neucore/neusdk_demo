@@ -11,6 +11,7 @@ import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
+import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
@@ -66,6 +67,7 @@ public class NeulinkService implements NeulinkConst{
 
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
+    private NeulinkScheduledReport autoReporter = null;
     private String mqttServiceUri, httpServiceUri;
     private UdpReceiveAndtcpSend udpReceiveAndtcpSend;
     private IDeviceService deviceService;
@@ -339,7 +341,7 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private void regist(String reqId,String topStr, String payload, int qos, Boolean retained, Map<String,String> params){
-        fixedThreadPool.execute(new AsyncRegistor(reqId,topStr,payload,qos,retained,params));
+        fixedThreadPool.execute(new AsyncRegistor(ContextHolder.getInstance().getContext(),reqId,topStr,payload,qos,retained,params));
     }
 
     private void publish(String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
@@ -588,7 +590,9 @@ public class NeulinkService implements NeulinkConst{
         private int qos;
         private Boolean retained;
         private Map<String,String> params;
-        public AsyncRegistor(String reqId,String topStr, String payload, int qos, Boolean retained, Map<String,String> params){
+        private Context context;
+        public AsyncRegistor(Context context,String reqId,String topStr, String payload, int qos, Boolean retained, Map<String,String> params){
+            this.context = context;
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
@@ -694,6 +698,10 @@ public class NeulinkService implements NeulinkConst{
                             Thread.sleep(1000);
                         } catch (InterruptedException interruptedException) {
                         }
+                    }
+                    else{
+                        autoReporter = new NeulinkScheduledReport(context, instance);
+                        autoReporter.start();
                     }
                 }
             }
