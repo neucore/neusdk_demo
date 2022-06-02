@@ -1,14 +1,9 @@
 package com.neucore.neulink.impl;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.NeulinkScheduledReport;
-import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
@@ -19,24 +14,16 @@ import com.neucore.neulink.util.NetworkHelper;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class Register implements NeulinkConst{
+class RegisterAdapter implements NeulinkConst{
 
-    private String TAG = TAG_PREFIX+"Register";
-    private Context context;
-    private NeulinkService service;
-
+    private String TAG = TAG_PREFIX+"RegisterAdapter";
     private boolean networkReady = false;
     private boolean initRegistService = false;
     private boolean registed=false;
     private boolean registCalled = false;
-
-    private String serviceUrl;
     private final NetworkHelper networkHelper = NetworkHelper.getInstance();
 
-    public Register(final Context context, final NeulinkService service) {
-        this.context = context;
-        this.service = service;
-        this.serviceUrl = serviceUrl;
+    public RegisterAdapter() {
 
         LogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s","startRegister",networkReady,initRegistService));
 
