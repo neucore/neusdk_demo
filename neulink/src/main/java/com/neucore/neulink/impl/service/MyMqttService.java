@@ -71,7 +71,9 @@ public class MyMqttService implements NeulinkConst{
         this.mqttActionListener = builder.mqttActionListener;
         init();
     }
-
+    public String toString(){
+        return String.format("clientId=%s,\nserverUrl=%s,\nuserName=%s,\npassWord=%s,\ncleanSession=%s,\nautoReconnect=%s,\nmaxReconnectDelay=%s,\nconnectTimeout=%s,\nkeepAliveInterval=%s",clientId,serverUrl,userName,passWord,cleanSession,autoReconnect,maxReconnectDelay,connectTimeout,keepAliveInterval);
+    }
     /**
      * Builder 构造类
      */
@@ -230,7 +232,7 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,info.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,info.getRetained());
             conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), qos, retained);
-            LogUtils.iTag(TAG,String.format("end init: %s",clientId));
+            LogUtils.iTag(TAG,String.format("end init with : %s",toString()));
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
