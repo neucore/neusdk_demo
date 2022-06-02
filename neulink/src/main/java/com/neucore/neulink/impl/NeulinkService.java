@@ -117,6 +117,9 @@ public class NeulinkService implements NeulinkConst{
                             if(throwable instanceof MqttException){
                                 throw (MqttException)throwable;
                             }
+                            else{
+                                LogUtils.eTag(TAG,"连接失败：",throwable);
+                            }
                         }
                     }
                 }
@@ -700,8 +703,11 @@ public class NeulinkService implements NeulinkConst{
                      * REASON_CODE_CLIENT_TIMEOUT
                      * REASON_CODE_WRITE_TIMEOUT
                      */
-                    if(code != MqttException.REASON_CODE_CLIENT_TIMEOUT
-                            && code !=MqttException.REASON_CODE_WRITE_TIMEOUT){
+                    if(code != MqttException.REASON_CODE_BROKER_UNAVAILABLE
+                            && code != MqttException.REASON_CODE_CLIENT_TIMEOUT
+                            && code != MqttException.REASON_CODE_CLIENT_ALREADY_DISCONNECTED
+                            && code != MqttException.REASON_CODE_SERVER_CONNECT_ERROR
+                            && code != MqttException.REASON_CODE_CONNECTION_LOST){
                         Result result = new Result();
                         result.setReqId(UUID.fastUUID().toString());
                         result.setCode(STATUS_403);
