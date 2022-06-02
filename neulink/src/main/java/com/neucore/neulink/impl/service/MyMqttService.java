@@ -191,8 +191,6 @@ public class MyMqttService implements NeulinkConst{
         return client;
     }
 
-    private MqttAndroidClient androidClient;
-
     private void init() {
         // 服务器地址（协议+地址+端口号）
         MemoryPersistence memoryPersistence = new MemoryPersistence();

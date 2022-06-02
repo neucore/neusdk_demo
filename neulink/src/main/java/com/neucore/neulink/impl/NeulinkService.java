@@ -115,12 +115,7 @@ public class NeulinkService implements NeulinkConst{
                         if(isFailed()){
                             Throwable throwable = getFailException();
                             if(throwable instanceof MqttException){
-                                int code = ((MqttException)throwable).getReasonCode();
-                                if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
-                                        ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
-                                        || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
-                                    throw (MqttException)throwable;
-                                }
+                                throw (MqttException)throwable;
                             }
                         }
                     }
@@ -701,15 +696,18 @@ public class NeulinkService implements NeulinkConst{
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
-                    if(code == MqttException.REASON_CODE_NOT_AUTHORIZED
-                            ||code ==MqttException.REASON_CODE_FAILED_AUTHENTICATION
-                            || code == MqttException.REASON_CODE_INVALID_CLIENT_ID){
+                    /**
+                     * REASON_CODE_CLIENT_TIMEOUT
+                     * REASON_CODE_WRITE_TIMEOUT
+                     */
+                    if(code != MqttException.REASON_CODE_CLIENT_TIMEOUT
+                            && code !=MqttException.REASON_CODE_WRITE_TIMEOUT){
                         Result result = new Result();
                         result.setReqId(UUID.fastUUID().toString());
                         result.setCode(STATUS_403);
                         result.setMsg(ex.getMessage());
                         defaultResCallback.onFinished(result);
-                        LogUtils.eTag(TAG,"Mqtt鉴权失败："+ getFailException().getMessage());
+                        LogUtils.eTag(TAG,"Mqtt连接失败："+ getFailException().getMessage());
                         break;
                     }
                 }
