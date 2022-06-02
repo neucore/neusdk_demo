@@ -27,8 +27,6 @@ import cn.hutool.core.util.ObjectUtil;
 public class MyMqttService implements NeulinkConst{
 
     private final String TAG = TAG_PREFIX+"MyMqttService";
-    private boolean canDoConnect = true;
-
     private MqttAsyncClient client;
     private MqttConnectOptions conOpt;
 
@@ -271,13 +269,17 @@ public class MyMqttService implements NeulinkConst{
     /**
      * 连接MQTT服务器
      */
-    public void connect() {
-        if (canDoConnect && !client.isConnected()) {
+    public void connect() throws MqttException{
+        if (!client.isConnected()) {
             try {
                 LogUtils.iTag(TAG,String.format("connect by %s",clientId));
                 client.connect(conOpt, null, mqttActionListener);
                 LogUtils.iTag(TAG,"connected");
-            } catch (Exception e) {
+            }
+            catch (MqttException ex){
+                throw ex;
+            }
+            catch (Exception e) {
                 LogUtils.eTag(TAG, e.toString());
             }
         }

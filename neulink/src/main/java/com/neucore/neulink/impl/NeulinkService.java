@@ -101,6 +101,12 @@ public class NeulinkService implements NeulinkConst{
                     connectMqtt();
                     LogUtils.iTag(TAG,"end connectMqtt");
                 }
+                catch (MqttException ex){
+                    int code = ex.getReasonCode();
+                    if(code != MqttException.REASON_CODE_CLIENT_CONNECTED){
+                        throw ex;
+                    }
+                }
                 catch (Exception ex){
                     LogUtils.eTag(TAG,"连接失败：",ex);
                 }
@@ -108,18 +114,16 @@ public class NeulinkService implements NeulinkConst{
                     cnt++;
                     LogUtils.iTag(TAG,"try "+cnt+"次连接。。。。");
                     if(!getMqttConnSuccessed()){
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                        }
                         if(isFailed()){
                             Throwable throwable = getFailException();
+                            LogUtils.eTag(TAG,"连接失败：",throwable.getMessage());
                             if(throwable instanceof MqttException){
                                 throw (MqttException)throwable;
                             }
-                            else{
-                                LogUtils.eTag(TAG,"连接失败：",throwable);
-                            }
+                        }
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
                         }
                     }
                 }
@@ -190,8 +194,8 @@ public class NeulinkService implements NeulinkConst{
     /**
      * 连接Mqtt服务器
      */
-    private void connectMqtt() {
-        if(!mqttConnSuccessed){
+    private void connectMqtt() throws MqttException{
+        if(!getMqttConnSuccessed()){
             myMqttService.connect();
         }
     }
@@ -217,6 +221,7 @@ public class NeulinkService implements NeulinkConst{
     public boolean regist(DeviceInfo deviceInfo){
         String payload = JSonUtils.toString(deviceInfo);
         String devinfo_topic = "msg/req/devinfo";
+        LogUtils.iTag(TAG,"regist");
         publishMessage(devinfo_topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1));
         return true;
     }
@@ -276,7 +281,6 @@ public class NeulinkService implements NeulinkConst{
      * @param callback
      */
     protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
-
         publishMessage(topicPrefix,version, UUID.fastUUID().toString(),payload, qos,callback);
     }
 
@@ -325,6 +329,7 @@ public class NeulinkService implements NeulinkConst{
 
         if (channel==0){//向下兼容
             if(topic.startsWith("msg/req/devinfo")) {
+                LogUtils.iTag(TAG,"mqtt regist");
                 regist(reqId,topic,payload,qos,retained,null);
             }
             else{
@@ -339,6 +344,7 @@ public class NeulinkService implements NeulinkConst{
              *
              */
             if(topic.startsWith("msg/req/devinfo")){
+                LogUtils.iTag(TAG,"http regist");
                 regist(reqId,topic,payload,qos,retained,params);
             }
             else {
@@ -467,7 +473,14 @@ public class NeulinkService implements NeulinkConst{
 
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
-            failException = arg1;
+            LogUtils.iTag(TAG, "onFailure ",arg1.getMessage());
+            if(!getMqttConnSuccessed()){
+                failException = arg1;
+            }
+            else{
+                failException = null;
+            }
+
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
@@ -623,12 +636,12 @@ public class NeulinkService implements NeulinkConst{
             this.qos = qos;
             this.retained = retained;
             this.params = params;
-
         }
 
         @Override
         public void run() {
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+            LogUtils.iTag(TAG,"异步注册：run");
             while (!neulinkServiceInited){
                 try {
                     if(channel==0){
@@ -640,11 +653,12 @@ public class NeulinkService implements NeulinkConst{
                         }
                         String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
                         String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
-
+                        LogUtils.iTag(TAG,"MQTT 初始化");
                         initMqttService(mqttServiceUri,userName,password);
                         /**
                          * MQTT机制
                          */
+                        LogUtils.iTag(TAG,"MQTT 注册");
                         myMqttService.publish(reqId,payload,topStr, qos, retained,null);
 
                         neulinkServiceInited = true;
@@ -658,6 +672,8 @@ public class NeulinkService implements NeulinkConst{
                         LogUtils.dTag(TAG,"registServer："+registServer);
 
                         String response = null;
+
+                        LogUtils.iTag(TAG,"Http 注册");
 
                         String topic = URLEncoder.encode(topStr,"UTF-8");
                         response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
@@ -693,6 +709,7 @@ public class NeulinkService implements NeulinkConst{
                         password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
                         //tcp://dev.neucore.com:1883
                         mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
+                        LogUtils.iTag(TAG,"MQTT 初始化");
                         initMqttService(mqttServiceUri,userName,password);
                         neulinkServiceInited = true;
                     }
@@ -703,6 +720,7 @@ public class NeulinkService implements NeulinkConst{
                      * REASON_CODE_CLIENT_TIMEOUT
                      * REASON_CODE_WRITE_TIMEOUT
                      */
+                    LogUtils.iTag(TAG,"MQTT 初始化异常",ex.getMessage());
                     if(code != MqttException.REASON_CODE_BROKER_UNAVAILABLE
                             && code != MqttException.REASON_CODE_CLIENT_TIMEOUT
                             && code != MqttException.REASON_CODE_CLIENT_ALREADY_DISCONNECTED
