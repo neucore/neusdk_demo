@@ -62,7 +62,7 @@ public class NeulinkService implements NeulinkConst{
     private Boolean neulinkServiceInited = false;
     private Boolean mqttInited = false;
     private Boolean registCalled = false,registed=false;
-    private Boolean mqttConnCalled=false,mqttConnHasSuccessStarted = false;
+    private Boolean mqttConnCalled=false, mqttConnSuccessed = false;
     private Throwable failException;
     private Boolean closed=false, destroyed = false;
 
@@ -94,7 +94,7 @@ public class NeulinkService implements NeulinkConst{
     public void initMqttService(String mqttServiceUri, String userName, String password) throws MqttException{
         createMqttService(mqttServiceUri,userName,password);
         int cnt = 0;
-        while (!isMqttConnHasSuccessStarted()){
+        while (!isMqttConnSuccessed()){
             try {
                 LogUtils.iTag(TAG,"start connectMqtt");
                 connect();
@@ -106,7 +106,7 @@ public class NeulinkService implements NeulinkConst{
             finally {
                 cnt++;
                 LogUtils.iTag(TAG,"try "+cnt+"次连接。。。。");
-                if(!isMqttConnHasSuccessStarted()){
+                if(!isMqttConnSuccessed()){
                     if(isFailed()){
                         Throwable throwable = getFailException();
                         LogUtils.eTag(TAG,"连接失败：",throwable.getMessage());
@@ -441,9 +441,9 @@ public class NeulinkService implements NeulinkConst{
         return "notimpl";
     }
 
-    boolean isMqttConnHasSuccessStarted(){
+    boolean isMqttConnSuccessed(){
         synchronized (this){
-            return mqttConnHasSuccessStarted;
+            return mqttConnSuccessed;
         }
     }
     boolean isFailed(){
@@ -454,9 +454,9 @@ public class NeulinkService implements NeulinkConst{
         return failException;
     }
 
-    void setMqttConnHasSuccessStarted(Boolean connSuccessed){
+    void setMqttConnSuccessed(Boolean connSuccessed){
         synchronized (this) {
-            this.mqttConnHasSuccessStarted = connSuccessed;
+            this.mqttConnSuccessed = connSuccessed;
         }
     }
 
@@ -470,7 +470,7 @@ public class NeulinkService implements NeulinkConst{
         public void onSuccess(IMqttToken arg0) {
             LogUtils.iTag(TAG, "onSuccess ");
             failException = null;
-            setMqttConnHasSuccessStarted(true);
+            setMqttConnSuccessed(true);
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
@@ -486,7 +486,7 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
             LogUtils.iTag(TAG, "onFailure ",arg1.getMessage());
-            if (!isMqttConnHasSuccessStarted()) {
+            if (!isMqttConnSuccessed()) {
                 failException = arg1;
             } else {
                 failException = null;
@@ -532,7 +532,7 @@ public class NeulinkService implements NeulinkConst{
                         }
                     }
                 }
-                setMqttConnHasSuccessStarted(true);
+                setMqttConnSuccessed(true);
             }
             finally {
                 reentrantLock.unlock();
