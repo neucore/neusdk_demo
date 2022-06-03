@@ -279,9 +279,6 @@ public class MyMqttService implements NeulinkConst{
             catch (MqttException ex){
                 throw ex;
             }
-            catch (Exception e) {
-                LogUtils.eTag(TAG, e.toString());
-            }
         }
     }
 
