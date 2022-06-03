@@ -488,26 +488,20 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
             LogUtils.iTag(TAG, "onFailure ",arg1.getMessage());
-            try {
-                reentrantLock.lock();
-                if (!isMqttConnHasSuccessStarted()) {
-                    failException = arg1;
-                } else {
-                    failException = null;
-                }
+            if (!isMqttConnHasSuccessStarted()) {
+                failException = arg1;
+            } else {
+                failException = null;
+            }
 
-                if (mqttCallBacks != null) {
-                    for (IMqttCallBack callback : mqttCallBacks) {
-                        try {
-                            callback.connectFailed(arg0, arg1);
-                        } catch (Exception ex) {
-                            LogUtils.eTag(TAG, ex.getMessage());
-                        }
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback : mqttCallBacks) {
+                    try {
+                        callback.connectFailed(arg0, arg1);
+                    } catch (Exception ex) {
+                        LogUtils.eTag(TAG, ex.getMessage());
                     }
                 }
-            }
-            finally {
-                reentrantLock.unlock();
             }
         }
     };
