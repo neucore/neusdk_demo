@@ -646,13 +646,15 @@ public class NeulinkService implements NeulinkConst{
         @Override
         public void run() {
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-            LogUtils.iTag(TAG,"异步注册：run");
+            LogUtils.iTag(TAG,"开始异步注册：run");
+            int trys = 1;
             while (!neulinkServiceInited){
                 try {
                     if(channel==0){
                         /**
                          * MQTT机制
                          */
+                        LogUtils.iTag(TAG,"第"+trys+"次Mqtt通道异步注册");
                         if(mqttServiceUri ==null){
                             mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
                         }
@@ -673,6 +675,7 @@ public class NeulinkService implements NeulinkConst{
                         /**
                          * HTTP机制
                          */
+                        LogUtils.iTag(TAG,"第"+trys+"次Http通道异步注册");
                         if(!registed){
                             Context context = ContextHolder.getInstance().getContext();
                             String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
@@ -719,54 +722,33 @@ public class NeulinkService implements NeulinkConst{
                             LogUtils.iTag(TAG,"MQTT 初始化");
                             registed = true;
                         }
+                        LogUtils.iTag(TAG,"第"+trys+"次initMqttService");
                         initMqttService(mqttServiceUri,userName,password);
                         neulinkServiceInited = true;
                     }
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
-                    /**
-                     * REASON_CODE_CLIENT_EXCEPTION
-                     * REASON_CODE_INVALID_PROTOCOL_VERSION
-                     * REASON_CODE_INVALID_CLIENT_ID
-                     * REASON_CODE_BROKER_UNAVAILABLE //服务器故障或者重启中
-                     * REASON_CODE_FAILED_AUTHENTICATION
-                     * REASON_CODE_UNEXPECTED_ERROR //服务器故障或者重启中
-                     * REASON_CODE_SUBSCRIBE_FAILED
-                     * REASON_CODE_CLIENT_TIMEOUT //网络异常、服务器故障或者重启中
-                     * REASON_CODE_NO_MESSAGE_IDS_AVAILABLE
-                     * REASON_CODE_WRITE_TIMEOUT //网络异常、服务器故障或者重启中
-                     * REASON_CODE_CLIENT_CONNECTED
-                     * REASON_CODE_CLIENT_ALREADY_DISCONNECTED
-                     * REASON_CODE_CLIENT_DISCONNECTING
-                     * REASON_CODE_SERVER_CONNECT_ERROR //网络异常、服务器故障或者重启中
-                     * REASON_CODE_CLIENT_NOT_CONNECTED
-                     * REASON_CODE_SOCKET_FACTORY_MISMATCH
-                     * REASON_CODE_SSL_CONFIG_ERROR
-                     * REASON_CODE_CLIENT_DISCONNECT_PROHIBITED
-                     * REASON_CODE_INVALID_MESSAGE
-                     * REASON_CODE_CONNECTION_LOST
-                     * REASON_CODE_CONNECT_IN_PROGRESS
-                     * REASON_CODE_CLIENT_CLOSED
-                     * REASON_CODE_TOKEN_INUSE
-                     * REASON_CODE_MAX_INFLIGHT
-                     * REASON_CODE_DISCONNECTED_BUFFER_FULL
-                     */
                     LogUtils.iTag(TAG,"MQTT 初始化异常",ex.getMessage());
-                    /**
-                     * 未知错误、网络异常、服务器故障、服务重启中需要重试
-                     */
-                    if(code != MqttException.REASON_CODE_BROKER_UNAVAILABLE
-                            && code != MqttException.REASON_CODE_UNEXPECTED_ERROR
-                            && code != MqttException.REASON_CODE_CLIENT_TIMEOUT
-                            && code != MqttException.REASON_CODE_WRITE_TIMEOUT
-                            && code != MqttException.REASON_CODE_SERVER_CONNECT_ERROR){
-                        Result result = new Result();
-                        result.setReqId(UUID.fastUUID().toString());
-                        result.setCode(STATUS_403);
-                        result.setMsg(ex.getMessage());
-                        defaultResCallback.onFinished(result);
-                        LogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
+                    Result result = new Result();
+                    result.setReqId(UUID.fastUUID().toString());
+                    result.setCode(STATUS_403);
+                    result.setMsg(ex.getMessage());
+                    defaultResCallback.onFinished(result);
+
+                    LogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
+
+                    if(code == MqttException.REASON_CODE_BROKER_UNAVAILABLE
+                            || code == MqttException.REASON_CODE_UNEXPECTED_ERROR
+                            || code == MqttException.REASON_CODE_CLIENT_TIMEOUT
+                            || code == MqttException.REASON_CODE_WRITE_TIMEOUT
+                            || code == MqttException.REASON_CODE_SERVER_CONNECT_ERROR){
+                        /**
+                         * 未知错误、网络异常、服务器故障、服务重启中需要重试
+                         */
+                        continue;
+                    }
+                    else{
                         /**
                          * 非：未知错误、网络异常、服务器故障、服务重启中直接跳出循环
                          * eg：clientId非法
@@ -794,6 +776,7 @@ public class NeulinkService implements NeulinkConst{
                     if(!neulinkServiceInited){
                         try {
                             Thread.sleep(1000);
+                            trys++;
                         } catch (InterruptedException interruptedException) {
                         }
                     }
