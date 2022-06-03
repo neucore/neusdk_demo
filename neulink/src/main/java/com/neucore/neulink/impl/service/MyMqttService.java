@@ -254,7 +254,7 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
-    public void disconnect(){
+    public void destory(){
         try {
             if(!disconnect && !ObjectUtil.isEmpty(client)){
                 client.disconnect();

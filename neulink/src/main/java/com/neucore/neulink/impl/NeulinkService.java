@@ -61,9 +61,9 @@ public class NeulinkService implements NeulinkConst{
     private Boolean neulinkServiceInited = false;
     private Boolean mqttInited = false;
     private Boolean registCalled = false,registed=false;
-    private Boolean mqttConnHasSuccessStarted = false;
+    private Boolean mqttConnCalled=false,mqttConnHasSuccessStarted = false;
     private Throwable failException;
-    private Boolean destroy = false;
+    private Boolean closed=false, destroyed = false;
 
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
@@ -96,7 +96,7 @@ public class NeulinkService implements NeulinkConst{
         while (!isMqttConnHasSuccessStarted()){
             try {
                 LogUtils.iTag(TAG,"start connectMqtt");
-                starttMqttConnect();
+                connect();
                 LogUtils.iTag(TAG,"end connectMqtt");
             }
             catch (MqttException ex){
@@ -188,24 +188,37 @@ public class NeulinkService implements NeulinkConst{
     /**
      * 连接Mqtt服务器
      */
-    private void starttMqttConnect() throws MqttException{
+    private void connect() throws MqttException{
         synchronized (this) {
-            if (!isMqttConnHasSuccessStarted()) {
+            if (!mqttConnCalled) {
                 myMqttService.connect();
+                mqttConnCalled = true;
             }
         }
     }
 
     public void destroy(){
-        if(!destroy && !ObjectUtil.isEmpty(myMqttService)){
-            myMqttService.disconnect();
-            destroy = true;
+        if(!destroyed
+                && !ObjectUtil.isEmpty(myMqttService)){
+            myMqttService.destory();
+            destroyed = true;
+            mqttConnCalled = false;
             LogUtils.iTag(TAG,"断开Mqtt Service");
         }
     }
 
-    public Boolean getDestroy() {
-        return destroy;
+    public void close(){
+        if(!closed
+                && !ObjectUtil.isEmpty(myMqttService)){
+            myMqttService.close();
+            closed = true;
+            mqttConnCalled = false;
+            LogUtils.iTag(TAG,"断开Mqtt Service");
+        }
+    }
+
+    public Boolean getDestroyed() {
+        return destroyed;
     }
 
     public void addMQTTCallBack(IMqttCallBack mqttCallBack){
@@ -598,7 +611,7 @@ public class NeulinkService implements NeulinkConst{
      */
     class HouseKeeping extends Thread{
         public void run(){
-            while (!destroy){
+            while (!destroyed){
                 String tempDir = DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext());
                 File[] files = new File(tempDir).listFiles();
                 /**

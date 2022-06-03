@@ -1,14 +1,12 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
@@ -59,7 +57,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
         new Thread("status") {
             public void run() {
 
-                while (!service.getDestroy() && true) {
+                while (!service.getDestroyed() && true) {
                     try {
                         Thread.sleep(1000 * 30);
                     }
@@ -95,7 +93,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
     private void stat(){
         new Thread("stat") {
             public void run() {
-                while (!service.getDestroy() &&true) {
+                while (!service.getDestroyed() &&true) {
                     try {
                         Thread.sleep(1000 * 30);
                     }
@@ -130,7 +128,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
 
         new Thread("CarshLoggerReport"){
             public void run() {
-                while (!service.getDestroy() && true) {
+                while (!service.getDestroyed() && true) {
 
                     try{
                         Thread.sleep(1000*60);
