@@ -36,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,9 +101,6 @@ public class NeulinkService implements NeulinkConst{
                 LogUtils.iTag(TAG,"end connectMqtt");
             }
             catch (MqttException ex){
-                LogUtils.eTag(TAG,"连接失败：",ex);
-            }
-            catch (Exception ex){
                 LogUtils.eTag(TAG,"连接失败：",ex);
             }
             finally {
@@ -734,6 +732,22 @@ public class NeulinkService implements NeulinkConst{
                         neulinkServiceInited = true;
                     }
                 }
+                catch (UnsupportedEncodingException ex){
+                    LogUtils.eTag(TAG,"注册失败",ex);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(STATUS_500);
+                    result.setMsg(ex.getMessage());
+                    defaultResCallback.onFinished(result);
+                }
+                catch (NeulinkException e) {
+                    LogUtils.eTag(TAG,"注册失败",e);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(e.getCode());
+                    result.setMsg(e.getMsg());
+                    defaultResCallback.onFinished(result);
+                }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
                     LogUtils.iTag(TAG,"MQTT 初始化异常",ex.getMessage());
@@ -762,22 +776,6 @@ public class NeulinkService implements NeulinkConst{
                          */
                         break;
                     }
-                }
-                catch (NeulinkException e) {
-                    LogUtils.eTag(TAG,"注册失败",e);
-                    Result result = new Result();
-                    result.setReqId(reqId);
-                    result.setCode(e.getCode());
-                    result.setMsg(e.getMsg());
-                    defaultResCallback.onFinished(result);
-                }
-                catch (Exception ex){
-                    LogUtils.eTag(TAG,"注册失败",ex);
-                    Result result = new Result();
-                    result.setReqId(reqId);
-                    result.setCode(STATUS_500);
-                    result.setMsg(ex.getMessage());
-                    defaultResCallback.onFinished(result);
                 }
                 finally {
                     if(!neulinkServiceInited){
