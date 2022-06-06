@@ -420,9 +420,9 @@ public class NeulinkService implements NeulinkConst{
 
     private String custid="notimpl";
     public String getCustId(){
-        String sccperId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
-        if(ObjectUtil.isNotEmpty(sccperId)){
-            return sccperId;
+        String scopeId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        if(ObjectUtil.isNotEmpty(scopeId)){
+            return scopeId;
         }
         return custid;
     }
