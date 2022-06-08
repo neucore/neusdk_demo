@@ -1,5 +1,7 @@
 package com.neucore.neulink.impl;
 
+import android.content.Context;
+
 import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
@@ -106,7 +108,9 @@ class RegisterAdapter implements NeulinkConst{
                         if(ObjectUtil.isEmpty(extSN)){
                             extSN = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
                         }
-                        String devId = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext()) + "@@" + extSN + "@@" + ConfigContext.getInstance().getConfig(ConfigContext.DEVICE_TYPE, 0);
+                        Context context = ContextHolder.getInstance().getContext();
+                        ConfigContext configContext = ConfigContext.getInstance();
+                        String devId = String.format("%s@@%s@@%s",DeviceUtils.getDeviceId(context),extSN,configContext.getConfig(ConfigContext.DEVICE_TYPE, 0));
                         deviceInfo.setDeviceId(devId);
                         boolean successed = deviceService.regist(deviceInfo);
                         if(successed){
