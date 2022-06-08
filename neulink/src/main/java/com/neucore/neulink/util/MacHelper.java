@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkConst;
@@ -33,7 +32,7 @@ public class MacHelper implements NeulinkConst{
     public static String getWifiMac(Context context) {
         String mac = "";
         if (SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            mac = getMacAddress(context);
+            mac = getMacFromWifiManager(context);
         } else {
             // adb shell ifconfig wlan0
             mac = getMacFromIfconfig();
@@ -163,7 +162,7 @@ public class MacHelper implements NeulinkConst{
      *
      * @return MAC地址
      */
-    public static String getMacAddress(Context context) {
+    public static String getMacFromWifiManager(Context context) {
         WifiManager wifi = (WifiManager) context.getSystemService(
                 Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();

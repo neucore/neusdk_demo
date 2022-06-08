@@ -324,7 +324,7 @@ public class MyApplication extends Application
         @Override
         public String getExtSN() {
             /**
-             * 需要获取设备唯一标识【自定义，eg：YekerID】
+             * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
              */
             return DeviceUtils.getCPUSN(getContext());
         }

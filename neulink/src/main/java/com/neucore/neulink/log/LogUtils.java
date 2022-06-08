@@ -1,13 +1,17 @@
 package com.neucore.neulink.log;
 
-import java.io.File;
-import java.util.Locale;
+import android.os.Environment;
+
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.eclipse.paho.client.mqttv3.logging.LoggerFactory;
 
-import android.os.Environment;
+
+import java.io.File;
+import java.util.Locale;
 
 /**
  * LogUtils 工具类
@@ -22,8 +26,7 @@ public class LogUtils {
     private static final String APP_NAME = "Neulink";
 
     /** 设置log文件全路径，这里是 MyApp/Log/myapp.log **/
-    private static final String LOG_FILE_PATH = Environment.getExternalStorageDirectory() + File.separator + APP_NAME
-            + File.separator + "Log" + File.separator + APP_NAME.toLowerCase(Locale.CHINA) + ".log";
+    private static final String LOG_FILE_PATH = DeviceUtils.getLogPath(ContextHolder.getInstance().getContext())+File.separator+APP_NAME+".log";
 
     /**
      *    ### log文件的格式
