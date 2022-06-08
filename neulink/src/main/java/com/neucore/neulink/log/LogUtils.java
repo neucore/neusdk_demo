@@ -43,7 +43,7 @@ public class LogUtils {
      *    ### [时间{时间格式}][信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    private static final String LOG_FILE_PATTERN = "[%-d{yyyy-MM-dd HH:mm:ss}][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
+    private static final String LOG_FILE_PATTERN = "[%-d{yyyy-MM-dd HH:mm:ss}] - Msg: %m%n";
 
     /** 生产环境下的log等级 **/
     private static final Level LOG_LEVEL_PRODUCE = Level.ALL;
@@ -63,7 +63,7 @@ public class LogUtils {
         LogConfig logConfigurator = new LogConfig();
 
         /** 设置Log等级，生产环境下调用setLogToProduce()，发布后调用setLogToRelease() **/
-        setLogToProduce(logConfigurator);
+        setLogToRelease(logConfigurator);
 
         logConfigurator.setFileName(LOG_FILE_PATH);
 
