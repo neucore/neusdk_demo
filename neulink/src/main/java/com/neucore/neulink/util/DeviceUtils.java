@@ -205,7 +205,7 @@ public class DeviceUtils implements NeulinkConst{
 		return cpuSn;
 	}
 
-	public static String getCPUSN(Context context){
+	private static String getCPUSN(Context context){
 
 		String str = "", strCPU = "", cpuAddress = "0000000000000000";
 		try {
