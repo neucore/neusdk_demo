@@ -9,7 +9,7 @@ import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvider;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;

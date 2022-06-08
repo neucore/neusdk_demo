@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.SSLSocketClient;

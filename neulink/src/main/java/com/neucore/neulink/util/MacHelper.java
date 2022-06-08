@@ -6,7 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedInputStream;

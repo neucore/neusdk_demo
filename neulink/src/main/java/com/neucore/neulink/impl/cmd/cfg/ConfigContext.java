@@ -3,7 +3,7 @@ package com.neucore.neulink.impl.cmd.cfg;
 import android.content.Context;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.util.ContextHolder;

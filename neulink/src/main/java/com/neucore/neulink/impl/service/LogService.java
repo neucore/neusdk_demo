@@ -20,7 +20,7 @@ import android.os.PowerManager.WakeLock;
 
 import androidx.core.app.NotificationCompat;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.DeviceUtils;

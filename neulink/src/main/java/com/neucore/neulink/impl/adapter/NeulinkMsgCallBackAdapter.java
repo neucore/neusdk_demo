@@ -3,7 +3,7 @@ package com.neucore.neulink.impl.adapter;
 import android.content.Context;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;

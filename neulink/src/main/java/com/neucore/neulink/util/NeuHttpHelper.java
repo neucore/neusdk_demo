@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;

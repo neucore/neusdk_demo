@@ -14,7 +14,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;

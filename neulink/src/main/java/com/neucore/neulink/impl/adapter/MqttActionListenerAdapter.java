@@ -2,7 +2,7 @@ package com.neucore.neulink.impl.adapter;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Result;

@@ -14,7 +14,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;

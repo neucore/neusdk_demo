@@ -2,7 +2,7 @@ package com.neucore.neulink.impl.service.storage;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 

@@ -29,13 +29,13 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
 
     @Override
     public FileSyncCmd parser(String payload) {
-//        LogUtil.setLog(TAG, "FileProcessor..parser()..payload:" + payload);
+//        LogUtils.setLog(TAG, "FileProcessor..parser()..payload:" + payload);
         return JSonUtils.toObject(payload, FileSyncCmd.class);
     }
 
     @Override
     protected FileSyncCmdRes responseWrapper(FileSyncCmd fileSyncCmd, FileActionResult fileActionResult) {
-//        LogUtil.setLog(TAG, "FileSyncCmdRes()..responseWrapper");
+//        LogUtils.setLog(TAG, "FileSyncCmdRes()..responseWrapper");
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(fileActionResult.getCode());
@@ -46,7 +46,7 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
 
     @Override
     protected FileSyncCmdRes fail(FileSyncCmd fileSyncCmd, String s) {
-//        LogUtil.setLog(TAG, "FileSyncCmdRes()..fail");
+//        LogUtils.setLog(TAG, "FileSyncCmdRes()..fail");
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(500);
@@ -58,7 +58,7 @@ public class FileProcessor extends GProcessor<FileSyncCmd, FileSyncCmdRes, FileA
 
     @Override
     protected FileSyncCmdRes fail(FileSyncCmd fileSyncCmd, int i, String s) {
-//        LogUtil.setLog(TAG, "FileSyncCmdRes fail " + s);
+//        LogUtils.setLog(TAG, "FileSyncCmdRes fail " + s);
         FileSyncCmdRes res = new FileSyncCmdRes();
         res.setCmdStr(fileSyncCmd.getCmdStr());
         res.setCode(i);

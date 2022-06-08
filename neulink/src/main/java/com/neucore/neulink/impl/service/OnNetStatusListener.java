@@ -2,7 +2,7 @@ package com.neucore.neulink.impl.service;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IOnNetStatusListener;
 import com.neucore.neulink.NeulinkConst;
 
