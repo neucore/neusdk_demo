@@ -29,11 +29,7 @@ public class DeviceInfoDefaultBuilder {
          */
         Context context = ContextHolder.getInstance().getContext();
 
-        String mac = MacHelper.getEthernetMac();
-        if(ObjectUtil.isEmpty(mac)){
-            mac = MacHelper.getWifiMac(context);
-        }
-
+        String mac = DeviceUtils.getMacAddress();
         deviceInfo.setMac(mac);
 
         deviceInfo.setTag(AppUtils.getVersionName(context));

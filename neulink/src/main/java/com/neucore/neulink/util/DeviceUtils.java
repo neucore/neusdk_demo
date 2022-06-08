@@ -10,7 +10,6 @@ import android.os.Parcel;
 import android.os.StatFs;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -39,6 +38,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -298,7 +298,11 @@ public class DeviceUtils implements NeulinkConst{
 	}
 
 	public static String getMacAddress() {
-		return MacHelper.getWifiMac(ContextHolder.getInstance().getContext());
+		String mac = MacHelper.getEthernetMac();
+		if(ObjectUtil.isEmpty(mac)){
+			mac = MacHelper.getWifiMac(ContextHolder.getInstance().getContext());
+		}
+		return mac;
 	}
 
 	public static String getIpAddress(Context context){
