@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
 import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;

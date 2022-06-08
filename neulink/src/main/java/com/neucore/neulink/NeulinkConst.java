@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public interface NeulinkConst {
 
-    String TAG_PREFIX = "Neulink";
+    String TAG_PREFIX = "com.neucore.neulink.Neulink";
     String filePath= Environment.getExternalStorageDirectory() + "/twocamera/";
     String picPath= Environment.getExternalStorageDirectory() + "/twocamera/icon/";//头像
     String photoPath= Environment.getExternalStorageDirectory() + "/twocamera/photo/";//抓拍

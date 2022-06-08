@@ -61,6 +61,7 @@ dependencies {
     implementation 'cn.hutool:hutool-all:5.6.0'
     implementation 'org.greenrobot:greendao:3.3.0' // add library
     implementation 'com.blankj:utilcode:1.30.6'
+    implementation 'log4j:log4j:1.2.17'
 }
 
 task makeJar(type: Copy) {

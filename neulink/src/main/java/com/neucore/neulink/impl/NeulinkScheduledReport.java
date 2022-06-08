@@ -2,7 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;

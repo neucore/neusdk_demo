@@ -3,7 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IProcessor;

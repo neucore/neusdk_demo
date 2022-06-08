@@ -8,7 +8,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
 
@@ -147,7 +147,7 @@ public class FileUtils implements NeulinkConst{
              if (!isAd && sign > 0)
                  options.inSampleSize = sign;   //width，hight设为原来的2分一*/
 	     Bitmap bm =BitmapFactory.decodeStream(is,null,options);
-//	     LogUtils.iTag("TAG","原始："+num+"压缩："+sign+"压缩后："+bm.getByteCount()/1024.);
+//	     LogUtils.iTag(TAG,"原始："+num+"压缩："+sign+"压缩后："+bm.getByteCount()/1024.);
 		 return bm;
 		}else{
 			return null;
@@ -284,7 +284,7 @@ public class FileUtils implements NeulinkConst{
 		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 		// 使用获取到的inSampleSize值再次解析图片
 		options.inJustDecodeBounds = false;
-		LogUtils.v("decode","返回bitmap");
+		LogUtils.wTag(TAG,"返回bitmap");
 		return BitmapFactory.decodeByteArray(b, 0, b.length, options);
 	}
 	/*private static int calculateInSampleSize(BitmapFactory.Options options,
@@ -301,7 +301,7 @@ public class FileUtils implements NeulinkConst{
 			// 一定都会大于等于目标的宽和高。
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 		}
-		LogUtils.v("calculate"," "+inSampleSize);
+		LogUtils.wTag(TAG," "+inSampleSize);
 		return inSampleSize;
 	}*/
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {

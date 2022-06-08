@@ -2,7 +2,7 @@ package com.neucore.neulink.impl.listener;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.neucore.neulink.log.LogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
