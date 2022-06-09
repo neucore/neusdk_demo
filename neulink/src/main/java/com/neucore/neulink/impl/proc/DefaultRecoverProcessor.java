@@ -12,7 +12,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.listener.DefaultRecoverCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultRecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes, ActionResult<String>> implements NeulinkConst {
+public final class DefaultRecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes, ActionResult<String>> implements NeulinkConst {
 
     public DefaultRecoverProcessor(Context context) {
         super(context);

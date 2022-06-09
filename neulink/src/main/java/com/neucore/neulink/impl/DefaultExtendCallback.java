@@ -35,7 +35,7 @@ import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 
-public class DefaultExtendCallback implements IExtendCallback {
+public final class DefaultExtendCallback implements IExtendCallback {
     @Override
     public void onCallBack() {
         /**

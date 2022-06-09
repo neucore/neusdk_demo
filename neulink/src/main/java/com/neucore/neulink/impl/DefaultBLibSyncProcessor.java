@@ -22,7 +22,7 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActionResult> implements IProcessor {
+public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActionResult> implements IProcessor {
 
     private String libDir;
     public DefaultBLibSyncProcessor() {
@@ -33,7 +33,7 @@ public class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActi
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    public void execute(NeulinkTopicParser.Topic topic, String payload) {
         this.topic = topic;
 
         payload = auth(topic,payload);

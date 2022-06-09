@@ -14,7 +14,7 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DefaultHibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionResult<Map<String,String>>> {
+public final class DefaultHibrateProcessor extends GProcessor<HibrateCmd, HibrateRes, ActionResult<Map<String,String>>> {
 
     @SuppressLint("InvalidWakeLockTag")
     public DefaultHibrateProcessor(Context context){

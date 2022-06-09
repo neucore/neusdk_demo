@@ -6,7 +6,7 @@ import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.impl.service.resume.IFileService;
 
-public class ServiceRegistry {
+public final class ServiceRegistry {
 
     private static ServiceRegistry instance = new ServiceRegistry();
 

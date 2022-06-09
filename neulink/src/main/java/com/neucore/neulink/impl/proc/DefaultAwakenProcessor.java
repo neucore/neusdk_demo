@@ -15,7 +15,7 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DefaultAwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResult<Map<String,String>>> {
+public final class DefaultAwakenProcessor extends GProcessor<AwakenCmd, AwakenRes, ActionResult<Map<String,String>>> {
 
     private PowerManager pm =null;
     PowerManager.WakeLock wakeLock = null;

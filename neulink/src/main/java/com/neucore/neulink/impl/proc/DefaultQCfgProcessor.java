@@ -12,7 +12,7 @@ import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultQCfgCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultQCfgProcessor extends GProcessor<QCfgCmd, CfgQueryCmdRes, ActionResult<CfgItem[]>> {
+public final class DefaultQCfgProcessor extends GProcessor<QCfgCmd, CfgQueryCmdRes, ActionResult<CfgItem[]>> {
 
 
     public DefaultQCfgProcessor(Context context){

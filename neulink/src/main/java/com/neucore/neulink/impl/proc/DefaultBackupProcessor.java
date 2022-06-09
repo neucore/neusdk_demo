@@ -14,7 +14,7 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, ActionResult<Map<String,String>>> implements NeulinkConst {
+public final class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCmdRes, ActionResult<Map<String,String>>> implements NeulinkConst {
 
     public DefaultBackupProcessor(Context context) {
         super(context);

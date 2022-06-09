@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<LicCmd, LicCmdRes, LicPkgActionResult> {
+public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<LicCmd, LicCmdRes, LicPkgActionResult> {
 
     private String libDir;
     private Context context;

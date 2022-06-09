@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-public class ProcessRegistry implements NeulinkConst {
+public final class ProcessRegistry implements NeulinkConst {
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
     private static ConcurrentHashMap<String, IBlib$ObjtypeProcessor> blibBatchProcessors = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, IQlib$ObjtypeProcessor> qlibBatchProcessors = new ConcurrentHashMap<>();
@@ -64,7 +64,7 @@ public class ProcessRegistry implements NeulinkConst {
      *
      * 车牌信息上报响应 upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      * 温度信息上报响应 upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
-     * @deprecated
+     *
      */
     public synchronized static IProcessor build(Context context, NeulinkTopicParser.Topic topic){
         String biz = topic.getBiz().toLowerCase();
@@ -135,6 +135,41 @@ public class ProcessRegistry implements NeulinkConst {
     }
 
     /**
+     * 注册扩展处理器
+     * @param biz
+     * @param processor
+     */
+    private static void regist(String biz,IProcessor processor){
+        processors.put(biz.toLowerCase(),processor);
+    }
+
+    /**
+     * 注册扩展处理器
+     * @param biz
+     * @param processor
+     * @param cmdListener
+     */
+    public static void regist(String biz, IProcessor processor, ICmdListener cmdListener){
+        biz = biz.toLowerCase();
+        processors.put(biz,processor);
+        ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
+    }
+
+    /**
+     * 注册扩展处理器
+     * @param biz 业务
+     * @param processor 命令解析处理器
+     * @param cmdListener 命令到达侦听器
+     * @param iResCallback 响应回调
+     */
+    public static void regist(String biz, IProcessor processor, ICmdListener cmdListener, IResCallback iResCallback){
+        biz = biz.toLowerCase();
+        processors.put(biz,processor);
+        ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
+        CallbackRegistry.getInstance().setResCallback(biz,iResCallback);
+    }
+
+    /**
      *
      * @param objType
      * @param batchProcessor
@@ -198,40 +233,5 @@ public class ProcessRegistry implements NeulinkConst {
     public static IClib$ObjtypeProcessor getClibBatch(String objType){
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
         return clibBatchProcessors.get(batchBiz);
-    }
-    /**
-     * 注册扩展处理器
-     * @param biz
-     * @param processor
-     * @deprecated
-     */
-    private static void regist(String biz,IProcessor processor){
-        processors.put(biz.toLowerCase(),processor);
-    }
-
-    /**
-     * 注册扩展处理器
-     * @param biz
-     * @param processor
-     * @param cmdListener
-     */
-    public static void regist(String biz, IProcessor processor, ICmdListener cmdListener){
-        biz = biz.toLowerCase();
-        processors.put(biz,processor);
-        ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
-    }
-
-    /**
-     * 注册扩展处理器
-     * @param biz 业务
-     * @param processor 命令解析处理器
-     * @param cmdListener 命令到达侦听器
-     * @param iResCallback 响应回调
-     */
-    public static void regist(String biz, IProcessor processor, ICmdListener cmdListener, IResCallback iResCallback){
-        biz = biz.toLowerCase();
-        processors.put(biz,processor);
-        ListenerRegistry.getInstance().setExtendListener(biz,cmdListener);
-        CallbackRegistry.getInstance().setResCallback(biz,iResCallback);
     }
 }

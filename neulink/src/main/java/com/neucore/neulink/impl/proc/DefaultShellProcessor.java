@@ -13,7 +13,7 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, ActionResult<Map<String, String>>> {
+public final class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRes, ActionResult<Map<String, String>>> {
 
     public DefaultShellProcessor(Context context){
         super(context);

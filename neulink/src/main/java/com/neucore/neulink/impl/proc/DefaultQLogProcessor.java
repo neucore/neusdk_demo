@@ -11,7 +11,7 @@ import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultQLogCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogActionResult> {
+public final class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes, LogActionResult> {
 
     public DefaultQLogProcessor(Context context){
         super(context);

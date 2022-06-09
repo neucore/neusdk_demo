@@ -2,10 +2,10 @@ package com.neucore.neulink.impl.adapter;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
-import com.neucore.neulink.impl.NeulinkProcessorFactory;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.util.RequestContext;
@@ -39,7 +39,7 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
 
         NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
 
-        IProcessor processor = NeulinkProcessorFactory.build(context,topic);
+        IProcessor processor = ProcessRegistry.build(context,topic);
 
         try {
             if(processor!=null){

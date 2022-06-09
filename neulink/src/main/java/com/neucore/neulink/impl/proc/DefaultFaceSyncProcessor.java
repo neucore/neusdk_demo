@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
+public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
 
     private String libDir;
     private Context context;

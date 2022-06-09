@@ -11,7 +11,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.listener.DefaultAlogCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionResult<String>> {
+public final class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionResult<String>> {
 
     public DefaultALogProcessor(Context context){
         super(context);

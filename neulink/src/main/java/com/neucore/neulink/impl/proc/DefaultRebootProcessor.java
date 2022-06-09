@@ -15,7 +15,7 @@ import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
-public class DefaultRebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResult<Map<String,String>>> {
+public final class DefaultRebootProcessor extends GProcessor<RebootCmd, RebootRes, ActionResult<Map<String,String>>> {
 
     private PowerManager pm =null;
     PowerManager.WakeLock wakeLock = null;
