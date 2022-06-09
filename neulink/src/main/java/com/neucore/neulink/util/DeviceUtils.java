@@ -13,7 +13,7 @@ import android.telephony.TelephonyManager;
 
 import androidx.annotation.RequiresApi;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
@@ -66,7 +66,7 @@ public class DeviceUtils implements NeulinkConst{
 			if (path.equals("/storage/emulated/0"))
 				path = "/storage/sdcard0";
 		}
-		LogUtils.iTag(TAG,"rootPath: "+path);
+		NeuLogUtils.iTag(TAG,"rootPath: "+path);
 		return path; //"/storage/sdcard0";
 	}
 
@@ -238,7 +238,7 @@ public class DeviceUtils implements NeulinkConst{
 			}
 		} catch (Exception e) {
 			//赋予默认值
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			NeuLogUtils.eTag(TAG, e.getMessage(), e);
 		}
 		return cpuAddress;
 	}
@@ -326,7 +326,7 @@ public class DeviceUtils implements NeulinkConst{
 				}
 			}
 		} catch (SocketException e) {
-			LogUtils.eTag(TAG,e.getMessage(),e);
+			NeuLogUtils.eTag(TAG,e.getMessage(),e);
 		}
 		return hostIp;
 	}
@@ -377,7 +377,7 @@ public class DeviceUtils implements NeulinkConst{
 		try {
 			Method systemProperties_get = Class.forName("android.os.SystemProperties").getMethod("get", String.class);
 			String ret = (String) systemProperties_get.invoke(null, key);
-			LogUtils.dTag(TAG, key + "= " + ret);
+			NeuLogUtils.dTag(TAG, key + "= " + ret);
 			if (ret != null && !StrUtil.isEmpty(ret)){
 				return ret;
 			}
@@ -387,10 +387,9 @@ public class DeviceUtils implements NeulinkConst{
 		return def;
 	}
 
-	private static String OrgFilepath = "/storage/emulated/0/neucore/";
 	public static String getSkuToken(){
 		String line = null;
-		File config = new File(OrgFilepath+"license.conf");
+		File config = new File(getNeucore(ContextHolder.getInstance().getContext())+File.separator+"license.conf");
 		if(config.exists()){
 			BufferedReader bufferedReader = null;
 			try {
@@ -420,7 +419,7 @@ public class DeviceUtils implements NeulinkConst{
 				}
 			}
 		}
-		LogUtils.dTag(TAG, "SkuToken="+line);
+		NeuLogUtils.dTag(TAG, "SkuToken="+line);
 		return line;
 	}
 }

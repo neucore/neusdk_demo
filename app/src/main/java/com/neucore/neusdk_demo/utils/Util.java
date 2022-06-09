@@ -246,7 +246,7 @@ public class Util {
         if (reader != null) {
             Image image = reader.acquireLatestImage();//最后一帧
             if (image == null) return;
-            //LogUtils.dTag(TAG,"rgb  0 0 0 0 " );
+            //NeuLogUtils.dTag(TAG,"rgb  0 0 0 0 " );
             int mRGBimageWidth = image.getWidth();
             int mRGBimageHeight = image.getHeight();
 
@@ -255,17 +255,17 @@ public class Util {
             //mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式  这个快1毫秒
             LogUtils.dTag(TAG, "rgb  2222");
             Mat mat2 = new Mat((int) (mRGBimageHeight * 1.5), mRGBimageWidth, CvType.CV_8UC1);
-            //LogUtils.dTag(TAG,"rgb  3333" );
+            //NeuLogUtils.dTag(TAG,"rgb  3333" );
             mat2.put(0, 0, mPendingRGBFrameData);
             //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-            //LogUtils.dTag(TAG,"rgb  4444" );
+            //NeuLogUtils.dTag(TAG,"rgb  4444" );
             Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-            //LogUtils.dTag(TAG,"rgb  5555" );
+            //NeuLogUtils.dTag(TAG,"rgb  5555" );
             Imgproc.cvtColor(mat2, rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 
             LogUtils.dTag(TAG, "rgb  6666");
             transpose(rgb_mat, rgb_mat);    //耗时4毫秒
-            //LogUtils.dTag(TAG,"rgb  7777" );
+            //NeuLogUtils.dTag(TAG,"rgb  7777" );
             //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
             //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
             LogUtils.dTag(TAG, "rgb  8888");
@@ -300,7 +300,7 @@ public class Util {
             }
             if (rectList.size() > 0){
                 Util.sendIntEventMessge(Constants.FACE_START, rectList);
-                //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
+                //NeuLogUtils.dTag(TAG,"rgb  10 10 10 10" );
             }else {
                 rectList.clear();
                 rectList.add(new Rect(0,0,0,0));

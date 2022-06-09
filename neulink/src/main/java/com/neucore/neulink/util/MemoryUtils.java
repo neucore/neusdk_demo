@@ -3,9 +3,8 @@ package com.neucore.neulink.util;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Debug;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
@@ -50,7 +49,7 @@ public class MemoryUtils implements NeulinkConst{
             memTotal = memKb[0].trim();
             memory = Long.parseLong(memTotal);
         } catch (IOException e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            NeuLogUtils.eTag(TAG, e.getMessage(), e);
         }
         return memory;
     }

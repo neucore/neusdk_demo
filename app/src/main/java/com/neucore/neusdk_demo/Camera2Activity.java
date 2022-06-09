@@ -332,7 +332,7 @@ public class Camera2Activity extends AppCompatActivity {
         LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.dTag(TAG,"rgb  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
@@ -367,7 +367,7 @@ public class Camera2Activity extends AppCompatActivity {
         }
         if (rectList.size() > 0){
             Util.sendIntEventMessge(Constants.FACE_START, rectList);
-            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
+            //NeuLogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             rectList.clear();
             rectList.add(new Rect(0,0,0,0));
@@ -460,7 +460,7 @@ public class Camera2Activity extends AppCompatActivity {
         LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.dTag(TAG,"rgb  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
@@ -587,7 +587,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIHandNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
+            //NeuLogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewUIHandNum == 0){
                 paintViewUIHandNum++;
@@ -638,20 +638,20 @@ public class Camera2Activity extends AppCompatActivity {
 //        int mRGBimageHeight = image.getHeight();
 //
 //        mPendingRGBFrameData = getBytesFromImageAsType(image);//将传入的 yuv buffer 转为 cv::mat, 并通过cvtcolor 转换为BGR 或 RGB 格式
-//        //LogUtils.dTag(TAG,"rgb  2222" );
+//        //NeuLogUtils.dTag(TAG,"rgb  2222" );
 //        Mat mat2 = new Mat((int)(mRGBimageHeight*1.5),mRGBimageWidth, CvType.CV_8UC1);
-//        //LogUtils.dTag(TAG,"rgb  3333" );
+//        //NeuLogUtils.dTag(TAG,"rgb  3333" );
 //        mat2.put(0,0,mPendingRGBFrameData);
 //        //Mat rgb_mat = new Mat(mRGBimageHeight, mRGBimageWidth,CvType.CV_8UC3);
-//        //LogUtils.dTag(TAG,"rgb  4444" );
+//        //NeuLogUtils.dTag(TAG,"rgb  4444" );
 //        Mat rgb_mat = Imgcodecs.imdecode(new MatOfByte(mPendingRGBFrameData), CvType.CV_8UC3);
-//        //LogUtils.dTag(TAG,"rgb  5555" );
+//        //NeuLogUtils.dTag(TAG,"rgb  5555" );
 //        Imgproc.cvtColor(mat2 , rgb_mat, Imgproc.COLOR_YUV420sp2BGR);
 //
 //        Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgb_mat);
 
 
-        //LogUtils.dTag(TAG,"rgb  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒(旋转图片)  此处,只有我们项目中有需要
         LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
@@ -721,7 +721,7 @@ public class Camera2Activity extends AppCompatActivity {
         LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时  15毫秒
         //Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.dTag(TAG,"rgb  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  6666" );
         //transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
@@ -748,7 +748,7 @@ public class Camera2Activity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewFacePointNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
+            //NeuLogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewFacePointNum == 0){
                 paintViewFacePointNum++;
@@ -805,21 +805,21 @@ public class Camera2Activity extends AppCompatActivity {
     public byte[] getBytesFromImageAsType(Image image) {
         LogUtils.dTag(TAG,"rgb  1111   asType  1111" );
         Image.Plane Y = image.getPlanes()[0];
-        //LogUtils.dTag(TAG,"rgb  1111   asType  2222" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  2222" );
         Image.Plane U = image.getPlanes()[1];  //耗时1毫秒
-        //LogUtils.dTag(TAG,"rgb  1111   asType  3333" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  3333" );
         Image.Plane V = image.getPlanes()[2];
-        //LogUtils.dTag(TAG,"rgb  1111   asType  4444" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  4444" );
 
         int Yb = Y.getBuffer().remaining();
-        //LogUtils.dTag(TAG,"rgb  1111   asType  5555" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  5555" );
         int Ub = U.getBuffer().remaining();
-        //LogUtils.dTag(TAG,"rgb  1111   asType  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  6666" );
         int Vb = V.getBuffer().remaining();
-        //LogUtils.dTag(TAG,"rgb  1111   asType  7777" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  7777" );
 
         byte[] data = new byte[Yb + Ub + Vb];
-        //LogUtils.dTag(TAG,"rgb  1111   asType  8888" );
+        //NeuLogUtils.dTag(TAG,"rgb  1111   asType  8888" );
 
         for(int a=1,b=2,c=3;a<b;c++,a++,b--){
             LogUtils.dTag(TAG,"rgb  1111   asType  9999  3个变量:  a="+a+"  b="+b+"   c="+c );

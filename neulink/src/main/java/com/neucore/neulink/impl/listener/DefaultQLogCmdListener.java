@@ -1,10 +1,8 @@
 package com.neucore.neulink.impl.listener;
 
-import android.util.Log;
-
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
 import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;
@@ -50,7 +48,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
             throw new RuntimeException(cmd.getType()+"日志类型不支持");
         }
         catch (Throwable ex){
-            LogUtils.eTag(TAG,"process",ex);
+            NeuLogUtils.eTag(TAG,"process",ex);
             throw new RuntimeException(ex);
         }
     }
@@ -125,7 +123,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
                         return true;
                     }
                 } catch (ParseException e) {
-                    LogUtils.eTag(TAG,"getSys",e);
+                    NeuLogUtils.eTag(TAG,"getSys",e);
                 }
                 return false;
             }

@@ -1,34 +1,17 @@
 package com.neucore.neulink.impl.listener;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.util.Log;
-
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.cmd.rrpc.CarCmd;
 import com.neucore.neulink.impl.cmd.rrpc.CarData;
-import com.neucore.neulink.impl.cmd.rrpc.FaceData;
-import com.neucore.neulink.impl.cmd.rrpc.FaceNode;
 import com.neucore.neulink.impl.cmd.rrpc.CarPkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.KVPair;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
 
 
 public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,CarCmd> {
@@ -105,7 +88,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            LogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
+            NeuLogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
         }
         else if(DEL.equalsIgnoreCase(cmdStr)){
             //删除人脸到 twocamera/photo/ 文件夹下
@@ -114,7 +97,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            LogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
+            NeuLogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
         }
 
         /**
@@ -126,7 +109,7 @@ public class DefaultCarSyncListener implements ICmdListener<CarPkgActionResult,C
              * 最后一个包时，需要执行清理历史数据【无效数据】，可替换自己的代码
              * @TODO 根据自己需要自行定义，可替换自己的代码，建议根据请求时间进行清理；sample根据数据的更新时间进行处理
              */
-            LogUtils.eTag(TAG,"清除过期数据没有实现。。。");
+            NeuLogUtils.eTag(TAG,"清除过期数据没有实现。。。");
         }
 
         CarPkgActionResult result = new CarPkgActionResult();

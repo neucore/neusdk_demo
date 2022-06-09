@@ -51,7 +51,7 @@ public class FastYUVtoRGB {
         Bitmap bmpout = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 //        startTime = System.currentTimeMillis();
         out.copyTo(bmpout);
-//        LogUtils.dTag("convertYUVtoRGB", "Bitmap 耗时=" + (System.currentTimeMillis() - startTime));
+//        NeuLogUtils.dTag("convertYUVtoRGB", "Bitmap 耗时=" + (System.currentTimeMillis() - startTime));
 
 
         Matrix matrix = new Matrix();

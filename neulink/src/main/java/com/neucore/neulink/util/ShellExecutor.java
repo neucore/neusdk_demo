@@ -1,9 +1,8 @@
 package com.neucore.neulink.util;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedReader;
@@ -58,7 +57,7 @@ public class ShellExecutor implements NeulinkConst{
                 response.put("stdout",result.toString());
             }
         } catch (Exception ex) {
-            LogUtils.eTag(TAG,"shell exe error",ex);
+            NeuLogUtils.eTag(TAG,"shell exe error",ex);
             throw new RuntimeException(ex);
         }
         finally {
@@ -68,7 +67,7 @@ public class ShellExecutor implements NeulinkConst{
                 }
             }
             catch (Exception ex){
-                LogUtils.eTag(TAG,"shell exe error",ex);
+                NeuLogUtils.eTag(TAG,"shell exe error",ex);
             }
         }
         return response;

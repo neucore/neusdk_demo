@@ -248,7 +248,7 @@ public class MyApplication extends Application
                 .addFormatter(new LogUtils.IFormatter<ArrayList>() {
                     @Override
                     public String format(ArrayList arrayList) {
-                        return "LogUtils Formatter ArrayList { " + arrayList.toString() + " }";
+                        return "NeuLogUtils Formatter ArrayList { " + arrayList.toString() + " }";
                     }
                 });
     }

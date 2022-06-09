@@ -129,7 +129,7 @@ public class FileAccess extends Activity {
 //		try {
 //			if (!new File(fileName).exists())
 //				return "";
-//			LogUtils.iTag("TAG","压缩前："+new File(fileName).length());
+//			NeuLogUtils.iTag("TAG","压缩前："+new File(fileName).length());
 //			Bitmap bitmap = BitmapCompressor.decodeSampledBitmapFromFile(
 //					fileName, 800, 700);
 //			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -137,7 +137,7 @@ public class FileAccess extends Activity {
 //			byte[] data = baos.toByteArray();
 //			res = android.util.Base64.encodeToString(data,
 //					android.util.Base64.DEFAULT);
-//			LogUtils.iTag("TAG","压缩后："+res.getBytes().length);
+//			NeuLogUtils.iTag("TAG","压缩后："+res.getBytes().length);
 //			/*
 //			 * FileInputStream fin = new FileInputStream(fileName); int length =
 //			 * fin.available(); byte[] buffer = new byte[length];

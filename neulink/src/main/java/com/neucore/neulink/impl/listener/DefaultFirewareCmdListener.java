@@ -1,8 +1,6 @@
 package com.neucore.neulink.impl.listener;
 
-import android.util.Log;
-
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
@@ -28,7 +26,7 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
             UgrdeCmd cmd = event.getSource();
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
-            LogUtils.iTag(TAG,"开始下载："+upgrade_url);
+            NeuLogUtils.iTag(TAG,"开始下载："+upgrade_url);
 
             String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext());
             /**

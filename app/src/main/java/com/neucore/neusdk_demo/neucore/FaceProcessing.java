@@ -385,7 +385,7 @@ public class FaceProcessing extends Thread {
                         ArrayList<byte[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
                         ArrayList<String> name_org = UserService.getInstance(mContext).getNames();
 
-                        //LogUtils.eTag(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
+                        //NeuLogUtils.eTag(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
                         //        +" isglass="+result[i].getIsglass()+" angle="+result[i].getFaceAngle()[0]+" "+result[i].getFaceAngle()[1]+" "+result[i].getFaceAngle()[2]);
 
                         //如果特征值有效,进行人脸识别

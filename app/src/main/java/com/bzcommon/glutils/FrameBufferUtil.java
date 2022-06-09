@@ -57,7 +57,7 @@ public class FrameBufferUtil {
     }
 
     private void initFrameBuffer(int width, int height) {
-//        LogUtils.dTag(TAG, "initFrameBuffer width=" + width + " height=" + height);
+//        NeuLogUtils.dTag(TAG, "initFrameBuffer width=" + width + " height=" + height);
 
         BZOpenGlUtils.checkEglError("bz_FrameBufferUtil initFrameBuffer start");
 
@@ -122,7 +122,7 @@ public class FrameBufferUtil {
             glDeleteTextures(1, frameBufferTextureId, 0);
             frameBufferTextureId[0] = 0;
         }
-//        LogUtils.dTag(TAG, "release finish");
+//        NeuLogUtils.dTag(TAG, "release finish");
         GLUtil.checkGlError("FrameBufferUtil release end");
     }
 }

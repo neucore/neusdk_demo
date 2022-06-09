@@ -2,7 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.app.CarshHandler;
@@ -72,11 +72,11 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
-                                LogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
+                                NeuLogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
                             }
                         }
                         catch(Exception ex){
-                            LogUtils.eTag(TAG,ex.getMessage());
+                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }
@@ -108,11 +108,11 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 service.publishMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
-                                LogUtils.eTag(TAG,"deviceService的runtime没有实现");
+                                NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
                             }
 
                         }catch (Exception ex){
-                            LogUtils.eTag(TAG,ex.getMessage());
+                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }
@@ -152,7 +152,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                                 name = tmp.getName();
                                 tmp.delete();
                             } catch (Throwable ex) {
-                                LogUtils.eTag(TAG, ex.getMessage());
+                                NeuLogUtils.eTag(TAG, ex.getMessage());
                             } finally {
                                 if (fileInputStream != null) {
                                     try {
@@ -173,7 +173,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                         }
                     }
                     catch (Exception ex){
-                        LogUtils.eTag(TAG,ex.getMessage());
+                        NeuLogUtils.eTag(TAG,ex.getMessage());
                     }
                 }
             }

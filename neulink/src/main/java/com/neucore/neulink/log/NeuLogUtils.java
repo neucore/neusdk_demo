@@ -14,16 +14,16 @@ import java.io.File;
 import java.util.Locale;
 
 /**
- * LogUtils 工具类
+ * NeuLogUtils 工具类
  *
  * @author Administrator
  *
  */
 @SuppressWarnings("all")
-public class LogUtils {
+public class NeuLogUtils {
 
     /** 这里的AppName决定log的文件位置和名称 **/
-    private static final String APP_NAME = "Neulink";
+    private static final String APP_NAME = "neulink";
 
     /** 设置log文件全路径，这里是 MyApp/Log/myapp.log **/
     private static final String LOG_FILE_PATH = DeviceUtils.getLogPath(ContextHolder.getInstance().getContext())+File.separator+APP_NAME+".log";
