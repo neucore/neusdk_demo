@@ -21,7 +21,7 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> implements IProcessor {
+public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> implements IProcessor {
 
     private String libDir;
     public DefaultCLibProcessor() {

@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<CarCmd, CarCmdRes, CarPkgActionResult> {
+public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<CarCmd, CarCmdRes, CarPkgActionResult> {
 
     private String libDir;
     private Context context;

@@ -70,7 +70,7 @@ public class DeviceUtils implements NeulinkConst{
 		return path; //"/storage/sdcard0";
 	}
 
-	private static String getNeucore(Context context){
+	public static String getNeucore(Context context){
 		String rootPath = getFileRoot(context);
 
 		if(rootPath.endsWith("/")){

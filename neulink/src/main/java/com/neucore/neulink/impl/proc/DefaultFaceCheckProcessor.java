@@ -14,7 +14,7 @@ import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Map;
 
-public class DefaultFaceCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
+public final class DefaultFaceCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
     private Context context;
     public DefaultFaceCheckProcessor() {
         this.context = ContextHolder.getInstance().getContext();

@@ -11,7 +11,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.listener.DefaultResetCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultResetProcessor extends GProcessor<Cmd, CmdRes, ActionResult> {
+public final class DefaultResetProcessor extends GProcessor<Cmd, CmdRes, ActionResult> {
     public DefaultResetProcessor(Context context){
         super(context);
         ListenerRegistry.getInstance().setExtendListener("reset",new DefaultResetCmdListener());

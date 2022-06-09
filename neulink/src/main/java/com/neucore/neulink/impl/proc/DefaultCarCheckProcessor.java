@@ -12,7 +12,7 @@ import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Map;
 
-public class DefaultCarCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
+public final class DefaultCarCheckProcessor implements IClib$ObjtypeProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> {
     private Context context;
     public DefaultCarCheckProcessor() {
         this.context = ContextHolder.getInstance().getContext();

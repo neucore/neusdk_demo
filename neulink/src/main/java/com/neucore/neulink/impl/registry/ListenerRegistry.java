@@ -6,7 +6,7 @@ import com.neucore.neulink.NeulinkConst;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ListenerRegistry implements NeulinkConst {
+public final class ListenerRegistry implements NeulinkConst {
 
     private static ListenerRegistry instance = new ListenerRegistry();
 

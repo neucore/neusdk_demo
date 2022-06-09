@@ -2,13 +2,16 @@ package com.neucore.neulink;
 
 import android.os.Environment;
 
+import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
+
 public interface NeulinkConst {
 
     String TAG_PREFIX = "com.neucore.neulink.Neulink";
-    String filePath= Environment.getExternalStorageDirectory() + "/twocamera/";
-    String picPath= Environment.getExternalStorageDirectory() + "/twocamera/icon/";//头像
-    String photoPath= Environment.getExternalStorageDirectory() + "/twocamera/photo/";//抓拍
-    String fileExport= Environment.getExternalStorageDirectory() + "/twocamera/export/";//导出
+    String filePath= DeviceUtils.getNeucore(ContextHolder.getInstance().getContext()) + "/twocamera/";
+    String picPath= DeviceUtils.getNeucore(ContextHolder.getInstance().getContext()) + "/twocamera/icon/";//头像
+    String photoPath= DeviceUtils.getNeucore(ContextHolder.getInstance().getContext()) + "/twocamera/photo/";//抓拍
+    String fileExport= DeviceUtils.getNeucore(ContextHolder.getInstance().getContext()) + "/twocamera/export/";//导出
 
     String yanzheng_type="yanzheng_type";//主机认证类型
     String fanqianhui="fanqianhui";//反潜回

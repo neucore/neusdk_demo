@@ -6,7 +6,7 @@ import com.neucore.neulink.NeulinkConst;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CallbackRegistry implements NeulinkConst {
+public final class CallbackRegistry implements NeulinkConst {
 
     private static CallbackRegistry instance = new CallbackRegistry();
 

@@ -14,7 +14,7 @@ import com.neucore.neulink.util.JSonUtils;
 /**
  * NeuSDK升级/或者固件升级
  */
-public class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes, ActionResult<String>> {
+public final class DefaultFirewareProcessorResume extends GProcessor<UgrdeCmd, UgrdeCmdRes, ActionResult<String>> {
 
     public DefaultFirewareProcessorResume(Context context){
         super(context);

@@ -11,7 +11,7 @@ import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.listener.DefaultDebugCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<String>> {
+public final class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<String>> {
 
     public DefaultDebugProcessor(Context context){
         super(context);

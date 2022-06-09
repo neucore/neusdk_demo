@@ -13,7 +13,7 @@ import com.neucore.neulink.util.ContextHolder;
 /**
  * 目标库处理器
  */
-public class DefaultLicQueryProcessor implements IQlib$ObjtypeProcessor<TLibQueryCmd, TLQueryRes, QResult> {
+public final class DefaultLicQueryProcessor implements IQlib$ObjtypeProcessor<TLibQueryCmd, TLQueryRes, QResult> {
 
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private String facelibDir;

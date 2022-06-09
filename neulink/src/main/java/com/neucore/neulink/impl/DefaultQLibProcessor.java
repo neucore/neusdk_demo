@@ -22,7 +22,7 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
+public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
 
     private String libDir;
     public DefaultQLibProcessor() {
@@ -33,7 +33,7 @@ public class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, Q
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    public void execute(NeulinkTopicParser.Topic topic, String payload) {
         this.topic = topic;
 
         payload = auth(topic,payload);

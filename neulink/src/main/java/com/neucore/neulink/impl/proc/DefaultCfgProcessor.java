@@ -11,7 +11,7 @@ import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultCfgCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
-public class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionResult<String>> {
+public final class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionResult<String>> {
 
     public DefaultCfgProcessor(Context context){
         super(context);
