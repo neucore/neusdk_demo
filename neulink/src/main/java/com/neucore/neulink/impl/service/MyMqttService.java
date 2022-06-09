@@ -1,9 +1,8 @@
 package com.neucore.neulink.impl.service;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
@@ -13,7 +12,6 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
@@ -178,7 +176,7 @@ public class MyMqttService implements NeulinkConst{
             }
 
         } catch (Exception e) {
-            LogUtils.eTag(TAG, "publish: "+e.toString(),e);
+            NeuLogUtils.eTag(TAG, "publish: "+e.toString(),e);
         }
     }
 
@@ -195,7 +193,7 @@ public class MyMqttService implements NeulinkConst{
         // 服务器地址（协议+地址+端口号）
         MemoryPersistence memoryPersistence = new MemoryPersistence();
         try {
-            LogUtils.iTag(TAG,String.format("init ClientId: %s",clientId));
+            NeuLogUtils.iTag(TAG,String.format("init ClientId: %s",clientId));
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
@@ -230,11 +228,11 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,info.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,info.getRetained());
             conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), qos, retained);
-            LogUtils.iTag(TAG,String.format("end init with : %s",toString()));
+            NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
 //        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
-            LogUtils.eTag(TAG,"MQTT Init failed",ex);
+            NeuLogUtils.eTag(TAG,"MQTT Init failed",ex);
         }
     }
 
@@ -247,10 +245,10 @@ public class MyMqttService implements NeulinkConst{
 //                client.unregisterResources();
                 client.close();
                 close = true;
-                LogUtils.iTag(TAG,"MQTT Closed");
+                NeuLogUtils.iTag(TAG,"MQTT Closed");
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.toString());
+            NeuLogUtils.eTag(TAG, e.toString());
         }
     }
 
@@ -260,7 +258,7 @@ public class MyMqttService implements NeulinkConst{
                 client.disconnect();
                 close();
                 disconnect = true;
-                LogUtils.iTag(TAG,"MQTT Disconnect");
+                NeuLogUtils.iTag(TAG,"MQTT Disconnect");
             }
         } catch (MqttException e) {
             e.printStackTrace();
@@ -272,9 +270,9 @@ public class MyMqttService implements NeulinkConst{
     public void connect() throws MqttException{
         if (!client.isConnected()) {
             try {
-                LogUtils.iTag(TAG,String.format("connect by %s",clientId));
+                NeuLogUtils.iTag(TAG,String.format("connect by %s",clientId));
                 client.connect(conOpt, null, mqttActionListener);
-                LogUtils.iTag(TAG,"connected");
+                NeuLogUtils.iTag(TAG,"connected");
             }
             catch (MqttException ex){
                 throw ex;
@@ -285,10 +283,10 @@ public class MyMqttService implements NeulinkConst{
     public void subscribe(String topic, int qos,IMqttMessageListener mqttMessageListener) {
         try {
             // 订阅topic话题
-            LogUtils.iTag(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
+            NeuLogUtils.iTag(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
             client.subscribe(topic, qos,mqttMessageListener);
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.toString());
+            NeuLogUtils.eTag(TAG, e.toString());
         }
     }
 
@@ -299,7 +297,7 @@ public class MyMqttService implements NeulinkConst{
         try {
             return client.isConnected();
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.toString());
+            NeuLogUtils.eTag(TAG, e.toString());
         }
         return false;
     }

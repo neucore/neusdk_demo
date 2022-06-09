@@ -3,9 +3,8 @@ package com.neucore.neulink.impl.listener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
@@ -106,7 +105,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            LogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
+            NeuLogUtils.eTag(TAG,cmdStr+"持久化没有实现...");
         }
         else if(DEL.equalsIgnoreCase(cmdStr)){
             //删除人脸到 twocamera/photo/ 文件夹下
@@ -115,7 +114,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 数据库操作
              * @TODO 根据自己需要自行定义，可替换自己的代码
              */
-            LogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
+            NeuLogUtils.eTag(TAG,cmdStr+"持久化为实现。。。");
         }
 
         /**
@@ -127,7 +126,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
              * 最后一个包时，需要执行清理历史数据【无效数据】，可替换自己的代码
              * @TODO 根据自己需要自行定义，可替换自己的代码，建议根据请求时间进行清理；sample根据数据的更新时间进行处理
              */
-            LogUtils.eTag(TAG,"清除过期数据没有实现。。。");
+            NeuLogUtils.eTag(TAG,"清除过期数据没有实现。。。");
         }
 
         FacePkgActionResult result = new FacePkgActionResult();
@@ -178,7 +177,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
                 FaceNode faceNode = getFaceNode(tmp, options);
                 if(faceNode.isFeatureValid() == false){
                     if (ObjectUtil.isNotEmpty(faceNode.getFailedReason())) {
-                        LogUtils.eTag(TAG,tmpName+","+faceNode.getFailedReason());
+                        NeuLogUtils.eTag(TAG,tmpName+","+faceNode.getFailedReason());
                         failed.add(ext_id + ":" + faceNode.getFailedReason());
                     }
                     else {
@@ -224,7 +223,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
         /**
          * @TODO: 算法实现图片解析
          */
-        LogUtils.eTag(TAG,"AI算法没有集成。。。");
+        NeuLogUtils.eTag(TAG,"AI算法没有集成。。。");
         return new FaceNode();
     }
 
@@ -247,7 +246,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
                 bytesToImage(bitmap,ext_id);
             }
             catch(IOException e){
-                LogUtils.eTag(TAG,e.getMessage());
+                NeuLogUtils.eTag(TAG,e.getMessage());
             }
         }
     }
@@ -265,9 +264,9 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
-            LogUtils.dTag("neu", "File not found: " + e.getMessage());
+            NeuLogUtils.dTag("neu", "File not found: " + e.getMessage());
         } catch (IOException e) {
-            LogUtils.dTag("neu", "Error accessing file: " + e.getMessage());
+            NeuLogUtils.dTag("neu", "Error accessing file: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

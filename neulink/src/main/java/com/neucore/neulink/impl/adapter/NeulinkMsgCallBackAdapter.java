@@ -1,9 +1,8 @@
 package com.neucore.neulink.impl.adapter;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.NeulinkProcessorFactory;
@@ -38,7 +37,7 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
 
-        LogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
+        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
 
         IProcessor processor = NeulinkProcessorFactory.build(context,topic);
 
@@ -51,10 +50,10 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
             }
         }
         catch (Throwable ex){
-            LogUtils.eTag(TAG,"messageArrived",ex);
+            NeuLogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
-            LogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
+            NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
             RequestContext.remove();
         }
     }
@@ -66,24 +65,24 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
     @Override
     public void connectionLost(Throwable arg0) {
         //连接断开
-        LogUtils.dTag(TAG,"connectionLost");
-        LogUtils.eTag(TAG,"connectFailed",arg0);
+        NeuLogUtils.dTag(TAG,"connectionLost");
+        NeuLogUtils.eTag(TAG,"connectFailed",arg0);
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken arg0) {
-        LogUtils.dTag(TAG,"deliveryComplete");
+        NeuLogUtils.dTag(TAG,"deliveryComplete");
     }
 
     @Override
     public void connectSuccess(IMqttToken arg0) {
-        LogUtils.dTag(TAG,"connectSuccess");
+        NeuLogUtils.dTag(TAG,"connectSuccess");
     }
 
     @Override
     public void connectFailed(IMqttToken arg0, Throwable arg1) {
         //连接失败
-        LogUtils.eTag(TAG,"connectFailed: "+arg1.getMessage());
+        NeuLogUtils.eTag(TAG,"connectFailed: "+arg1.getMessage());
     }
 
 }

@@ -7,9 +7,7 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import okhttp3.Response;
@@ -32,7 +30,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
         this.downloader = downloader;
         this.threadId = threadId;
         this.downLength = downLength;
-        LogUtils.iTag(TAG,String.format("threadId=%s, block=%s, downLength=%s",threadId,block,downLength));
+        NeuLogUtils.iTag(TAG,String.format("threadId=%s, block=%s, downLength=%s",threadId,block,downLength));
     }
 
     @Override
@@ -42,12 +40,12 @@ public class DownloadThread extends Thread implements NeulinkConst {
             int trys = 1;
             while(trys<=3){
                 try {
-                    LogUtils.iTag(TAG,String.format("Thread=%s, trys=%s",this.threadId,trys));
+                    NeuLogUtils.iTag(TAG,String.format("Thread=%s, trys=%s",this.threadId,trys));
                     download();
                     break;
                 } catch (Exception e) {
                     if(trys>3){
-                        LogUtils.eTag(TAG,"Thread "+ this.threadId + " 下载失败",e);
+                        NeuLogUtils.eTag(TAG,"Thread "+ this.threadId + " 下载失败",e);
                         this.downLength = -1;
                         print("Thread "+ this.threadId+ ":"+ e);
                         this.error = true;
@@ -75,7 +73,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
 
         long startPos = block * (threadId - 1) + downLength;//开始位置
         long endPos = block * threadId -1;//结束位置
-        LogUtils.iTag(TAG,"线程 "+ threadId + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
+        NeuLogUtils.iTag(TAG,"线程 "+ threadId + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
         Response response = null;
         try {
@@ -106,7 +104,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
     }
 
     private static void print(String msg){
-        LogUtils.iTag(TAG, msg);
+        NeuLogUtils.iTag(TAG, msg);
     }
     /**
      * 下载是否完成

@@ -214,7 +214,7 @@ public class TestPoseActivity extends AppCompatActivity {
         LogUtils.dTag(TAG,"rgb  1111" ); //下面这句最耗时
         Imgcodecs.imwrite("/storage/emulated/0/neucore/111.jpg",rgbMat);
 
-        //LogUtils.dTag(TAG,"rgb  6666" );
+        //NeuLogUtils.dTag(TAG,"rgb  6666" );
         transpose(rgbMat, rgbMat);    //耗时4毫秒  此处,只有我们项目中有需要
         LogUtils.dTag(TAG,"rgb  7777" );
         //flip(rgb_mat, rgb_mat, 1);  //耗时4毫秒  注释
@@ -241,7 +241,7 @@ public class TestPoseActivity extends AppCompatActivity {
         if (rectList.size() > 0){
             paintViewUIPoseNum = 0;
             Util.sendIntEventMessge(Constants.HAND_START, rectList);
-            //LogUtils.dTag(TAG,"rgb  10 10 10 10" );
+            //NeuLogUtils.dTag(TAG,"rgb  10 10 10 10" );
         }else {
             if (paintViewUIPoseNum == 0){
                 paintViewUIPoseNum++;

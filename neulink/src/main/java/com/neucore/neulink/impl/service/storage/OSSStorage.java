@@ -1,7 +1,5 @@
 package com.neucore.neulink.impl.service.storage;
 
-import android.util.Log;
-
 import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
@@ -9,7 +7,7 @@ import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvider;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
@@ -61,7 +59,7 @@ public class OSSStorage extends AbsStorage implements IStorage {
             return url;
         }
         catch(Exception ex){
-            LogUtils.eTag(TAG,ex.getMessage());
+            NeuLogUtils.eTag(TAG,ex.getMessage());
         }
         return null;
     }

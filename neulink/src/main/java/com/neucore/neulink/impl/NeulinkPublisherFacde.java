@@ -1,13 +1,11 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.CallbackRegistry;
 import com.neucore.neulink.impl.cmd.faceupld.v12.FaceUpload12;
@@ -16,7 +14,6 @@ import com.neucore.neulink.impl.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTemp;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -220,15 +217,15 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                     service.publishMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
                 }
                 else{
-                    LogUtils.iTag(TAG,String.format("url=%s",url));
+                    NeuLogUtils.iTag(TAG,String.format("url=%s",url));
                 }
             }
             else {
-                LogUtils.iTag(TAG,String.format("url=%s",url));
+                NeuLogUtils.iTag(TAG,String.format("url=%s",url));
             }
         }
         else {
-            LogUtils.iTag(TAG,"url为空");
+            NeuLogUtils.iTag(TAG,"url为空");
         }
     }
 

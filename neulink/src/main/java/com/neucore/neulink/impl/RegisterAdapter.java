@@ -2,7 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
@@ -27,7 +27,7 @@ class RegisterAdapter implements NeulinkConst{
 
     public RegisterAdapter() {
 
-        LogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s","startRegister",networkReady,initRegistService));
+        NeuLogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s","startRegister",networkReady,initRegistService));
 
         networkHelper.addListener(new NetworkHelper.Listener() {
             @Override
@@ -48,7 +48,7 @@ class RegisterAdapter implements NeulinkConst{
     private Boolean logined = false;
     private void initRegistService(String from){
 
-        LogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
+        NeuLogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
 
         if(networkReady
             && !initRegistService){
@@ -67,24 +67,24 @@ class RegisterAdapter implements NeulinkConst{
             public void run(){
 
                 int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-                LogUtils.iTag(TAG,"do regist ...");
+                NeuLogUtils.iTag(TAG,"do regist ...");
                 while (!logined&&channel==1) {
                     ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
                         String token = loginCallback.login();
                         if(ObjectUtil.isEmpty(token)){
-                            LogUtils.iTag(TAG,"token非法。。。");
+                            NeuLogUtils.iTag(TAG,"token非法。。。");
                         }
                         else{
                             logined = true;
                             NeulinkSecurity.getInstance().setToken(token);
-                            LogUtils.iTag(TAG,"success logined");
+                            NeuLogUtils.iTag(TAG,"success logined");
                             break;
                         }
                     }
                     else{
                         logined = true;
-                        LogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
+                        NeuLogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
                     }
                     try {
                         Thread.sleep(1000);
@@ -92,12 +92,12 @@ class RegisterAdapter implements NeulinkConst{
                     }
                 }
 
-                LogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
+                NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
 
                 while(!registed){
                     try {
                         Thread.sleep(1000);
-                        LogUtils.iTag(TAG,"start regist");
+                        NeuLogUtils.iTag(TAG,"start regist");
 
                         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
@@ -116,11 +116,11 @@ class RegisterAdapter implements NeulinkConst{
                         if(successed){
                             registed = true;
                             initRegistService = true;
-                            LogUtils.iTag(TAG,"success regist");
+                            NeuLogUtils.iTag(TAG,"success regist");
                         }
                     }
                     catch(Exception ex){
-                        LogUtils.eTag(TAG,"注册失败："+ex.getMessage());
+                        NeuLogUtils.eTag(TAG,"注册失败："+ex.getMessage());
                     }
                 }
 

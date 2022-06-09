@@ -20,7 +20,7 @@ import android.os.PowerManager.WakeLock;
 
 import androidx.core.app.NotificationCompat;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.DeviceUtils;
@@ -66,7 +66,7 @@ public class LogService extends Service implements NeulinkConst{
 
     private String CURR_INSTALL_LOG_NAME;	//如果当前的日志写在内存中，记录当前的日志文件名称
 
-    private String logServiceLogName = "LogUtils.log";//本服务输出的日志文件名称
+    private String logServiceLogName = "NeuLogUtils.log";//本服务输出的日志文件名称
     private SimpleDateFormat myLogSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private SimpleDateFormat crashLogSdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     private OutputStreamWriter writer;
@@ -141,7 +141,7 @@ public class LogService extends Service implements NeulinkConst{
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 
         CURR_LOG_TYPE = DeviceUtils.getStoreType();
-        LogUtils.iTag(TAG, "LogService onCreate");
+        NeuLogUtils.iTag(TAG, "LogService onCreate");
     }
 
     private void register(){
@@ -189,7 +189,7 @@ public class LogService extends Service implements NeulinkConst{
 
         public LogCollectorThread(){
             super("LogCollectorThread");
-            LogUtils.dTag(TAG, "LogCollectorThread is create");
+            NeuLogUtils.dTag(TAG, "LogCollectorThread is create");
         }
 
         @Override
@@ -210,7 +210,7 @@ public class LogService extends Service implements NeulinkConst{
                 handleLog();
 
             } catch (Exception e) {
-                LogUtils.eTag(TAG,"run",e);
+                NeuLogUtils.eTag(TAG,"run",e);
                 recordLogServiceLog(e.getMessage());
             }
             finally {
@@ -239,17 +239,17 @@ public class LogService extends Service implements NeulinkConst{
             errorGobbler.start();
             outputGobbler.start();
             if (proc.waitFor() != 0) {
-                LogUtils.eTag(TAG, " clearLogCache proc.waitFor() != 0");
+                NeuLogUtils.eTag(TAG, " clearLogCache proc.waitFor() != 0");
                 recordLogServiceLog("clearLogCache clearLogCache proc.waitFor() != 0");
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG, "clearLogCache failed", e);
+            NeuLogUtils.eTag(TAG, "clearLogCache failed", e);
             recordLogServiceLog("clearLogCache failed");
         } finally {
             try {
                 proc.destroy();
             } catch (Exception e) {
-                LogUtils.eTag(TAG, "clearLogCache failed", e);
+                NeuLogUtils.eTag(TAG, "clearLogCache failed", e);
                 recordLogServiceLog("clearLogCache failed");
             }
         }
@@ -347,17 +347,17 @@ public class LogService extends Service implements NeulinkConst{
             errorConsumer.start();
             outputConsumer.start();
             if (proc.waitFor() != 0) {
-                LogUtils.eTag(TAG, "getAllProcess proc.waitFor() != 0");
+                NeuLogUtils.eTag(TAG, "getAllProcess proc.waitFor() != 0");
                 recordLogServiceLog("getAllProcess proc.waitFor() != 0");
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG, "getAllProcess failed", e);
+            NeuLogUtils.eTag(TAG, "getAllProcess failed", e);
             recordLogServiceLog("getAllProcess failed");
         } finally {
             try {
                 proc.destroy();
             } catch (Exception e) {
-                LogUtils.eTag(TAG, "getAllProcess failed", e);
+                NeuLogUtils.eTag(TAG, "getAllProcess failed", e);
                 recordLogServiceLog("getAllProcess failed");
             }
         }
@@ -375,14 +375,14 @@ public class LogService extends Service implements NeulinkConst{
         commandList.add(getLogFile());
         commandList.add("-v");
         commandList.add("time");
-        commandList.add("*:"+ ConfigContext.getInstance().getConfig("LogUtils.Level","W"));
+        commandList.add("*:"+ ConfigContext.getInstance().getConfig("NeuLogUtils.Level","W"));
         try {
             process = Runtime.getRuntime().exec(
                     commandList.toArray(new String[commandList.size()]));
             recordLogServiceLog("start collecting the log,and log name is:"+logFileName);
             process.waitFor();
         } catch (Exception e) {
-            LogUtils.eTag(TAG, "CollectorThread == >" + e.getMessage(), e);
+            NeuLogUtils.eTag(TAG, "CollectorThread == >" + e.getMessage(), e);
             recordLogServiceLog("CollectorThread == >" + e.getMessage());
         }
     }
@@ -396,11 +396,11 @@ public class LogService extends Service implements NeulinkConst{
         String logFileName = sdf.format(new Date()) + ".log";// 日志文件名称
         if(CURR_LOG_TYPE == DeviceUtils.DISK_TYPE){
             CURR_INSTALL_LOG_NAME = logFileName;
-            LogUtils.dTag(TAG, "Log stored in memory, the path is:"+LOG_PATH_MEMORY_DIR + File.separator + logFileName);
+            NeuLogUtils.dTag(TAG, "Log stored in memory, the path is:"+LOG_PATH_MEMORY_DIR + File.separator + logFileName);
             return LOG_PATH_MEMORY_DIR + File.separator + logFileName;
         }else{
             CURR_INSTALL_LOG_NAME = null;
-            LogUtils.dTag(TAG, "Log stored in SDcard, the path is:"+LOG_PATH_SDCARD_DIR + File.separator + logFileName);
+            NeuLogUtils.dTag(TAG, "Log stored in SDcard, the path is:"+LOG_PATH_SDCARD_DIR + File.separator + logFileName);
             return LOG_PATH_SDCARD_DIR + File.separator + logFileName;
         }
     }
@@ -436,7 +436,7 @@ public class LogService extends Service implements NeulinkConst{
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(), MEMORY_LOG_FILE_MONITOR_INTERVAL, sender);
-        LogUtils.dTag(TAG, "deployLogSizeMonitorTask() succ !");
+        NeuLogUtils.dTag(TAG, "deployLogSizeMonitorTask() succ !");
         recordLogServiceLog("deployLogSizeMonitorTask() succ ,start time is " + Calendar.getInstance().getTime().toLocaleString());
     }
 
@@ -450,7 +450,7 @@ public class LogService extends Service implements NeulinkConst{
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         am.cancel(sender);
 
-        LogUtils.dTag(TAG, "canelLogSizeMonitorTask() success");
+        NeuLogUtils.dTag(TAG, "canelLogSizeMonitorTask() success");
     }
 
     /**
@@ -458,17 +458,17 @@ public class LogService extends Service implements NeulinkConst{
      * 如果超过了重新开启一个日志收集进程
      */
     private void checkLogSize(){
-        LogUtils.dTag(TAG, "StoreType="+ DeviceUtils.getStoreType());
-        LogUtils.dTag(TAG, "CURR_INSTALL_LOG_NAME="+CURR_INSTALL_LOG_NAME);
+        NeuLogUtils.dTag(TAG, "StoreType="+ DeviceUtils.getStoreType());
+        NeuLogUtils.dTag(TAG, "CURR_INSTALL_LOG_NAME="+CURR_INSTALL_LOG_NAME);
         if(CURR_INSTALL_LOG_NAME != null && !"".equals(CURR_INSTALL_LOG_NAME)){
             String path = LOG_PATH_MEMORY_DIR + File.separator + CURR_INSTALL_LOG_NAME;
             File file = new File(path);
             if(!file.exists()){
                 return;
             }
-            LogUtils.dTag(TAG, "checkLog() ==> The size of the log is too big?");
+            NeuLogUtils.dTag(TAG, "checkLog() ==> The size of the log is too big?");
             if(file.length() >= MEMORY_LOG_FILE_MAX_SIZE){
-                LogUtils.dTag(TAG, "The log's size is too big!");
+                NeuLogUtils.dTag(TAG, "The log's size is too big!");
                 new LogCollectorThread().start();
             }
         }
@@ -551,7 +551,7 @@ public class LogService extends Service implements NeulinkConst{
                 String createDateInfo = getFileNameWithoutExtension(fileName);
                 if (canDeleteSDLog(createDateInfo)) {
                     logFile.delete();
-                    LogUtils.dTag(TAG, "delete expired log success,the log path is:"
+                    NeuLogUtils.dTag(TAG, "delete expired log success,the log path is:"
                             + logFile.getAbsolutePath());
 
                 }
@@ -567,7 +567,7 @@ public class LogService extends Service implements NeulinkConst{
     public boolean canDeleteSDLog(String createDateStr) {
         boolean canDel = false;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1 * ConfigContext.getInstance().getConfig("LogUtils.File.Num",SDCARD_LOG_FILE_SAVE_DAYS));//删除2天之前日志
+        calendar.add(Calendar.DAY_OF_MONTH, -1 * ConfigContext.getInstance().getConfig("NeuLogUtils.File.Num",SDCARD_LOG_FILE_SAVE_DAYS));//删除2天之前日志
         Date expiredDate = calendar.getTime();
         try {
             Date createDate = null;
@@ -579,7 +579,7 @@ public class LogService extends Service implements NeulinkConst{
             }
             canDel = createDate.before(expiredDate);
         } catch (ParseException e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            NeuLogUtils.eTag(TAG, e.getMessage(), e);
             canDel = false;
         }
         return canDel;
@@ -601,7 +601,7 @@ public class LogService extends Service implements NeulinkConst{
                     continue;
                 }
                 _file.delete();
-                LogUtils.dTag(TAG, "delete expired log success,the log path is:"+_file.getAbsolutePath());
+                NeuLogUtils.dTag(TAG, "delete expired log success,the log path is:"+_file.getAbsolutePath());
             }
         }
     }
@@ -631,7 +631,7 @@ public class LogService extends Service implements NeulinkConst{
             }
             return true;
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            NeuLogUtils.eTag(TAG, e.getMessage(), e);
             recordLogServiceLog("copy file fail");
             return false;
         } finally{
@@ -643,7 +643,7 @@ public class LogService extends Service implements NeulinkConst{
                     out.close();
                 }
             } catch (IOException e) {
-                LogUtils.eTag(TAG, e.getMessage(), e);
+                NeuLogUtils.eTag(TAG, e.getMessage(), e);
                 recordLogServiceLog("copy file fail");
                 return false;
             }
@@ -665,7 +665,7 @@ public class LogService extends Service implements NeulinkConst{
                 writer.write("\n");
                 writer.flush();
             } catch (IOException e) {
-                LogUtils.eTag(TAG, e.getMessage(), e);
+                NeuLogUtils.eTag(TAG, e.getMessage(), e);
             }
         }
     }
@@ -747,13 +747,13 @@ public class LogService extends Service implements NeulinkConst{
 
             if(Intent.ACTION_MEDIA_UNMOUNTED.equals(intent.getAction())){	//存储卡被卸载
                 if(CURR_LOG_TYPE == DeviceUtils.SDCARD_TYPE){
-                    LogUtils.dTag(TAG, "SDcar is UNMOUNTED");
+                    NeuLogUtils.dTag(TAG, "SDcar is UNMOUNTED");
                     CURR_LOG_TYPE = DeviceUtils.DISK_TYPE;
                     new LogCollectorThread().start();
                 }
             }else{															//存储卡被挂载
                 if(CURR_LOG_TYPE == DeviceUtils.DISK_TYPE){
-                    LogUtils.dTag(TAG, "SDcar is MOUNTED");
+                    NeuLogUtils.dTag(TAG, "SDcar is MOUNTED");
                     CURR_LOG_TYPE = DeviceUtils.SDCARD_TYPE;
                     new LogCollectorThread().start();
 
@@ -813,7 +813,7 @@ public class LogService extends Service implements NeulinkConst{
                 writer.close();
                 writer = null;
             } catch (IOException e) {
-                LogUtils.eTag(TAG, e.getMessage(), e);
+                NeuLogUtils.eTag(TAG, e.getMessage(), e);
             }
         }
         if (process != null) {

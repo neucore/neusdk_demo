@@ -1,9 +1,8 @@
 package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.neucore.neulink.log.LogUtils;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
@@ -219,7 +218,7 @@ public class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd,
             //工号.jpg即ext_id=工号
             String tmpName = tmp.getName();
             if(tmpName==null||tmpName.trim().length()==0){
-                LogUtils.iTag(TAG,"图片文件为空，其不符合【ext_id.jpg】规则");
+                NeuLogUtils.iTag(TAG,"图片文件为空，其不符合【ext_id.jpg】规则");
                 continue;
             }
             String ext_id = tmpName.substring(0, tmpName.indexOf("."));
