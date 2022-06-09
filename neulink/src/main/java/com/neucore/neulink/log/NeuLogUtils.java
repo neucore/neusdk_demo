@@ -1,17 +1,12 @@
 package com.neucore.neulink.log;
 
-import android.os.Environment;
-
-import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-
 import java.io.File;
-import java.util.Locale;
 
 /**
  * NeuLogUtils 工具类
