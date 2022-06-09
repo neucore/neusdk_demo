@@ -41,7 +41,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * upld/req/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      */
     public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position){
-        IResCallback callback = CallbackRegistry.getInstance().getResCallback("carplateinfo");
+        IResCallback callback = CallbackRegistry.getInstance().getResCallback(NeulinkConst.NEULINK_BIZ_CAR_PLATE_INFO);
         upldLic(num,color,imageUrl,cmpCode,locationCode,position,callback);
     }
 
@@ -124,7 +124,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param retained
      */
     public void upldFacetmp(FaceTemp[] data,int qos,boolean retained){
-        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback("facetemprature");
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(NeulinkConst.NEULINK_BIZ_FACE_TEMPERATURE);
         upldFacetmp(data,qos,retained,resCallback);
     }
 
@@ -169,7 +169,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param info 人脸识别信息
      */
     public void upldFaceInfo$1$2(String url, FaceUpload12 info){
-        upldFaceInfo$1$2(url,info,CallbackRegistry.getInstance().getResCallback("faceinfo"));
+        upldFaceInfo$1$2(url,info,CallbackRegistry.getInstance().getResCallback(NeulinkConst.NEULINK_BIZ_FACE_INFO));
     }
 
     /**

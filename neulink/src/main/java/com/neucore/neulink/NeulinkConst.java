@@ -154,6 +154,22 @@ public interface NeulinkConst {
 
     String NEULINK_BIZ_BTODOLIST = "btodolist";
 
+    String NEULINK_BIZ_FACE_INFO = "faceinfo";
+
+    String NEULINK_BIZ_PERSON_INFO = "personinfo";
+
+    String NEULINK_BIZ_CAR_PLATE_INFO = "carplateinfo";
+
+    String NEULINK_BIZ_POSE_INFO = "poseinfo";
+
+    String NEULINK_BIZ_BAG_INFO = "baginfo";
+
+    String NEULINK_BIZ_HAT_INFO = "hatinfo";
+
+    String NEULINK_BIZ_FACE_TEMPERATURE = "facetemperature";
+
+    String NEULINK_BIZ_HAT$FACE_INFO = "hat2faceinfo";
+
     /**
      * 成功
      */
