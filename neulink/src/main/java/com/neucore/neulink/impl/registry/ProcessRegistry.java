@@ -205,7 +205,7 @@ public class ProcessRegistry implements NeulinkConst {
      * @param processor
      * @deprecated
      */
-    public static void regist(String biz,IProcessor processor){
+    private static void regist(String biz,IProcessor processor){
         processors.put(biz.toLowerCase(),processor);
     }
 
