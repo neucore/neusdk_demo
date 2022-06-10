@@ -197,12 +197,27 @@ public class DeviceUtils implements NeulinkConst{
 
 	protected static volatile UUID uuid;
 
+	/**
+	 * 默认设备Id的获取规则<br/>
+	 * 先读取cpu-sn；如果有则返回；<br/>
+	 * 如果为空，则读取有线网络的mac地址，不为空直接返回；<br/>
+	 * 如果为空，则读取Wi-Fi的mac地址，不为空直接返回；<br/>
+	 * 如果mac地址为空，则读取ANDROID_ID返回；<br/>
+	 * @param context
+	 * @return
+	 */
 	public static String getDeviceId(Context context){
-		String cpuSn = getCPUSN(context);
-		if("0000000000000000".equalsIgnoreCase(cpuSn)){
-			cpuSn = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+		String deviceId = getCPUSN(context);
+		if("0000000000000000".equalsIgnoreCase(deviceId)){
+			deviceId = getMacAddress();
+			if(ObjectUtil.isNotEmpty(deviceId)){
+				deviceId = deviceId.replace(":","");
+			}
+			if(ObjectUtil.isEmpty(deviceId)){
+				deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+			}
 		}
-		return cpuSn;
+		return deviceId;
 	}
 
 	private static String getCPUSN(Context context){
