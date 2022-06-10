@@ -12,20 +12,20 @@ import android.util.Log;
  *
  * @author Administrator
  */
-public class LogCatAppender extends AppenderSkeleton {
+class NeuLogCatAppender extends AppenderSkeleton {
     protected Layout tagLayout;
 
-    public LogCatAppender(Layout messageLayout, Layout tagLayout) {
+    public NeuLogCatAppender(Layout messageLayout, Layout tagLayout) {
         this.tagLayout = tagLayout;
         setLayout(messageLayout);
     }
 
-    public LogCatAppender(Layout messageLayout) {
+    public NeuLogCatAppender(Layout messageLayout) {
         //这里定义的是Tag名称
         this(messageLayout, new PatternLayout("%c"));
     }
 
-    public LogCatAppender() {
+    public NeuLogCatAppender() {
         this(new PatternLayout("%c"));
     }
 
@@ -33,44 +33,44 @@ public class LogCatAppender extends AppenderSkeleton {
         switch (le.getLevel().toInt()) {
             case 5000:
                 if (le.getThrowableInformation() != null) {
-                    Log.v(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.v(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else {
-                    Log.v(getTagLayout().format(le), getLayout().format(le));
+                    Log.v(null, getLayout().format(le));
                 }
                 break;
             case 10000:
                 if (le.getThrowableInformation() != null) {
-                    Log.d(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.d(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else {
-                    Log.d(getTagLayout().format(le), getLayout().format(le));
+                    Log.d(null, getLayout().format(le));
                 }
                 break;
             case 20000:
                 if (le.getThrowableInformation() != null) {
-                    Log.i(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.i(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else {
-                    Log.i(getTagLayout().format(le), getLayout().format(le));
+                    Log.i(null, getLayout().format(le));
                 }
                 break;
             case 30000:
                 if (le.getThrowableInformation() != null) {
-                    Log.w(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.w(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else {
-                    Log.w(getTagLayout().format(le), getLayout().format(le));
+                    Log.w(null, getLayout().format(le));
                 }
                 break;
             case 40000:
                 if (le.getThrowableInformation() != null) {
-                    Log.e(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.e(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else {
-                    Log.e(getTagLayout().format(le), getLayout().format(le));
+                    Log.e(null, getLayout().format(le));
                 }
                 break;
             case 50000:
                 if (le.getThrowableInformation() != null) {
-                    Log.wtf(getTagLayout().format(le), getLayout().format(le), le.getThrowableInformation().getThrowable());
+                    Log.wtf(null, getLayout().format(le), le.getThrowableInformation().getThrowable());
                 } else
-                    Log.wtf(getTagLayout().format(le), getLayout().format(le));
+                    Log.wtf(null, getLayout().format(le));
                 break;
         }
     }

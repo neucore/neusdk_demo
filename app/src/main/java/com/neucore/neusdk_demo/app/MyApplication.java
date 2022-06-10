@@ -2,63 +2,38 @@ package com.neucore.neusdk_demo.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.provider.Settings;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.IDeviceExtendInfoCallback;
+import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
-import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.ResCallback2Log;
+import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
+import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
 import com.neucore.neulink.impl.cmd.msg.SubApp;
-import com.neucore.neulink.impl.SampleConnector;
-import com.neucore.neulink.impl.ResCallback2Log;
-import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
+import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
-import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
-
+import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
 import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
+import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleAlogUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleAwakenActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleBackupActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleCarCheckListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleCarQueryListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleCarSyncListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleCfgActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleDebugCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceCheckListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceQueryListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceSyncListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFirewareResumeCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFirewareUpgrdActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleHibrateActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleLicCheckListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleLicQueryListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleRebootCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleRecoverActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleResetActionListener;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleShellCmdListener;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -226,31 +201,10 @@ public class MyApplication extends Application
     }
 
     private void initLog() {
-        LogUtils.getConfig()
-                .setLogSwitch(true) //isAppDebug // 设置 log 总开关，包括输出到控制台和文件，默认开
-                .setConsoleSwitch(true)// 设置是否输出到控制台开关，默认开
-                .setGlobalTag("gemini")// 设置 log 全局标签【应用名称】，默认为空
-                // 当全局标签不为空时，我们输出的 log 全部为该 tag，
-                // 为空时，如果传入的 tag 为空那就显示类名，否则显示 tag
-                .setLogHeadSwitch(false)// 设置 log 头信息开关，默认为开
-                .setLog2FileSwitch(true)// 打印 log 时是否存到文件的开关，默认关
-                .setDir(DeviceUtils.getLogPath(getContext()))// 当自定义路径为空时，写入应用的/cache/log/目录中
-                .setFilePrefix("Log")// 当文件前缀为空时，默认为"util"，即写入文件为"util-yyyy-MM-dd$fileExtension"
-                .setFileExtension(".log")// 设置日志文件后缀
-                .setBorderSwitch(false)// 输出日志是否带边框开关，默认开
-                .setSingleTagSwitch(true)// 一条日志仅输出一条，默认开，为美化 AS 3.1 的 Logcat
-                .setConsoleFilter(LogUtils.V)// log 的控制台过滤器，和 logcat 过滤器同理，默认 Verbose
-                .setFileFilter(LogUtils.V)// log 文件过滤器，和 logcat 过滤器同理，默认 Verbose
-                .setStackDeep(1)// log 栈深度，默认为 1
-                .setStackOffset(0)// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
-                .setSaveDays(3)// 设置日志可保留天数，默认为 -1 表示无限时长
-                // 新增 ArrayList 格式化器，默认已支持 Array, Throwable, Bundle, Intent 的格式化输出
-                .addFormatter(new LogUtils.IFormatter<ArrayList>() {
-                    @Override
-                    public String format(ArrayList arrayList) {
-                        return "NeuLogUtils Formatter ArrayList { " + arrayList.toString() + " }";
-                    }
-                });
+        /**
+         * 配置log4j参数
+         */
+
     }
     public static Context getContext(){
         return instance.getApplicationContext();

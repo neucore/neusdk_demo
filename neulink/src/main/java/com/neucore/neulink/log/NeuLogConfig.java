@@ -1,5 +1,9 @@
 package com.neucore.neulink.log;
 
+import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
+
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Layout;
@@ -16,8 +20,16 @@ import org.apache.log4j.helpers.LogLog;
  *
  * @author Administrator
  */
-public class LogConfig {
+class NeuLogConfig {
+
     private Level rootLevel = Level.DEBUG;
+
+    /** 这里的AppName决定log的文件位置和名称 **/
+    private static final String APP_NAME = "neulink";
+
+    /** 设置log文件全路径，这里是 MyApp/Log/myapp.log **/
+    public static final String LOG_FILE_PATH = DeviceUtils.getLogPath(ContextHolder.getInstance().getContext())+ File.separator+APP_NAME+".log";
+
     /**
      *    ### log文件的格式
      *
@@ -36,7 +48,33 @@ public class LogConfig {
      *    ### [时间{时间格式}][信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    private String filePattern = "[%-d{yyyy-MM-dd HH:mm:ss}][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
+    public static final String LOG_FILE_PATTERN = "[%-d{yyyy-MM-dd HH:mm:ss}][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
+
+    /** 生产环境下的log等级 **/
+    public static final Level LOG_LEVEL_PRODUCE = Level.ALL;
+
+    /** 发布以后的log等级 **/
+    public static final Level LOG_LEVEL_RELEASE = Level.INFO;
+
+    /**
+     *    ### log文件的格式
+     *
+     *    ### 输出格式解释：
+     *    ### [%-d{yyyy-MM-dd HH:mm:ss}][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n
+     *
+     *    ### %d{yyyy-MM-dd HH:mm:ss}: 时间，大括号内是时间格式
+     *    ### %c: 全类名
+     *    ### %M: 调用的方法名称
+     *    ### %F:%L  类名:行号（在控制台可以追踪代码）
+     *    ### %n: 换行
+     *    ### %p: 日志级别，这里%-5p是指定的5个字符的日志名称，为的是格式整齐
+     *    ### %m: 日志信息
+
+     *    ### 输出的信息大概如下：
+     *    ### [时间{时间格式}][信息所在的class.method(className：lineNumber)] 换行
+     *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
+     */
+    public static String filePattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [Class: %c{1}] - Msg: %m%n";
 
     /**
      *    ### LogCat控制台输出格式
@@ -44,7 +82,7 @@ public class LogConfig {
      *    ### [Class: 信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    private String logCatPattern = "[Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
+    public static String logCatPattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [Class: %c{1}] - Msg: %m%n";
     private String fileName = "android-log4j.log";
     private int maxBackupSize = 5;
     private long maxFileSize = 1024 * 1024 * 5L;
@@ -54,25 +92,25 @@ public class LogConfig {
     private boolean resetConfiguration = true;
     private boolean internalDebugging = false;
 
-    public LogConfig() {
+    public NeuLogConfig() {
     }
 
-    public LogConfig(String fileName) {
+    public NeuLogConfig(String fileName) {
         setFileName(fileName);
     }
 
-    public LogConfig(String fileName, Level rootLevel) {
+    public NeuLogConfig(String fileName, Level rootLevel) {
         this(fileName);
         setRootLevel(rootLevel);
     }
 
-    public LogConfig(String fileName, Level rootLevel, String filePattern) {
+    public NeuLogConfig(String fileName, Level rootLevel, String filePattern) {
         this(fileName);
         setRootLevel(rootLevel);
         setFilePattern(filePattern);
     }
 
-    public LogConfig(String fileName, int maxBackupSize, long maxFileSize, String filePattern, Level rootLevel) {
+    public NeuLogConfig(String fileName, int maxBackupSize, long maxFileSize, String filePattern, Level rootLevel) {
         this(fileName, rootLevel, filePattern);
         setMaxBackupSize(maxBackupSize);
         setMaxFileSize(maxFileSize);
@@ -123,9 +161,9 @@ public class LogConfig {
     private void configureLogCatAppender() {
         Logger root = Logger.getRootLogger();
         Layout logCatLayout = new PatternLayout(getLogCatPattern());
-        LogCatAppender logCatAppender = new LogCatAppender(logCatLayout);
+        NeuLogCatAppender neuLogCatAppender = new NeuLogCatAppender(logCatLayout);
 
-        root.addAppender(logCatAppender);
+        root.addAppender(neuLogCatAppender);
     }
 
     public Level getRootLevel() {
