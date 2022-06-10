@@ -67,7 +67,6 @@ public class DeviceUtils implements NeulinkConst{
 			if (path.equals("/storage/emulated/0"))
 				path = "/storage/sdcard0";
 		}
-		NeuLogUtils.iTag(TAG,"rootPath: "+path);
 		return path; //"/storage/sdcard0";
 	}
 
