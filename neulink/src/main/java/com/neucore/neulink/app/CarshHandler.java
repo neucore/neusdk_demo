@@ -58,6 +58,7 @@ public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 	}
 
 	private String saveCrashInfo2File(Throwable ex) {
+		String path = DeviceUtils.getLogPath(context) +File.separator+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(System.currentTimeMillis()) + LOG_CARSH;;
 		try {
 
 			StringBuffer sb = new StringBuffer();
@@ -72,8 +73,8 @@ public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 			printWriter.close();
 			String result = writer.toString();
 			sb.append(result);
-			NeuLogUtils.eTag("error"+result);
-			String path = DeviceUtils.getLogPath(context) +File.separator+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(System.currentTimeMillis()) + LOG_CARSH;
+			NeuLogUtils.eTag(TAG,"error",cause);
+
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File dir = new File(path);
 				if (!dir.getParentFile().exists()) {
@@ -86,7 +87,7 @@ public class CarshHandler implements UncaughtExceptionHandler, NeulinkConst {
 			}
 			return path;
 		} catch (Exception e) {
-			NeuLogUtils.eTag(TAG, e.getMessage(), e);
+			NeuLogUtils.eTag(TAG, path, e);
 		}
 		return null;
 	}

@@ -58,7 +58,8 @@ public class DeviceUtils implements NeulinkConst{
 			sdCardExist = Environment.getExternalStorageState()
 					.equals(Environment.MEDIA_MOUNTED);
 		}
-		if (sdCardExist) {
+		int type = getStoreType();
+		if (type == SDCARD_TYPE|| sdCardExist) {
 			sdDir = Environment.getExternalStorageDirectory();
 		}
 		String path = sdDir.toString();
