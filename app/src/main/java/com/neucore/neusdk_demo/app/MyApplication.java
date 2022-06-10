@@ -26,6 +26,9 @@ import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
 import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
+import com.neucore.neusdk_demo.neulink.extend.device.DimSystemVer;
+import com.neucore.neusdk_demo.neulink.extend.device.MyDeviceServiceImpl;
+import com.neucore.neusdk_demo.neulink.extend.device.MyExtendInfoCallBack;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
@@ -263,167 +266,7 @@ public class MyApplication extends Application
     /**
      * 设备服务扩展
      */
-    IDeviceService deviceService = new DefaultDeviceServiceImpl() {
-        @Override
-        public String getExtSN() {
-            /**
-             * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
-             */
-            return "BLB10Y2020A0404220100000002@"+DeviceUtils.getMacAddress();
-        }
-        @Override
-        public Locale getLocale(){
-            /**
-             * 需要读取apk国际化设置后的值
-             */
-            return Locale.getDefault();
-        }
-        @Override
-        public DeviceInfo getInfo() {
-            /**
-             * 需要上报应用列表【名称及其相关版本；】
-             * OTA升级文件规则
-             *
-             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
-             *
-             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
-             */
-            return DeviceInfoDefaultBuilder.getInstance().build(new IDeviceExtendInfoCallback(){
-
-
-                @Override
-                public List<SubApp> getSubApps() {
-                    /**
-                     * 子应用列表
-                     */
-                    return null;
-                }
-
-                @Override
-                public List<Map<String, String>> getAttrs() {
-                    /**
-                     * 扩展属性
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getModel() {
-                    /**
-                     * 产品型号
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getImei() {
-                    /**
-                     * 移动设备国际身份码
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getImsi() {
-                    /**
-                     * 移动用户国际识别码
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getIccid() {
-                    /**
-                     * SIM卡卡号
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getLat() {
-                    /**
-                     * 设备所在经度
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getLng() {
-                    /**
-                     * 设备所在纬度
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getInterface() {
-                    /**
-                     * 网卡名称
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getWifiModel() {
-                    /**
-                     * wifi模组型号:参照对照表
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getCpuModel(){
-
-                    return null;
-                }
-
-                @Override
-                public String getNpuModel() {
-                    /**
-                     * npu型号
-                     */
-                    return null;
-                }
-
-                @Override
-                public SoftVInfo getMain() {
-                    return null;
-                }
-
-                @Override
-                public String getScreenSize() {
-                    /**
-                     * 屏幕大小:参照对照表
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getScreenInterface() {
-                    /**
-                     * 屏幕接口:参照对照表
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getScreenResolution() {
-                    /**
-                     * 分辨率:参照对照表
-                     */
-                    return null;
-                }
-
-                @Override
-                public String getBno(){
-                    /**
-                     * 批次号
-                     */
-                    return null;
-                }
-            });
-        }
-    };
+    IDeviceService deviceService = new MyDeviceServiceImpl();
     /**
      * 登录loginCallback
      */
@@ -433,7 +276,7 @@ public class MyApplication extends Application
             /**
              * 实现登录返回token
              */
-            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwiZW1haWxcIjpcInh4eEBtYWlsLmNvbVwiLFwiZnVsbG5hbWVcIjpcIui2hee6p-euoeeQhuWRmFwiLFwiaWRcIjoxLFwiaXNEZWxcIjowLFwibW9kaWZpZWRPblwiOjE2NDY4ODMzOTUwMDAsXCJwaG9uZU51bWJlclwiOlwiMTU4MDA4NjA4MDZcIixcInNjb3BlSWRcIjoxLFwic3RhdHVzXCI6MCxcInR5cGVcIjoxLFwidXNlcm5hbWVcIjpcImFkbWluXCJ9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY0ODA5Mzg3MSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjcyOGU3NmVlLTAzZTQtNGNhMi1hOTVjLTdiMTE3MTQ0YWM1NiIsImNsaWVudF9pZCI6ImdlbWluaSJ9.Gcz4TJwyiC_66aOwl1vpGZr5nMNJhJEuyzUSN1tKFI0";
+            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJzY29wZUlkIjoxLCJyb2xlIjoxLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJpZFwiOjEsXCJzY29wZUlkXCI6MSxcInVzZXJuYW1lXCI6XCJhb3FpLnN1bkBuZXVjb3JlLmNvbVwiLFwiZnVsbG5hbWVcIjpcIuW5s-WPsOeuoeeQhuWRmDFcIixcImVtYWlsXCI6XCJhb3FpLnN1bkBuZXVjb3JlLmNvbVwiLFwicGhvbmVOdW1iZXJcIjpcIjE1MjAxOTM2NTQxMlwiLFwiZXh0ZXJuYWxJZFwiOlwiXCIsXCJoZWFkUG9ydHJhaXRcIjpcIi9nZnJhbWUvMS91c2Vycy8xL2hwL2F2YXRhci5qcGdcIixcInR5cGVcIjoxLFwicm9sZVwiOjEsXCJvcHRsb2NrXCI6MSxcImV4cGlyYXRpb25EYXRlXCI6MTY1MTczOTk4MDAwMCxcInN0YXR1c1wiOjAsXCJpc0RlbFwiOjAsXCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwibW9kaWZpZWRPblwiOjE2NTQ4NDMyMzEwMDB9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY1NTExMDIzMywidHlwZSI6MSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6IjRjMmRiMmNjLWM2OTctNDU5OC04ZmEyLTFiY2RhMThkZTJkNCIsImNsaWVudF9pZCI6ImdlbWluaSJ9.NSEOw18Avh-RTeUP6npI_DQ1tQgHNUx1gsjoEqPgZlA";
         }
     };
 
