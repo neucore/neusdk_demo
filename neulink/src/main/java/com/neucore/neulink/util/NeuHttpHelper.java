@@ -304,6 +304,7 @@ public class NeuHttpHelper implements NeulinkConst{
 			try {
 				response = client.newCall(request).execute();
 				code = response.code();
+				NeuLogUtils.iTag(TAG,code);
 				if (code != 200) {
 					throw new NeulinkException(code,url + ",失败 with code=" + code);
 				}

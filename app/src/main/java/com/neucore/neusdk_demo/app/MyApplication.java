@@ -326,7 +326,7 @@ public class MyApplication extends Application
             /**
              * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
              */
-            return DeviceUtils.getDeviceId(getContext());
+            return "BLB10Y2020A0404220100000002@"+DeviceUtils.getMacAddress();
         }
         @Override
         public Locale getLocale(){
