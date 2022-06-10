@@ -56,11 +56,6 @@ public class MyApplication extends Application
          * 人脸服务初始化
          */
         UserService.getInstance(getContext());
-
-        /**
-         * 集成LogUtils
-         */
-        initLog();
         /**
          * 集成SDK
          */
@@ -200,12 +195,6 @@ public class MyApplication extends Application
         connector.start();
     }
 
-    private void initLog() {
-        /**
-         * 配置log4j参数
-         */
-
-    }
     public static Context getContext(){
         return instance.getApplicationContext();
     }
