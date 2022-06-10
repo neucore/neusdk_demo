@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  */
 @SuppressWarnings("all")
 public class NeuLogUtils {
-
+    private static NeuLogConfig logConfigurator = new NeuLogConfig();
     static {
         configLog();
     }
@@ -20,12 +20,9 @@ public class NeuLogUtils {
      */
     public static void configLog(){
 
-        NeuLogConfig logConfigurator = new NeuLogConfig();
-
         logConfigurator.setFileName(NeuLogConfig.LOG_FILE_PATH);
-
         //设置root日志输出级别 默认为DEBUG
-        logConfigurator.setRootLevel(NeuLogConfig.LOG_LEVEL_RELEASE);
+        logConfigurator.setRootLevel(Level.DEBUG);
         // 设置日志输出级别
         logConfigurator.setLevel("com.neucore.neulink", Level.DEBUG);
         //设置 输出到日志文件的文字格式 默认 %d %-5p [%c{2}]-[%L] %m%n
@@ -51,25 +48,12 @@ public class NeuLogUtils {
 
         logConfigurator.configure();
 
-        /** 设置Log等级，生产环境下调用setLogToProduce()，发布后调用setLogToRelease() **/
-        setLogToRelease(logConfigurator);
-    }
-    /**
-     * 将log设置为生产环境
-     *
-     * @param neuLogConfig
-     */
-    private static void setLogToProduce(NeuLogConfig neuLogConfig) {
-        neuLogConfig.setRootLevel(NeuLogConfig.LOG_LEVEL_PRODUCE);
     }
 
-    /**
-     * 将log设置为发布以后的环境
-     *
-     * @param neuLogConfig
-     */
-    private static void setLogToRelease(NeuLogConfig neuLogConfig) {
-        neuLogConfig.setRootLevel(NeuLogConfig.LOG_LEVEL_RELEASE);
+    public static void setLogLevel(Level level) {
+        logConfigurator.setRootLevel(level);
+        // 设置日志输出级别
+        logConfigurator.setLevel("com.neucore.neulink", level);
     }
 
     public static void eTag(String tag,Object message){
