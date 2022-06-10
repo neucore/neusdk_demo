@@ -1,7 +1,5 @@
 package com.neucore.neulink.log;
 
-import android.util.Log;
-
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -52,7 +50,7 @@ public class NeuLogUtils {
     private static final Level LOG_LEVEL_RELEASE = Level.INFO;
 
     static {
-//        configLog();
+        configLog();
     }
 
     /**
@@ -118,37 +116,32 @@ public class NeuLogUtils {
     }
 
     public static void eTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.error(contents[0],(Throwable) contents[1]);
-        Log.e(tag,(String)contents[0],(Throwable) contents[1]);
+        Logger logger = Logger.getLogger(tag);
+        logger.error(contents[0],(Throwable) contents[1]);
     }
 
     public static void wTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.warn(contents[0]);
-        Log.w(tag,(String)contents[0]);
+        Logger logger = Logger.getLogger(tag);
+        logger.warn(contents[0]);
     }
 
     public static void iTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.info(contents[0]);
-        Log.i(tag,(String)contents[0]);
+        Logger logger = Logger.getLogger(tag);
+        logger.info(contents[0]);
     }
 
     public static void dTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.debug(contents[0]);
+        Logger logger = Logger.getLogger(tag);
+        logger.debug(contents[0]);
     }
 
     public static void fTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.fatal(contents[0]);
-        Log.wtf(tag,(String)contents[0]);
+        Logger logger = Logger.getLogger(tag);
+        logger.fatal(contents[0]);
     }
 
     public static void tTag(String tag,final Object... contents){
-//        Logger logger = Logger.getLogger(tag);
-//        logger.trace(contents[0]);
-        Log.wtf(tag,(String)contents[0]);
+        Logger logger = Logger.getLogger(tag);
+        logger.trace(contents[0]);
     }
 }
