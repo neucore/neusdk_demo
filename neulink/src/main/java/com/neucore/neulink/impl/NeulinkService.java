@@ -109,7 +109,7 @@ public class NeulinkService implements NeulinkConst{
                 if(!isMqttConnSuccessed()){
                     if(isFailed()){
                         Throwable throwable = getFailException();
-                        NeuLogUtils.eTag(TAG,"连接失败：",throwable.getMessage());
+                        NeuLogUtils.eTag(TAG,"连接失败：",throwable);
                         if(throwable instanceof MqttException){
                             throw (MqttException)throwable;
                         }
@@ -485,7 +485,7 @@ public class NeulinkService implements NeulinkConst{
 
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
-            NeuLogUtils.iTag(TAG, "onFailure ",arg1.getMessage());
+            NeuLogUtils.eTag(TAG, "onFailure ",arg1);
             if (!isMqttConnSuccessed()) {
                 failException = arg1;
             } else {
@@ -750,7 +750,7 @@ public class NeulinkService implements NeulinkConst{
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
-                    NeuLogUtils.iTag(TAG,"MQTT 初始化异常",ex.getMessage());
+                    NeuLogUtils.eTag(TAG,"MQTT 初始化异常",ex);
                     Result result = new Result();
                     result.setReqId(UUID.fastUUID().toString());
                     result.setCode(STATUS_403);

@@ -140,7 +140,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                         }
                     }
                     catch (Exception ex){
-                        NeuLogUtils.dTag(TAG,"人脸offset:"+i+"下载失败",ex);
+                        NeuLogUtils.eTag(TAG,"人脸offset:"+i+"下载失败",ex);
                         NeuLogUtils.eTag(TAG,"process",ex);
                         if(ObjectUtil.isNotEmpty(msg)){
                             updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, ex.getMessage());
