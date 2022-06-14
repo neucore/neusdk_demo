@@ -73,11 +73,11 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 切记，在得到授权之后调用！！！
 
-即：onPermissionsGranted之后调用
+即：EasyPermissions.hasPermissions||onPermissionsGranted之后调用
 
 具体参考：
 
-SplashActivity.onPermissionsGranted方法实现
+SplashActivity.onCreate||onPermissionsGranted方法实现
 
 MyApplication.installSDK();
 
