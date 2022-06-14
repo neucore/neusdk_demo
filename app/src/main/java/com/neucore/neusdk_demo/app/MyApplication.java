@@ -17,6 +17,7 @@ public class MyApplication extends Application
     {
         super.onCreate();
         instance=this;
+        installSDK();
     }
 
     public static Context getContext(){
@@ -33,10 +34,7 @@ public class MyApplication extends Application
         MyApplication.threadAlive = alive;
     }
 
-    /**
-     * onPermissionsGranted之后调用
-     */
-    public static void installSDK(){
+    public void installSDK(){
         MyInstaller.getInstance().install(instance);
     }
 }

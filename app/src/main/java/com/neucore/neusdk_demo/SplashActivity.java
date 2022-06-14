@@ -71,10 +71,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             EasyPermissions.requestPermissions(SplashActivity.this, "请允许权限，否则无法使用", 123, PERMISSIONS);
         }else {
             initView();
-            /**
-             * 成功授权后安装installSDK
-             */
-            MyApplication.installSDK();
         }
     }
 
@@ -89,10 +85,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         if (requestCode == 123) {
             initView();
         }
-        /**
-         * 成功授权后安装installSDK
-         */
-        MyApplication.installSDK();
     }
 
     @Override
@@ -109,7 +101,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             mMyCountDownTimer = new MyCountDownTimer(1 * 1000, 2000);
             mMyCountDownTimer.start();
         }
-
     }
 
     class MyCountDownTimer extends CountDownTimer {

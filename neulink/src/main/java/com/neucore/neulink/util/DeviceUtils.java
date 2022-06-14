@@ -52,7 +52,8 @@ public class DeviceUtils implements NeulinkConst{
 	public static final int DISK_TYPE = 1;			//当前的日志记录类型为存储在磁盘中
 
 	private static String getFileRoot(Context context) {
-		File sdDir = null;
+		File root = null;
+		String path = null;
 		boolean sdCardExist = true;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			sdCardExist = Environment.getExternalStorageState()
@@ -60,14 +61,19 @@ public class DeviceUtils implements NeulinkConst{
 		}
 		int type = getStoreType();
 		if (type == SDCARD_TYPE|| sdCardExist) {
-			sdDir = Environment.getExternalStorageDirectory();
+			root = Environment.getExternalStorageDirectory();
+			path = root.toString();
+			if (Build.VERSION.SDK_INT < 23) {
+				if (path.equals("/storage/emulated/0")) {
+					path = "/storage/sdcard0";
+				}
+			}
 		}
-		String path = sdDir.toString();
-		if (Build.VERSION.SDK_INT < 23) {
-			if (path.equals("/storage/emulated/0"))
-				path = "/storage/sdcard0";
+		else{
+			root = context.getCacheDir();
+			path = root.toString();
 		}
-		return path; //"/storage/sdcard0";
+		return path;
 	}
 
 	public static String getNeucore(Context context){
