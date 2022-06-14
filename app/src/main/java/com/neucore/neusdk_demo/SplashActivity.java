@@ -66,14 +66,16 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         instance = this;
         setContentView(R.layout.activity_splash);
-        LogUtils.i("SplashActivity start onCreate");
         //跳转到主界面
         if (!EasyPermissions.hasPermissions(SplashActivity.this, PERMISSIONS)) {
             EasyPermissions.requestPermissions(SplashActivity.this, "请允许权限，否则无法使用", 123, PERMISSIONS);
         }else {
             initView();
+            /**
+             * 成功授权后安装installSDK
+             */
+            MyApplication.installSDK();
         }
-        LogUtils.i("SplashActivity end onCreate");
     }
 
     @Override
