@@ -381,8 +381,8 @@ public class FaceProcessing extends Thread {
                         Bitmap face = Bitmap.createBitmap(sub.cols(), sub.rows(), Bitmap.Config.ARGB_8888);
                         Utils.matToBitmap(sub, face);//这个是发现的人脸，转换成了bitmap，当然也可以是其他的格式
 
-                        ArrayList<byte[]> feature_org = UserService.getInstance(mContext).getFeatures();
-                        ArrayList<byte[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
+                        ArrayList<short[]> feature_org = UserService.getInstance(mContext).getFeatures();
+                        ArrayList<short[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
                         ArrayList<String> name_org = UserService.getInstance(mContext).getNames();
 
                         //NeuLogUtils.eTag(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()

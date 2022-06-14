@@ -507,7 +507,7 @@ public class CollectActivity extends AppCompatActivity {
             NeuFaceRegisterNode registerNode = mFaceProcessor.getFeature(dataByte, imageWidth, imageHeight);
             if(registerNode.getFeatureValid() == false)return;
 
-            face=gson.toJson(registerNode.getFeature());
+            face=gson.toJson(registerNode.getFeature_v2());
             face_mask = gson.toJson(registerNode.getMaskFeature());
             LogUtils.iTag("face",face);
             LogUtils.iTag("face_mask",face_mask);

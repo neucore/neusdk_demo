@@ -959,8 +959,8 @@ public class Camera2PortraitActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<byte[]> feature_org = new ArrayList<byte[]>();
-    private ArrayList<byte[]> feature_mask = new ArrayList<byte[]>();
+    private ArrayList<short[]> feature_org = new ArrayList<short[]>();
+    private ArrayList<short[]> feature_mask = new ArrayList<short[]>();
     private ArrayList<String> name_org = new ArrayList<String>();
     public String registerPath = Environment.getExternalStorageDirectory().getAbsolutePath()
             + "/twocamera/photo/";
@@ -992,8 +992,10 @@ public class Camera2PortraitActivity extends AppCompatActivity {
 
                 if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
                     if (register_face.getFeatureValid() == true) {
-                        feature_org.add(register_face.getFeature());
-                        feature_mask.add(register_face.getMaskFeature());
+                        //feature_org.add(register_face.getFeature());
+                        //feature_mask.add(register_face.getMaskFeature());
+                        feature_org.add(register_face.getFeature_v2());
+                        feature_mask.add(Util.toShortArray(register_face.getMaskFeature()));
                         name_org.add(face.getName().split("\\.")[0]);
                         LogUtils.dTag(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
                     }
@@ -1019,8 +1021,10 @@ public class Camera2PortraitActivity extends AppCompatActivity {
 
                 if (register_face.getQuality() == NeuFaceQuality.NEU_IVA_FACE_OK) {
                     if (register_face.getFeatureValid() == true) {
-                        feature_org.add(register_face.getFeature());
-                        feature_mask.add(register_face.getMaskFeature());
+                        //feature_org.add(register_face.getFeature());
+                        //feature_mask.add(register_face.getMaskFeature());
+                        feature_org.add(register_face.getFeature_v2());
+                        feature_mask.add(Util.toShortArray(register_face.getMaskFeature()));
                         name_org.add(face.getName().split("\\.")[0]);
                         LogUtils.dTag(TAG, "add one feature to feature_org, name = " + face.getName().split("\\.")[0]);
                     }

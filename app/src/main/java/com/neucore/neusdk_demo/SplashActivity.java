@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -158,6 +159,19 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     finish();
                 }
             });
+
+            //Test
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    transferAdminsDialog.finish();
+
+                    //竖屏 6421板子 800x1280
+                    SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_6421_VER);
+                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    finish();
+                }
+            },3000);
         }
     }
 
