@@ -59,13 +59,6 @@ public class SampleConnector implements NeulinkConst{
     private boolean initMqttService = false;
     private boolean mqttServiceReady =false;
 
-    public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
-    public String[] CAMERA = {Manifest.permission.CAMERA};
-    public String[] LOCK = {Manifest.permission.WAKE_LOCK};
-    public String[] KEYGUARD = {Manifest.permission.DISABLE_KEYGUARD};
-    public String[] WIFI = {Manifest.permission.ACCESS_WIFI_STATE};
-    public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
-
     public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public String[] PERMISSIONS;
@@ -149,12 +142,10 @@ public class SampleConnector implements NeulinkConst{
                 @Override
                 public void run() {
 
-                    PERMISSIONS = concatAll(NETWORK,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
-
                     int storeType = DeviceUtils.getStoreType();
 
                     if(storeType==DeviceUtils.SDCARD_TYPE){
-                        PERMISSIONS = concatAll(STORAGE, PERMISSIONS);
+                        PERMISSIONS = concatAll(STORAGE);
                     }
                     boolean allow = false;
                     /**
