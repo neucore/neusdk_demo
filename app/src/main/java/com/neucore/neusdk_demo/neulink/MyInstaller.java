@@ -1,5 +1,6 @@
 package com.neucore.neusdk_demo.neulink;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
@@ -12,7 +13,10 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neusdk_demo.SplashActivity;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
@@ -26,7 +30,10 @@ import com.neucore.neusdk_demo.service.impl.UserService;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
+import java.util.Arrays;
 import java.util.Properties;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 可以扩展实现
@@ -41,6 +48,31 @@ public class MyInstaller {
         return installer;
     }
 
+    public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
+    public String[] CAMERA = {Manifest.permission.CAMERA};
+    public String[] LOCK = {Manifest.permission.WAKE_LOCK};
+    public String[] KEYGUARD = {Manifest.permission.DISABLE_KEYGUARD};
+    public String[] WIFI = {Manifest.permission.ACCESS_WIFI_STATE};
+    public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
+
+    public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    public String[] PERMISSIONS;
+
+    public <T> T[] concatAll(T[] first, T[]... rest) {
+        int totalLength = first.length;
+        for (T[] array : rest) {
+            totalLength += array.length;
+        }
+        T[] result = Arrays.copyOf(first, totalLength);
+        int offset = first.length;
+        for (T[] array : rest) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
+    }
+
     /**
      * after 成功获得到授权之后调用
      * @param application
@@ -48,46 +80,69 @@ public class MyInstaller {
     public void install(Application application){
         synchronized (this){
             if(!init){
+                new Thread(){
+                    @Override
+                    public void run() {
 
-                ContextHolder.getInstance().setContext(application);
+                        PERMISSIONS = concatAll(NETWORK,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
 
-                /**
-                 * 人脸服务初始化
-                 */
-                UserService.getInstance(application.getApplicationContext());
-                /**
-                 * 构造扩展配置
-                 */
-                Properties extConfig = buildConfig();
-                /**
-                 * 集成SDK
-                 */
-                buildConnector(application,extConfig);
-                /**
-                 * Demo publish
-                 */
-//
-//                new Thread(){
-//                    public void run(){
-//                        while(!NeulinkService.getInstance().isNeulinkServiceInited()){
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException e) {
+                        int storeType = DeviceUtils.getStoreType();
+
+                        if(storeType==DeviceUtils.SDCARD_TYPE){
+                            PERMISSIONS = concatAll(STORAGE, PERMISSIONS);
+                        }
+                        boolean allow = false;
+                        /**
+                         * onPermissionsGranted之后调用
+                         */
+                        while (!(allow=EasyPermissions.hasPermissions(application, PERMISSIONS))){
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                        NeuLogUtils.iTag(TAG,"hasPermissions and starting...");
+                        ContextHolder.getInstance().setContext(application);
+
+                        /**
+                         * 人脸服务初始化
+                         */
+                        UserService.getInstance(application.getApplicationContext());
+                        /**
+                         * 构造扩展配置
+                         */
+                        Properties extConfig = buildConfig();
+                        /**
+                         * 集成SDK
+                         */
+                        buildConnector(application,extConfig);
+
+                        /**
+                         * Demo publish
+                         */
+//                        new Thread(){
+//                            public void run(){
+//                                while(!NeulinkService.getInstance().isNeulinkServiceInited()){
+//                                    try {
+//                                        Thread.sleep(1000);
+//                                    } catch (InterruptedException e) {
+//                                    }
+//                                }
+//                                /**
+//                                 * ⚠️注意：
+//                                 * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
+//                                 */
+//                                //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+//                                String biz = "binding";
+//                                String version = "v1.0";
+//                                String reqId = "3214323ewadfdsad";
+//                                String mode = "bind";
+//                                String payload = "{}";//绑定响应协议体
+//                                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
 //                            }
-//                        }
-//                        /**
-//                         * ⚠️注意：
-//                         * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
-//                         */
-//                        //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
-//                        String biz = "binding";
-//                        String version = "v1.0";
-//                        String reqId = "3214323ewadfdsad";
-//                        String mode = "bind";
-//                        String payload = "{}";//绑定响应协议体
-//                        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
-//                    }
-//                }.start();
+//                        }.start();
+                    }
+                }.start();
                 init = true;
             }
         }

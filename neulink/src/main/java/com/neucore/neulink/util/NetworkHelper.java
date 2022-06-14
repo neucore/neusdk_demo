@@ -38,14 +38,6 @@ public class NetworkHelper implements NeulinkConst {
         }
     };
 
-    private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
-        @Override
-        public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-            NeuLogUtils.iTag(TAG, "mPhoneStateListener");
-            onConnectivityChange();
-        }
-    };
-
     private static NetworkHelper instance;
 
     public static NetworkHelper getInstance() {
@@ -87,19 +79,12 @@ public class NetworkHelper implements NeulinkConst {
         } catch (Exception e) {
         }
 
-        if (telephonyManager != null) {
-            telephonyManager.listen(mPhoneStateListener,
-                    PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-        }
     }
 
     public void onStop() {
         try {
             mContext.unregisterReceiver(mNetworkReceiver);
             //final TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE); //mContext.getSystemService(TelephonyManager.class);
-            if (telephonyManager != null) {
-                telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
-            }
         } catch (Exception e) {
         }
     }

@@ -23,12 +23,13 @@ import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.service.LogService;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.impl.service.resume.IFileService;
 import com.neucore.neulink.util.ContextHolder;
+
+import org.eclipse.paho.android.service.MqttService;
 
 import java.util.Properties;
 
@@ -47,7 +48,6 @@ public class SampleConnector implements NeulinkConst{
     private IResCallback defaultResCallback;
 
     private Properties extConfig;
-    private Handler tHandler;
     private Boolean started = false;
     private boolean networkReady = false;
     private boolean initMqttService = false;
@@ -163,33 +163,6 @@ public class SampleConnector implements NeulinkConst{
          */
         ContextHolder.getInstance().setContext(application);
 
-        /**
-         * 异步开启LogService
-         */
-        if(tHandler==null){
-            tHandler = new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    Intent intent = new Intent(application, LogService.class);
-                    NeuLogUtils.iTag(TAG,"Build.VERSION.SDK_INT:"+ Build.VERSION.SDK_INT);
-                    NeuLogUtils.iTag(TAG,"Build.VERSION_CODES.O:"+Build.VERSION_CODES.O);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        NeuLogUtils.iTag(TAG,"startForegroundService");
-                        application.startForegroundService(intent);
-                    } else {
-                        NeuLogUtils.iTag(TAG,"startService");
-                        application.startService(intent);
-                    }
-                    NeuLogUtils.iTag(TAG,"success startLogService");
-                    return true;
-                }
-            });
-        }
-
-        LogServiceThread logServiceThread = new LogServiceThread();
-
-        logServiceThread.start();
-
         //处理初始化应用carsh
         CarshHandler crashHandler = CarshHandler.getIntance();
         crashHandler.init();
@@ -222,30 +195,5 @@ public class SampleConnector implements NeulinkConst{
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
         LocalBroadcastManager.getInstance(application).registerReceiver(receiver, filter);
-    }
-
-    private void registerMqttServiceReceiver(BroadcastReceiver receiver) {
-
-        IntentFilter filter = new IntentFilter();
-        /**
-         * 网络恢复事件侦听器
-         */
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        /**
-         * MqttService事件侦听器
-         */
-        filter.addAction("MyMqttService.callbackToActivity.v0");
-
-        LocalBroadcastManager.getInstance(application).registerReceiver(receiver, filter);
-    }
-
-    class LogServiceThread extends Thread {
-        public LogServiceThread(){
-        }
-        public void run() {
-            Looper.prepare();
-            tHandler.sendEmptyMessage(1);
-            Looper.loop();  //looper开始处理消息。
-        }
     }
 }
