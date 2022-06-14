@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.dialog.TransferAdminsDialog;
+import com.neucore.neusdk_demo.neulink.extend.MyNeulinkInstaller;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
@@ -25,6 +26,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class SplashActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
+    private String TAG = "SplashActivity";
+    private AppCompatActivity instance;
     public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //public String[] MOUNT = {Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
     public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
@@ -38,7 +41,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
     //public String[] READ_LOGS = {Manifest.permission.READ_LOGS};
     public String[] PERMISSIONS;
-
     {
         PERMISSIONS = concatAll(STORAGE, NETWORK,PHONE,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
     }
@@ -62,6 +64,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_splash);
         LogUtils.i("SplashActivity start onCreate");
         //跳转到主界面
@@ -174,8 +177,12 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     finish();
                 }
             },3000);
+
+            MyNeulinkInstaller.getInstance().install(instance);
         }
     }
+
+
 
     @Override
     protected void onDestroy() {

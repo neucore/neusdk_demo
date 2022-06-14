@@ -394,7 +394,7 @@ public class Camera2Activity extends AppCompatActivity {
                     float maxSum = 0;
                     int maxID = 0;
 
-                    if (resultRgb[i].getIsmask() == true) {
+                    if (resultRgb[i].getIsmask() == 1) {
                         // 从注册图中找到相似度最大的ID 和 最大相似度
                         for (int org_size = 0; org_size < feature_mask.size(); org_size++) {
                             float sum = NeuFaceFactory.getInstance().create().neu_iva_face_similarity(feature_mask.get(org_size), resultRgb[i].getFeature());

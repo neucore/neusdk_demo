@@ -414,7 +414,7 @@ public class FaceProcessing extends Thread {
                             float maxSum = 0;
                             int maxID = 0;
 
-                            if (result[i].getIsmask() == true) {
+                            if (result[i].getIsmask() == 1) {
                                 // 从注册图中找到相似度最大的ID 和 最大相似度
                                 for (int org_size = 0; org_size < feature_mask.size(); org_size++) {
                                     float sum = mNeucore_face.neu_iva_face_similarity(feature_mask.get(org_size), result[i].getFeature());
