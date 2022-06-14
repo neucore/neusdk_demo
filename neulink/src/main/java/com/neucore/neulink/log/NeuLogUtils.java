@@ -56,14 +56,26 @@ public class NeuLogUtils {
         logConfigurator.setLevel("com.neucore.neulink", level);
     }
 
+    public static void eTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.error(message);
+    }
     public static void eTag(String tag,Object message){
         Logger logger = Logger.getLogger(tag);
         logger.error(message);
     }
-
+    public static void eTag(Class tag,Object message,Throwable throwable){
+        Logger logger = Logger.getLogger(tag);
+        logger.error(message,throwable);
+    }
     public static void eTag(String tag,Object message,Throwable throwable){
         Logger logger = Logger.getLogger(tag);
         logger.error(message,throwable);
+    }
+
+    public static void wTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.warn(message);
     }
 
     public static void wTag(String tag,Object message){
@@ -71,9 +83,19 @@ public class NeuLogUtils {
         logger.warn(message);
     }
 
+    public static void iTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.info(message);
+    }
+
     public static void iTag(String tag,Object message){
         Logger logger = Logger.getLogger(tag);
         logger.info(message);
+    }
+
+    public static void dTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.debug(message);
     }
 
     public static void dTag(String tag,Object message){
@@ -81,9 +103,19 @@ public class NeuLogUtils {
         logger.debug(message);
     }
 
+    public static void fTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.fatal(message);
+    }
+
     public static void fTag(String tag,Object message){
         Logger logger = Logger.getLogger(tag);
         logger.fatal(message);
+    }
+
+    public static void tTag(Class tag,Object message){
+        Logger logger = Logger.getLogger(tag);
+        logger.trace(message);
     }
 
     public static void tTag(String tag,Object message){
