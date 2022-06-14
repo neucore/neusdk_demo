@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'//添加
+apply plugin: 'org.greenrobot.greendao'//添加//
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_version
