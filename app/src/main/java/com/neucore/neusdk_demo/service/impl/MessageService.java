@@ -22,7 +22,7 @@ public class MessageService implements IMessageService {
     public IMessage queryByReqNo(String reqNo) {
         List<Message> messages = messageDaoUtils.queryReqId(reqNo, 0);
         if (messages != null && messages.size() > 0) {
-            return messages.get(0);
+            return (IMessage) messages.get(0);
         }
         return null;
     }

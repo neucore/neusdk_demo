@@ -15,10 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.NeuHttpHelper;
+import com.neucore.neusdk_demo.app.Const;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.neucore.FaceProcessing;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
@@ -179,21 +178,29 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!new File(NeulinkConst.filePath).exists()){
-                    new File(NeulinkConst.filePath).mkdirs();
+                if(!new File(Const.filePath).exists()){
+                    new File(Const.filePath).mkdirs();
                 }
                 HelpUtil.createFileNB();
                 //初始化拷贝nb文件
                 HelpUtil.copyAssetResource2File(MyApplication.getContext());
                 OpenCVLoader.initDebug();
                 NeuFaceFactory.getInstance().create();
-                NeuHandFactory.getInstance().create();
-                NeuPoseFactory.getInstance().create();
-                NeuSegmentFactory.getInstance().create();
+                //NeuHandFactory.getInstance().create();
+                //NeuPoseFactory.getInstance().create();
+                //NeuSegmentFactory.getInstance().create();
 
                 FaceProcessing.getInstance(MyApplication.getContext());
 
                 Util.clearAllCache(MyApplication.getContext());
+
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ll_two_camera_life.performClick();
+//                    }
+//                },8000);
+
             }
         },1000);
     }
@@ -362,7 +369,7 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
 
     @Override
     protected void onDestroy() {
-        LogUtils.eTag(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy");
         NeulinkService.getInstance().destroy();
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
@@ -407,10 +414,10 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
     protected void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
-            LogUtils.dTag(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
         } else {
-            LogUtils.dTag(TAG, "OpenCV library found inside package. Using it!");
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -421,7 +428,7 @@ public class MenuActivity extends AppCompatActivity implements PermissionInterfa
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    LogUtils.i(TAG, "OpenCV loaded successfully");
+                    Log.i(TAG, "OpenCV loaded successfully");
 //                    mOpenCvCameraView.enableView();
 //                    mOpenCvCameraView.setOnTouchListener(ColorBlobDetectionActivity.this);
                 }

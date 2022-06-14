@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false" android:orientation="horizontal">
+        android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/ll_export_record"
             android:layout_width="match_parent"
@@ -78,7 +78,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false" android:orientation="horizontal">
+        android:orientation="horizontal">
     <LinearLayout
         android:id="@+id/ll_export_photo"
         android:layout_width="match_parent"
@@ -147,7 +147,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:baselineAligned="false" android:orientation="horizontal">
+        android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/ll_face"
             android:layout_width="match_parent"

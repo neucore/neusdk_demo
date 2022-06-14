@@ -6,8 +6,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
-
 /**
  * 清除缓存
  *
@@ -88,7 +86,7 @@ public class CleanMessageUtil {
             }
 
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return size;
     }

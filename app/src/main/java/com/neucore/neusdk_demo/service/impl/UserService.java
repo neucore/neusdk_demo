@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
 import com.neucore.neusdk_demo.service.db.bean.User;
@@ -16,8 +15,8 @@ import java.util.List;
 final public class UserService extends AbsUserService {
     private String TAG = "UserService";
     private HashMap<String, User> user_hm = new HashMap<>();
-    private ArrayList<byte[]> feature_org = new ArrayList<byte[]>();
-    private ArrayList<byte[]> feature_mask = new ArrayList<byte[]>();
+    private ArrayList<short[]> feature_org = new ArrayList<short[]>();
+    private ArrayList<short[]> feature_mask = new ArrayList<short[]>();
     private ArrayList<String> name_org = new ArrayList<String>();
     private static UserService instance = new UserService();
     private Object lock = new Object();
@@ -54,8 +53,8 @@ final public class UserService extends AbsUserService {
             }
         }
         HashMap<String, User> user_hm = new HashMap<>();
-        ArrayList<byte[]> feature_org = new ArrayList<byte[]>();
-        ArrayList<byte[]> feature_mask = new ArrayList<byte[]>();
+        ArrayList<short[]> feature_org = new ArrayList<short[]>();
+        ArrayList<short[]> feature_mask = new ArrayList<short[]>();
         ArrayList<String> name_org = new ArrayList<String>();
 
         size = tmpUsers==null?0:tmpUsers.size();
@@ -69,7 +68,7 @@ final public class UserService extends AbsUserService {
                     //2.字符串转成Byte[]
                     Byte[] b = gson.fromJson(faceStr, Byte[].class);
                     //3.将值赋值给byte[]数组，此步骤可能多余
-                    byte[] c = new byte[b.length];
+                    short[] c = new short[b.length];
                     for (int j = 0; j < b.length; j++) {
                         c[j] = b[j];
                         //System.out.println(c[j]);
@@ -77,7 +76,7 @@ final public class UserService extends AbsUserService {
                     feature_org.add(c);
                 }
             }catch (Exception e){
-                LogUtils.eTag(TAG,"CardId: "+user.getCardId(),e );
+                Log.e(TAG,"CardId: "+user.getCardId(),e );
             }
 
 
@@ -87,7 +86,7 @@ final public class UserService extends AbsUserService {
                     //2.字符串转成Byte[]
                     Byte[] b = gson.fromJson(facemaskStr, Byte[].class);
                     //3.将值赋值给byte[]数组，此步骤可能多余
-                    byte[] c = new byte[b.length];
+                    short[] c = new short[b.length];
                     for (int j = 0; j < b.length; j++) {
                         c[j] = b[j];
                         //System.out.println(c[j]);
@@ -96,7 +95,7 @@ final public class UserService extends AbsUserService {
                     name_org.add(user.getUserId());
                 }
             }catch (Exception e){
-                LogUtils.eTag(TAG,"CardId: "+user.getCardId(),e );
+                Log.e(TAG,"CardId: "+user.getCardId(),e );
             }
         }
         synchronized (lock){
@@ -120,11 +119,11 @@ final public class UserService extends AbsUserService {
         return user_hm;
     }
 
-    public synchronized ArrayList<byte[]> getFeatures(){
+    public synchronized ArrayList<short[]> getFeatures(){
         return feature_org;
     }
 
-    public synchronized ArrayList<byte[]> getMaskFeatures(){
+    public synchronized ArrayList<short[]> getMaskFeatures(){
         return feature_mask;
     }
 

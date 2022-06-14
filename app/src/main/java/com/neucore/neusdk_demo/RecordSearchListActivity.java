@@ -10,11 +10,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.adapter.RecordAdapter;
-import com.neucore.neusdk_demo.service.db.bean.Record;
-import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
+import com.neucore.neusdk_demo.service.db.RecordDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.Record;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 import com.neucore.neusdk_demo.view.AbOnListViewListener;
 import com.neucore.neusdk_demo.view.AbPullListView;
@@ -75,7 +74,7 @@ public class RecordSearchListActivity extends AppCompatActivity implements Permi
             projectAdapter.setLists(getSearchData(type,keyType,keyWord,start,end,0));
         }
     }
-    private List<Record> getSearchData(int type,String keyType,String keyWord,long start,long end,int offset){
+    private List<Record> getSearchData(int type, String keyType, String keyWord, long start, long end, int offset){
         List<Record> records=null;
         if(type==1){
             if("姓名".equals(keyType))
@@ -159,7 +158,7 @@ public class RecordSearchListActivity extends AppCompatActivity implements Permi
     }
     @Override
     protected void onDestroy() {
-        LogUtils.eTag(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy");
         super.onDestroy();
     }
 

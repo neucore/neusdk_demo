@@ -15,11 +15,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.adapter.ProjectAdapter;
-import com.neucore.neusdk_demo.service.db.bean.User;
-import com.neucore.neusdk_demo.service.db.UserDaoUtils;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
+import com.neucore.neusdk_demo.service.db.UserDaoUtils;
+import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 import com.neucore.neusdk_demo.view.AbOnListViewListener;
 import com.neucore.neusdk_demo.view.AbPullListView;
@@ -149,7 +148,7 @@ public class SearchActivity extends AppCompatActivity implements PermissionInter
         tv_back.setOnClickListener(listener);
         btn_search.setOnClickListener(listener);
     }
-    private List<User> getUserList(String sec,int offset){
+    private List<User> getUserList(String sec, int offset){
         String itemSel=spinner_simple.getSelectedItem().toString();
         List<User> lists=new ArrayList<>();
         if("工号".equals(itemSel))
@@ -162,7 +161,7 @@ public class SearchActivity extends AppCompatActivity implements PermissionInter
     }
     @Override
     protected void onDestroy() {
-        LogUtils.eTag(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy");
         super.onDestroy();
     }
 

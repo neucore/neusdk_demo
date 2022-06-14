@@ -8,7 +8,6 @@ import android.media.Image;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.neucore.NeuSDK.NeuFace;
 import com.neucore.NeuSDK.NeuFaceRecgNode;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
@@ -69,11 +68,11 @@ public class FaceProcessing extends Thread {
                     if (!mNeucore_face.getNeuSDKInitStatus()) {
                         mNeucore_face = null;
                         Toast.makeText(context,"NeuFace 初始化失败",Toast.LENGTH_SHORT).show();
-                        LogUtils.eTag(TAG, "NeuFace 初始化失败");
+                        Log.e(TAG, "NeuFace 初始化失败");
                         instance = null;
                     }else {
                         Toast.makeText(context,"NeuFace 初始化成功",Toast.LENGTH_SHORT).show();
-                        LogUtils.eTag(TAG, "NeuFace 初始化成功");
+                        Log.e(TAG, "NeuFace 初始化成功");
                     }
                 }
             }
@@ -93,7 +92,7 @@ public class FaceProcessing extends Thread {
     //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
     public void copyAssetResource2File(Context context)
     {
-        LogUtils.dTag(TAG, "开始拷贝nb文件");
+        Log.d(TAG, "开始拷贝nb文件");
         long begin = System.currentTimeMillis();
 
         String OrgFilepath = "/storage/emulated/0/neucore/";
@@ -177,7 +176,7 @@ public class FaceProcessing extends Thread {
                 outF.setReadable(true);
             }
 
-            LogUtils.dTag(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -263,6 +262,9 @@ public class FaceProcessing extends Thread {
         startProcess = false;
     }
 
+    public static long oneFaceDetectTime = 0;
+    public static long oneFaceDetectRunNum = 0;
+
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
@@ -278,7 +280,7 @@ public class FaceProcessing extends Thread {
                             // don't have it yet.
                             mLock.wait();
                         } catch (InterruptedException e) {
-                            LogUtils.eTag(TAG, "Frame processing loop terminated.", e);
+                            Log.e(TAG, "Frame processing loop terminated.", e);
                             return;
                         }
                     }
@@ -306,70 +308,88 @@ public class FaceProcessing extends Thread {
 
                     //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，下面代码将不再需要
                     transpose(ir_mat, ir_mat);
-                    flip(ir_mat, ir_mat, 1);//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
+                    //flip(ir_mat, ir_mat, 1);//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
+                    //flip(ir_mat, ir_mat, 0);//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
+
+                    //8寸,6443设备
+                    flip(ir_mat, ir_mat, -1);//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
 
                     //保存图片,查看图片颜色,方向  (ir_mat需要红外摄像头黑白图片,无杂色)
-                    //Imgcodecs.imwrite("/storage/emulated/0/neucore/ir.jpg",ir_mat);
+                    if (95 < oneFaceDetectRunNum && oneFaceDetectRunNum < 100){
+                        //Imgcodecs.imwrite("/storage/emulated/0/neucore/ir"+System.currentTimeMillis()+".jpg",ir_mat);
+                    }
 
                     transpose(rgb_mat, rgb_mat);
-                    flip(rgb_mat, rgb_mat, 1);
+                    //flip(rgb_mat, rgb_mat, 1);
+                    //flip(rgb_mat, rgb_mat, 0);
+
+                    //8寸,6443设备
+                    flip(rgb_mat, rgb_mat, -1);
                     //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
 
                     //保存图片,查看图片颜色,方向  (rgb_mat需要是正常肉眼可见彩色图片,无杂色)
-                    //Imgcodecs.imwrite("/storage/emulated/0/neucore/rgb.jpg",rgb_mat);
-
-
-                    NeuFaceRecgNode[] resultRgb = mNeucore_face.neu_iva_face_detect(rgb_mat,false);
-                    System.out.println("      点的坐标 byte: "+ resultRgb.length );
-
-                    List<Rect> rectList = new ArrayList<>();
-                    rectList.clear();
-                    for (int i = 0; i < resultRgb.length; i++) {
-                        //调用检测算法,得到人脸框,5点信息,特征值等信息
-                        //在 mat 中画人脸框
-                        System.out.println("     点的坐标:    开始点:   x: "+resultRgb[i].getLeft() + "    y: "+resultRgb[i].getTop()
-                                + "        结束点:    x: "+resultRgb[i].getLeft() + resultRgb[i].getWidth()
-                                + "        结束点:    y: "+resultRgb[i].getTop() + resultRgb[i].getHeight() );
-                        Rect rect_event = new Rect(resultRgb[i].getLeft(),resultRgb[i].getTop(),
-                                (resultRgb[i].getLeft() + resultRgb[i].getWidth()),resultRgb[i].getTop() + resultRgb[i].getHeight());
-
-                        Size size = new Size(480,640);
-                        int widthSize = size.getWidth();
-                        int heightSize = size.getHeight();
-                        int x1 = rect_event.left;
-                        int y1 = rect_event.top;
-                        int x2 = rect_event.right;
-                        int y2 = rect_event.bottom;
-
-                        int widthPingMu = AppInfo.getWidthPingMu();
-                        int heightPingMu = AppInfo.getHeightPingMu();
-                        int aaaX1 = (x1 * widthPingMu) / widthSize;
-                        int aaaX2 = (x2 * widthPingMu) / widthSize;
-                        int aaaY1 = (y1 * heightPingMu) / heightSize;
-                        int aaaY2 = (y2 * heightPingMu) / heightSize;
-
-                        Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
-                        rectList.add(rect);
-                        Util.sendIntEventMessge(Constants.FACE_START, rectList);
-
-                        rectNum = 0;
+                    if (95 < oneFaceDetectRunNum && oneFaceDetectRunNum < 100){
+                        //Imgcodecs.imwrite("/storage/emulated/0/neucore/rgb"+System.currentTimeMillis()+".jpg",rgb_mat);
                     }
+                    System.out.println("---------- face processing onlineing 开始双目---------");
 
-                    //没有识别框数据时,识别框不显示
-                    if (resultRgb.length == 0){
-                        if (rectNum == 0){
-                            rectNum++;
-                            rectList.clear();
-                            rectList.add(new Rect(0,0,0,0));
-                            Util.sendIntEventMessge(Constants.FACE_START, rectList);
-                        }
-                    }
+//                    NeuFaceRecgNode[] resultRgb = mNeucore_face.neu_iva_face_detect(rgb_mat,false);
+//                    System.out.println("      点的坐标 byte: "+ resultRgb.length );
+//
+//                    List<Rect> rectList = new ArrayList<>();
+//                    rectList.clear();
+//                    for (int i = 0; i < resultRgb.length; i++) {
+//                        //调用检测算法,得到人脸框,5点信息,特征值等信息
+//                        //在 mat 中画人脸框
+//                        System.out.println("     点的坐标:    开始点:   x: "+resultRgb[i].getLeft() + "    y: "+resultRgb[i].getTop()
+//                                + "        结束点:    x: "+resultRgb[i].getLeft() + resultRgb[i].getWidth()
+//                                + "        结束点:    y: "+resultRgb[i].getTop() + resultRgb[i].getHeight() );
+//                        Rect rect_event = new Rect(resultRgb[i].getLeft(),resultRgb[i].getTop(),
+//                                (resultRgb[i].getLeft() + resultRgb[i].getWidth()),resultRgb[i].getTop() + resultRgb[i].getHeight());
+//
+//                        Size size = new Size(480,640);
+//                        int widthSize = size.getWidth();
+//                        int heightSize = size.getHeight();
+//                        int x1 = rect_event.left;
+//                        int y1 = rect_event.top;
+//                        int x2 = rect_event.right;
+//                        int y2 = rect_event.bottom;
+//
+//                        int widthPingMu = AppInfo.getWidthPingMu();
+//                        int heightPingMu = AppInfo.getHeightPingMu();
+//                        int aaaX1 = (x1 * widthPingMu) / widthSize;
+//                        int aaaX2 = (x2 * widthPingMu) / widthSize;
+//                        int aaaY1 = (y1 * heightPingMu) / heightSize;
+//                        int aaaY2 = (y2 * heightPingMu) / heightSize;
+//
+//                        Rect rect = new Rect(aaaX1, aaaY1, aaaX2, aaaY2);
+//                        rectList.add(rect);
+//                        Util.sendIntEventMessge(Constants.FACE_START, rectList);
+//
+//                        rectNum = 0;
+//                    }
+//
+//                    //没有识别框数据时,识别框不显示
+//                    if (resultRgb.length == 0){
+//                        if (rectNum == 0){
+//                            rectNum++;
+//                            rectList.clear();
+//                            rectList.add(new Rect(0,0,0,0));
+//                            Util.sendIntEventMessge(Constants.FACE_START, rectList);
+//                        }
+//                    }
+
+                    oneFaceDetectRunNum++;
+                    long oneTime = System.currentTimeMillis() - oneFaceDetectTime;
+                    oneFaceDetectTime = System.currentTimeMillis();
+                    Log.e(TAG,"--------->>>>>>>>>>>>>  neu_iva_face_detect_live 距离上次 一次间隔时间  oneTime: " + oneTime + "        neu_iva_face_detect_live 成功调用次数:" + oneFaceDetectRunNum);
+
 
                     NeuFaceRecgNode[] result = mNeucore_face.neu_iva_face_detect_live(rgb_mat, ir_mat,true);// withTracking 是否进行人脸追踪
                     for (int i = 0; i < result.length; i++) {
 
                         if(result[i].getIslive() == false) {
-                            LogUtils.eTag(TAG,"result[i].getIslive()==false");
+                            Log.e(TAG,"result[i].getIslive()==false");
                             continue;
                         }
 
@@ -381,11 +401,11 @@ public class FaceProcessing extends Thread {
                         Bitmap face = Bitmap.createBitmap(sub.cols(), sub.rows(), Bitmap.Config.ARGB_8888);
                         Utils.matToBitmap(sub, face);//这个是发现的人脸，转换成了bitmap，当然也可以是其他的格式
 
-                        ArrayList<byte[]> feature_org = UserService.getInstance(mContext).getFeatures();
-                        ArrayList<byte[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
+                        ArrayList<short[]> feature_org = UserService.getInstance(mContext).getFeatures();
+                        ArrayList<short[]> feature_mask = UserService.getInstance(mContext).getMaskFeatures();
                         ArrayList<String> name_org = UserService.getInstance(mContext).getNames();
 
-                        //NeuLogUtils.eTag(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
+                        //Log.e(TAG,"feature_valid="+result[i].getFeatureValid()+" ismask="+result[i].getIsmask()+" lightnumber="+result[i].getLightNumber()
                         //        +" isglass="+result[i].getIsglass()+" angle="+result[i].getFaceAngle()[0]+" "+result[i].getFaceAngle()[1]+" "+result[i].getFaceAngle()[2]);
 
                         //如果特征值有效,进行人脸识别
@@ -416,11 +436,11 @@ public class FaceProcessing extends Thread {
                                 }
                             }
 
-                            LogUtils.eTag(TAG,"maxSum="+maxSum);
+                            Log.e(TAG,"maxSum="+maxSum);
                             if (maxSum > 0.8) {
                                 onFaceSuccessListener.success(face,name_org.get(maxID));
                                 System.out.println("------------999  7777  得到人脸--------上方 name is " + name_org.get(maxID));
-                                LogUtils.dTag(TAG, "###### found one registered person, name is " + name_org.get(maxID));
+                                Log.d(TAG, "###### found one registered person, name is " + name_org.get(maxID));
                             }else {
                                 onFaceSuccessListener.success(face,"检测到人脸");
                                 System.out.println("------------999  7777  得到人脸--------下方 ");
@@ -550,7 +570,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            LogUtils.i(TAG, e.toString());
+            Log.i(TAG, e.toString());
         }
         return null;
     }
@@ -637,7 +657,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            LogUtils.i(TAG, e.toString());
+            Log.i(TAG, e.toString());
         }
         return null;
     }
@@ -749,7 +769,7 @@ public class FaceProcessing extends Thread {
             if (image != null) {
                 image.close();
             }
-            LogUtils.i(TAG, e.toString());
+            Log.i(TAG, e.toString());
         }
         return null;
     }

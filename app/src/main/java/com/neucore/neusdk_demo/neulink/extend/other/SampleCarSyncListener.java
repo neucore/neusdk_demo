@@ -152,8 +152,8 @@ public class SampleCarSyncListener implements ICmdListener<UpdateActionResult, C
         NeuFaceRegisterNode registerNode = mNeucore_face.neu_iva_get_picture_face_feature_bitmap(bitmap);
         FaceNode faceNode = new FaceNode();
         faceNode.setFeatureValid(registerNode.getFeatureValid());
-        faceNode.setFaceSid(JSonUtils.toJson(registerNode.getFeature()));
-        faceNode.setFaceSidMask(JSonUtils.toJson(registerNode.getFeature()));
+        faceNode.setFaceSid(JSonUtils.toJson(registerNode.getFeature_v2()));
+        faceNode.setFaceSidMask(JSonUtils.toJson(registerNode.getFeature_v2()));
         return faceNode;
     }
     /**

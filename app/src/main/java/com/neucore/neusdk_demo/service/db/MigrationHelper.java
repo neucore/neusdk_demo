@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
-
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.StandardDatabase;
@@ -67,7 +65,7 @@ public final class MigrationHelper {
                 insertTableStringBuilder.append(" AS SELECT * FROM ").append(tableName).append(";");
                 db.execSQL(insertTableStringBuilder.toString());
             } catch (SQLException e) {
-                LogUtils.eTag(TAG, "【Failed to generate temp table】" + tempTableName, e);
+                Log.e(TAG, "【Failed to generate temp table】" + tempTableName, e);
             }
         }
     }
@@ -87,7 +85,7 @@ public final class MigrationHelper {
             }
             count = cursor.getInt(0);
         } catch (Exception e) {
-            LogUtils.eTag(TAG,tabName,e);
+            Log.e(TAG,tabName,e);
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -147,7 +145,7 @@ public final class MigrationHelper {
                 dropTableStringBuilder.append("DROP TABLE ").append(tempTableName);
                 db.execSQL(dropTableStringBuilder.toString());
             } catch (SQLException e) {
-                LogUtils.eTag(TAG, "【Failed to restore data from temp table 】" + tempTableName, e);
+                Log.e(TAG, "【Failed to restore data from temp table 】" + tempTableName, e);
             }
         }
     }
@@ -161,7 +159,7 @@ public final class MigrationHelper {
                 columns = Arrays.asList(cursor.getColumnNames());
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG,"getColumns",e);
+            Log.e(TAG,"getColumns",e);
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -178,7 +176,7 @@ public final class MigrationHelper {
         builder.append(ifNotExists ? "IF NOT EXISTS ": "");
         builder.append(tableName);
         builder.append(getColumnsSql(daoConfig));
-        LogUtils.dTag(TAG,"【createTable】 sql:" + builder.toString());
+        Log.d(TAG,"【createTable】 sql:" + builder.toString());
         db.execSQL(builder.toString()); // 6: Description
     }
 

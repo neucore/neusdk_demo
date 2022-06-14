@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -15,11 +16,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Surface;
-
-import com.blankj.utilcode.util.LogUtils;
 
 import org.json.JSONObject;
 
@@ -76,7 +76,7 @@ public class HelpUtil {
                     .openInputStream(uri));
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
             bitmap = null;
         }
         return bitmap;
@@ -146,7 +146,7 @@ public class HelpUtil {
             bitmapArray = Base64.decode(imgBase64Str, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return null;
 
@@ -202,7 +202,7 @@ public class HelpUtil {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return bitmap;
     }
@@ -260,7 +260,7 @@ public class HelpUtil {
             prop.load(in);
             key = prop.getProperty("SMS.account").trim();
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return key;
     }
@@ -356,7 +356,7 @@ public class HelpUtil {
                 return false;
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return false;
     }
@@ -386,15 +386,14 @@ public class HelpUtil {
                 cardno = cardLong + "";
             }
         } catch (Exception e) {
-            LogUtils.eTag(TAG, e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return cardno;
     }
 
-    //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
     public static void copyAssetResource2File(Context context)
     {
-        LogUtils.dTag(TAG, "开始拷贝nb文件");
+        Log.d(TAG, "开始拷贝nb文件");
         long begin = System.currentTimeMillis();
 
         String OrgFilepath = "/storage/emulated/0/neucore/";
@@ -425,6 +424,32 @@ public class HelpUtil {
              * 可在此添加限制,只在apk首次启动或者 /storage/emulated/0/neucore/nb/路径被删除 时做此操作,
              * 达到节约时间目的
              */
+
+            //for S905D3
+            String ModelFileNameF = "nb/CONF/";
+            String modelFilePathF = ModelFilepath + "CONF/";
+            File pathF = new File(modelFilePathF);
+            if(! pathF.exists()){
+                pathF.mkdirs();
+            }
+            String[] filenamesL = context.getAssets().list(ModelFileNameF);
+            for (String file : filenamesL) {
+                InputStream is = context.getAssets().open(ModelFileNameF + file);
+
+                File outF = new File(OrgFilepath+file);
+                FileOutputStream fos = new FileOutputStream(outF);
+
+                int byteCount;
+                byte[] buffer = new byte[1024];
+                while ((byteCount = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, byteCount);
+                }
+                fos.flush();
+                is.close();
+                fos.close();
+                outF.setReadable(true);
+            }
+
 
             //for S905D3
             String ModelFileName = "nb/S905D3/";
@@ -478,11 +503,105 @@ public class HelpUtil {
                 outF.setReadable(true);
             }
 
-            LogUtils.dTag(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    //将assets目录下的nb 文件夹中的xx.nb 文件放入 /storage/emulated/0/neucore/nb/S905D3/
+//    public static void copyAssetResource2File(Context context)
+//    {
+//        Log.d(TAG, "开始拷贝nb文件");
+//        long begin = System.currentTimeMillis();
+//
+//        String OrgFilepath = "/storage/emulated/0/neucore/";
+//        String ModelFilepath = "/storage/emulated/0/neucore/nb/";
+//        String cameraPath = "/storage/emulated/0/neucore/camera/";
+//
+//        try {
+//            //判断 /storage/emulated/0/neucore/ 路径是否存在
+//            File orgpath = new File(OrgFilepath);
+//            if(! orgpath.exists()){
+//                orgpath.mkdirs();
+//            }
+//
+//            //判断 /storage/emulated/0/neucore/nb/ 路径是否存在
+//            File despath = new File(ModelFilepath);
+//            if(! despath.exists()){
+//                despath.mkdirs();
+//            }
+//
+//            //判断 /storage/emulated/0/neucore/camera/ 路径是否存在
+//            File caPath = new File(cameraPath);
+//            if(! caPath.exists()){
+//                caPath.mkdirs();
+//            }
+//
+//            /**
+//             * 下面代码将assets目录下 nb 文件夹下所有的文件拷贝到定义的 /storage/emulated/0/neucore/nb/ 路径下
+//             * 可在此添加限制,只在apk首次启动或者 /storage/emulated/0/neucore/nb/路径被删除 时做此操作,
+//             * 达到节约时间目的
+//             */
+//
+//            //for S905D3
+//            String ModelFileName = "nb/S905D3/";
+//            String tmp_ModelFilepath = ModelFilepath + "S905D3/";
+//            File tmp_path = new File(tmp_ModelFilepath);
+//            if(! tmp_path.exists()){
+//                tmp_path.mkdirs();
+//            }
+//
+//            String[] filenames = context.getAssets().list(ModelFileName);
+//            for (String file : filenames) {
+//                InputStream is = context.getAssets().open(ModelFileName + file);
+//
+//                File outF = new File(tmp_ModelFilepath+file);
+//                FileOutputStream fos = new FileOutputStream(outF);
+//
+//                int byteCount;
+//                byte[] buffer = new byte[1024];
+//                while ((byteCount = is.read(buffer)) != -1) {
+//                    fos.write(buffer, 0, byteCount);
+//                }
+//                fos.flush();
+//                is.close();
+//                fos.close();
+//                outF.setReadable(true);
+//            }
+//
+//            //for A311D
+//            ModelFileName = "nb/A311D/";
+//            tmp_ModelFilepath = ModelFilepath + "A311D/";
+//            tmp_path = new File(tmp_ModelFilepath);
+//            if(! tmp_path.exists()){
+//                tmp_path.mkdirs();
+//            }
+//
+//            filenames = context.getAssets().list(ModelFileName);
+//            for (String file : filenames) {
+//                InputStream is = context.getAssets().open(ModelFileName + file);
+//
+//                File outF = new File(tmp_ModelFilepath+file);
+//                FileOutputStream fos = new FileOutputStream(outF);
+//
+//                int byteCount;
+//                byte[] buffer = new byte[1024];
+//                while ((byteCount = is.read(buffer)) != -1) {
+//                    fos.write(buffer, 0, byteCount);
+//                }
+//                fos.flush();
+//                is.close();
+//                fos.close();
+//                outF.setReadable(true);
+//            }
+//
+//            Log.d(TAG,"NEUCORE 拷贝nb文件结束, copyAssetResource2File cost " + (System.currentTimeMillis() - begin)+" ms");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void createFileNB(){
         String OrgFilepath = "/storage/emulated/0/neucore/";
