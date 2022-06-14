@@ -25,5 +25,6 @@ libs/NeuSDK.jar
 libs/armeabi-v7a/libneucore.so
 /nb
 *.nb
+*.conf
 app/libs/neulink*.jar
 EnDecoderUtil
