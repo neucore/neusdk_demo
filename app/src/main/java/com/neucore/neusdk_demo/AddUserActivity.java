@@ -19,12 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.FileUtils;
+import com.neucore.neusdk_demo.service.impl.UserService;
 import com.neucore.neusdk_demo.utils.PermissionHelper;
 import com.neucore.neusdk_demo.service.db.UserDaoUtils;
-import com.neucore.neusdk_demo.service.impl.UserService;
 import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.receiver.PermissionInterface;
 
@@ -208,7 +207,7 @@ public class AddUserActivity extends AppCompatActivity implements PermissionInte
 
     @Override
     protected void onDestroy() {
-        LogUtils.eTag(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy");
         super.onDestroy();
     }
 

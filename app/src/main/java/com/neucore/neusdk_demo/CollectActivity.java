@@ -48,9 +48,9 @@ import androidx.core.app.ActivityCompat;
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
 import com.neucore.NeuSDK.NeuFaceRegisterNode;
-import com.neucore.neulink.NeulinkConst;
-import com.neucore.neusdk_demo.service.db.bean.User;
+import com.neucore.neusdk_demo.app.Const;
 import com.neucore.neusdk_demo.neucore.FaceProcessing;
+import com.neucore.neusdk_demo.service.db.bean.User;
 import com.neucore.neusdk_demo.utils.FileAccess;
 import com.neucore.neusdk_demo.utils.ImageUtil;
 import com.neucore.neusdk_demo.view.AutoFitTextureView;
@@ -96,15 +96,15 @@ public class CollectActivity extends AppCompatActivity {
                         Toast.makeText(CollectActivity.this,"请先采集人脸",Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    path= NeulinkConst.picPath+System.currentTimeMillis()+".jpg";
-                    if(!new File(NeulinkConst.picPath).exists())new File(NeulinkConst.picPath).mkdirs();
+                    path= Const.picPath+System.currentTimeMillis()+".jpg";
+                    if(!new File(Const.picPath).exists())new File(Const.picPath).mkdirs();
 //                    FileUtils.getFileFromBytes(data,path);
                     if(b!=null){
                         try {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             byte[] data2 = baos.toByteArray();
-                            FileAccess.writeFileSdcard(NeulinkConst.picPath,path,data2);
+                            FileAccess.writeFileSdcard(Const.picPath,path,data2);
                             b.recycle();
                         }catch (Exception e){
                             e.printStackTrace();
@@ -171,7 +171,7 @@ public class CollectActivity extends AppCompatActivity {
             user = (User) intent.getExtras().get("user");
             if(user!=null){
                 String path=user.getHeadPhoto();
-                LogUtils.iTag("头像："+path);
+                LogUtils.i("头像："+path);
                 FileInputStream fis = null;
                 Bitmap bitmap = null;
                 try {
@@ -179,14 +179,14 @@ public class CollectActivity extends AppCompatActivity {
                     bitmap = BitmapFactory.decodeStream(fis);
                     iv_parent.setImageBitmap(bitmap);
                 }catch (Exception e){
-                    LogUtils.eTag(TAG,"initView",e);
+                    Log.e(TAG,"initView",e);
                 }
             }
         }
     }
     @Override
     protected void onDestroy() {
-        LogUtils.eTag(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy");
         super.onDestroy();
         finish();
 
@@ -255,12 +255,12 @@ public class CollectActivity extends AppCompatActivity {
 
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
-            LogUtils.i(TAG, "CameraDevice Disconnected");
+            Log.i(TAG, "CameraDevice Disconnected");
         }
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            LogUtils.eTag(TAG, "CameraDevice Error");
+            Log.e(TAG, "CameraDevice Error");
         }
     };
 
@@ -303,7 +303,7 @@ public class CollectActivity extends AppCompatActivity {
                 break;
             }
         } catch (CameraAccessException e) {
-            LogUtils.eTag(TAG,"setupCamera",e);
+            Log.e(TAG,"setupCamera",e);
         }
     }
 
@@ -317,10 +317,10 @@ public class CollectActivity extends AppCompatActivity {
                 return;
             }
             //打开相机，第一个参数指示打开哪个摄像头，第二个参数stateCallback为相机的状态回调接口，第三个参数用来确定Callback在哪个线程执行，为null的话就在当前线程执行
-            LogUtils.iTag("摄像头："+manager.getCameraIdList().toString());
+            LogUtils.i("摄像头："+manager.getCameraIdList().toString());
             manager.openCamera(manager.getCameraIdList()[0], stateCallback, null);
         } catch (CameraAccessException e) {
-            LogUtils.eTag(TAG,"openCamera",e);
+            Log.e(TAG,"openCamera",e);
         }
     }
 
@@ -387,7 +387,7 @@ public class CollectActivity extends AppCompatActivity {
                 }
             }, null);
         } catch (CameraAccessException e) {
-            LogUtils.eTag(TAG,"startPreview",e);
+            Log.e(TAG,"startPreview",e);
         }
     }
 
@@ -398,7 +398,7 @@ public class CollectActivity extends AppCompatActivity {
         try {
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mPreviewCaptureCallback, null);
         } catch (CameraAccessException e) {
-            LogUtils.eTag(TAG,"repeatPreview",e);
+            Log.e(TAG,"repeatPreview",e);
         }
     }
     // 选择sizeMap中大于并且最接近width和height的size
@@ -432,21 +432,21 @@ public class CollectActivity extends AppCompatActivity {
         try {
             mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
-            LogUtils.eTag(TAG,"getPreviewRequestBuilder",e);
+            Log.e(TAG,"getPreviewRequestBuilder",e);
         }
         //设置预览的显示界面
         mPreviewRequestBuilder.addTarget(mPreviewSurface);
         mPreviewRequestBuilder.addTarget(mImageReader.getSurface());
                     MeteringRectangle[] meteringRectangles = mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AF_REGIONS);
         if (meteringRectangles != null && meteringRectangles.length > 0) {
-            LogUtils.dTag(TAG, "PreviewRequestBuilder: AF_REGIONS=" + meteringRectangles[0].getRect().toString());
+            Log.d(TAG, "PreviewRequestBuilder: AF_REGIONS=" + meteringRectangles[0].getRect().toString());
         }
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
     }
     public void setImageFormat() {
         //前三个参数分别是需要的尺寸和格式，最后一个参数代表每次最多获取几帧数据
-        LogUtils.iTag("setImageFormat宽："+mPreviewSize.getWidth()+"setImageFormat高："+mPreviewSize.getHeight());
+        LogUtils.i("setImageFormat宽："+mPreviewSize.getWidth()+"setImageFormat高："+mPreviewSize.getHeight());
         mImageReader = ImageReader.newInstance(mPreviewSize.getWidth(), mPreviewSize.getHeight(), ImageFormat.YUV_420_888, 2);
         //监听ImageReader的事件，当有图像流数据可用时会回调onImageAvailable方法，它的参数就是预览帧数据，可以对这帧数据进行处理
         mImageReader.setOnImageAvailableListener(frontAvailableListener, null);
@@ -462,10 +462,10 @@ public class CollectActivity extends AppCompatActivity {
              b = Bitmap.createBitmap(rgb, 0, imageWidth,
                     imageWidth, imageHeight,
                     Bitmap.Config.ARGB_8888);
-            LogUtils.iTag("识别成功Data"+data.length);
+            LogUtils.i("识别成功Data"+data.length);
         }
         if(b!=null) {
-            LogUtils.iTag("TAG", "图片大小：" + b.getHeight() + "," + b.getWidth());
+            LogUtils.i("TAG", "图片大小：" + b.getHeight() + "," + b.getWidth());
             b=ImageUtil.adjustPhotoRotation(b,90);
             iv_parent.setImageBitmap(b);
         }
@@ -488,7 +488,7 @@ public class CollectActivity extends AppCompatActivity {
                 if (mFaceProcessor != null) {
                     dataFace = ImageUtil.getBytesFromImageAsType(image,2);
                 } else {
-                    LogUtils.eTag(TAG,"mfaceProcessor="+(mFaceProcessor != null));
+                    Log.e(TAG,"mfaceProcessor="+(mFaceProcessor != null));
                 }
                 image.close();
             }
@@ -507,10 +507,10 @@ public class CollectActivity extends AppCompatActivity {
             NeuFaceRegisterNode registerNode = mFaceProcessor.getFeature(dataByte, imageWidth, imageHeight);
             if(registerNode.getFeatureValid() == false)return;
 
-            face=gson.toJson(registerNode.getFeature());
+            face=gson.toJson(registerNode.getFeature_v2());
             face_mask = gson.toJson(registerNode.getMaskFeature());
-            LogUtils.iTag("face",face);
-            LogUtils.iTag("face_mask",face_mask);
+            LogUtils.i("face",face);
+            LogUtils.i("face_mask",face_mask);
             success(dataFace);
         }
     }

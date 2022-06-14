@@ -35,6 +35,10 @@ public class JSonUtils {
         return gson.toJson(feature);
     }
 
+    public static String toJson(short[] feature){
+        return gson.toJson(feature);
+    }
+
     /*public static String toJsonWithJackson(byte[] feature){
         return mapper.writeValueAsString(feature);
     }
