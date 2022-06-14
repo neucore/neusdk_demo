@@ -1,5 +1,6 @@
 package com.neucore.neusdk_demo.app;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neusdk_demo.neulink.MyInstaller;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
@@ -54,7 +56,6 @@ public class MyApplication extends Application
     {
         super.onCreate();
         instance=this;
-
     }
 
     public static Context getContext(){
@@ -71,4 +72,10 @@ public class MyApplication extends Application
         MyApplication.threadAlive = alive;
     }
 
+    /**
+     * onPermissionsGranted之后调用
+     */
+    public static void installSDK(){
+        MyInstaller.getInstance().install(instance);
+    }
 }

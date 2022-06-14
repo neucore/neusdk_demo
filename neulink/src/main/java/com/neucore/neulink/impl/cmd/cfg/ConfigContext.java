@@ -107,7 +107,9 @@ public class ConfigContext implements NeulinkConst{
         if(!tmp.exists()){
             try {
                 tmp.createNewFile();
-            }catch(Exception ex){}
+            }catch(Exception ex){
+                NeuLogUtils.eTag(TAG,"init ConfigContext",ex);
+            }
         }
         load();
     }
@@ -137,8 +139,7 @@ public class ConfigContext implements NeulinkConst{
             }
             configs = properties;
         } catch (IOException e) {
-            Log.e(TAG,"load",e);
-//            NeuLogUtils.eTag(TAG,"load",e);
+            NeuLogUtils.eTag(TAG,"load",e);
         }
         finally {
             if(reader!=null){

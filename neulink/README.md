@@ -71,9 +71,13 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 #### 代码集成
 
-参照：MyApplication内initLog()方法；
+具体参考：
 
-参照：MyApplication内installSDK()方法；
+切记，在得到授权之后调用！！！
+
+SplashActivity内的
+
+installNeulink();
 
 #### neulink服务退出
 
@@ -87,7 +91,9 @@ NeulinkService.getInstance().destroy();
 
 ![时序图](images/secquence.png)
 
-### 扩展
+### 扩展实现 
+
+#### 参考 MyInstaller
 
 #### 扩展-HTTP安全登录
 ```
