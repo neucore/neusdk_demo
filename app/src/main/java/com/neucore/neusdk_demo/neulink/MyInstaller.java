@@ -1,7 +1,5 @@
 package com.neucore.neusdk_demo.neulink;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
@@ -13,10 +11,10 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neusdk_demo.SplashActivity;
+import com.neucore.neusdk_demo.neulink.extend.MyExtendCallbackImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
@@ -30,10 +28,7 @@ import com.neucore.neusdk_demo.service.impl.UserService;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-import java.util.Arrays;
 import java.util.Properties;
-
-import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 可以扩展实现
@@ -48,31 +43,6 @@ public class MyInstaller {
         return installer;
     }
 
-    public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
-    public String[] CAMERA = {Manifest.permission.CAMERA};
-    public String[] LOCK = {Manifest.permission.WAKE_LOCK};
-    public String[] KEYGUARD = {Manifest.permission.DISABLE_KEYGUARD};
-    public String[] WIFI = {Manifest.permission.ACCESS_WIFI_STATE};
-    public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
-
-    public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-    public String[] PERMISSIONS;
-
-    public <T> T[] concatAll(T[] first, T[]... rest) {
-        int totalLength = first.length;
-        for (T[] array : rest) {
-            totalLength += array.length;
-        }
-        T[] result = Arrays.copyOf(first, totalLength);
-        int offset = first.length;
-        for (T[] array : rest) {
-            System.arraycopy(array, 0, result, offset, array.length);
-            offset += array.length;
-        }
-        return result;
-    }
-
     /**
      * after 成功获得到授权之后调用
      * @param application
@@ -80,83 +50,51 @@ public class MyInstaller {
     public final void install(Application application){
         synchronized (this){
             if(!init){
-                new Thread(){
-                    @Override
-                    public void run() {
+                /**
+                 *
+                 */
+                ContextHolder.getInstance().setContext(application);
 
-                        PERMISSIONS = concatAll(NETWORK,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
+                /**
+                 * 人脸服务初始化
+                 */
+                UserService.getInstance(application.getApplicationContext());
+                /**
+                 * 构造扩展配置
+                 */
+                Properties extConfig = buildConfig();
+                /**
+                 * 集成SDK
+                 */
+                buildConnector(application,extConfig);
 
-                        int storeType = DeviceUtils.getStoreType();
-
-                        if(storeType==DeviceUtils.SDCARD_TYPE){
-                            PERMISSIONS = concatAll(STORAGE, PERMISSIONS);
-                        }
-                        boolean allow = false;
-                        /**
-                         * onPermissionsGranted之后调用
-                         */
-                        while (!(allow=EasyPermissions.hasPermissions(application, PERMISSIONS))){
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                            }
-                        }
-                        NeuLogUtils.iTag(TAG,"startBuild...");
-                        startBuild(application);
-                    }
-                }.start();
                 init = true;
+                /**
+                 * Demo publish
+                 */
+//                new Thread(){
+//                    public void run(){
+//                        while(!NeulinkService.getInstance().isNeulinkServiceInited()){
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException e) {
+//                            }
+//                        }
+//                        /**
+//                         * ⚠️注意：
+//                         * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
+//                         */
+//                        //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+//                        String biz = "binding";
+//                        String version = "v1.0";
+//                        String reqId = "3214323ewadfdsad";
+//                        String mode = "bind";
+//                        String payload = "{}";//绑定响应协议体
+//                        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
+//                    }
+//                }.start();
             }
         }
-    }
-
-    /**
-     *
-     * @param application
-     */
-    private final void startBuild(Application application){
-        /**
-         *
-         */
-        ContextHolder.getInstance().setContext(application);
-
-        /**
-         * 人脸服务初始化
-         */
-        UserService.getInstance(application.getApplicationContext());
-        /**
-         * 构造扩展配置
-         */
-        Properties extConfig = buildConfig();
-        /**
-         * 集成SDK
-         */
-        buildConnector(application,extConfig);
-
-        /**
-         * Demo publish
-         */
-//        new Thread(){
-//            public void run(){
-//                while(!NeulinkService.getInstance().isNeulinkServiceInited()){
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                    }
-//                }
-//                /**
-//                 * ⚠️注意：
-//                 * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
-//                 */
-//                //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
-//                String biz = "binding";
-//                String version = "v1.0";
-//                String reqId = "3214323ewadfdsad";
-//                String mode = "bind";
-//                String payload = "{}";//绑定响应协议体
-//                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
-//            }
-//        }.start();
     }
 
     /**
@@ -253,6 +191,10 @@ public class MyInstaller {
          */
         connector.setDeviceService(deviceService);
         /**
+         * neulink业务外部扩展回调；
+         */
+        connector.setExtendCallback(callback);
+        /**
          * mqtt回调，当需要监控mqtt状态时，需要设置
          */
         connector.setMqttCallBack(mqttCallBack);
@@ -278,54 +220,7 @@ public class MyInstaller {
     /**
      * TODO MQTT 网络、消息扩展
      */
-    IMqttCallBack mqttCallBack = new IMqttCallBack() {
-        @Override
-        public void connectComplete(boolean reconnect, String serverURI) {
-            /**
-             * 可以用在APP交互提示等
-             */
-            Log.i(TAG,"connectComplete");
-        }
-
-        @Override
-        public void messageArrived(String topic, String message, int qos) throws Exception {
-            /**
-             * 可以不用管
-             */
-        }
-
-        @Override
-        public void connectionLost(Throwable arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-            Log.i(TAG,"connectionLost");
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-            Log.i(TAG,"deliveryComplete");
-        }
-
-        @Override
-        public void connectSuccess(IMqttToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-            Log.i(TAG,"connectSuccess");
-        }
-
-        @Override
-        public void connectFailed(IMqttToken arg0, Throwable arg1) {
-            /**
-             * 可以用在APP交互提示等
-             */
-            Log.i(TAG,"connectFailed");
-        }
-    };
+    IMqttCallBack mqttCallBack = new MyMqttCallbackImpl();
     /**
      * TODO 设备服务扩展
      */
@@ -333,142 +228,9 @@ public class MyInstaller {
     /**
      * TODO 登录loginCallback
      */
-    ILoginCallback loginCallback = new ILoginCallback() {
-        @Override
-        public String login() {
-            /**
-             * 实现登录返回token
-             */
-            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzMSJdLCJzY29wZUlkIjoxLCJyb2xlIjoxLCJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJ7XCJpZFwiOjEsXCJzY29wZUlkXCI6MSxcInVzZXJuYW1lXCI6XCJhZG1pblwiLFwiZnVsbG5hbWVcIjpcIuW5s-WPsOeuoeeQhuWRmDFcIixcImVtYWlsXCI6XCJhb3FpLnN1bkBuZXVjb3JlLmNvbVwiLFwicGhvbmVOdW1iZXJcIjpcIjE1MjAxOTM2NTQxMlwiLFwiZXh0ZXJuYWxJZFwiOlwiXCIsXCJoZWFkUG9ydHJhaXRcIjpcIi9nZnJhbWUvMS91c2Vycy8xL2hwL2F2YXRhci5qcGdcIixcInR5cGVcIjoxLFwicm9sZVwiOjEsXCJvcHRsb2NrXCI6MSxcImV4cGlyYXRpb25EYXRlXCI6MTY1MTczOTk4MDAwMCxcInN0YXR1c1wiOjAsXCJpc0RlbFwiOjAsXCJjcmVhdGVkT25cIjoxNjQ2MDM5ODA1MDAwLFwibW9kaWZpZWRPblwiOjE2NTUxMTk4NzQwMDB9Iiwic2NvcGUiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBJIl0sImV4cCI6MTY1NTM4MDM4MiwidHlwZSI6MSwiYXV0aG9yaXRpZXMiOlsiYWxsIl0sImp0aSI6ImNlMDBlOTQ1LTEyZjUtNGRkNy05YjVjLTMyOGNkZjI3YWY0MyIsImNsaWVudF9pZCI6ImdlbWluaSJ9.qR74OEfYyz1occcwpewoI_VDfQD_o3fervlS4lYRtyU";
-        }
-    };
-
+    ILoginCallback loginCallback = new MyLoginCallbackImpl();
     /**
      * TODO 外部扩展
      */
-    IExtendCallback callback = new IExtendCallback() {
-        @Override
-        public void onCallBack() {
-
-            /**
-             * SDK默认实现扩展
-             */
-            //######################################################################################
-            /**
-             * 配置下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CFG,new SampleCfgActionListener());
-            /**
-             * 人脸下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_FACE,new SampleFaceSyncListener());
-            /**
-             * 车辆下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_CAR,new SampleCarSyncListener());
-            /**
-             * 车牌下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_LIC,new SampleFaceSyncListener());
-            /**
-             * 人脸比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_FACE,new SampleFaceCheckListener());
-            /**
-             * 车辆比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_CAR,new SampleCarCheckListener());
-            /**
-             * 车牌比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_LIC,new SampleLicCheckListener());
-            /**
-             * 人脸查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_FACE,new SampleFaceQueryListener());
-            /**
-             * 车辆查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_CAR,new SampleCarQueryListener());
-            /**
-             * 车牌查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_LIC,new SampleLicQueryListener());
-
-            /**
-             * 重启 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_REBOOT,new SampleRebootCmdListener());
-
-            /**
-             * Shell 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_SHELL,new SampleShellCmdListener());
-
-            /**
-             * 唤醒 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_AWAKEN,new SampleAwakenActionListener());
-            /**
-             * 休眠 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_HIBRATE,new SampleHibrateActionListener());
-            /**
-             * 算法升级 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_ALOG,new SampleAlogUpgrdActionListener());
-
-            /**
-             * 固件$APK 升级扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_FIRMWARE,new SampleFirewareUpgrdActionListener());
-
-            /**
-             * 固件$APK 断点续传升级扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_FIRMWARE_RESUME,new SampleFirewareResumeCmdListener());
-
-            /**
-             * 备份 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BACKUP,new SampleBackupActionListener());
-
-            /**
-             * 恢复 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_RECOVER,new SampleRecoverActionListener());
-
-            /**
-             * 重置 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_RESET,new SampleResetActionListener());
-
-            /**
-             * Debug 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_DEBUG,new SampleDebugCmdListener());
-
-            //######################################################################################
-            /**
-             * SDK 自定义业务扩展实现
-             * 框架已经实现消息的接收及响应处理机制
-             * 新业务可以参考Hello业务的实现业务就行
-             */
-            ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_AUTH,new AuthProcessor(),new AuthCmdListener());
-
-            ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_BINDING,new BindProcessor(),new BindCmdListener());
-            /**
-             * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
-             */
-            ProcessRegistry.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
-            //######################################################################################
-            /**
-             * 上传结果给到云端
-             * 这个业务一般用于端侧自动抓拍、日志自动上报
-             * 端侧审核操作【同意、拒绝】结果给到云端
-             * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
-             * 具体参考Neulink 使用手册《上报消息到云端》部分
-             */
-        }
-    };
+    IExtendCallback callback = new MyExtendCallbackImpl();
 }

@@ -28,7 +28,9 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    //implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.qianwen:okhttp-utils:3.8.0'
@@ -36,6 +38,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     implementation 'commons-net:commons-net:3.8.0'
     implementation 'cn.hutool:hutool-all:5.6.0'
     implementation 'org.greenrobot:greendao:3.3.0' // add library
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'pub.devrel:easypermissions:2.0.1'
 ```   
     
 ## 集成&扩展

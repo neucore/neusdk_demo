@@ -1,5 +1,6 @@
 package com.neucore.neulink.impl;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -28,14 +29,18 @@ import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.impl.service.resume.IFileService;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
 
 import org.eclipse.paho.android.service.MqttService;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import cn.hutool.core.util.ObjectUtil;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class SampleConnector implements NeulinkConst{
+
     private String TAG = TAG_PREFIX+"SampleConnector";
     private Application application;
     private IMessageService messageService;
@@ -52,6 +57,31 @@ public class SampleConnector implements NeulinkConst{
     private boolean networkReady = false;
     private boolean initMqttService = false;
     private boolean mqttServiceReady =false;
+
+    public String[] NETWORK = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET};
+    public String[] CAMERA = {Manifest.permission.CAMERA};
+    public String[] LOCK = {Manifest.permission.WAKE_LOCK};
+    public String[] KEYGUARD = {Manifest.permission.DISABLE_KEYGUARD};
+    public String[] WIFI = {Manifest.permission.ACCESS_WIFI_STATE};
+    public String[] RECEIVE = {Manifest.permission.RECEIVE_BOOT_COMPLETED};
+
+    public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    public String[] PERMISSIONS;
+
+    public <T> T[] concatAll(T[] first, T[]... rest) {
+        int totalLength = first.length;
+        for (T[] array : rest) {
+            totalLength += array.length;
+        }
+        T[] result = Arrays.copyOf(first, totalLength);
+        int offset = first.length;
+        for (T[] array : rest) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
+    }
 
     @Deprecated
     public SampleConnector(Application application, IExtendCallback callback){
@@ -114,44 +144,70 @@ public class SampleConnector implements NeulinkConst{
 
         if(!started){
 
-            NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
+            new Thread(){
+                @Override
+                public void run() {
 
-            NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
+                    PERMISSIONS = concatAll(NETWORK,CAMERA,LOCK,KEYGUARD,WIFI,RECEIVE);
 
-            registerNetworkReceiver(netBroadcastReceiver);
+                    int storeType = DeviceUtils.getStoreType();
 
-            NeulinkService service = NeulinkService.getInstance();
+                    if(storeType==DeviceUtils.SDCARD_TYPE){
+                        PERMISSIONS = concatAll(STORAGE, PERMISSIONS);
+                    }
+                    boolean allow = false;
+                    /**
+                     * onPermissionsGranted之后调用
+                     */
+                    while (!(allow= EasyPermissions.hasPermissions(application, PERMISSIONS))){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    NeuLogUtils.iTag(TAG,"startBuild...");
 
-            ServiceRegistry.getInstance().setLoginCallback(loginCallback);
+                    NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
 
-            if(ObjectUtil.isNotEmpty(deviceService)){
-                ServiceRegistry.getInstance().setDeviceService(deviceService);
-            }
-            ServiceRegistry.getInstance().setMessageService(messageService);
-            ServiceRegistry.getInstance().setFileService(fileService);
-            ConfigContext.getInstance().setExtConfig(extConfig);
+                    NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
 
-            if(mqttCallBack!=null){
-                service.addMQTTCallBack(mqttCallBack);
-            }
-            if(defaultResCallback!=null){
-                service.setDefaultResCallback(defaultResCallback);
-            }
-            /**
-             * 默认实现
-             */
-            defaultExtendCallback.onCallBack();
-            /**
-             * 注册扩展实现
-             */
-            if(extendCallback!=null){
-                this.extendCallback.onCallBack();
-                NeuLogUtils.iTag(TAG,"success regist extend implmention");
-            }
-            else{
-                NeuLogUtils.iTag(TAG,"success regist 默认 implmention");
-            }
-            init(service);
+                    registerNetworkReceiver(netBroadcastReceiver);
+
+                    NeulinkService service = NeulinkService.getInstance();
+
+                    ServiceRegistry.getInstance().setLoginCallback(loginCallback);
+
+                    if(ObjectUtil.isNotEmpty(deviceService)){
+                        ServiceRegistry.getInstance().setDeviceService(deviceService);
+                    }
+                    ServiceRegistry.getInstance().setMessageService(messageService);
+                    ServiceRegistry.getInstance().setFileService(fileService);
+                    ConfigContext.getInstance().setExtConfig(extConfig);
+
+                    if(mqttCallBack!=null){
+                        service.addMQTTCallBack(mqttCallBack);
+                    }
+                    if(defaultResCallback!=null){
+                        service.setDefaultResCallback(defaultResCallback);
+                    }
+                    /**
+                     * 默认实现
+                     */
+                    defaultExtendCallback.onCallBack();
+                    /**
+                     * 注册扩展实现
+                     */
+                    if(extendCallback!=null){
+                        extendCallback.onCallBack();
+                        NeuLogUtils.iTag(TAG,"success regist extend implmention");
+                    }
+                    else{
+                        NeuLogUtils.iTag(TAG,"success regist 默认 implmention");
+                    }
+                    init(service);
+
+                }
+            }.start();
         }
         started = true;
     }
