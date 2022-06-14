@@ -71,13 +71,15 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 #### 代码集成
 
-具体参考：
-
 切记，在得到授权之后调用！！！
 
-SplashActivity内的
+即：onPermissionsGranted之后调用
 
-installNeulink();
+具体参考：
+
+SplashActivity.onPermissionsGranted方法实现
+
+MyApplication.installSDK();
 
 #### neulink服务退出
 
