@@ -114,52 +114,9 @@ NeulinkService.getInstance().destroy();
 
 ```
     /**
-     * MQTT 网络、消息扩展
+     * MQTT 网络、消息扩展 参考 MyMqttCallbackImpl
      */
-    IMqttCallBack mqttCallBack = new IMqttCallBack() {
-        @Override
-        public void connectComplete(boolean reconnect, String serverURI) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void messageArrived(String topic, String message, int qos) throws Exception {
-            /**
-             * 可以不用管
-             */
-        }
-
-        @Override
-        public void connectionLost(Throwable arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void connectSuccess(IMqttToken arg0) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-
-        @Override
-        public void connectFailed(IMqttToken arg0, Throwable arg1) {
-            /**
-             * 可以用在APP交互提示等
-             */
-        }
-    };
-
+     IMqttCallBack mqttCallBack = new MyMqttCallbackImpl();
 ```
 
 #### 扩展-设备服务
@@ -167,175 +124,16 @@ NeulinkService.getInstance().destroy();
     /**
      * 设备服务扩展
      */
-    IDeviceService deviceService = new DefaultDeviceServiceImpl() {
-        @Override
-        public String getExtSN() {
-            /**
-             * 需要获取设备唯一标识【自定义，eg：YekerID】
-             */
-            return DeviceUtils.getCPUSN(getContext());
-        }
-        @Override
-        public Locale getLocale(){
-            /**
-             * 需要读取apk国际化设置后的值
-             */
-            return Locale.getDefault();
-        }
-        @Override
-        public DeviceInfo getInfo() {
-            /**
-             * 需要上报应用列表【名称及其相关版本；】
-             * OTA升级文件规则
-             *
-             * ota_[sys|apk|app]_设备硬件型号_设备产品型号(对应neulink的cpu型号)_产品当前版本识别号，其中设备硬件型号和设备产品型号，以及产品当前版本识别号不能有下划线。
-             *
-             * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
-             */
-            return DeviceInfoDefaultBuilder.getInstance().build(extendInfoCallback);
-        }
-    };
+    
 ```
     
 #### 扩展-设备信息上报
 ```
     /**
-     * 设备信息上报扩展
+     * 设备信息上报扩展 参考 MyDeviceServiceImpl
      */
-    IDeviceExtendInfoCallback extendInfoCallback = new IDeviceExtendInfoCallback(){
+    IDeviceService deviceService = new MyDeviceServiceImpl();
 
-        @Override
-        public List<SubApp> getSubApps() {
-            /**
-             * 子应用列表
-             */
-            return null;
-        }
-
-        @Override
-        public List<Map<String, String>> getAttrs() {
-            /**
-             * 扩展属性
-             */
-            return null;
-        }
-
-        @Override
-        public String getModel() {
-            /**
-             * 产品型号
-             */
-            return null;
-        }
-
-        @Override
-        public String getImei() {
-            /**
-             * 移动设备国际身份码
-             */
-            return null;
-        }
-
-        @Override
-        public String getImsi() {
-            /**
-             * 移动用户国际识别码
-             */
-            return null;
-        }
-
-        @Override
-        public String getIccid() {
-            /**
-             * SIM卡卡号
-             */
-            return null;
-        }
-
-        @Override
-        public String getLat() {
-            /**
-             * 设备所在经度
-             */
-            return null;
-        }
-
-        @Override
-        public String getLng() {
-            /**
-             * 设备所在纬度
-             */
-            return null;
-        }
-
-        @Override
-        public String getInterface() {
-            /**
-             * 网卡名称
-             */
-            return null;
-        }
-
-        @Override
-        public String getWifiModel() {
-            /**
-             * wifi模组型号:参照对照表
-             */
-            return null;
-        }
-
-        @Override
-        public String getCpuModel(){
-
-            return null;
-        }
-
-        @Override
-        public String getNpuModel() {
-            /**
-             * npu型号
-             */
-            return null;
-        }
-
-        @Override
-        public SoftVInfo getMain() {
-            return null;
-        }
-
-        @Override
-        public String getScreenSize() {
-            /**
-             * 屏幕大小:参照对照表
-             */
-            return null;
-        }
-
-        @Override
-        public String getScreenInterface() {
-            /**
-             * 屏幕接口:参照对照表
-             */
-            return null;
-        }
-
-        @Override
-        public String getScreenResolution() {
-            /**
-             * 分辨率:参照对照表
-             */
-            return null;
-        }
-
-        @Override
-        public String getBno(){
-            /**
-             * 批次号
-             */
-            return null;
-        }
-    };
-    
 ```
 
 #### 扩展-通用业务开发
@@ -589,133 +387,9 @@ public class AuthActionResultData {
 
 ```
     /**
-     * 外部扩展
+     * 外部扩展 参照 MyExtendCallbackImpl
      */
-    IExtendCallback callback = new IExtendCallback() {
-        @Override
-        public void onCallBack() {
-            /**
-             * SDK默认实现扩展
-             */
-            //######################################################################################
-            /**
-             * 配置下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CFG,new SampleCfgActionListener());
-            /**
-             * 人脸下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_FACE,new SampleFaceSyncListener());
-            /**
-             * 车辆下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_CAR,new SampleCarSyncListener());
-            /**
-             * 车牌下发 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BLIB_LIC,new SampleFaceSyncListener());
-            /**
-             * 人脸比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_FACE,new SampleFaceCheckListener());
-            /**
-             * 车辆比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_CAR,new SampleCarCheckListener());
-            /**
-             * 车牌比对 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CLIB_LIC,new SampleLicCheckListener());
-            /**
-             * 人脸查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_FACE,new SampleFaceQueryListener());
-            /**
-             * 车辆查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_CAR,new SampleCarQueryListener());
-            /**
-             * 车牌查询 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_QLIB_LIC,new SampleLicQueryListener());
-
-            /**
-             * 重启 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_REBOOT,new SampleRebootCmdListener());
-
-            /**
-             * Shell 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_SHELL,new SampleShellCmdListener());
-
-            /**
-             * 唤醒 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_AWAKEN,new SampleAwakenActionListener());
-            /**
-             * 休眠 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_HIBRATE,new SampleHibrateActionListener());
-            /**
-             * 算法升级 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_ALOG,new SampleAlogUpgrdActionListener());
-
-            /**
-             * 固件$APK 升级扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_FIRMWARE,new SampleFirewareUpgrdActionListener());
-
-            /**
-             * 固件$APK 断点续传升级扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_FIRMWARE_RESUME,new SampleFirewareResumeCmdListener());
-
-            /**
-             * 备份 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_BACKUP,new SampleBackupActionListener());
-
-            /**
-             * 恢复 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_RECOVER,new SampleRecoverActionListener());
-
-            /**
-             * 重置 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_RESET,new SampleResetActionListener());
-
-            /**
-             * Debug 扩展【取消注释，覆盖默认实现】
-             */
-            //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_DEBUG,new SampleDebugCmdListener());
-            
-            //######################################################################################
-            /**
-             * SDK 自定义业务扩展实现
-             * 框架已经实现消息的接收及响应处理机制
-             * 新业务可以参考Hello业务的实现业务就行
-             */
-            ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_AUTH,new AuthProcessor(),new AuthCmdListener());
-            
-            ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_BINDING,new BindProcessor(),new BindCmdListener());
-            /**
-             * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
-             */
-            ProcessRegistry.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
-            //######################################################################################
-            /**
-             * 上传结果给到云端
-             * 这个业务一般用于端侧自动抓拍、日志自动上报
-             * 端侧审核操作【同意、拒绝】结果给到云端
-             * NeulinkPublisherFacde publisher = NeulinkService.getInstance().getPublisherFacde()
-             * 具体参考Neulink 使用手册《上报消息到云端》部分
-             */
-        }
-    };
-
+    IExtendCallback callback = new MyExtendCallbackImpl();
 ```
 
 
