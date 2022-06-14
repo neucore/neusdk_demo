@@ -77,7 +77,7 @@ public class MyInstaller {
      * after 成功获得到授权之后调用
      * @param application
      */
-    public void install(Application application){
+    public final void install(Application application){
         synchronized (this){
             if(!init){
                 new Thread(){
@@ -101,46 +101,8 @@ public class MyInstaller {
                             } catch (InterruptedException e) {
                             }
                         }
-                        NeuLogUtils.iTag(TAG,"hasPermissions and starting...");
-                        ContextHolder.getInstance().setContext(application);
-
-                        /**
-                         * 人脸服务初始化
-                         */
-                        UserService.getInstance(application.getApplicationContext());
-                        /**
-                         * 构造扩展配置
-                         */
-                        Properties extConfig = buildConfig();
-                        /**
-                         * 集成SDK
-                         */
-                        buildConnector(application,extConfig);
-
-                        /**
-                         * Demo publish
-                         */
-//                        new Thread(){
-//                            public void run(){
-//                                while(!NeulinkService.getInstance().isNeulinkServiceInited()){
-//                                    try {
-//                                        Thread.sleep(1000);
-//                                    } catch (InterruptedException e) {
-//                                    }
-//                                }
-//                                /**
-//                                 * ⚠️注意：
-//                                 * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
-//                                 */
-//                                //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
-//                                String biz = "binding";
-//                                String version = "v1.0";
-//                                String reqId = "3214323ewadfdsad";
-//                                String mode = "bind";
-//                                String payload = "{}";//绑定响应协议体
-//                                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
-//                            }
-//                        }.start();
+                        NeuLogUtils.iTag(TAG,"startBuild...");
+                        startBuild(application);
                     }
                 }.start();
                 init = true;
@@ -148,6 +110,59 @@ public class MyInstaller {
         }
     }
 
+    /**
+     *
+     * @param application
+     */
+    private final void startBuild(Application application){
+        /**
+         *
+         */
+        ContextHolder.getInstance().setContext(application);
+
+        /**
+         * 人脸服务初始化
+         */
+        UserService.getInstance(application.getApplicationContext());
+        /**
+         * 构造扩展配置
+         */
+        Properties extConfig = buildConfig();
+        /**
+         * 集成SDK
+         */
+        buildConnector(application,extConfig);
+
+        /**
+         * Demo publish
+         */
+//        new Thread(){
+//            public void run(){
+//                while(!NeulinkService.getInstance().isNeulinkServiceInited()){
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                    }
+//                }
+//                /**
+//                 * ⚠️注意：
+//                 * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
+//                 */
+//                //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
+//                String biz = "binding";
+//                String version = "v1.0";
+//                String reqId = "3214323ewadfdsad";
+//                String mode = "bind";
+//                String payload = "{}";//绑定响应协议体
+//                NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
+//            }
+//        }.start();
+    }
+
+    /**
+     *
+     * @return
+     */
     private Properties buildConfig(){
         /**
          * 集成Neulink
@@ -261,7 +276,7 @@ public class MyInstaller {
     }
 
     /**
-     * MQTT 网络、消息扩展
+     * TODO MQTT 网络、消息扩展
      */
     IMqttCallBack mqttCallBack = new IMqttCallBack() {
         @Override
@@ -312,11 +327,11 @@ public class MyInstaller {
         }
     };
     /**
-     * 设备服务扩展
+     * TODO 设备服务扩展
      */
     IDeviceService deviceService = new MyDeviceServiceImpl();
     /**
-     * 登录loginCallback
+     * TODO 登录loginCallback
      */
     ILoginCallback loginCallback = new ILoginCallback() {
         @Override
@@ -329,7 +344,7 @@ public class MyInstaller {
     };
 
     /**
-     * 外部扩展
+     * TODO 外部扩展
      */
     IExtendCallback callback = new IExtendCallback() {
         @Override
