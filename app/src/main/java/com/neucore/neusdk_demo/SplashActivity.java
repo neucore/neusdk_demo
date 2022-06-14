@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.dialog.TransferAdminsDialog;
-import com.neucore.neusdk_demo.neulink.extend.MyNeulinkInstaller;
+import com.neucore.neusdk_demo.neulink.MyInstaller;
 import com.neucore.neusdk_demo.utility.Constants;
 import com.neucore.neusdk_demo.utils.SPUtils;
 import com.neucore.neusdk_demo.utils.SharePrefConstant;
@@ -87,6 +87,10 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         if (requestCode == 123) {
             initView();
         }
+        /**
+         * 成功授权后安装installSDK
+         */
+        MyApplication.installSDK();
     }
 
     @Override
@@ -177,12 +181,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     finish();
                 }
             },3000);
-
-            MyNeulinkInstaller.getInstance().install(instance);
         }
     }
-
-
 
     @Override
     protected void onDestroy() {

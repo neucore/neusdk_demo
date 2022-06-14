@@ -1,16 +1,14 @@
-package com.neucore.neusdk_demo.neulink.extend;
+package com.neucore.neusdk_demo.neulink;
 
+import android.app.Activity;
+import android.app.Application;
 import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.impl.ResCallback2Log;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
@@ -33,25 +31,30 @@ import java.util.Properties;
 /**
  * 可以扩展实现
  */
-public class MyNeulinkInstaller {
+public class MyInstaller {
 
-    private String TAG = "MyNeulinkInstaller";
+    private String TAG = "MyInstaller";
 
-    private static MyNeulinkInstaller installer = new MyNeulinkInstaller();
+    private static MyInstaller installer = new MyInstaller();
     private boolean init = false;
-    public static MyNeulinkInstaller getInstance(){
+    public static MyInstaller getInstance(){
         return installer;
     }
-    public void install(AppCompatActivity activity){
+
+    /**
+     * after 成功获得到授权之后调用
+     * @param application
+     */
+    public void install(Application application){
         synchronized (this){
             if(!init){
 
-                ContextHolder.getInstance().setContext(activity);
+                ContextHolder.getInstance().setContext(application);
 
                 /**
                  * 人脸服务初始化
                  */
-                UserService.getInstance(activity.getApplicationContext());
+                UserService.getInstance(application.getApplicationContext());
                 /**
                  * 构造扩展配置
                  */
@@ -59,7 +62,7 @@ public class MyNeulinkInstaller {
                 /**
                  * 集成SDK
                  */
-                buildConnector(activity,extConfig);
+                buildConnector(application,extConfig);
                 /**
                  * Demo publish
                  */
@@ -161,12 +164,12 @@ public class MyNeulinkInstaller {
     /**
      * 集成SDK
      */
-    private void buildConnector(AppCompatActivity activity,Properties extConfig){
+    private void buildConnector(Application application,Properties extConfig){
 
         /**
          * 连接器
          */
-        SampleConnector connector = new SampleConnector(activity.getApplication(),extConfig);
+        SampleConnector connector = new SampleConnector(application,extConfig);
         //##########################################################################################
         /**
          * 扩展实现。。。
