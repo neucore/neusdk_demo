@@ -11,6 +11,9 @@ import org.greenrobot.greendao.annotation.Index;
 @Entity
 public class Message implements IMessage {
 
+    public final static String STATUS_PROCESS = "运行中";
+    public final static String STATUS_SUCCESS = "成功";
+    public final static String STATUS_FAIL = "失败";
     @SerializedName("id")
     @Id(autoincrement = true)
     private Long id;

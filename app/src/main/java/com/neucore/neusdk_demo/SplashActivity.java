@@ -4,12 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neusdk_demo.app.MyApplication;
 import com.neucore.neusdk_demo.dialog.TransferAdminsDialog;
 import com.neucore.neusdk_demo.utility.Constants;
@@ -61,13 +63,14 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        LogUtils.i("SplashActivity start onCreate");
         //跳转到主界面
         if (!EasyPermissions.hasPermissions(SplashActivity.this, PERMISSIONS)) {
             EasyPermissions.requestPermissions(SplashActivity.this, "请允许权限，否则无法使用", 123, PERMISSIONS);
         }else {
             initView();
         }
+        LogUtils.i("SplashActivity end onCreate");
     }
 
     @Override
@@ -158,6 +161,19 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     finish();
                 }
             });
+
+            //Test
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    transferAdminsDialog.finish();
+
+                    //竖屏 6421板子 800x1280
+                    SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_6421_VER);
+                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    finish();
+                }
+            },3000);
         }
     }
 

@@ -26,8 +26,9 @@ import android.opengl.EGL14;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.os.Build;
+import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.bzcommon.utils.BZLogUtil;
 
 import java.nio.IntBuffer;
 
@@ -46,7 +47,7 @@ public class BZOpenGlUtils {
 
     public static int loadTexture(final Bitmap img, final int usedTexId, final boolean recycle) {
         if (null == img || img.getHeight() <= 0 || img.getWidth() <= 0) {
-            LogUtils.eTag(TAG, "loadTexture ull == img || img.getHeight() <= 0 || img.getWidth() <= 0");
+            BZLogUtil.e(TAG, "loadTexture ull == img || img.getHeight() <= 0 || img.getWidth() <= 0");
             return 0;
         }
         int textures[] = new int[1];
@@ -111,7 +112,7 @@ public class BZOpenGlUtils {
         GLES20.glCompileShader(iShader);
         GLES20.glGetShaderiv(iShader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            LogUtils.dTag("Load Shader Failed", "Compilation\n" + GLES20.glGetShaderInfoLog(iShader));
+            Log.d("Load Shader Failed", "Compilation\n" + GLES20.glGetShaderInfoLog(iShader));
             return 0;
         }
         return iShader;
@@ -124,12 +125,12 @@ public class BZOpenGlUtils {
         int[] link = new int[1];
         iVShader = loadShader(strVSource, GLES20.GL_VERTEX_SHADER);
         if (iVShader == 0) {
-            LogUtils.dTag("Load Program", "Vertex Shader Failed");
+            Log.d("Load Program", "Vertex Shader Failed");
             return 0;
         }
         iFShader = loadShader(strFSource, GLES20.GL_FRAGMENT_SHADER);
         if (iFShader == 0) {
-            LogUtils.dTag("Load Program", "Fragment Shader Failed");
+            Log.d("Load Program", "Fragment Shader Failed");
             return 0;
         }
 
@@ -142,7 +143,7 @@ public class BZOpenGlUtils {
 
         GLES20.glGetProgramiv(iProgId, GLES20.GL_LINK_STATUS, link, 0);
         if (link[0] <= 0) {
-            LogUtils.dTag("Load Program", "Linking Failed");
+            Log.d("Load Program", "Linking Failed");
             return 0;
         }
         GLES20.glDeleteShader(iVShader);
@@ -168,8 +169,8 @@ public class BZOpenGlUtils {
                 System.loadLibrary("GLESv3");
             } catch (Throwable e) {
                 DETECT_OPEN_GLES30 = false;
-                LogUtils.eTag("device not super OpenGL 3.0");
-                LogUtils.eTag(TAG, e);
+                BZLogUtil.e("device not super OpenGL 3.0");
+                BZLogUtil.e(TAG, e);
             }
         }
         return DETECT_OPEN_GLES30;
@@ -187,7 +188,7 @@ public class BZOpenGlUtils {
         int error;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if ((error = EGL14.eglGetError()) != EGL14.EGL_SUCCESS) {
-                LogUtils.eTag(TAG, msg + " EGL error +0x" + Integer.toHexString(error));
+                BZLogUtil.e(TAG, msg + " EGL error +0x" + Integer.toHexString(error));
             }
         }
     }

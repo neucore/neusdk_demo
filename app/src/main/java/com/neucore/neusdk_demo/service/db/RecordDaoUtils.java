@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.neucore.greendao.gen.RecordDao;
 import com.neucore.neusdk_demo.service.db.bean.Record;
 
@@ -51,7 +50,7 @@ public class RecordDaoUtils {
             });
             flag = true;
         } catch (Exception e) {
-            LogUtils.eTag(TAG,"insertMultRecord",e);
+            Log.e(TAG,"insertMultRecord",e);
         }
         return flag;
     }
@@ -67,7 +66,7 @@ public class RecordDaoUtils {
             mManager.getDaoSession().update(user);
             flag = true;
         }catch (Exception e){
-            LogUtils.eTag(TAG,"updateRecord",e);
+            Log.e(TAG,"updateRecord",e);
         }
         return flag;
     }
@@ -84,7 +83,7 @@ public class RecordDaoUtils {
             mManager.getDaoSession().delete(user);
             flag = true;
         }catch (Exception e){
-            LogUtils.eTag(TAG,"deleteRecord",e);
+            Log.e(TAG,"deleteRecord",e);
         }
         return flag;
     }
@@ -100,7 +99,7 @@ public class RecordDaoUtils {
             mManager.getDaoSession().deleteAll(Record.class);
             flag = true;
         }catch (Exception e){
-            LogUtils.eTag(TAG,"deleteAll",e);
+            Log.e(TAG,"deleteAll",e);
         }
         return flag;
     }

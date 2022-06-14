@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 
 
-import com.blankj.utilcode.util.LogUtils;
-
 import org.apache.http.util.EncodingUtils;
 
 import java.io.File;
@@ -30,7 +28,7 @@ public class FileAccess extends Activity {
 			fout.write(bytes);
 			fout.close();
 		} catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 
@@ -50,7 +48,7 @@ public class FileAccess extends Activity {
 			res = EncodingUtils.getString(buffer, "UTF-8");
 			fin.close();
 		} catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return res;
 	}
@@ -80,7 +78,7 @@ public class FileAccess extends Activity {
 			fout.close();
 		}
 		catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 	// 写在/mnt/sdcard/目录下面的文件
@@ -100,7 +98,7 @@ public class FileAccess extends Activity {
 				fout.close();
 			}
 			catch (Exception e) {
-				LogUtils.eTag(TAG, e.getMessage(), e);
+				Log.e(TAG, e.getMessage(), e);
 			}
 		}
 
@@ -118,7 +116,7 @@ public class FileAccess extends Activity {
 			res = EncodingUtils.getString(buffer, "UTF-8");
 			fin.close();
 		}catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return res;
 
@@ -129,7 +127,7 @@ public class FileAccess extends Activity {
 //		try {
 //			if (!new File(fileName).exists())
 //				return "";
-//			NeuLogUtils.iTag("TAG","压缩前："+new File(fileName).length());
+//			LogUtils.i("TAG","压缩前："+new File(fileName).length());
 //			Bitmap bitmap = BitmapCompressor.decodeSampledBitmapFromFile(
 //					fileName, 800, 700);
 //			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -137,7 +135,7 @@ public class FileAccess extends Activity {
 //			byte[] data = baos.toByteArray();
 //			res = android.util.Base64.encodeToString(data,
 //					android.util.Base64.DEFAULT);
-//			NeuLogUtils.iTag("TAG","压缩后："+res.getBytes().length);
+//			LogUtils.i("TAG","压缩后："+res.getBytes().length);
 //			/*
 //			 * FileInputStream fin = new FileInputStream(fileName); int length =
 //			 * fin.available(); byte[] buffer = new byte[length];
@@ -167,7 +165,7 @@ public class FileAccess extends Activity {
 			// res = new String(buffer,"GBK");
 			in.close();
 		} catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return res;
 	}
@@ -187,7 +185,7 @@ public class FileAccess extends Activity {
 			in.read(buffer);
 			res = EncodingUtils.getString(buffer, "UTF-8");
 		} catch (Exception e) {
-			LogUtils.eTag(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return res;
 	}

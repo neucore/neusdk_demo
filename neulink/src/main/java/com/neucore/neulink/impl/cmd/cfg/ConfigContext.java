@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.cmd.cfg;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkException;
@@ -136,7 +137,8 @@ public class ConfigContext implements NeulinkConst{
             }
             configs = properties;
         } catch (IOException e) {
-            NeuLogUtils.eTag(TAG,"load",e);
+            Log.e(TAG,"load",e);
+//            NeuLogUtils.eTag(TAG,"load",e);
         }
         finally {
             if(reader!=null){
