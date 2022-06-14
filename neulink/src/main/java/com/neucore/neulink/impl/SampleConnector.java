@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -162,6 +163,7 @@ public class SampleConnector implements NeulinkConst{
                     while (!(allow= EasyPermissions.hasPermissions(application, PERMISSIONS))){
                         try {
                             Thread.sleep(1000);
+                            Log.i(TAG,"Permissions Not Granted,Please Do Grant!!!");
                         } catch (InterruptedException e) {
                         }
                     }

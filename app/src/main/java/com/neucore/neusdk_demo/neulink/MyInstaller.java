@@ -1,32 +1,19 @@
 package com.neucore.neusdk_demo.neulink;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
-import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
-import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyExtendCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
-import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
-import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
-import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.device.MyDeviceServiceImpl;
-import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
-import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
-import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
 import com.neucore.neusdk_demo.service.impl.UserService;
-
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.Properties;
 
@@ -69,36 +56,60 @@ public class MyInstaller {
                 buildConnector(application,extConfig);
 
                 init = true;
-                /**
-                 * Demo publish
-                 */
-//                new Thread(){
-//                    public void run(){
-//                        while(!NeulinkService.getInstance().isNeulinkServiceInited()){
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException e) {
-//                            }
-//                        }
-//                        /**
-//                         * ⚠️注意：
-//                         * 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功
-//                         */
-//                        //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
-//                        String biz = "binding";
-//                        String version = "v1.0";
-//                        String reqId = "3214323ewadfdsad";
-//                        String mode = "bind";
-//                        String payload = "{}";//绑定响应协议体
-//                        NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, payload, new ResCallback2Log());
-//                    }
-//                }.start();
             }
         }
     }
 
     /**
-     *
+     * 集成SDK
+     */
+    private final void buildConnector(Application application,Properties extConfig){
+
+        /**
+         * 连接器
+         */
+        SampleConnector connector = new SampleConnector(application,extConfig);
+        //##########################################################################################
+        /**
+         * 扩展实现。。。
+         */
+        /**
+         * http登录授权回调[当系统不需要安全认证时，可以不设置]
+         */
+        connector.setLoginCallback(loginCallback);
+        /**
+         * 设备服务，当没有扩展需要时，可以不设置，即：默认实现
+         */
+        connector.setDeviceService(deviceService);
+        /**
+         * neulink业务外部扩展回调；
+         */
+        connector.setExtendCallback(callback);
+        /**
+         * mqtt回调，当需要监控mqtt状态时，需要设置
+         */
+        connector.setMqttCallBack(mqttCallBack);
+        /**
+         * neulink消息线性处理存储服务
+         */
+        connector.setMessageService(null);
+        /**
+         * OTA文件断点续传文件服务
+         */
+        connector.setFileService(null);
+        /**
+         * neulink执行结果回调处理接口
+         */
+        connector.setDefaultResCallback(null);
+        //##########################################################################################
+        /**
+         * 开始连接
+         */
+        connector.start();
+    }
+
+    /**
+     * TODO 配置扩展实现
      * @return
      */
     private Properties buildConfig(){
@@ -167,54 +178,6 @@ public class MyInstaller {
         //extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_OSS);
         //##########################################################################################
         return extConfig;
-    }
-
-    /**
-     * 集成SDK
-     */
-    private void buildConnector(Application application,Properties extConfig){
-
-        /**
-         * 连接器
-         */
-        SampleConnector connector = new SampleConnector(application,extConfig);
-        //##########################################################################################
-        /**
-         * 扩展实现。。。
-         */
-        /**
-         * http登录授权回调[当系统不需要安全认证时，可以不设置]
-         */
-        connector.setLoginCallback(loginCallback);
-        /**
-         * 设备服务，当没有扩展需要时，可以不设置，即：默认实现
-         */
-        connector.setDeviceService(deviceService);
-        /**
-         * neulink业务外部扩展回调；
-         */
-        connector.setExtendCallback(callback);
-        /**
-         * mqtt回调，当需要监控mqtt状态时，需要设置
-         */
-        connector.setMqttCallBack(mqttCallBack);
-        /**
-         * neulink消息线性处理存储服务
-         */
-        connector.setMessageService(null);
-        /**
-         * OTA文件断点续传文件服务
-         */
-        connector.setFileService(null);
-        /**
-         * neulink执行结果回调处理接口
-         */
-        connector.setDefaultResCallback(null);
-        //##########################################################################################
-        /**
-         * 开始连接
-         */
-        connector.start();
     }
 
     /**
