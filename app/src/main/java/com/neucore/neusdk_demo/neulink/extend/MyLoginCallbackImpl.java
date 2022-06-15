@@ -3,6 +3,9 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.log.NeuLogUtils;
 
+/**
+ * 登录服务回调实现
+ */
 public class MyLoginCallbackImpl implements ILoginCallback {
     private String TAG = "MyLoginCallbackImpl";
     @Override

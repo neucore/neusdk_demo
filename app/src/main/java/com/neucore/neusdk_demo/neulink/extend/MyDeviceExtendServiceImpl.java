@@ -7,13 +7,16 @@ import com.neucore.neulink.util.DeviceUtils;
 
 import java.util.Locale;
 
-public class MyDeviceServiceImpl extends DefaultDeviceServiceImpl {
+/**
+ * 设备服务扩展实现
+ */
+public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
     @Override
     public String getExtSN() {
         /**
          * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
          */
-        return MyExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
     }
     @Override
     public Locale getLocale(){
@@ -32,6 +35,6 @@ public class MyDeviceServiceImpl extends DefaultDeviceServiceImpl {
          *
          * ota升级文件包的【设备产品型号】字段需要和neulink内的 -- cpumd 进行一致；
          */
-        return DeviceInfoDefaultBuilder.getInstance().build(new MyExtendInfoCallBack());
+        return DeviceInfoDefaultBuilder.getInstance().build(new MyDeviceExtendInfoCallBack());
     }
 }

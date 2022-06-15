@@ -19,7 +19,10 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class MyExtendInfoCallBack implements IDeviceExtendInfoCallback {
+/**
+ * 设备扩展信息获取回调
+ */
+public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
 
     /**
      * 子应用列表
