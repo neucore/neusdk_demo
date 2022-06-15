@@ -1,8 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
-import android.util.Log;
-
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.log.NeuLogUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -14,7 +13,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以用在APP交互提示等
          */
-        Log.i(TAG,"connectComplete");
+        NeuLogUtils.iTag(TAG,"connectComplete");
     }
 
     @Override
@@ -22,7 +21,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以不用管
          */
-        Log.i(TAG,"messageArrived");
+        NeuLogUtils.iTag(TAG,"messageArrived");
     }
 
     @Override
@@ -30,7 +29,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以用在APP交互提示等
          */
-        Log.i(TAG,"connectionLost");
+        NeuLogUtils.iTag(TAG,"connectionLost");
     }
 
     @Override
@@ -38,7 +37,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以用在APP交互提示等
          */
-        Log.i(TAG,"deliveryComplete");
+        NeuLogUtils.iTag(TAG,"deliveryComplete");
     }
 
     @Override
@@ -46,7 +45,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以用在APP交互提示等
          */
-        Log.i(TAG,"connectSuccess");
+        NeuLogUtils.iTag(TAG,"connectSuccess");
     }
 
     @Override
@@ -54,6 +53,6 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
         /**
          * 可以用在APP交互提示等
          */
-        Log.i(TAG,"connectFailed");
+        NeuLogUtils.iTag(TAG,"connectFailed");
     }
 }

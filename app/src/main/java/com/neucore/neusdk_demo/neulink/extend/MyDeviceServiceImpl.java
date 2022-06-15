@@ -1,4 +1,4 @@
-package com.neucore.neusdk_demo.neulink.extend.device;
+package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
@@ -13,7 +13,7 @@ public class MyDeviceServiceImpl extends DefaultDeviceServiceImpl {
         /**
          * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
          */
-        return DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
+        return MyExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
     }
     @Override
     public Locale getLocale(){

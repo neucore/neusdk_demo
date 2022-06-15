@@ -158,8 +158,9 @@ public class SampleConnector implements NeulinkConst{
                         } catch (InterruptedException e) {
                         }
                     }
-                    NeuLogUtils.iTag(TAG,"startBuild...");
 
+                    NeuLogUtils.iTag(TAG,"startBuild...");
+                    NeuLogUtils.iTag(TAG,"配置项："+extConfig);
                     NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
 
                     NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
