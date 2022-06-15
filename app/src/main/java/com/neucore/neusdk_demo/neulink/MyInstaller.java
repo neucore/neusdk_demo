@@ -12,7 +12,7 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyExtendCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
-import com.neucore.neusdk_demo.neulink.extend.device.MyDeviceServiceImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyDeviceServiceImpl;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import java.util.Properties;

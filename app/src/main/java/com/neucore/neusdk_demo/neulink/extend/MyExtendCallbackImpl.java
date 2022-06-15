@@ -3,6 +3,7 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
 import com.neucore.neusdk_demo.neulink.extend.auth.listener.AuthCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.bind.BindProcessor;
@@ -15,7 +16,7 @@ public class MyExtendCallbackImpl implements IExtendCallback {
     private String TAG = "MyExtendCallbackImpl";
     @Override
     public void onCallBack() {
-
+        NeuLogUtils.iTag(TAG,"onCallBack...");
         /**
          * SDK默认实现扩展
          */
