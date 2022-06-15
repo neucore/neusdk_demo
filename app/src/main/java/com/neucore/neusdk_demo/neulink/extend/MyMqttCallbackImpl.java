@@ -6,6 +6,9 @@ import com.neucore.neulink.log.NeuLogUtils;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
+/**
+ * Mqtt事件回调实现
+ */
 public class MyMqttCallbackImpl implements IMqttCallBack {
     private String TAG = "MyMqttCallbackImpl";
     @Override

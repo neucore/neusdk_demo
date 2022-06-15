@@ -12,8 +12,11 @@ import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
 
-public class MyExtendCallbackImpl implements IExtendCallback {
-    private String TAG = "MyExtendCallbackImpl";
+/**
+ * 扩展业务注册回调实现
+ */
+public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
+    private String TAG = "MyBizExtendRegistCallbackImpl";
     @Override
     public void onCallBack() {
         NeuLogUtils.iTag(TAG,"onCallBack...");

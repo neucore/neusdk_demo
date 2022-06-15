@@ -9,10 +9,10 @@ import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neusdk_demo.neulink.extend.MyExtendCallbackImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
-import com.neucore.neusdk_demo.neulink.extend.MyDeviceServiceImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyDeviceExtendServiceImpl;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import java.util.Properties;
@@ -187,7 +187,7 @@ public class MyInstaller {
     /**
      * TODO 设备服务扩展
      */
-    IDeviceService deviceService = new MyDeviceServiceImpl();
+    IDeviceService deviceService = new MyDeviceExtendServiceImpl();
     /**
      * TODO 登录loginCallback
      */
@@ -195,5 +195,5 @@ public class MyInstaller {
     /**
      * TODO 外部扩展
      */
-    IExtendCallback callback = new MyExtendCallbackImpl();
+    IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
 }
