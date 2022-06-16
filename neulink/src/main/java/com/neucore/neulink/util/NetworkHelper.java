@@ -27,13 +27,11 @@ public class NetworkHelper implements NeulinkConst {
     private final Context mContext;
     private ArrayList<Listener> mListeners = new ArrayList<>();
     private final ConnectivityManager mConnectivityManager;
-    private TelephonyManager telephonyManager;
     private int mNetworkType;
 
     private final BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            NeuLogUtils.iTag(TAG, "mNetworkReceiver");
             onConnectivityChange();
         }
     };
@@ -51,10 +49,6 @@ public class NetworkHelper implements NeulinkConst {
         mContext = ContextHolder.getInstance().getContext();
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
-        try {
-            telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-        } catch (Exception e) {
-        }
     }
 
     public void addListener(Listener listener) {

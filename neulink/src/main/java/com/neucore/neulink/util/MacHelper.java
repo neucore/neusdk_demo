@@ -5,7 +5,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import java.io.BufferedInputStream;
@@ -65,7 +64,6 @@ public class MacHelper implements NeulinkConst{
                     res1.deleteCharAt(res1.length() - 1);
                 }
                 String wifiMac = res1 != null ? res1.toString() : null;
-                NeuLogUtils.dTag(TAG, "getMacFromHardware wifiMac= " + wifiMac);
                 return wifiMac;
             }
         } catch (Exception e) {
@@ -96,7 +94,6 @@ public class MacHelper implements NeulinkConst{
                     str = input.readLine();
                     if (str != null) {
                         macSerial = str.trim();// 去空格
-                        NeuLogUtils.dTag(TAG, "getMacFromInterface wifiMac= " + macSerial);
                         break;
                     }
                 }
@@ -141,7 +138,6 @@ public class MacHelper implements NeulinkConst{
                             for (String str: values){
                                 if (str != null && !str.isEmpty() && str.contains(":")){
                                     wifiMac = str;
-                                    NeuLogUtils.dTag(TAG, "getMacFromIfconfig wifiMac= " + wifiMac);
                                     break;
                                 }
                             }
@@ -189,7 +185,6 @@ public class MacHelper implements NeulinkConst{
                     //NeuLogUtils.dTag(TAG, "readLine= " + readLine);
                     if (readLine != null ) {
                         String infoStr = readLine.trim();
-                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
                         if(readLine.contains("HWaddr")){
 
                             if(infoStr != null){
@@ -198,7 +193,6 @@ public class MacHelper implements NeulinkConst{
                                 for (String str: values){
                                     if (str != null && !str.isEmpty() && str.contains(":")){
                                         mac = str;
-                                        NeuLogUtils.dTag(TAG, "getEthernetMac Mac= " + mac);
                                         break;
                                     }
                                 }
@@ -238,16 +232,13 @@ public class MacHelper implements NeulinkConst{
                     //NeuLogUtils.dTag(TAG, "readLine= " + readLine);
                     if (readLine != null ) {
                         String infoStr = readLine.trim();
-                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig infoStr= " + infoStr);
                         if(readLine.contains("HWaddr")){
-
                             if(infoStr != null){
                                 infoStr = infoStr.substring(infoStr.indexOf("HWaddr"), infoStr.length());
                                 String[] values = infoStr.split(" ");
                                 for (String str: values){
                                     if (str != null && !str.isEmpty() && str.contains(":")){
                                         mac = str;
-                                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig wifiMac= " + mac);
                                         break;
                                     }
                                 }
@@ -260,15 +251,12 @@ public class MacHelper implements NeulinkConst{
                                     if (str != null && !str.isEmpty() && str.contains("inetaddr")){
                                         String[] ipStr = str.split(":");
                                         ip = ipStr[1];
-                                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig ip= " + ip);
                                     }else if (str != null && !str.isEmpty() && str.contains("Bcast")){
                                         String[] bcastStr = str.split(":");
                                         bcast = bcastStr[1];
-                                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig bcast= " + bcast);
                                     }else if (str != null && !str.isEmpty() && str.contains("Mask")){
                                         String[] maskStr = str.split(":");
                                         mask = maskStr[1];
-                                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig mask= " + mask);
                                     }
                                 }
                             }
@@ -280,7 +268,6 @@ public class MacHelper implements NeulinkConst{
                                 for (String str: values){
                                     if (str != null && !str.isEmpty() && str.contains("::")){
                                         ipv6 = str;
-                                        NeuLogUtils.dTag(TAG, "getInfoFromIfconfig ipv6= " + ipv6);
                                         break;
                                     }
                                 }

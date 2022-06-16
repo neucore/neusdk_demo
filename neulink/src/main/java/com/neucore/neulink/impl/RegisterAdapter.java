@@ -24,7 +24,7 @@ class RegisterAdapter implements NeulinkConst{
     private boolean registed=false;
     private boolean registCalled = false;
     private final NetworkHelper networkHelper = NetworkHelper.getInstance();
-
+    private String last = null;
     public RegisterAdapter() {
 
         NeuLogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s","startRegister",networkReady,initRegistService));
@@ -47,8 +47,11 @@ class RegisterAdapter implements NeulinkConst{
     }
     private Boolean logined = false;
     private void initRegistService(String from){
-
-        NeuLogUtils.iTag(TAG,String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService));
+        String msg = String.format("from=%s,networkReady=%s,initRegistService=%s",from,networkReady,initRegistService);
+        if(!msg.equals(last)){
+            last = msg;
+            NeuLogUtils.iTag(TAG,msg);
+        }
 
         if(networkReady
             && !initRegistService){
@@ -116,7 +119,7 @@ class RegisterAdapter implements NeulinkConst{
                         if(successed){
                             registed = true;
                             initRegistService = true;
-                            NeuLogUtils.iTag(TAG,"success regist");
+                            NeuLogUtils.iTag(TAG,"success call regist");
                         }
                     }
                     catch(Exception ex){
