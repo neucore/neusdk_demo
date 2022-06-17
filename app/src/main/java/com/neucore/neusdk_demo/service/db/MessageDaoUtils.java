@@ -39,7 +39,7 @@ public class MessageDaoUtils {
     }
 
 
-    public Boolean update(final long id, final String status, final String msg) {
+    public Boolean update(final long id, final String status,final String msg) {
 
         return mManager.getDaoSession().callInTxNoException(new Callable<Boolean>() {
                 @Override

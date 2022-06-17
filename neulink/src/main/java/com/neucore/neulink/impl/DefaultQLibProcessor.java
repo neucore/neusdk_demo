@@ -14,13 +14,14 @@ import com.neucore.neulink.impl.cmd.rrpc.TLibQueryCmd;
 import com.neucore.neulink.impl.cmd.rrpc.QResult;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
-import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HeadersUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
 
@@ -33,10 +34,15 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
+
         this.topic = topic;
 
-        payload = auth(topic,payload);
+        TLibQueryCmd req = parser(payload.toString());
+
+        HeadersUtils.binding(req,topic,headers);
+
+        payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
@@ -58,21 +64,15 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
             }
 
             long id = 0;
-            TLibQueryCmd req = null;
+
             try {
                 if (msg == null) {
-                    msg = insert(topic, payload);
+                    msg = insert(topic,headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();
                 }
-                long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
-                req = parser(payload);
 
-                req.setBiz(topic.getBiz());
-                req.setReqId(topic.getReqId());
-                req.setReqtime(reqTime);
-                req.setVersion(topic.getVersion());
                 /**
                  * 响应消息已到达
                  */
@@ -108,6 +108,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                         result.setPage(pages);
                         result.setOffset(i);
                         TLQueryRes res = responseWrapper(req,result);
+
                         if(ObjectUtil.isNotEmpty(res)){
                             if (res.getCode() == STATUS_200
                                     ||res.getCode()==STATUS_202

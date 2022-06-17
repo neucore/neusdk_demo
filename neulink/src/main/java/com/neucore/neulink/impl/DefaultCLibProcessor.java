@@ -13,13 +13,14 @@ import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.cmd.check.CheckCmdRes;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
-import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HeadersUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> implements IProcessor {
 
@@ -32,10 +33,15 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    final public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
+
         this.topic = topic;
 
-        payload = auth(topic,payload);
+        CheckCmd req = parser(payload.toString());
+
+        HeadersUtils.binding(req,topic,headers);
+
+        payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
@@ -57,21 +63,15 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
             }
 
             long id = 0;
-            CheckCmd req = null;
+
             try {
                 if (msg == null) {
-                    msg = insert(topic, payload);
+                    msg = insert(topic,headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();
                 }
-                long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
-                req = parser(payload);
 
-                req.setBiz(topic.getBiz());
-                req.setReqId(topic.getReqId());
-                req.setReqtime(reqTime);
-                req.setVersion(topic.getVersion());
                 /**
                  * 响应消息已到达
                  */
@@ -81,6 +81,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     QueryActionResult result = process(topic,req);
 
                     CheckCmdRes res = responseWrapper(req,result);
+
                     if(ObjectUtil.isNotEmpty(res)){
                         if (res.getCode() == STATUS_200
                                 ||res.getCode()==STATUS_202

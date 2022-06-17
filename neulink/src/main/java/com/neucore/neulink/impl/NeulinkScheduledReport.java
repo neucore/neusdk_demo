@@ -163,7 +163,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             }
                             LogUploadCmd req = new LogUploadCmd();
                             req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                            req.setReqId(UUID.randomUUID().toString());
+                            req.setReqNo(UUID.randomUUID().toString());
                             req.setMsg(sb.toString());
                             int index = name.lastIndexOf(".");
                             req.setTime(name.substring(0, index));

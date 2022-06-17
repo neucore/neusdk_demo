@@ -28,7 +28,7 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public IMessage save(NeulinkTopicParser.Topic topic, String payload) {
+    public IMessage save(NeulinkTopicParser.Topic topic,String headers, String payload) {
         Message msg = new Message();
 
         msg.setReqId(topic.getReqId());
@@ -41,6 +41,8 @@ public class MessageService implements IMessageService {
 
         msg.setStatus(IMessage.STATUS_PROCESS);
 
+        msg.setHeaders(headers);
+
         msg.setPayload(payload);
 
         messageDaoUtils.insertMessage(msg);
@@ -49,12 +51,12 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public void update(Long id, String status, String msg) {
+    public void update(Long id, String status,String msg) {
         messageDaoUtils.update(id,status,msg);
     }
 
     @Override
-    public void updatePkg(long id, long offset, String status, String msg) {
+    public void updatePkg(long id, long offset, String status,String msg) {
         messageDaoUtils.updatePkg(id,offset,status,msg);
     }
 }

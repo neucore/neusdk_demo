@@ -290,6 +290,15 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
+    public void subscribe(String[] topics, int[] qoss,IMqttMessageListener[] mqttMessageListeners) {
+        try {
+            // 订阅topic话题
+            client.subscribe(topics, qoss,mqttMessageListeners);
+        } catch (Exception e) {
+            NeuLogUtils.eTag(TAG, e.toString());
+        }
+    }
+
     /**
      * 判断连接是否断开
      */

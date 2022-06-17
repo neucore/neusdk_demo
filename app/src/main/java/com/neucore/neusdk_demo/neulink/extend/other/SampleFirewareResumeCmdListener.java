@@ -44,8 +44,8 @@ public class SampleFirewareResumeCmdListener implements ICmdListener<ActionResul
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
 
-                    Log.i(TAG,cmd.getReqId()+ " progress: "+progress);
-                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqId(),progress);
+                    Log.i(TAG,cmd.getReqNo()+ " progress: "+progress);
+                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),progress);
                 }
             });
             Log.i(TAG,"成功下载完成："+downloader.getFileSize());

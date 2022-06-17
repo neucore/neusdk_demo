@@ -37,7 +37,7 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
              * 新增上报下载进度
              */
             String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
-            NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqId(),"100");
+            NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),"100");
 
             /**
              * @TODO: 业务实现

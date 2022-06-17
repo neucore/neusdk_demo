@@ -2,20 +2,7 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Map;
-
-public class Cmd {
-
-    @SerializedName("headers")
-    private Map<String,String> headers;
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
+public class Cmd extends GCmd{
 
     private String biz;
 
@@ -30,16 +17,24 @@ public class Cmd {
     @SerializedName("mode")
     protected String cmdStr;
 
-    private String reqId;
+    private String reqNo;
 
+    public String getReqNo() {
+        return reqNo;
+    }
+    protected void setReqNo(String reqNo) {
+        this.reqNo = reqNo;
+    }
+
+    @Deprecated
     public String getReqId() {
-        return reqId;
+        return reqNo;
     }
 
-    protected void setReqId(String reqId) {
-        this.reqId = reqId;
+    @Deprecated
+    protected void setReqId(String reqNo) {
+        this.reqNo = reqNo;
     }
-
     private String version;
 
     public String getVersion() {

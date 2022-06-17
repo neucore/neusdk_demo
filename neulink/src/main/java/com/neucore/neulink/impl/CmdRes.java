@@ -2,12 +2,12 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class CmdRes<T> {
+import cn.hutool.core.util.ObjectUtil;
 
-    @SerializedName("headers")
-    private Map<String,String> headers;
+public class CmdRes<T> extends GCmd {
 
     @SerializedName("mode")
     protected String cmdStr;
@@ -23,14 +23,6 @@ public class CmdRes<T> {
 
     @SerializedName("data")
     private T data;
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
 
     public String getCmdStr() {
         return cmdStr;

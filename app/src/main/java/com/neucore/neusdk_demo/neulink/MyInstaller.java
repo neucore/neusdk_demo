@@ -135,15 +135,15 @@ public class MyInstaller {
          *
          * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
          * 设置登录用户名密码
          */
-        //extConfig.setProperty(ConfigContext.USERNAME,"admin");
-        //extConfig.setProperty(ConfigContext.PASSWORD,"password");
-        //extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
+        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://192.168.3.15:1883");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
