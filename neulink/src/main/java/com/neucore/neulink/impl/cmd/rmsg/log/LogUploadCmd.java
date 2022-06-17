@@ -24,12 +24,12 @@ public class LogUploadCmd extends Cmd {
         this.deviceId = deviceId;
     }
 
-    public String getReqId() {
+    public String getReqNo() {
         return reqId;
     }
 
-    public void setReqId(String reqId) {
-        this.reqId = reqId;
+    public void setReqNo(String reqNo) {
+        this.reqId = reqNo;
     }
 
     public String getTime() {

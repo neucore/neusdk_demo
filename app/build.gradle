@@ -80,7 +80,7 @@ android {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 2
     daoPackage 'com.neucore.greendao.gen'
 }
 dependencies {

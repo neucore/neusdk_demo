@@ -31,6 +31,9 @@ public class Message implements IMessage {
 
     @SerializedName("offset")
     private long offset=1;
+
+    @SerializedName("headers")
+    private String headers;
     /**
      * 消息体
      */
@@ -65,14 +68,16 @@ public class Message implements IMessage {
     @SerializedName("qos")
     private int qos;
 
-    @Generated(hash = 379216382)
-    public Message(Long id, String reqId, String topic, long offset, String payload,
-            String pkgStatus, String status, String result, Long reqtime,
-            Long restime, int qos) {
+
+    @Generated(hash = 1247282151)
+    public Message(Long id, String reqId, String topic, long offset, String headers,
+            String payload, String pkgStatus, String status, String result,
+            Long reqtime, Long restime, int qos) {
         this.id = id;
         this.reqId = reqId;
         this.topic = topic;
         this.offset = offset;
+        this.headers = headers;
         this.payload = payload;
         this.pkgStatus = pkgStatus;
         this.status = status;
@@ -85,6 +90,7 @@ public class Message implements IMessage {
     @Generated(hash = 637306882)
     public Message() {
     }
+
 
     public Long getId() {
         return id;
@@ -116,6 +122,16 @@ public class Message implements IMessage {
 
     public void setOffset(long offset) {
         this.offset = offset;
+    }
+
+    @Override
+    public String getHeaders() {
+        return headers;
+    }
+
+    @Override
+    public void setHeaders(String headers) {
+        this.headers = headers;
     }
 
     public String getPayload() {

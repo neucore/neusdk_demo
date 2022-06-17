@@ -2,9 +2,11 @@ package com.neucore.neulink;
 
 import com.neucore.neulink.impl.NeulinkTopicParser;
 
+import cn.hutool.json.JSONObject;
+
 public interface IMessageService extends IService {
     IMessage queryByReqNo(String reqNo);
-    IMessage save(NeulinkTopicParser.Topic topic, String payload);
-    void update(Long id,String status,String message);
-    void updatePkg(long id, long offset,String status, String msg);
+    IMessage save(NeulinkTopicParser.Topic topic, String headers, String payload);
+    void update(Long id,String status,String payload);
+    void updatePkg(long id, long offset,String status, String payload);
 }

@@ -16,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import java.util.UUID;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 
 public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
 
@@ -32,18 +33,21 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
     @Override
     public void messageArrived(String topicStr, String message, int qos) {
 
-        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().parser(topicStr,qos);
+        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr,qos);
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
-
-        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
+        JSONObject payload = new JSONObject(message);
+        JSONObject headers = (JSONObject) payload.get("headers");
+        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",headers:"+headers);
+        NeuLogUtils.dTag(TAG,"headers:"+headers);
+        NeuLogUtils.dTag(TAG,"message:"+payload);
 
         IProcessor processor = ProcessRegistry.build(context,topic);
 
         try {
             if(processor!=null){
-                processor.execute(topic,message);
+                processor.execute(topic,headers,payload);
             }
             else {
                 throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));

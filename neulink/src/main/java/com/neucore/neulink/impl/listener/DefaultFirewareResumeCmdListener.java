@@ -50,8 +50,8 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
 
-                    NeuLogUtils.iTag(TAG,cmd.getReqId()+ " progress: "+progress);
-                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqId(),progress);
+                    NeuLogUtils.iTag(TAG,cmd.getReqNo()+ " progress: "+progress);
+                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),progress);
                 }
             });
             NeuLogUtils.iTag(TAG,"成功下载完成："+downloader.getFileSize());

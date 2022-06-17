@@ -24,6 +24,10 @@ public interface IMessage {
 
     void setOffset(long offset);
 
+    void setHeaders(String headers);
+
+    String getHeaders();
+
     String getPayload();
 
     void setPayload(String payload);

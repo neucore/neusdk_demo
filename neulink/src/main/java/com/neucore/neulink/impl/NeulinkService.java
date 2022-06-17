@@ -21,6 +21,7 @@ import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HeadersUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
@@ -49,6 +50,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 public class NeulinkService implements NeulinkConst{
 
@@ -188,11 +190,17 @@ public class NeulinkService implements NeulinkConst{
      */
     private void connect() throws MqttException{
         synchronized (this) {
-            if (!mqttConnCalled) {
+            if (!mqttConnCalled
+                    && !mqttConnSuccessed) {
                 myMqttService.connect();
                 mqttConnCalled = true;
             }
         }
+    }
+
+    private void resetMqttConnCalled(){
+        mqttConnCalled = false;
+        failException = null;
     }
 
     public void destroy(){
@@ -265,6 +273,16 @@ public class NeulinkService implements NeulinkConst{
      * @param mqttMessageListener
      */
     protected void subscribeToTopic(final String topic, int qos,IMqttMessageListener mqttMessageListener){
+        myMqttService.subscribe(topic, qos,mqttMessageListener);
+    }
+
+    /**
+     *
+     * @param topic
+     * @param qos
+     * @param mqttMessageListener
+     */
+    protected void subscribeToTopic(final String topic[], int qos[],IMqttMessageListener[] mqttMessageListener){
         myMqttService.subscribe(topic, qos,mqttMessageListener);
     }
 
@@ -626,6 +644,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+
     /**
      * 异步注册器
      */
@@ -643,6 +662,15 @@ public class NeulinkService implements NeulinkConst{
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.DEPLOY_MODE,ConfigContext.DEPLOY_ENT);
+            if(ConfigContext.DEPLOY_CLD.equals(mode)){
+                String topStrTemp = topStr;
+                JSONObject jsonObject = new JSONObject(payload);
+                HeadersUtils.binding(jsonObject,topStr,qos);
+                this.payload = jsonObject.toString();
+                String[] temps = topStrTemp.split("/");
+                this.topStr = String.format("%s/%s",temps[0],temps[1]);
+            }
             this.qos = qos;
             this.retained = retained;
             this.params = params;
@@ -767,6 +795,7 @@ public class NeulinkService implements NeulinkConst{
                         /**
                          * 未知错误、网络异常、服务器故障、服务重启中需要重试
                          */
+                        resetMqttConnCalled();
                         continue;
                     }
                     else{
@@ -809,6 +838,17 @@ public class NeulinkService implements NeulinkConst{
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
+            this.topStr = topStr;
+            this.payload = payload;
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.DEPLOY_MODE,ConfigContext.DEPLOY_ENT);
+            if(ConfigContext.DEPLOY_CLD.equals(mode)){
+                String topStrTemp = topStr;
+                JSONObject jsonObject = new JSONObject(payload);
+                HeadersUtils.binding(jsonObject,topStr,qos);
+                this.payload = jsonObject.toString();
+                String[] temps = topStrTemp.split("/");
+                this.topStr = String.format("%s/%s",temps[0],temps[1]);
+            }
             this.qos = qos;
             this.retained = retained;
             this.params = params;
@@ -821,6 +861,13 @@ public class NeulinkService implements NeulinkConst{
              */
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
+                NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
+                NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
+                Boolean debug = ConfigContext.getInstance().getConfig("Debug",true);
+                if(!debug){
+                    String[] topics = topStr.split("/");
+
+                }
                 myMqttService.publish(reqId,payload,topStr, qos, retained,callback);
             }
             else{
@@ -834,8 +881,11 @@ public class NeulinkService implements NeulinkConst{
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
                         String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
-                        NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
+
                         NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
+
+                        NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
+
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
                             Result result = JSonUtils.toObject(response,Result.class);

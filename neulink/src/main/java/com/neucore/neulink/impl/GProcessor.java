@@ -12,16 +12,16 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.IActionResult;
+import com.neucore.neulink.util.HeadersUtils;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.MD5Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResult extends IActionResult> implements IProcessor {
 
@@ -41,11 +41,15 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return context;
     }
 
-    public void execute(NeulinkTopicParser.Topic topic, String payload) {
+    public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
 
         this.topic = topic;
 
-        payload = auth(topic,payload);
+        Req req = parser(payload.toString());
+
+        HeadersUtils.binding(req,topic,headers);
+
+        payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
@@ -67,21 +71,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
             }
 
             long id = 0;
-            Req req = null;
+
             try {
                 if (msg == null) {
-                    msg = insert(topic, payload);
+                    msg = insert(topic,headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();
                 }
-                long reqTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
-                req = parser(payload);
-
-                req.setBiz(topic.getBiz());
-                req.setReqId(topic.getReqId());
-                req.setReqtime(reqTime);
-                req.setVersion(topic.getVersion());
                 /**
                  * 响应消息已到达
                  */
@@ -90,6 +87,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                 ActionResult actionResult = process(topic, req);
                 if(ObjectUtil.isNotEmpty(actionResult)){
                     Res res = responseWrapper(req, actionResult);
+
                     if(ObjectUtil.isNotEmpty(res)){
                         if (res.getCode() == STATUS_200
                                 ||res.getCode()==STATUS_202
@@ -135,11 +133,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         }
     }
 
-    protected String auth(NeulinkTopicParser.Topic topic, String payload){
-        String version = topic.getVersion();
-        if("v1.0".equalsIgnoreCase(version)){
-            return payload;
-        }
+    protected JSONObject auth(JSONObject headers,JSONObject payload){
+
         /**
          * 解密
          */
@@ -153,8 +148,6 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
          * 验证
          */
         //TODO 验证
-        String md5 = topic.getMd5();
-        MD5Utils.getInstance().getMD5String(payload);
         return payload;
     }
 
@@ -218,10 +211,10 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return new String(baos.toByteArray());
     }
 
-    protected IMessage insert(NeulinkTopicParser.Topic topic, String payload) {
+    protected IMessage insert(NeulinkTopicParser.Topic topic, String headers,String payload) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
-            return messageService.save(topic,payload);
+            return messageService.save(topic,headers,payload);
         }
         return null;
     }
@@ -246,7 +239,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      * @param status
      * @param msg
      */
-    protected void updatePkg(long id, long offset,String status, String msg) {
+    protected void updatePkg(long id, long offset,String status,String msg) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);
@@ -269,7 +262,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
      */
     protected void resLstRsl2Cloud(IMessage message){
         String topicStr = message.getTopic();
-        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().parser(topicStr,message.getQos());
+        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr,message.getQos());
         String resTopic = resTopic();
         NeulinkService.getInstance().publishMessage(resTopic,topic.getVersion(),topic.getReqId(),message.getPayload(),message.getQos());
     }

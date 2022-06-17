@@ -13,13 +13,12 @@ public class NeulinkTopicParser {
     public static NeulinkTopicParser getInstance(){
         return parser;
     }
-    public Topic parser(String topStr,int qos){
+    public Topic cloud2EndParser(String topStr, int qos){
         Topic topic = new Topic();
         topic.setString(topStr);
         String[] paths = topStr.split("/");
         int len = paths.length;
         String prefix = paths[0];
-
         topic.setPrefix(prefix);
         topic.setReq$res(paths[1]);
         if(topStr.startsWith("bcst/")){
@@ -36,30 +35,55 @@ public class NeulinkTopicParser {
         }
         else{
             /**
-             * 单台设备
+             * 单播设备
+             * rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}/[/${md5}]
+             * rrpc/req/${dev_id}/alog/v1.0/${req_no}[/${md5}], qos=0
+             * upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
+             * bcst/req/${dev_id}/alog/v1.0/${req_no}[/${md5}]
              */
-            //msg/req/devinfo/v1.0/${req_no}/[/${md5}]
-            if("msg".equalsIgnoreCase(prefix)) {
-                topic.setBiz(paths[2]);
-                topic.setVersion(paths[3]);
-                topic.setReqId(paths[3]);
-                if(len>5){
-                    topic.setMd5(paths[5]);
-                }
-            }
-            else{
-                //rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}/[/${md5}]
-                //rrpc/req/${dev_id}/facelib/v1.0/${req_no}[/${md5}
-                //upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
-                //upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
+            if(len>3){
                 topic.setBiz(paths[3]);
-                topic.setVersion(paths[4]);
-                topic.setReqId(paths[5]);
-                if(len>6){
-                    topic.setMd5(paths[6]);
-                }
-                topic.setQos(qos);
             }
+            if(len>4){
+                topic.setVersion(paths[4]);
+            }
+            if(len>5) {
+                topic.setReqId(paths[5]);
+            }
+            if(len>6){
+                topic.setMd5(paths[6]);
+            }
+            topic.setQos(qos);
+        }
+        return topic;
+    }
+
+    /**
+     * 【msg｜upld】/req/[devinfo|status|faceinfo|...]/vx.x/${req_no}/${md5}[/$custid}][/${storeid}][/${zoneid}][/${dev_id}]
+     * @param topStr
+     * @param qos
+     * @return
+     */
+    public Topic end2cloudParser(String topStr, int qos){
+        Topic topic = new Topic();
+        topic.setString(topStr);
+        String[] paths = topStr.split("/");
+        int len = paths.length;
+        String prefix = paths[0];
+        topic.setPrefix(prefix);
+        topic.setReq$res(paths[1]);
+
+        if(len>2){
+            topic.biz = paths[2];
+        }
+        if(len>3){
+            topic.version = paths[3];
+        }
+        if(len>4){
+            topic.reqId = paths[4];
+        }
+        if(len>5){
+            topic.md5 = paths[5];
         }
         return topic;
     }
@@ -70,7 +94,6 @@ public class NeulinkTopicParser {
         private String reqId;
         private String md5;
         private String biz;
-        private String devId;
         private String version;
         private String topString;
         private int qos;

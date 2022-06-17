@@ -89,6 +89,12 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String MQTT_RETAINED = "mqtt.retained";
 
+    public final static String DEPLOY_MODE = "deploy.mode";
+
+    public final static String DEPLOY_CLD = "deploy.cloud";
+
+    public final static String DEPLOY_ENT = "deploy.enterprise";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }
