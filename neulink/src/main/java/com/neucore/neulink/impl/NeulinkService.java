@@ -662,14 +662,26 @@ public class NeulinkService implements NeulinkConst{
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
-            String mode = ConfigContext.getInstance().getConfig(ConfigContext.DEPLOY_MODE,ConfigContext.DEPLOY_ENT);
-            if(ConfigContext.DEPLOY_CLD.equals(mode)){
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+            if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
                 JSONObject jsonObject = new JSONObject(payload);
+                /**
+                 * 绑定Head
+                 */
                 HeadersUtils.binding(jsonObject,topStr,qos);
                 this.payload = jsonObject.toString();
                 String[] temps = topStrTemp.split("/");
-                this.topStr = String.format("%s/%s",temps[0],temps[1]);
+                int len = temps.length;
+                String group = null;
+                String req$res = null;
+                if(len>0){
+                    group = temps[0];
+                }
+                if(len>1){
+                    req$res = temps[1];
+                }
+                this.topStr = String.format("%s/%s",group,req$res);
             }
             this.qos = qos;
             this.retained = retained;
@@ -840,14 +852,26 @@ public class NeulinkService implements NeulinkConst{
             this.payload = payload;
             this.topStr = topStr;
             this.payload = payload;
-            String mode = ConfigContext.getInstance().getConfig(ConfigContext.DEPLOY_MODE,ConfigContext.DEPLOY_ENT);
-            if(ConfigContext.DEPLOY_CLD.equals(mode)){
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+            if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
                 JSONObject jsonObject = new JSONObject(payload);
+                /**
+                 * 绑定Head
+                 */
                 HeadersUtils.binding(jsonObject,topStr,qos);
                 this.payload = jsonObject.toString();
                 String[] temps = topStrTemp.split("/");
-                this.topStr = String.format("%s/%s",temps[0],temps[1]);
+                int len = temps.length;
+                String group = null;
+                String req$res = null;
+                if(len>0){
+                    group = temps[0];
+                }
+                if(len>1){
+                    req$res = temps[1];
+                }
+                this.topStr = String.format("%s/%s",group,req$res);
             }
             this.qos = qos;
             this.retained = retained;
