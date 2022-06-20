@@ -57,12 +57,13 @@ public class HeadersUtils {
             headers.putOpt("version",topic.getVersion());
             headers.putOpt("reqNo",topic.getReqId());
             headers.putOpt("md5",topic.getMd5());
+
             headers.putOpt("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
             headers.putOpt("custid", NeulinkService.getInstance().getCustId());
             headers.putOpt("storeid",NeulinkService.getInstance().getStoreId());
             headers.putOpt("zoneid",NeulinkService.getInstance().getZoneId());
 
-            headers.putOpt("restime",String.valueOf(resTime));
+            headers.putOpt("time",String.valueOf(resTime));
         }
         else{
             HashMap<String,String> tempHeaders = new HashMap<>();
@@ -76,7 +77,7 @@ public class HeadersUtils {
             tempHeaders.put("storeid",NeulinkService.getInstance().getStoreId());
             tempHeaders.put("zoneid",NeulinkService.getInstance().getZoneId());
 
-            tempHeaders.put("restime",String.valueOf(resTime));
+            tempHeaders.put("time",String.valueOf(resTime));
 
             payload.putOnce("headers",tempHeaders);
         }
