@@ -143,7 +143,7 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
         extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://192.168.3.15:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.244:1883");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
