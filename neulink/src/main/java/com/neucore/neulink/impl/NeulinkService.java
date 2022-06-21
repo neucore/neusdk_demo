@@ -2,6 +2,8 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.log.NeuLogUtils;
@@ -683,7 +685,7 @@ public class NeulinkService implements NeulinkConst{
             String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
-                JSONObject jsonObject = new JSONObject(payload);
+                JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
                 /**
                  * 绑定Head
                  */
@@ -873,7 +875,7 @@ public class NeulinkService implements NeulinkConst{
             String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
-                JSONObject jsonObject = new JSONObject(payload);
+                JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
                 /**
                  * 绑定Head
                  */

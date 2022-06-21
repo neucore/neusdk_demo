@@ -2,6 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IMessageService;
@@ -41,7 +42,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return context;
     }
 
-    public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
+    public void execute(NeulinkTopicParser.Topic topic,JsonObject headers, JsonObject payload) {
 
         this.topic = topic;
 
@@ -133,7 +134,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         }
     }
 
-    protected JSONObject auth(JSONObject headers,JSONObject payload){
+    protected JsonObject auth(JsonObject headers, JsonObject payload){
 
         /**
          * 解密

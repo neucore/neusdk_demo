@@ -2,12 +2,16 @@ package com.neucore.neulink.impl.adapter;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.RequestContext;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -38,12 +42,12 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
-        JSONObject payload = new JSONObject(message);
-        JSONObject headers = (JSONObject) payload.get("headers");
+        JsonObject payload = JSonUtils.toObject(message,JsonObject.class);
+        JsonObject headers = (JsonObject) payload.get("headers");
         if(ObjectUtil.isNotEmpty(headers)){
-            String _biz = headers.get("biz",String.class);
+            JsonElement _biz = headers.get("biz");
             if(ObjectUtil.isNotEmpty(_biz)){
-                biz = _biz;
+                biz = _biz.getAsString();
             }
         }
         NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",headers:"+headers);
