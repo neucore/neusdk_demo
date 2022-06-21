@@ -8,11 +8,11 @@ def packageTime(){
 
 def versionMajor = 1
 def versionMinor = 8
-def versionPatch = 22
+def versionPatch = 24
 android {
+
     compileSdkVersion rootProject.ext.compile_sdk_version
     buildToolsVersion rootProject.build_tools_version
-
 
     defaultConfig {
         minSdkVersion rootProject.ext.min_sdk_version
@@ -35,6 +35,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 
 }
 

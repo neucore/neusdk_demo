@@ -135,15 +135,15 @@ public class MyInstaller {
          *
          * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//0：mqtt；1：http
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
          * 设置登录用户名密码
          */
-        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
-        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.244:1883");
+//        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
+//        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
+//        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.244:1883");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
@@ -177,6 +177,8 @@ public class MyInstaller {
          */
         //extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_OSS);
         //##########################################################################################
+
+        extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
         return extConfig;
     }
 

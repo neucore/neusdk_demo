@@ -1,11 +1,10 @@
-package com.neucore.neulink.impl;
+package com.neucore.neulink.impl.service;
 
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 
-public class LWTInfo {
+public class LWTTopic {
 
-    private String topicPrefix;
-    private String payload;
+    private String topic;
     private int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1);
     private boolean retained=ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false);
 
@@ -25,19 +24,11 @@ public class LWTInfo {
         this.retained = retained;
     }
 
-    public String getTopicPrefix() {
-        return topicPrefix;
+    public String getTopic() {
+        return topic;
     }
 
-    public void setTopicPrefix(String topicPrefix) {
-        this.topicPrefix = topicPrefix;
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 }

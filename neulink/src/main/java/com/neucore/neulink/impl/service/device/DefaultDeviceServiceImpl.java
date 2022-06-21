@@ -8,7 +8,8 @@ import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
 import com.neucore.neulink.impl.cmd.msg.MemInfo;
 import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
-import com.neucore.neulink.impl.LWTInfo;
+import com.neucore.neulink.impl.service.LWTPayload;
+import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
@@ -94,7 +95,12 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public LWTInfo lwt() {
-        return NeulinkService.getInstance().lwt();
+    public LWTTopic lwtTopic() {
+        return NeulinkService.getInstance().lwtTopic();
+    }
+
+    @Override
+    public LWTPayload lwtPayload() {
+        return NeulinkService.getInstance().lwtPayload();
     }
 }

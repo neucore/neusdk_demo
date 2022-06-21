@@ -3,7 +3,8 @@ package com.neucore.neulink;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
 import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
-import com.neucore.neulink.impl.LWTInfo;
+import com.neucore.neulink.impl.service.LWTPayload;
+import com.neucore.neulink.impl.service.LWTTopic;
 
 import java.util.Locale;
 
@@ -35,5 +36,6 @@ public interface IDeviceService {
 
     void disconnect();
 
-    LWTInfo lwt();
+    LWTTopic lwtTopic();
+    LWTPayload lwtPayload();
 }
