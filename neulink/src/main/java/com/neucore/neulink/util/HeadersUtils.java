@@ -79,7 +79,7 @@ public class HeadersUtils {
 
             tempHeaders.put("time",String.valueOf(resTime));
 
-            payload.putOnce("headers",tempHeaders);
+            payload.putOpt("headers",tempHeaders);
         }
     }
 }

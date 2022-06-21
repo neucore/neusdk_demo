@@ -15,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 
@@ -39,11 +40,16 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
         JSONObject payload = new JSONObject(message);
         JSONObject headers = (JSONObject) payload.get("headers");
+        if(ObjectUtil.isNotEmpty(headers)){
+            String _biz = headers.get("biz",String.class);
+            if(ObjectUtil.isNotEmpty(_biz)){
+                biz = _biz;
+            }
+        }
         NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",headers:"+headers);
-        NeuLogUtils.dTag(TAG,"headers:"+headers);
         NeuLogUtils.dTag(TAG,"message:"+payload);
-
-        IProcessor processor = ProcessRegistry.build(context,topic);
+        biz = biz.toLowerCase();
+        IProcessor processor = ProcessRegistry.build(context,biz);
 
         try {
             if(processor!=null){

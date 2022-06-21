@@ -2,6 +2,8 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.service.LWTPayload;
+import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
@@ -20,6 +22,7 @@ import com.neucore.neulink.impl.service.MyMqttService;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.HeadersUtils;
 import com.neucore.neulink.util.JSonUtils;
@@ -258,11 +261,26 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    public LWTInfo lwt(){
-        LWTInfo info = new LWTInfo();
-        info.setTopicPrefix("msg/req/lwt/v1.0");
-        String payload = "{\"dev_id\":\""+ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":-1}";
-        info.setPayload(payload);
+    public LWTTopic lwtTopic(){
+        long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
+        LWTTopic info = new LWTTopic();
+        info.setTopic("msg/req/lwt/v1.0");
+        info.setRetained(true);
+        info.setQos(0);
+        return info;
+    }
+
+    public LWTPayload lwtPayload(){
+        long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
+        LWTPayload info = new LWTPayload();
+        info.setHeader("version","v1.0");
+        info.setHeader("biz","lwt");
+        info.setHeader("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        info.setHeader("custid", NeulinkService.getInstance().getCustId());
+        info.setHeader("storeid",NeulinkService.getInstance().getStoreId());
+        info.setHeader("zoneid",NeulinkService.getInstance().getZoneId());
+        info.setHeader("time",String.valueOf(resTime));
+        info.setStatus(-1);
         return info;
     }
 

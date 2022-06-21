@@ -66,8 +66,7 @@ public final class ProcessRegistry implements NeulinkConst {
      * 温度信息上报响应 upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
      *
      */
-    public synchronized static IProcessor build(Context context, NeulinkTopicParser.Topic topic){
-        String biz = topic.getBiz().toLowerCase();
+    public synchronized static IProcessor build(Context context, String biz){
         if(processors.containsKey(biz)){
             return processors.get(biz);
         }

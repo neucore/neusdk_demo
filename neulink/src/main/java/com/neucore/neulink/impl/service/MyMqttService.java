@@ -2,15 +2,16 @@ package com.neucore.neulink.impl.service;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.impl.LWTInfo;
 import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.JSonUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -223,13 +224,21 @@ public class MyMqttService implements NeulinkConst{
             conOpt.setMaxReconnectDelay(maxReconnectDelay);
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
-            LWTInfo info = ServiceRegistry.getInstance().getDeviceService().lwt();
-            String payload = info.getPayload();
-            int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,info.getQos());
-            boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,info.getRetained());
-            conOpt.setWill(info.getTopicPrefix()+"/" + sccperId + "/" + clientId, payload.getBytes(), qos, retained);
+            LWTTopic lwtTopic = ServiceRegistry.getInstance().getDeviceService().lwtTopic();
+            LWTPayload payloadInfo = ServiceRegistry.getInstance().getDeviceService().lwtPayload();
+
+            payloadInfo.setHeader("version","v1.0");
+            payloadInfo.setHeader("biz","lwt");
+            payloadInfo.setHeader("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+            payloadInfo.setHeader("custid", NeulinkService.getInstance().getCustId());
+            payloadInfo.setHeader("storeid",NeulinkService.getInstance().getStoreId());
+            payloadInfo.setHeader("zoneid",NeulinkService.getInstance().getZoneId());
+
+            String payload = JSonUtils.toString(payloadInfo);
+            int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
+            boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
+            conOpt.setWill(lwtTopic.getTopic(), payload.getBytes(), qos, retained);
             NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
-//        conOpt.setWill("$share/will_test/"+sccperId+"/"+clientId+"/MQTT/DISCONNECT","1".getBytes(),1,true);
         }
         catch (MqttException ex){
             NeuLogUtils.eTag(TAG,"MQTT Init failed",ex);
