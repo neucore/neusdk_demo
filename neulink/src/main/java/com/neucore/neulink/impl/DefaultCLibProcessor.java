@@ -2,6 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
@@ -33,7 +34,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
+    final public void execute(NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         this.topic = topic;
 

@@ -1,40 +1,44 @@
 package com.neucore.neulink.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.neucore.neulink.impl.Cmd;
-import com.neucore.neulink.impl.CmdRes;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
 import java.util.HashMap;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONObject;
 
 public class HeadersUtils {
 
-    public static void binding(Cmd req, NeulinkTopicParser.Topic topic, JSONObject headers){
+    public static void binding(Cmd req, NeulinkTopicParser.Topic topic, JsonObject headers){
 
         String biz = topic.getBiz();
         String version = topic.getVersion();
         String reqNo = topic.getReqId();
         String md5 = topic.getMd5();
         if(ObjectUtil.isNotEmpty(headers)){
-            String _biz = (String) headers.get("biz");
+            JsonObject _biz = (JsonObject) headers.get("biz");
             if(ObjectUtil.isNotEmpty(_biz)){
-                biz = _biz;
+                biz = _biz.getAsString();
             }
-            String _version = (String)headers.get("version");
+            JsonObject _version = (JsonObject) headers.get("version");
             if(ObjectUtil.isNotEmpty(_version)){
-                version = _version;
+                version = _version.getAsString();
             }
-            String _reqNo = (String)headers.get("reqNo");
+            JsonObject _reqNo = (JsonObject)headers.get("reqNo");
             if(ObjectUtil.isNotEmpty(_reqNo)){
-                reqNo = _reqNo;
+                reqNo = _reqNo.getAsString();
             }
-            String _md5 = (String)headers.get("md5");
+            JsonObject _md5 = (JsonObject)headers.get("md5");
             if(ObjectUtil.isNotEmpty(_md5)){
-                md5 = _md5;
+                md5 = _md5.getAsString();
             }
         }
         req.setHeader("biz",biz);
@@ -48,38 +52,39 @@ public class HeadersUtils {
      * @param payload
      * @param topicStr
      */
-    public static void binding(JSONObject payload,String topicStr,int qos){
+    public static void binding(JsonObject payload,String topicStr,int qos){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr,qos);
-        JSONObject  headers = (JSONObject) payload.get("headers");
+        JsonObject  headers = (JsonObject) payload.get("headers");
         if(ObjectUtil.isNotEmpty(headers)){
-            headers.putOpt("biz",topic.getBiz());
-            headers.putOpt("version",topic.getVersion());
-            headers.putOpt("reqNo",topic.getReqId());
-            headers.putOpt("md5",topic.getMd5());
+            headers.add("biz", new JsonPrimitive(topic.getBiz()));
+            headers.add("version",new JsonPrimitive(topic.getVersion()));
+            headers.add("reqNo",new JsonPrimitive(topic.getReqId()));
+            headers.add("md5",new JsonPrimitive(topic.getMd5()));
 
-            headers.putOpt("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
-            headers.putOpt("custid", NeulinkService.getInstance().getCustId());
-            headers.putOpt("storeid",NeulinkService.getInstance().getStoreId());
-            headers.putOpt("zoneid",NeulinkService.getInstance().getZoneId());
+            headers.add("devid", new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
+            headers.add("custid", new JsonPrimitive(NeulinkService.getInstance().getCustId()));
+            headers.add("storeid",new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
+            headers.add("zoneid",new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
 
-            headers.putOpt("time",String.valueOf(resTime));
+            headers.add("time",new JsonPrimitive(String.valueOf(resTime)));
         }
         else{
-            HashMap<String,String> tempHeaders = new HashMap<>();
-            tempHeaders.put("biz",topic.getBiz());
-            tempHeaders.put("version",topic.getVersion());
-            tempHeaders.put("reqNo",topic.getReqId());
-            tempHeaders.put("md5",topic.getMd5());
+            JsonObject tempHeaders = new JsonObject();
 
-            tempHeaders.put("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
-            tempHeaders.put("custid", NeulinkService.getInstance().getCustId());
-            tempHeaders.put("storeid",NeulinkService.getInstance().getStoreId());
-            tempHeaders.put("zoneid",NeulinkService.getInstance().getZoneId());
+            tempHeaders.add("biz",new JsonPrimitive(topic.getBiz()));
+            tempHeaders.add("version",new JsonPrimitive(topic.getVersion()));
+            tempHeaders.add("reqNo",new JsonPrimitive(topic.getReqId()));
+            tempHeaders.add("md5",new JsonPrimitive(topic.getMd5()));
 
-            tempHeaders.put("time",String.valueOf(resTime));
+            tempHeaders.add("devid", new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
+            tempHeaders.add("custid", new JsonPrimitive(NeulinkService.getInstance().getCustId()));
+            tempHeaders.add("storeid",new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
+            tempHeaders.add("zoneid",new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
 
-            payload.putOpt("headers",tempHeaders);
+            tempHeaders.add("time",new JsonPrimitive(String.valueOf(resTime)));
+
+            payload.add("headers",tempHeaders);
         }
     }
 }

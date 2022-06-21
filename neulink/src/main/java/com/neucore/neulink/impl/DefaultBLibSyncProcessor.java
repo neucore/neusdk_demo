@@ -2,6 +2,7 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.ICmdListener;
@@ -34,7 +35,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public void execute(NeulinkTopicParser.Topic topic,JSONObject headers, JSONObject payload) {
+    public void execute(NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         this.topic = topic;
 
