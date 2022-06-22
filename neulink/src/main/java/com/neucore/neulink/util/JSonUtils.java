@@ -3,7 +3,6 @@ package com.neucore.neulink.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
@@ -39,14 +38,6 @@ public class JSonUtils {
     public static String toJson(short[] feature){
         return gson.toJson(feature);
     }
-
-    /*public static String toJsonWithJackson(byte[] feature){
-        return mapper.writeValueAsString(feature);
-    }
-
-    public static Byte[] fromJsonWithJackson(String feature){
-        return gson.fromJson(feature,Byte[].class);
-    }*/
 
     public static String toJson(Object[] feature){
         return gson.toJson(feature);
