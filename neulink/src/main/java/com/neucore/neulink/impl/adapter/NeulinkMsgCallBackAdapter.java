@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IMqttCallBack;
@@ -45,7 +46,7 @@ public class NeulinkMsgCallBackAdapter implements IMqttCallBack {
         JsonObject payload = JSonUtils.toObject(message,JsonObject.class);
         JsonObject headers = (JsonObject) payload.get("headers");
         if(ObjectUtil.isNotEmpty(headers)){
-            JsonElement _biz = headers.get("biz");
+            JsonPrimitive _biz = (JsonPrimitive)headers.get("biz");
             if(ObjectUtil.isNotEmpty(_biz)){
                 biz = _biz.getAsString();
             }

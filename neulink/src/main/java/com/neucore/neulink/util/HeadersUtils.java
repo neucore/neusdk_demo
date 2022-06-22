@@ -24,19 +24,19 @@ public class HeadersUtils {
         String reqNo = topic.getReqId();
         String md5 = topic.getMd5();
         if(ObjectUtil.isNotEmpty(headers)){
-            JsonObject _biz = (JsonObject) headers.get("biz");
+            JsonPrimitive _biz = (JsonPrimitive) headers.get("biz");
             if(ObjectUtil.isNotEmpty(_biz)){
                 biz = _biz.getAsString();
             }
-            JsonObject _version = (JsonObject) headers.get("version");
+            JsonPrimitive _version = (JsonPrimitive) headers.get("version");
             if(ObjectUtil.isNotEmpty(_version)){
                 version = _version.getAsString();
             }
-            JsonObject _reqNo = (JsonObject)headers.get("reqNo");
+            JsonPrimitive _reqNo = (JsonPrimitive)headers.get("reqNo");
             if(ObjectUtil.isNotEmpty(_reqNo)){
                 reqNo = _reqNo.getAsString();
             }
-            JsonObject _md5 = (JsonObject)headers.get("md5");
+            JsonPrimitive _md5 = (JsonPrimitive)headers.get("md5");
             if(ObjectUtil.isNotEmpty(_md5)){
                 md5 = _md5.getAsString();
             }
