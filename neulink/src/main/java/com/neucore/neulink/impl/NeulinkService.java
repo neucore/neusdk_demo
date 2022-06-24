@@ -266,7 +266,7 @@ public class NeulinkService implements NeulinkConst{
     public LWTTopic lwtTopic(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTTopic info = new LWTTopic();
-        info.setTopic("msg/req/lwt/v1.0");
+        info.setTopic("msg/req/lwt");
         info.setRetained(true);
         info.setQos(0);
         return info;
@@ -695,13 +695,17 @@ public class NeulinkService implements NeulinkConst{
                 int len = temps.length;
                 String group = null;
                 String req$res = null;
+                String biz = null;
                 if(len>0){
                     group = temps[0];
                 }
                 if(len>1){
                     req$res = temps[1];
                 }
-                this.topStr = String.format("%s/%s",group,req$res);
+                if(len>2){
+                    biz = temps[2];
+                }
+                this.topStr = String.format("%s/%s/%s",group,req$res,biz);
             }
             this.qos = qos;
             this.retained = retained;
@@ -885,13 +889,17 @@ public class NeulinkService implements NeulinkConst{
                 int len = temps.length;
                 String group = null;
                 String req$res = null;
+                String biz = null;
                 if(len>0){
                     group = temps[0];
                 }
                 if(len>1){
                     req$res = temps[1];
                 }
-                this.topStr = String.format("%s/%s",group,req$res);
+                if(len>2){
+                    biz = temps[2];
+                }
+                this.topStr = String.format("%s/%s/%s",group,req$res,biz);
             }
             this.qos = qos;
             this.retained = retained;
