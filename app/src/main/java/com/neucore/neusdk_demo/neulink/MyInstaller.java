@@ -140,6 +140,8 @@ public class MyInstaller {
         /**
          * ⚠️注意；mqtt通道启用时打开
          * 设置登录用户名密码
+         * MQTT_SERVER 可以用逗号连接多个服务器地址【集群、需要paho库的支持】;
+         * eg：tcp://10.18.9.240:1883,tcp://10.18.9.241:1883,tcp://10.18.9.242:1883,tcp://10.18.9.243:1883,tcp://10.18.9.244:1883
          */
 //        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
 //        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");

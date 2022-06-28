@@ -2,14 +2,14 @@ package com.neucore.neulink.impl.service;
 
 import android.content.Context;
 
-import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 
@@ -196,6 +196,11 @@ public class MyMqttService implements NeulinkConst{
         try {
             NeuLogUtils.iTag(TAG,String.format("init ClientId: %s",clientId));
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
+            String[] serverUrls = serverUrl.split(",");
+            if(serverUrls.length==1){
+                conOpt.setServerURIs(serverUrls);
+            }
+
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
 
