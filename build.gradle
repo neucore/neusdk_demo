@@ -2,7 +2,7 @@ buildscript {
     ext {
         compile_sdk_version = 30
         build_tools_version = "29.0.3"
-        min_sdk_version = 22
+        min_sdk_version = 21
         target_sdk_version = 30
         version_code = 1
         version_name = "V1.0.0"
