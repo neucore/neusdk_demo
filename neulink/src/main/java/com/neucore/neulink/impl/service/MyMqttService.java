@@ -195,16 +195,19 @@ public class MyMqttService implements NeulinkConst{
         MemoryPersistence memoryPersistence = new MemoryPersistence();
         try {
             NeuLogUtils.iTag(TAG,String.format("init ClientId: %s",clientId));
+
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
+
+            conOpt = new MqttConnectOptions();
+
             String[] serverUrls = serverUrl.split(",");
-            if(serverUrls.length==1){
+            if(serverUrls.length>1){
                 conOpt.setServerURIs(serverUrls);
             }
 
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
 
-            conOpt = new MqttConnectOptions();
             // 清除缓存
             conOpt.setCleanSession(cleanSession);
             // 设置连接超时时间，单位：秒
