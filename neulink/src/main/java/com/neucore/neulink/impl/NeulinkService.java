@@ -458,7 +458,7 @@ public class NeulinkService implements NeulinkConst{
 
     private String custid="notimpl";
     public String getCustId(){
-        String scopeId = ConfigContext.getInstance().getConfig("ScopeId","yeker");
+        String scopeId = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID,"1");
         if(ObjectUtil.isNotEmpty(scopeId)){
             return scopeId;
         }
