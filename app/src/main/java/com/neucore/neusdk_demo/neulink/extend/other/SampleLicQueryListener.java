@@ -39,7 +39,7 @@ public class SampleLicQueryListener implements ICmdListener<QueryActionResult,TL
         return new QueryActionResult();
     }
 
-    protected File store(NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
+    protected File store(TLibQueryCmd cmd,NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
         String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + topic.getReqId() + "/";
         new File(path).mkdirs();
         path = path + "/" + index + ".json";

@@ -6,10 +6,11 @@ import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.log.NeuLogUtils;
+import com.neucore.neulink.util.MessageUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
     /**
      *
      */
-    protected void subAll(){
+    public void subAll(){
         /**
          * 单播
          *
@@ -76,31 +77,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
         String bcst_topic = "+/req/" + service.getCustId() + "/#";
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
         int[] qoss = new int[]{qos,qos};
-        IMqttMessageListener[] listeners = new IMqttMessageListener[]{messageListener,messageListener};
+        IMqttMessageListener[] listeners = new IMqttMessageListener[]{service.getDefaultNeulinkMqttCallbackAdapter(),service.getDefaultNeulinkMqttCallbackAdapter()};
         service.subscribeToTopic(new String[]{ucst_topic,bcst_topic}, qoss, listeners);
     }
-
-    /**
-     * msg resppnse listener
-     */
-    private IMqttMessageListener messageListener = new IMqttMessageListener(){
-
-        private String TAG = TAG_PREFIX+"IMqttMessageListener";
-        @Override
-        public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-            MqttReceivedMessage receivedMessage = (MqttReceivedMessage)message;
-
-            String msgContent = new String(receivedMessage.getPayload());
-
-            List<IMqttCallBack>  mqttCallBacks = service.getMqttCallBacks();
-            if (mqttCallBacks != null) {
-                if (mqttCallBacks != null) {
-                    for (IMqttCallBack callback: mqttCallBacks) {
-                        callback.messageArrived(topic, msgContent, receivedMessage.getQos());
-                    }
-                }
-            }
-        }
-    };
 }

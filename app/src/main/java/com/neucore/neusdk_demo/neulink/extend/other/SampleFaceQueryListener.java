@@ -59,7 +59,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
                     /**
                      * 上传到存储服务可以根据
                      */
-                    localFile = store(topic, "users", i, dataArray);
+                    localFile = store(cmd,topic, "users", i, dataArray);
                 }
                 catch (Exception ex){}
                 String md5 = null;
@@ -82,7 +82,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
         return new QueryActionResult();
     }
 
-    protected File store(NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
+    protected File store(TLibQueryCmd cmd,NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
         String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + topic.getReqId() + "/";
         new File(path).mkdirs();
         path = path + "/" + index + ".json";

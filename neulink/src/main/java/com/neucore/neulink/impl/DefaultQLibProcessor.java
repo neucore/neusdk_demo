@@ -16,13 +16,12 @@ import com.neucore.neulink.impl.cmd.rrpc.QResult;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.HeadersUtils;
+import com.neucore.neulink.util.NeulinkUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONObject;
 
 public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
 
@@ -35,20 +34,22 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public void execute(NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
-
-        this.topic = topic;
+    public void execute(int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         TLibQueryCmd req = parser(payload.toString());
 
-        HeadersUtils.binding(req,topic,headers);
+        NeulinkUtils.binding(req,topic,headers);
+
+        String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
+        String version = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_VERSION);
+        String biz = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_BIZ);
 
         payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
          */
-        String topicPrefix = String.format("%s/%s/%s",topic.getPrefix(),"res",topic.getBiz());
+        String resTopic = String.format("%s/%s/%s",topic.getPrefix(),"res",biz);
 
         //检查当前请求是否已经已经到达过
         synchronized (lock){
@@ -60,7 +61,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                             )
                     )
             ) {
-                resLstRsl2Cloud(msg);
+                resLstRsl2Cloud(resTopic,version,reqNo,msg);
                 return;
             }
 
@@ -68,7 +69,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
 
             try {
                 if (msg == null) {
-                    msg = insert(topic,headers.toString(), payload.toString());
+                    msg = insert(req,topic,headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();
@@ -77,7 +78,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                 /**
                  * 响应消息已到达
                  */
-                NeulinkService.getInstance().getPublisherFacde().response(topicPrefix,topic.getBiz(),topic.getVersion(),topic.getReqId(),NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,req.getHeaders());
+                NeulinkService.getInstance().getPublisherFacde().response(resTopic,biz,version,reqNo,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,req.getHeaders());
 
                 long pages = req.getPages();
 
@@ -121,7 +122,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                             }
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(topic, jsonStr);
+                            resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
                             NeuLogUtils.dTag(TAG,"成功完成人脸offset:"+i+"下载");
                         }
                     }
@@ -135,7 +136,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                             if(ObjectUtil.isNotEmpty(res)) {
                                 mergeHeaders(req,res);
                                 String jsonStr = JSonUtils.toString(res);
-                                resLstRsl2Cloud(topic, jsonStr);
+                                resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
                             }
                         }
                         catch(Exception e){
@@ -154,7 +155,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                             res.setPages(pages);
                             res.setOffset(i);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(topic, jsonStr);
+                            resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
                         }
                     }
                 }
@@ -169,7 +170,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(topic, jsonStr);
+                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
                     }
 
                 }
@@ -186,7 +187,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(topic, jsonStr);
+                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
                     }
                 }
                 catch(Exception e){}
@@ -204,7 +205,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
     protected QResult process(NeulinkTopicParser.Topic topic, TLibQueryCmd cmd) {
         ICmdListener<QResult,TLibQueryCmd> listener = getListener(cmd.getObjtype());
         if(listener==null){
-            throw new NeulinkException(STATUS_404,biz()+ " Listener does not implemention");
+            throw new NeulinkException(STATUS_404,cmd.getBiz()+ " Listener does not implemention");
         }
         TLibQueryCmd queryCmd = buildPkg(cmd);
         QResult actionResult = listener.doAction(new NeulinkEvent<>(queryCmd));

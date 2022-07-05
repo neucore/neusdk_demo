@@ -1,7 +1,5 @@
 package com.neucore.neulink.impl;
 
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-
 public class NeulinkTopicParser {
 
     //msg/req/devinfo/v1.0/${req_no}/[/${md5}]
@@ -13,7 +11,7 @@ public class NeulinkTopicParser {
     public static NeulinkTopicParser getInstance(){
         return parser;
     }
-    public Topic cloud2EndParser(String topStr, int qos){
+    public Topic cloud2EndParser(String topStr){
         Topic topic = new Topic();
         topic.setString(topStr);
         String[] paths = topStr.split("/");
@@ -31,7 +29,6 @@ public class NeulinkTopicParser {
             if(len>6){
                 topic.setMd5(paths[6]);
             }
-            topic.setQos(qos);
         }
         else{
             /**
@@ -53,7 +50,6 @@ public class NeulinkTopicParser {
             if(len>6){
                 topic.setMd5(paths[6]);
             }
-            topic.setQos(qos);
         }
         return topic;
     }
@@ -155,14 +151,6 @@ public class NeulinkTopicParser {
 
         public String toString(){
             return topString;
-        }
-
-        public int getQos() {
-            return qos;
-        }
-
-        public void setQos(int qos) {
-            this.qos = qos;
         }
     };
 }

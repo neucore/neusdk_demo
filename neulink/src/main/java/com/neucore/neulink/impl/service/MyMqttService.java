@@ -12,6 +12,7 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.MessageUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -168,12 +169,14 @@ public class MyMqttService implements NeulinkConst{
      */
     public void publish(String reqId,String msg, String topic, int qos, boolean retained, IResCallback iResCallback) {
         try {
+
+            byte[] compress= MessageUtil.encode(topic,msg);
             if(ObjectUtil.isNotEmpty(iResCallback)){
                 MqttActionListenerAdapter myPublishAction = new MqttActionListenerAdapter(reqId, iResCallback);
-                client.publish(topic, msg.getBytes(), qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
+                client.publish(topic, compress, qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
             }
             else{
-                client.publish(topic, msg.getBytes(), qos, retained);
+                client.publish(topic, compress, qos, retained);
             }
 
         } catch (Exception e) {
@@ -230,6 +233,7 @@ public class MyMqttService implements NeulinkConst{
             conOpt.setAutomaticReconnect(autoReconnect);
             //最大重连间隔
             conOpt.setMaxReconnectDelay(maxReconnectDelay);
+
             // 监控Client的状态 $share/{ShareName}/{filter}
             String sccperId = ConfigContext.getInstance().getConfig("ScopeId", "yeker");
             LWTTopic lwtTopic = ServiceRegistry.getInstance().getDeviceService().lwtTopic();
@@ -245,7 +249,7 @@ public class MyMqttService implements NeulinkConst{
             String payload = JSonUtils.toString(payloadInfo);
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
-            conOpt.setWill(lwtTopic.getTopic(), payload.getBytes(), qos, retained);
+            conOpt.setWill(lwtTopic.getTopic(), MessageUtil.encode(lwtTopic.getTopic(),payload), qos, retained);
             NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
         }
         catch (MqttException ex){

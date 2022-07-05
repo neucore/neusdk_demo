@@ -1,48 +1,36 @@
 package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.NeulinkConst;
 
 public class Cmd extends GCmd{
 
-    private String biz;
-
     public String getBiz() {
-        return biz;
+        return this.getHeaders().get(NeulinkConst.NEULINK_HEADERS_BIZ);
     }
 
     protected void setBiz(String biz) {
-        this.biz = biz;
+        this.getHeaders().put(NeulinkConst.NEULINK_HEADERS_BIZ,biz);
     }
 
     @SerializedName("mode")
     protected String cmdStr;
 
-    private String reqNo;
-
     public String getReqNo() {
-        return reqNo;
+        return this.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
     }
     protected void setReqNo(String reqNo) {
-        this.reqNo = reqNo;
+        this.getHeaders().put(NeulinkConst.NEULINK_HEADERS_REQNO,reqNo);
     }
 
-    @Deprecated
-    public String getReqId() {
-        return reqNo;
-    }
-
-    @Deprecated
-    protected void setReqId(String reqNo) {
-        this.reqNo = reqNo;
-    }
     private String version;
 
     public String getVersion() {
-        return version;
+        return this.getHeaders().get(NeulinkConst.NEULINK_HEADERS_VERSION);
     }
 
     protected void setVersion(String version) {
-        this.version = version;
+        this.getHeaders().put(NeulinkConst.NEULINK_HEADERS_VERSION,version);
     }
 
     public String getCmdStr() {

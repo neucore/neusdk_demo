@@ -95,6 +95,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String TOPIC_SHORT = "topic.short";
 
+    public final static String CONTENT_COMPRESS = "compress";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }

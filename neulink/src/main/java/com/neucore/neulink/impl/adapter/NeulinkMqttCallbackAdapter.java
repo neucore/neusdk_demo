@@ -1,0 +1,229 @@
+package com.neucore.neulink.impl.adapter;
+
+import android.content.Context;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IProcessor;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.impl.registry.ProcessRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.log.NeuLogUtils;
+import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.MessageUtil;
+import com.neucore.neulink.util.RequestContext;
+
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
+
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+
+public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallbackExtended, IMqttMessageListener, NeulinkConst {
+    private String TAG = TAG_PREFIX+"NeulinkMqttCallbackAdapter";
+    private NeulinkService service = null;
+    private IDeviceService deviceService = null;
+    private Context context = null;
+    private ReentrantLock reentrantLock = new ReentrantLock();
+
+    public NeulinkMqttCallbackAdapter(Context context, NeulinkService service){
+        this.context = context;
+        this.service = service;
+        deviceService = ServiceRegistry.getInstance().getDeviceService();
+    }
+
+    /**
+     * IMqttActionListener
+     * @param asyncActionToken
+     */
+    @Override
+    public void onSuccess(IMqttToken asyncActionToken) {
+        NeuLogUtils.iTag(TAG, "onSuccess ");
+        service.setFailException(null);
+        service.setMqttConnSuccessed(true);
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.connectSuccess(asyncActionToken);
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * IMqttActionListener
+     * @param asyncActionToken
+     * @param exception
+     */
+    @Override
+    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+        NeuLogUtils.eTag(TAG, "onFailure ",exception);
+        if (!service.isMqttConnSuccessed()) {
+            service.setFailException(exception);
+        } else {
+            service.setFailException(null);
+        }
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback : mqttCallBacks) {
+                try {
+                    callback.connectFailed(asyncActionToken, exception);
+                } catch (Exception ex) {
+                    NeuLogUtils.eTag(TAG, ex.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * MqttCallbackExtended
+     * IMqttCallBack
+     * @param reconnect
+     * @param serverURI
+     */
+    @Override
+    public void connectComplete(boolean reconnect, String serverURI) {
+        try {
+            NeuLogUtils.iTag(TAG, "connectComplete ");
+            reentrantLock.lock();
+            service.getSubscriberFacde().subAll();
+            deviceService.connect();
+            NeuLogUtils.dTag(TAG, "Server:" + serverURI + " ,connectComplete reconnect:" + reconnect);
+            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    try {
+                        callback.connectComplete(reconnect, serverURI);
+                    }
+                    catch (Exception ex){
+                        NeuLogUtils.eTag(TAG,ex.getMessage());
+                    }
+                }
+            }
+            service.setMqttConnSuccessed(true);
+        }
+        finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    /**
+     * MqttCallback
+     * @param cause
+     */
+    @Override
+    public void connectionLost(Throwable cause) {
+        NeuLogUtils.eTag(TAG,"connectionLost",cause);
+        deviceService.disconnect();
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.connectionLost(cause);
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * MqttCallback
+     * @param token
+     */
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        NeuLogUtils.dTag(TAG,"deliveryComplete");
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.deliveryComplete(token);
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * MqttCallbackExtended
+     * IMqttMessageListener
+     * MqttCallback
+     * @param topicStr
+     * @param message
+     * @throws Exception
+     */
+    @Override
+    public void messageArrived(String topicStr, MqttMessage message) {
+
+        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
+
+        int qos = message.getQos();
+        String msgContent = MessageUtil.decode(topicStr,message);
+        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr);
+        String biz = topic.getBiz();
+        String reqId = topic.getReqId();
+        RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
+        JsonObject payload = JSonUtils.toObject(msgContent,JsonObject.class);
+        JsonObject headers = (JsonObject) payload.get("headers");
+        if(ObjectUtil.isNotEmpty(headers)){
+            JsonPrimitive _biz = (JsonPrimitive)headers.get("biz");
+            if(ObjectUtil.isNotEmpty(_biz)){
+                biz = _biz.getAsString();
+            }
+        }
+        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",headers:"+headers);
+        NeuLogUtils.dTag(TAG,"message:"+payload);
+        biz = biz.toLowerCase();
+        IProcessor processor = ProcessRegistry.build(context,biz);
+
+        try {
+            if(processor!=null){
+                processor.execute(qos,topic,headers,payload);
+            }
+            else {
+                throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
+            }
+        }
+        catch (Throwable ex){
+            NeuLogUtils.eTag(TAG,"messageArrived",ex);
+        }
+        finally {
+            NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
+            RequestContext.remove();
+        }
+
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.messageArrived(topicStr, msgContent, message.getQos());
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
+    }
+
+}

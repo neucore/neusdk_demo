@@ -71,6 +71,7 @@ class RegisterAdapter implements NeulinkConst{
 
                 int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
                 NeuLogUtils.iTag(TAG,"do regist ...");
+                int count = 1;
                 while (!logined&&channel==1) {
                     ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
@@ -90,7 +91,10 @@ class RegisterAdapter implements NeulinkConst{
                         NeuLogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(1000*count);
+                        if(count<30){
+                            count++;
+                        }
                     } catch (InterruptedException e) {
                     }
                 }
@@ -126,7 +130,6 @@ class RegisterAdapter implements NeulinkConst{
                         NeuLogUtils.eTag(TAG,"注册失败："+ex.getMessage());
                     }
                 }
-
             }
         }.start();
     }
