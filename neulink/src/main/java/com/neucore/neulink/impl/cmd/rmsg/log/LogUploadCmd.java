@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.cmd.rmsg.log;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Cmd;
 
 public class LogUploadCmd extends Cmd {
@@ -25,11 +26,8 @@ public class LogUploadCmd extends Cmd {
     }
 
     public String getReqNo() {
+        reqId = getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
         return reqId;
-    }
-
-    public void setReqNo(String reqNo) {
-        this.reqId = reqNo;
     }
 
     public String getTime() {

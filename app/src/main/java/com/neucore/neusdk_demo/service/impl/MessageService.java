@@ -28,10 +28,10 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public IMessage save(NeulinkTopicParser.Topic topic,String headers, String payload) {
+    public IMessage save(String reqNo,NeulinkTopicParser.Topic topic,String headers, String payload) {
         Message msg = new Message();
 
-        msg.setReqId(topic.getReqId());
+        msg.setReqId(reqNo);
 
         msg.setReqtime(DatesUtil.getNowTimeStamp());
 

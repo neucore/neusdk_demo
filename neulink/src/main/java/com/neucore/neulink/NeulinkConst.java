@@ -173,6 +173,28 @@ public interface NeulinkConst {
 
     String NEULINK_BIZ_HAT$FACE_INFO = "hat2faceinfo";
 
+    String NEULINK_HEADERS = "headers";
+
+    String NEULINK_HEADERS_MODE = "mode";
+
+    String NEULINK_HEADERS_CUSTID = "custid";
+
+    String NEULINK_HEADERS_STOREID = "storeid";
+
+    String NEULINK_HEADERS_ZONEID = "zoneid";
+
+    String NEULINK_HEADERS_TIME = "time";
+
+    String NEULINK_HEADERS_DEVID = "devid";
+
+    String NEULINK_HEADERS_BIZ = "biz";
+
+    String NEULINK_HEADERS_VERSION = "version";
+
+    String NEULINK_HEADERS_REQNO = "reqNo";
+
+    String NEULINK_HEADERS_MD5 = "md5";
+
     /**
      * 成功
      */

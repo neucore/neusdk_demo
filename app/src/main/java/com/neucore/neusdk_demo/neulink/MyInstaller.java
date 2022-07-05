@@ -145,16 +145,16 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
         extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.244:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1683");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
          * 设置设备注册服务地址
          */
 //        extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/v1/neulink/upload2cloud");
-//        /**
-//         * 30分钟
-//         */
+        /**
+         * 30分钟
+         */
 //        extConfig.setProperty(ConfigContext.HTTP_SESSION_TIMEOUT,String.valueOf(30*60*1000L));
         //##########################################################################################
         /**
