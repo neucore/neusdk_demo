@@ -53,9 +53,9 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String  UPLOAD_CHANNEL = "upload.channel";//0:mqtt;1:https【默认为mqtt】
 
-    public final static String  MQTT_CHANNEL = "0";
+    public final static Integer  MQTT_CHANNEL = 0;
 
-    public final static String HTTP_CHANNEL = "1";
+    public final static Integer HTTP_CHANNEL = 1;
 
     public final static String STATUS_MANUAL_REPORT = "status.manual.report";
 
@@ -95,7 +95,9 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String TOPIC_SHORT = "topic.short";
 
-    public final static String CONTENT_COMPRESS = "compress";
+    public final static String CUSTMER_COMPRESS = "custmer.compress";
+
+    public final static String PRODUCT_COMPRESS = "producter.compress";
 
     private Properties defaultConfig = new Properties();
     void loadDefault() {
