@@ -13,7 +13,7 @@ public class MessageUtil implements NeulinkConst {
 
     public static byte[] encode(String topic, String payload){
         byte[] bytes = payload.getBytes(StandardCharsets.UTF_8);
-        Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,false);
+        Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,true);
         if(!isCompress){
             return bytes;
         }
@@ -27,7 +27,7 @@ public class MessageUtil implements NeulinkConst {
         boolean isRetained = message.isRetained();
         byte[] payload = message.getPayload();
         String msgContent = null;
-        Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.CUSTMER_COMPRESS,false);
+        Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.CUSTMER_COMPRESS,true);
         if(isCompress){
             payload = CompressUtil.gzipUncompress(payload);
         }

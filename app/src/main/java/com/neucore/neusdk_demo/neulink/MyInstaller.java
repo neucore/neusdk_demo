@@ -136,11 +136,7 @@ public class MyInstaller {
          * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
-        /**
-         * 通道是否支持压缩
-         */
-        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false");//接收
-        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false");//上报
+
         /**
          * 开启短主题
          */
