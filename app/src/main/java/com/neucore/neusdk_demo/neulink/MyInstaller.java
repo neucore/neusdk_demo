@@ -136,6 +136,15 @@ public class MyInstaller {
          * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
          */
         extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
+        /**
+         * 通道是否支持压缩
+         */
+        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false");//接收
+        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false");//上报
+        /**
+         * 开启短主题
+         */
+        extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
@@ -143,18 +152,14 @@ public class MyInstaller {
          * MQTT_SERVER 可以用逗号连接多个服务器地址【集群、需要paho库的支持】;
          * eg：tcp://10.18.9.240:1883,tcp://10.18.9.241:1883,tcp://10.18.9.242:1883,tcp://10.18.9.243:1883,tcp://10.18.9.244:1883
          */
-//        extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
-//        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false");//接收
-//        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"true");//上报
-//        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
-//        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-//        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
+        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
+        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         //##########################################################################################
         /**
          * ⚠️注意；http 通道启用时打开
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"true");//上报
         extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.51:18097/v1/neulink/upload2cloud");
         /**
          * 30分钟
