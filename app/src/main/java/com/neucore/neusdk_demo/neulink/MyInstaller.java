@@ -132,15 +132,18 @@ public class MyInstaller {
          * 设置设备端与云端的通信通道；
          * 默认为mqtt【下发、上报都走mqtt】；
          * 即：所有End2Cloud的neulink上报都是mqtt消息；Cloud2End的neulink的下发都是mqtt消息；
-         *
          * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
+         *
+         * 扩展设置：
+         * 上报通道设置【0：mqtt；1：http】，默认mqtt
+         * extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");
+         * 设置topic模式，默认：TOPIC_SHORT
+         * extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+         * 下发内容默认压缩
+         * extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
+         * 上传内容默认压缩
+         * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
          */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//0：mqtt；1：http
-
-        /**
-         * 开启短主题
-         */
-        extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
@@ -156,7 +159,7 @@ public class MyInstaller {
          * ⚠️注意；http 通道启用时打开
          * 设置设备注册服务地址
          */
-        extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://10.18.9.51:18097/v1/neulink/upload2cloud");
+//        extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://dev.neucore.com/api/v1/neulink/upload2cloud");
         /**
          * 30分钟
          */
