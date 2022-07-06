@@ -39,7 +39,7 @@ public class NeuHttpHelper implements NeulinkConst{
 	}
 
 	private static OkHttpClient getClient(int connTimeout,int readTimeout){
-		Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,false);
+		Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,true);
 		if(isCompress){
 			OkHttpClient okHttpClient = new OkHttpClient.Builder()
 					.addInterceptor(new GzipRequestInterceptor())

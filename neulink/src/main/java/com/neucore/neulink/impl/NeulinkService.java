@@ -558,7 +558,7 @@ public class NeulinkService implements NeulinkConst{
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
-            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
                 JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
@@ -754,7 +754,7 @@ public class NeulinkService implements NeulinkConst{
             this.payload = payload;
             this.topStr = topStr;
             this.payload = payload;
-            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 String topStrTemp = topStr;
                 JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
