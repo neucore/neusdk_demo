@@ -10,86 +10,97 @@ public class CompressUtil {
 
     /**
      *
-     * @param str
+     * @param primContent
      * @param encoding
      * @return
      */
-    public static byte[] gzipCompress(String str, String encoding) {
-        if (str == null || str.length() == 0) {
+    public static byte[] gzipCompress(String primContent, String encoding) {
+        if (primContent == null || primContent.length() == 0) {
             return null;
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = null;
         try {
             gzip = new GZIPOutputStream(out);
-            gzip.write(str.getBytes(encoding));
-            return out.toByteArray();
+            gzip.write(primContent.getBytes(encoding));
         } catch (IOException e) {
-        }
-        finally {
-            try {
-                gzip.close();
-            } catch (IOException e) {
+        } finally {
+            if (gzip != null) {
+                try {
+                    gzip.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return null;
+        return out.toByteArray();
     }
 
     /**
      *
-     * @param bytes
+     * @param primContent
      * @return
      */
-    public static byte[] gzipCompress(byte[] bytes) {
-        if (bytes == null || bytes.length == 0) {
+    public static byte[] gzipCompress(byte[] primContent) {
+        if (primContent == null || primContent.length == 0) {
             return null;
         }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = null;
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
             gzip = new GZIPOutputStream(out);
-            gzip.write(bytes);
-            return out.toByteArray();
+            gzip.write(primContent);
         } catch (IOException e) {
-        }
-        finally {
-            try {
-                gzip.close();
-            } catch (IOException e) {
+        } finally {
+            if (gzip != null) {
+                try {
+                    gzip.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return null;
+        return out.toByteArray();
     }
+
     /**
      *
-     * @param bytes
+     * @param compressed
      * @return
      */
-    public static byte[] gzipUncompress(byte[] bytes) {
-        if (bytes == null || bytes.length == 0) {
+    public static byte[] gzipUncompress(byte[] compressed) {
+        if (compressed == null) {
             return null;
         }
-        GZIPInputStream ungzip = null;
-        ByteArrayOutputStream out = null;
+        ByteArrayInputStream in = null;
+        GZIPInputStream ginzip = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            out = new ByteArrayOutputStream();
-            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-            ungzip = new GZIPInputStream(in);
-            byte[] buffer = new byte[256];
-            int n;
-            while ((n = ungzip.read(buffer)) >= 0) {
-                out.write(buffer, 0, n);
+            in = new ByteArrayInputStream(compressed);
+            ginzip = new GZIPInputStream(in);
+
+            byte[] buffer = new byte[1024];
+            int offset = -1;
+            while ((offset = ginzip.read(buffer)) != -1) {
+                out.write(buffer, 0, offset);
             }
             return out.toByteArray();
         } catch (IOException e) {
-        }
-        finally {
-            try {
-                out.close();
-            } catch (IOException e) {
+        } finally {
+            if (ginzip != null) {
+                try {
+                    ginzip.close();
+                } catch (IOException e) {
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
             }
             try {
-                ungzip.close();
+                out.close();
             } catch (IOException e) {
             }
         }

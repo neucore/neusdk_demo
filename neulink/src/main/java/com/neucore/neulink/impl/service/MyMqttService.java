@@ -1,6 +1,8 @@
 package com.neucore.neulink.impl.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
@@ -10,6 +12,7 @@ import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
+import com.neucore.neulink.util.CompressUtil;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
@@ -21,6 +24,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.nio.charset.StandardCharsets;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -167,7 +172,7 @@ public class MyMqttService implements NeulinkConst{
      * @param qos
      * @param retained
      */
-    public void publish(String reqId,String msg, String topic, int qos, boolean retained, IResCallback iResCallback) {
+    public void publish(String reqId, String msg, String topic, int qos, boolean retained, IResCallback iResCallback) {
         try {
 
             byte[] compress= MessageUtil.encode(topic,msg);
@@ -249,7 +254,8 @@ public class MyMqttService implements NeulinkConst{
             String payload = JSonUtils.toString(payloadInfo);
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
-            conOpt.setWill(lwtTopic.getTopic(), MessageUtil.encode(lwtTopic.getTopic(),payload), qos, retained);
+            byte[] encoded = MessageUtil.encode(lwtTopic.getTopic(),payload);
+            conOpt.setWill(lwtTopic.getTopic(),encoded, qos, retained);
             NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
         }
         catch (MqttException ex){
