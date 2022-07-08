@@ -38,6 +38,8 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
 
         TLibQueryCmd req = parser(payload.toString());
 
+        req.setDebug(debug);
+
         NeulinkUtils.binding(req,topic,headers);
 
         String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);

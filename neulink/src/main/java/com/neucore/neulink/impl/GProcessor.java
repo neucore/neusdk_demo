@@ -45,6 +45,8 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
         Req req = parser(payload.toString());
 
+        req.setDebug(debug);
+
         NeulinkUtils.binding(req,topic,headers);
 
         String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
