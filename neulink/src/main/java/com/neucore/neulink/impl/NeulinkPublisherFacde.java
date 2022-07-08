@@ -266,7 +266,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         upgrRes.setMsg("下载中");
         upgrRes.setProgress(progress);
         upgrRes.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-        response(topicPrefix,version,reqId,upgrRes,qos,retained,null);
+        response(false,topicPrefix,version,reqId,upgrRes,qos,retained,null);
     }
     /**
      * msg/req/devinfo/v1.0/${req_no}[/${md5}][/dev_id]
@@ -486,27 +486,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     /**
      *
      * @param topicPrefix
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param heads
-     */
-    void response(String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
-        CmdRes res = new CmdRes();
-        res.setHeaders(heads);
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
-        response(topicPrefix,version,reqId,res,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false), resCallback);
-    }
-
-    /**
-     *
-     * @param topicPrefix
      * @param version
      * @param reqId
      * @param res
@@ -515,8 +494,44 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     private void response(String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
+        response(false,topicPrefix,version,reqId,res,qos,retained,callback);
+    }
+    /**
+     *
+     * @param debug
+     * @param topicPrefix
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param heads
+     */
+    void response(boolean debug,String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
+        CmdRes res = new CmdRes();
+        res.setHeaders(heads);
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
+        response(debug,topicPrefix,version,reqId,res,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false), resCallback);
+    }
+
+    /**
+     *
+     * @param debug
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param res
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    private void response(boolean debug,String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
-        service.publishMessage(topicPrefix,version,reqId,payloadStr,qos,retained,callback);
+        service.publishMessage(debug,topicPrefix,version,reqId,payloadStr,qos,retained,callback);
     }
 }

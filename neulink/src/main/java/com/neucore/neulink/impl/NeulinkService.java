@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.JsonObject;
 import com.neucore.neulink.impl.adapter.NeulinkMqttCallbackAdapter;
+import com.neucore.neulink.impl.registry.CallbackRegistry;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.log.NeuLogUtils;
@@ -308,7 +309,7 @@ public class NeulinkService implements NeulinkConst{
     }
 
     /**
-     *
+     * 0
      * @param topicPrefix
      * @param version
      * @param payload
@@ -317,9 +318,8 @@ public class NeulinkService implements NeulinkConst{
     protected void publishMessage(String topicPrefix,String version, String payload, int qos){
         publishMessage(topicPrefix,version, payload, qos,null);
     }
-
     /**
-     *
+     * 1
      * @param topicPrefix
      * @param version
      * @param payload
@@ -329,9 +329,8 @@ public class NeulinkService implements NeulinkConst{
     protected void publishMessage(String topicPrefix, String version, String payload, int qos, IResCallback callback){
         publishMessage(topicPrefix,version, UUID.fastUUID().toString(),payload, qos,callback);
     }
-
     /**
-     *
+     * 2
      * @param topicPrefix
      * @param version
      * @param payload
@@ -344,26 +343,109 @@ public class NeulinkService implements NeulinkConst{
     }
 
     /**
-     *
+     * 3
+     * @param debug
      * @param topicPrefix
      * @param version
      * @param reqId
      * @param payload
      * @param qos
      */
-    protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos){
-        publishMessage(topicPrefix,version,reqId,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),null);
+    protected void publishMessage(boolean debug,String topicPrefix, String version, String reqId, String payload, int qos){
+        publishMessage(debug,topicPrefix,version,reqId,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),null);
     }
 
+    /**
+     * 4
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param payload
+     * @param qos
+     * @param callback
+     */
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos, IResCallback callback){
         publishMessage(topicPrefix,version,reqId,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
+    /**
+     * 5
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param payload
+     * @param qos
+     * @param retained
+     */
     protected void publishMessage(String topicPrefix, String version, String reqId, String payload, int qos,boolean retained){
         publishMessage(topicPrefix,version,reqId,payload,qos,retained,null);
     }
 
+    /**
+     * 6
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param payload
+     * @param qos
+     * @param retained
+     * @param callback
+     */
     protected void publishMessage(final String topicPrefix, String version, final String reqId, final String payload, final int qos, final boolean retained, final IResCallback callback){
+        publishMessage(false,topicPrefix,version,reqId,payload,qos,retained,callback);
+    }
+
+    /**
+     *
+     * @param debug
+     * @param topicPrefix
+     * @param biz
+     * @param version
+     * @param reqId
+     * @param mode
+     * @param code
+     * @param message
+     * @param heads
+     */
+    void publishMessage(boolean debug,String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
+        CmdRes res = new CmdRes();
+        res.setHeaders(heads);
+        res.setCode(code);
+        res.setMsg(message);
+        res.setCmdStr(mode);
+        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
+        response(debug,topicPrefix,version,reqId,res,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false), resCallback);
+    }
+
+    /**
+     *
+     * @param debug
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param res
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    private void response(boolean debug,String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
+        res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        String payloadStr = JSonUtils.toString(res);
+        publishMessage(debug,topicPrefix,version,reqId,payloadStr,qos,retained,callback);
+    }
+
+    /**
+     *
+     * @param debug
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param payload
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    protected void publishMessage(boolean debug,final String topicPrefix, String version, final String reqId, final String payload, final int qos, final boolean retained, final IResCallback callback){
 
         int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
@@ -379,7 +461,7 @@ public class NeulinkService implements NeulinkConst{
                 regist(reqId,topic,payload,qos,retained,null);
             }
             else{
-                publish(reqId,topic,payload,qos,retained,null,callback);
+                publish(debug,reqId,topic,payload,qos,retained,null,callback);
             }
         }
         else{
@@ -394,7 +476,7 @@ public class NeulinkService implements NeulinkConst{
                 regist(reqId,topic,payload,qos,retained,params);
             }
             else {
-                publish(reqId,topic,payload,qos,retained,params,callback);
+                publish(debug,reqId,topic,payload,qos,retained,params,callback);
             }
         }
     }
@@ -417,7 +499,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    private void publish(String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
+    private void publish(boolean debug,String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
 
         if(ObjectUtil.isEmpty(callback)){
             NeuLogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
@@ -432,7 +514,7 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynPublisher(reqId,payload,topStr,qos,retained,params,callback));
+            fixedThreadPool.execute(new AsynPublisher(debug,reqId,payload,topStr,qos,retained,params,callback));
         }
     }
 
@@ -612,7 +694,7 @@ public class NeulinkService implements NeulinkConst{
                          * MQTT机制
                          */
                         NeuLogUtils.iTag(TAG,"MQTT 注册");
-                        myMqttService.publish(reqId,payload,topStr, qos, retained,null);
+                        myMqttService.publish(false,reqId,payload,topStr, qos, retained,null);
                         neulinkServiceInited = true;
                         registed = true;
                     }
@@ -631,7 +713,7 @@ public class NeulinkService implements NeulinkConst{
                             NeuLogUtils.iTag(TAG,"Http 注册");
 
                             String topic = URLEncoder.encode(topStr,"UTF-8");
-                            response = NeuHttpHelper.post(registServer+"?topic="+topic,payload,params,10,60,1);
+                            response = NeuHttpHelper.post(false,registServer+"?topic="+topic,payload,params,10,60,1);
 
                             NeuLogUtils.dTag(TAG,"设备注册响应："+response);
 
@@ -741,6 +823,7 @@ public class NeulinkService implements NeulinkConst{
      * 异步发布器
      */
     class AsynPublisher implements Runnable{
+        boolean debug;
         private String reqId;
         private String topStr;
         private String payload;
@@ -748,7 +831,8 @@ public class NeulinkService implements NeulinkConst{
         private Boolean retained;
         private Map<String,String> params;
         private IResCallback callback;
-        public AsynPublisher(String reqId, String topStr, String payload, int qos, Boolean retained, Map<String,String> params, IResCallback callback){
+        public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained, Map<String,String> params, IResCallback callback){
+            this.debug = debug;
             this.reqId = reqId;
             this.topStr = topStr;
             this.payload = payload;
@@ -778,6 +862,9 @@ public class NeulinkService implements NeulinkConst{
                     biz = temps[2];
                 }
                 this.topStr = String.format("%s/%s/%s",group,req$res,biz);
+                if(debug){
+                    this.topStr = topStr+"/debug";
+                }
             }
             this.qos = qos;
             this.retained = retained;
@@ -798,7 +885,7 @@ public class NeulinkService implements NeulinkConst{
                     String[] topics = topStr.split("/");
 
                 }
-                myMqttService.publish(reqId,payload,topStr, qos, retained,callback);
+                myMqttService.publish(debug,reqId,payload,topStr, qos, retained,callback);
             }
             else{
                 /**
@@ -810,7 +897,7 @@ public class NeulinkService implements NeulinkConst{
                 while(!done && count<3){
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
-                        String response = NeuHttpHelper.post(httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
+                        String response = NeuHttpHelper.post(debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
 
                         NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
 

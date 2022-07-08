@@ -172,10 +172,10 @@ public class MyMqttService implements NeulinkConst{
      * @param qos
      * @param retained
      */
-    public void publish(String reqId, String msg, String topic, int qos, boolean retained, IResCallback iResCallback) {
+    public void publish(boolean debug,String reqId, String msg, String topic, int qos, boolean retained, IResCallback iResCallback) {
         try {
 
-            byte[] compress= MessageUtil.encode(topic,msg);
+            byte[] compress= MessageUtil.encode(debug,topic,msg);
             if(ObjectUtil.isNotEmpty(iResCallback)){
                 MqttActionListenerAdapter myPublishAction = new MqttActionListenerAdapter(reqId, iResCallback);
                 client.publish(topic, compress, qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
@@ -254,7 +254,7 @@ public class MyMqttService implements NeulinkConst{
             String payload = JSonUtils.toString(payloadInfo);
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
-            byte[] encoded = MessageUtil.encode(lwtTopic.getTopic(),payload);
+            byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
             conOpt.setWill(lwtTopic.getTopic(),encoded, qos, retained);
             NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
         }

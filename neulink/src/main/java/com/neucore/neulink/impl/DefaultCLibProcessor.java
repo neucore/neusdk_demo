@@ -33,7 +33,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
+    final public void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         CheckCmd req = parser(payload.toString());
 
@@ -60,7 +60,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                             )
                     )
             ) {
-                resLstRsl2Cloud(resTopic,version,reqNo,msg);
+                resLstRsl2Cloud(debug,resTopic,version,reqNo,msg);
                 return;
             }
 
@@ -77,8 +77,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                 /**
                  * 响应消息已到达
                  */
-                NeulinkService.getInstance().getPublisherFacde().response(resTopic,biz,version,reqNo,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,req.getHeaders());
-
+                resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
                 try {
                     QueryActionResult result = process(topic,req);
 
@@ -95,7 +94,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                         }
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
                 }
                 catch(NeulinkException ex){
@@ -108,7 +107,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                         if(ObjectUtil.isNotEmpty(res)) {
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                         }
                     }
                     catch(Exception e){
@@ -123,7 +122,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
                 }
             }
@@ -137,7 +136,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
 
                 }
@@ -154,7 +153,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
                 }
                 catch(Exception e){}
