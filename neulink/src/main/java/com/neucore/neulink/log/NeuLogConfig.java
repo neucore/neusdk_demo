@@ -143,7 +143,7 @@ class NeuLogConfig {
     private void configureFileAppender() {
         Logger root = Logger.getRootLogger();
 
-        Layout fileLayout = new PatternLayout(getFilePattern());
+        Layout fileLayout = new MyPatternLayout(getFilePattern());
         RollingFileAppender rollingFileAppender;
         try {
             rollingFileAppender = new RollingFileAppender(fileLayout, getFileName());

@@ -30,6 +30,7 @@ import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.NeulinkUtils;
+import com.neucore.neulink.util.RequestContext;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -453,8 +454,6 @@ public class NeulinkService implements NeulinkConst{
 
         final String topic = buildTopic(topicPrefix,version,reqId,md5);
 
-        NeuLogUtils.dTag(TAG,"upload2cloud with "+(channel==0?"mqtt topic: ":"http topic: ")+topic);
-
         if (channel==0){//向下兼容
             if(topic.startsWith("msg/req/devinfo")) {
                 NeuLogUtils.iTag(TAG,"mqtt regist");
@@ -672,6 +671,9 @@ public class NeulinkService implements NeulinkConst{
 
         @Override
         public void run() {
+
+            RequestContext.setId(reqId);
+
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             NeuLogUtils.iTag(TAG,"开始异步注册：run");
             int trys = 1;
@@ -816,6 +818,7 @@ public class NeulinkService implements NeulinkConst{
                     }
                 }
             }
+            RequestContext.removeId();
         }
     }
 
@@ -863,7 +866,7 @@ public class NeulinkService implements NeulinkConst{
                 }
                 this.topStr = String.format("%s/%s/%s",group,req$res,biz);
                 if(debug){
-                    this.topStr = topStr+"/debug";
+                    this.topStr = this.topStr+"/debug";
                 }
             }
             this.qos = qos;
@@ -873,18 +876,19 @@ public class NeulinkService implements NeulinkConst{
         }
         @Override
         public void run() {
+
+            RequestContext.setDebug(debug);
+            RequestContext.setId(reqId);
+
             /**
              * End2Cloud
              */
+            NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
+            NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
+
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
-                NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
-                NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
-                Boolean debug = ConfigContext.getInstance().getConfig("Debug",true);
-                if(!debug){
-                    String[] topics = topStr.split("/");
 
-                }
                 myMqttService.publish(debug,reqId,payload,topStr, qos, retained,callback);
             }
             else{
@@ -898,11 +902,6 @@ public class NeulinkService implements NeulinkConst{
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
                         String response = NeuHttpHelper.post(debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
-
-                        NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
-
-                        NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
-
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
                             Result result = JSonUtils.toObject(response,Result.class);
@@ -966,6 +965,7 @@ public class NeulinkService implements NeulinkConst{
                     }
                 }
             }
+            RequestContext.removeId();
         }
     }
 }

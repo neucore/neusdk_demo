@@ -8,7 +8,6 @@ import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 
 public class MyPatternParser extends PatternParser {
-    int counter = 0;
     public MyPatternParser(String pattern) {
         super(pattern);
     }

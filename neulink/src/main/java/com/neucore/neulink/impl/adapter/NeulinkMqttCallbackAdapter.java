@@ -176,15 +176,15 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
     @Override
     public void messageArrived(String topicStr, MqttMessage message) {
         boolean debug = topicStr.toLowerCase().endsWith("/debug");
+        RequestContext.setDebug(debug);
+
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr);
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
-        RequestContext.setDebug(debug);
-        RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
-        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
         int qos = message.getQos();
+        boolean isRetained = message.isRetained();
+        int messageId = message.getId();
         String msgContent = MessageUtil.decode(debug,topicStr,message);
-
         JsonObject payload = JSonUtils.toObject(msgContent,JsonObject.class);
         JsonObject headers = (JsonObject) payload.get("headers");
         if(ObjectUtil.isNotEmpty(headers)){
@@ -192,9 +192,16 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
             if(ObjectUtil.isNotEmpty(_biz)){
                 biz = _biz.getAsString();
             }
+            JsonPrimitive _reqId = (JsonPrimitive)headers.get("reqNo");
+            if(ObjectUtil.isNotEmpty(_reqId)){
+                reqId = _reqId.getAsString();
+            }
         }
-        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",headers:"+headers);
-        NeuLogUtils.dTag(TAG,"message:"+payload);
+        RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
+
+        String detailLog = topic + ";qos:" + qos + ";retained:" + isRetained + "messageId:"+messageId;
+        NeuLogUtils.iTag(TAG, detailLog);
+        NeuLogUtils.iTag(TAG, "messageArrived:" + msgContent);
         biz = biz.toLowerCase();
         IProcessor processor = ProcessRegistry.build(context,biz);
 
@@ -222,8 +229,6 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
         }
         finally {
             NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
-            RequestContext.removeId();
-            RequestContext.removeDebug();
         }
     }
 
