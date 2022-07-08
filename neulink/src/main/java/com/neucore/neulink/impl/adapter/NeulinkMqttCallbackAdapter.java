@@ -25,7 +25,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -176,15 +175,16 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
      */
     @Override
     public void messageArrived(String topicStr, MqttMessage message) {
-
-        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
         boolean debug = topicStr.toLowerCase().endsWith("/debug");
-        int qos = message.getQos();
-        String msgContent = MessageUtil.decode(debug,topicStr,message);
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr);
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
+        RequestContext.setDebug(debug);
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
+        NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
+        int qos = message.getQos();
+        String msgContent = MessageUtil.decode(debug,topicStr,message);
+
         JsonObject payload = JSonUtils.toObject(msgContent,JsonObject.class);
         JsonObject headers = (JsonObject) payload.get("headers");
         if(ObjectUtil.isNotEmpty(headers)){
@@ -205,25 +205,25 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
             else {
                 throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
             }
+            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    try {
+                        callback.messageArrived(topicStr, msgContent, message.getQos());
+                    }
+                    catch (Exception ex){
+                        NeuLogUtils.eTag(TAG,ex.getMessage());
+                    }
+                }
+            }
         }
         catch (Throwable ex){
             NeuLogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
             NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
-            RequestContext.remove();
-        }
-
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.messageArrived(topicStr, msgContent, message.getQos());
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
-                }
-            }
+            RequestContext.removeId();
+            RequestContext.removeDebug();
         }
     }
 

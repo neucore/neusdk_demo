@@ -2,6 +2,8 @@ package com.neucore.neulink.util;
 
 import java.util.UUID;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class RequestContext {
     private static ThreadLocal<String> ids = new InheritableThreadLocal<String>();
     public static String getId(){
@@ -15,7 +17,23 @@ public class RequestContext {
     public static void setId(String id){
         ids.set(id);
     }
-    public static void remove(){
+    public static void removeId(){
         ids.remove();
+    }
+
+    private static ThreadLocal<Boolean> debugs = new InheritableThreadLocal<Boolean>();
+    public static boolean isDebug(){
+        Boolean debug = debugs.get();
+        if(ObjectUtil.isNotEmpty(debug)){
+            return debug;
+        }
+        return false;
+    }
+
+    public static void setDebug(boolean debug){
+        debugs.set(debug);
+    }
+    public static void removeDebug(){
+        debugs.remove();
     }
 }
