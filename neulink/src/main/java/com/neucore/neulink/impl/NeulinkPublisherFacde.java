@@ -60,7 +60,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 车牌抓拍上报
      * @param num
      * @param color
      * @param imageUrl
@@ -75,7 +75,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 车牌抓拍上报
      * @param num
      * @param color
      * @param imageUrl
@@ -109,7 +109,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param data
      * @param qos
      */
@@ -118,7 +118,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param data
      * @param qos
      * @param retained
@@ -138,7 +138,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param data
      * @param qos
      * @param callback
@@ -148,7 +148,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param data
      * @param qos
      * @param retained
@@ -183,7 +183,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param url
      * @param info
      * @param qos
@@ -194,7 +194,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 人脸抓拍上报
      * @param url
      * @param info
      * @param qos
@@ -230,7 +230,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 上报升级包下载进度
+     * OTA升级异步上报升级包下载进度
      * @param topicPrefix
      * @param reqId
      * @param progress
@@ -240,7 +240,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * OTA升级异步上报升级包下载进度
      * @param topicPrefix
      * @param version
      * @param reqId
@@ -252,7 +252,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * OTA升级异步上报升级包下载进度
      * @param topicPrefix
      * @param version
      * @param reqId
@@ -294,7 +294,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * rmsg请求异步处理响应
      * @param biz
      * @param version
      * @param reqId
@@ -323,7 +323,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * rmsg请求异步处理响应
      * @param biz
      * @param version
      * @param reqId
@@ -376,7 +376,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     *
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
      * @param biz
      * @param version
      * @param reqId
