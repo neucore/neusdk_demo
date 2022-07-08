@@ -48,7 +48,7 @@ class NeuLogConfig {
      *    ### [时间{时间格式}][信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    public static final String LOG_FILE_PATTERN = "[%-d{yyyy-MM-dd HH:mm:ss}][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
+    public static final String LOG_FILE_PATTERN = "[%-d{yyyy-MM-dd HH:mm:ss}][%I][Class: %c.%M(%F:%L)] %n[Level: %-5p] - Msg: %m%n";
 
     /** 生产环境下的log等级 **/
     public static final Level LOG_LEVEL_PRODUCE = Level.ALL;
@@ -74,7 +74,7 @@ class NeuLogConfig {
      *    ### [时间{时间格式}][信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    public static String filePattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [Class: %c{1}] - Msg: %m%n";
+    public static String filePattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [%I] [Class: %c{1}] - Msg: %m%n";
 
     /**
      *    ### LogCat控制台输出格式
@@ -82,7 +82,7 @@ class NeuLogConfig {
      *    ### [Class: 信息所在的class.method(className：lineNumber)] 换行
      *    ### [Level: 5个字符的等级名称] - Msg: 输出信息 换行
      */
-    public static String logCatPattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [Class: %c{1}] - Msg: %m%n";
+    public static String logCatPattern = "[%-d{yyyy-MM-dd HH:mm:ss}] [%I] [Class: %c{1}] - Msg: %m%n";
     private String fileName = "android-log4j.log";
     private int maxBackupSize = 5;
     private long maxFileSize = 1024 * 1024 * 5L;
@@ -160,9 +160,8 @@ class NeuLogConfig {
 
     private void configureLogCatAppender() {
         Logger root = Logger.getRootLogger();
-        Layout logCatLayout = new PatternLayout(getLogCatPattern());
+        Layout logCatLayout = new MyPatternLayout(getLogCatPattern());
         NeuLogCatAppender neuLogCatAppender = new NeuLogCatAppender(logCatLayout);
-
         root.addAppender(neuLogCatAppender);
     }
 
