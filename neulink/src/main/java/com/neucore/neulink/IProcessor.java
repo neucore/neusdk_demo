@@ -7,5 +7,5 @@ import cn.hutool.json.JSONObject;
 
 public interface IProcessor extends NeulinkConst {
 
-    void execute(int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload);
+    void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload);
 }

@@ -35,23 +35,12 @@ public class NeuHttpHelper implements NeulinkConst{
 	private static String TAG = TAG_PREFIX+"NeuHttpHelper";
 
 	private static OkHttpClient getClient(){
-		return getClient(5,5);
+		return getClient(false,5,5);
 	}
 
-	private static OkHttpClient getClient(int connTimeout,int readTimeout){
+	private static OkHttpClient getClient(boolean debug,int connTimeout,int readTimeout){
 		Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,true);
-		if(isCompress){
-			OkHttpClient okHttpClient = new OkHttpClient.Builder()
-					.addInterceptor(new GzipRequestInterceptor())
-					.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
-					.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
-					.writeTimeout(readTimeout,TimeUnit.MINUTES)
-					.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
-					.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
-					.build();
-			return okHttpClient;
-		}
-		else{
+		if(debug||!isCompress){
 			OkHttpClient okHttpClient = new OkHttpClient.Builder()
 					.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
 					.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
@@ -61,6 +50,16 @@ public class NeuHttpHelper implements NeulinkConst{
 					.build();
 			return okHttpClient;
 		}
+
+		OkHttpClient okHttpClient = new OkHttpClient.Builder()
+				.addInterceptor(new GzipRequestInterceptor())
+				.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
+				.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
+				.writeTimeout(readTimeout,TimeUnit.MINUTES)
+				.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
+				.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
+				.build();
+		return okHttpClient;
 	}
 
 	private static Request createRequest(String fileUrl){
@@ -191,7 +190,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		Response response = null;
 		int trys = 1;
 
-		OkHttpClient client = getClient(connTime,execTime);
+		OkHttpClient client = getClient(false,connTime,execTime);
 		int code = 200;
 		while(trys<=tryNum){
 			try{
@@ -250,7 +249,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		InputStream is = null;
 
 		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = getClient(connTime,execTime);
+		OkHttpClient client = getClient(false,connTime,execTime);
 		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
 		Request request = new Request.Builder()
 				.url(url)
@@ -293,7 +292,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		throw new RuntimeException(url + ",失败 with code=" + code);
 	}
 
-	public static String post(String url, String json, Map<String,String> headers, int connTime, int execTime, int tryNum){
+	public static String post(boolean debug,String url, String json, Map<String,String> headers, int connTime, int execTime, int tryNum){
 
 		Response response = null;
 		int trys = 1;
@@ -302,7 +301,7 @@ public class NeuHttpHelper implements NeulinkConst{
 
 		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-		OkHttpClient client = getClient(connTime,execTime);
+		OkHttpClient client = getClient(debug,connTime,execTime);
 		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
 		Request request = null;
 		if(ObjectUtil.isNotEmpty(headers)){
@@ -364,7 +363,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		InputStream is = null;
 
 		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = getClient(connTime,execTime);
+		OkHttpClient client = getClient(false,connTime,execTime);
 		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
 		Request request = null;
 		if(ObjectUtil.isNotEmpty(headers)){

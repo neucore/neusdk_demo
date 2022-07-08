@@ -34,7 +34,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public void execute(int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
+    public void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         PkgCmd req = parser(payload.toString());
 
@@ -61,7 +61,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             )
                     )
             ) {
-                resLstRsl2Cloud(resTopic,version,reqNo,msg);
+                resLstRsl2Cloud(debug,resTopic,version,reqNo,msg);
                 return;
             }
 
@@ -78,7 +78,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                 /**
                  * 响应消息已到达
                  */
-                NeulinkService.getInstance().getPublisherFacde().response(resTopic,biz,version,reqNo,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,req.getHeaders());
+                resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
                 long pages = req.getPages();
 
                 long offset = req.getOffset();
@@ -121,7 +121,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             }
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                             NeuLogUtils.dTag(TAG,"成功完成人脸offset:"+i+"下载");
                         }
                     }
@@ -135,7 +135,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             if(ObjectUtil.isNotEmpty(res)) {
                                 mergeHeaders(req,res);
                                 String jsonStr = JSonUtils.toString(res);
-                                resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                                resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                             }
                         }
                         catch(Exception e){
@@ -154,7 +154,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             res.setPages(pages);
                             res.setOffset(i);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                         }
                     }
                 }
@@ -169,7 +169,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
 
                 }
@@ -186,7 +186,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
                     }
                 }
                 catch(Exception e){}

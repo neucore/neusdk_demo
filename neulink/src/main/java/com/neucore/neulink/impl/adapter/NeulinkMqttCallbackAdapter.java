@@ -25,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -177,9 +178,9 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
     public void messageArrived(String topicStr, MqttMessage message) {
 
         NeuLogUtils.dTag(TAG,"start topic:"+ topicStr+",message:"+message);
-
+        boolean debug = topicStr.toLowerCase().endsWith("/debug");
         int qos = message.getQos();
-        String msgContent = MessageUtil.decode(topicStr,message);
+        String msgContent = MessageUtil.decode(debug,topicStr,message);
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr);
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
@@ -199,7 +200,7 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
 
         try {
             if(processor!=null){
-                processor.execute(qos,topic,headers,payload);
+                processor.execute(debug,qos,topic,headers,payload);
             }
             else {
                 throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
