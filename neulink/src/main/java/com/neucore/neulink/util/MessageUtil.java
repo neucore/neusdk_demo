@@ -32,9 +32,6 @@ public class MessageUtil implements NeulinkConst {
             payload = CompressUtil.gzipUncompress(payload);
         }
         msgContent = new String(payload,StandardCharsets.UTF_8);
-        String detailLog = topic + ";qos:" + qos + ";retained:" + isRetained + "messageId:"+messageId;
-        NeuLogUtils.iTag(TAG, detailLog);
-        NeuLogUtils.iTag(TAG, "messageArrived:" + msgContent);
         return msgContent;
     }
 }
