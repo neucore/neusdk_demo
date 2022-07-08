@@ -231,5 +231,4 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
             NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
         }
     }
-
 }
