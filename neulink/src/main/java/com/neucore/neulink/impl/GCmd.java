@@ -12,6 +12,9 @@ public abstract class GCmd {
     @SerializedName("headers")
     private Map<String,String> headers;
 
+    @SerializedName("debug")
+    private boolean debug=false;
+
     public Map<String, String> getHeaders() {
         return headers;
     }
@@ -25,5 +28,13 @@ public abstract class GCmd {
             headers = new HashMap<>();
         }
         headers.put(key,value);
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

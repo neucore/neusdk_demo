@@ -38,6 +38,8 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
 
         PkgCmd req = parser(payload.toString());
 
+        req.setDebug(debug);
+
         NeulinkUtils.binding(req,topic,headers);
 
         String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);

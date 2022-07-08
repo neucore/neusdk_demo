@@ -37,6 +37,8 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
 
         CheckCmd req = parser(payload.toString());
 
+        req.setDebug(debug);
+
         NeulinkUtils.binding(req,topic,headers);
 
         String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
