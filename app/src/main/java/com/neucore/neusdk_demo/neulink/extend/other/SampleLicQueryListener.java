@@ -25,7 +25,6 @@ public class SampleLicQueryListener implements ICmdListener<QueryActionResult,TL
     @Override
     public QueryActionResult doAction(NeulinkEvent<TLibQueryCmd> event) {
 
-        NeulinkTopicParser.Topic topic = null;
         TLibQueryCmd cmd = event.getSource();
 
         /**
@@ -39,8 +38,8 @@ public class SampleLicQueryListener implements ICmdListener<QueryActionResult,TL
         return new QueryActionResult();
     }
 
-    protected File store(TLibQueryCmd cmd,NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
-        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + topic.getReqId() + "/";
+    protected File store(TLibQueryCmd cmd,String dataPath, int index, Object[] dataArray) throws IOException {
+        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + cmd.getReqNo() + "/";
         new File(path).mkdirs();
         path = path + "/" + index + ".json";
         File localFile = new File(path);

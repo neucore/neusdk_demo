@@ -49,16 +49,17 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
         NeulinkUtils.binding(req,topic,headers);
 
-        String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
-        String version = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_VERSION);
-        String biz = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_BIZ);
+        String group = req.getGroup();
+        String biz = req.getBiz();
+        String reqNo = req.getReqNo();
+        String version = req.getVersion();
 
         payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
          */
-        String resTopic = String.format("%s/%s/%s",topic.getPrefix(),"res",biz);
+        String resTopic = String.format("%s/%s/%s",group,"res",biz);
 
         //检查当前请求是否已经已经到达过
         synchronized (lock){
@@ -86,7 +87,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                     if(ObjectUtil.isNotEmpty(payload)){
                         payloadStr = payload.toString();
                     }
-                    msg = insert(req,topic,headersStr, payloadStr);
+                    msg = insert(req,headersStr, payloadStr);
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();
@@ -96,7 +97,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
                  */
                 resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
 
-                ActionResult actionResult = process(topic, req);
+                ActionResult actionResult = process(req);
                 if(ObjectUtil.isNotEmpty(actionResult)){
                     Res res = responseWrapper(req, actionResult);
 
@@ -171,6 +172,12 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
              */
             Map<String,String> reqHeaders = req.getHeaders();
             /**
+             * 清空请求多余头
+             */
+            reqHeaders.remove(NEULINK_HEADERS_GROUP);
+            reqHeaders.remove(NEULINK_HEADERS_REQ$RES);
+            reqHeaders.remove(NEULINK_HEADERS_BIZ);
+            /**
              * 返回Head
              */
             Map<String,String> resHeaders = res.getHeaders();
@@ -194,11 +201,10 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
     /**
      * 默认实现
-     * @param topic
      * @param cmd
      * @return
      */
-    protected ActionResult process(NeulinkTopicParser.Topic topic, Req cmd) {
+    protected ActionResult process(Req cmd) {
         try {
             ICmdListener<ActionResult,Req> listener = getListener(cmd);
             if(listener==null){
@@ -223,10 +229,10 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
         return new String(baos.toByteArray());
     }
 
-    protected IMessage insert(Req cmd,NeulinkTopicParser.Topic topic, String headers,String payload) {
+    protected IMessage insert(Req cmd,String headers,String payload) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
-            return messageService.save(cmd.getReqNo(), topic,headers,payload);
+            return messageService.save(cmd.getReqNo(), headers,payload);
         }
         return null;
     }

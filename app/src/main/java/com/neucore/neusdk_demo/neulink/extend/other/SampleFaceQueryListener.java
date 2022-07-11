@@ -31,7 +31,6 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
     @Override
     public QueryActionResult doAction(NeulinkEvent<TLibQueryCmd> event) {
 
-        NeulinkTopicParser.Topic topic = null;
         TLibQueryCmd cmd = event.getSource();
 
         long count = userDaoUtils.count(cmd.getConds());
@@ -59,7 +58,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
                     /**
                      * 上传到存储服务可以根据
                      */
-                    localFile = store(cmd,topic, "users", i, dataArray);
+                    localFile = store(cmd,"users", i, dataArray);
                 }
                 catch (Exception ex){}
                 String md5 = null;
@@ -82,8 +81,8 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
         return new QueryActionResult();
     }
 
-    protected File store(TLibQueryCmd cmd,NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
-        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + topic.getReqId() + "/";
+    protected File store(TLibQueryCmd cmd,String dataPath, int index, Object[] dataArray) throws IOException {
+        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + cmd.getReqNo() + "/";
         new File(path).mkdirs();
         path = path + "/" + index + ".json";
         File localFile = new File(path);

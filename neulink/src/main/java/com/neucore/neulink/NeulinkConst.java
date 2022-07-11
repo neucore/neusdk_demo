@@ -175,6 +175,10 @@ public interface NeulinkConst {
 
     String NEULINK_HEADERS = "headers";
 
+    String NEULINK_HEADERS_GROUP = "group";
+
+    String NEULINK_HEADERS_REQ$RES = "res$req";
+
     String NEULINK_HEADERS_MODE = "mode";
 
     String NEULINK_HEADERS_CUSTID = "custid";

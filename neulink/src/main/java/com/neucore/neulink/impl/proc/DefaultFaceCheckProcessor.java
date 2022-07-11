@@ -8,8 +8,6 @@ import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.cmd.check.CheckCmdRes;
 import com.neucore.neulink.impl.QueryActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
-import com.neucore.neulink.impl.listener.DefaultFaceCheckListener;
 import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Map;

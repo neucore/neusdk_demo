@@ -74,10 +74,17 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          * 查看终端配置          bcst/req/${scopeId}/qcfg/v1.1/${req_no}[/${md5}],qos=0
          * 预约信息展示          bcst/req/${scopeId}/reserve/v1.0/${req_no}[/${md5}], qos=0
          */
-        String bcst_topic = "+/req/" + service.getCustId() + "/#";
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
-        int[] qoss = new int[]{qos,qos};
-        IMqttMessageListener[] listeners = new IMqttMessageListener[]{service.getDefaultNeulinkMqttCallbackAdapter(),service.getDefaultNeulinkMqttCallbackAdapter()};
-        service.subscribeToTopic(new String[]{ucst_topic,bcst_topic}, qoss, listeners);
+        int[] qoss = new int[]{qos};
+        String[] topics = new String[]{ucst_topic};
+        IMqttMessageListener[] listeners = new IMqttMessageListener[]{service.getDefaultNeulinkMqttCallbackAdapter()};
+        boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
+        if(bcstEnable){
+            String bcst_topic = "+/req/" + service.getCustId() + "/#";
+            qoss = new int[]{qos,qos};
+            listeners = new IMqttMessageListener[]{service.getDefaultNeulinkMqttCallbackAdapter(),service.getDefaultNeulinkMqttCallbackAdapter()};
+            topics = new String[]{ucst_topic,bcst_topic};
+        }
+        service.subscribeToTopic(topics, qoss, listeners);
     }
 }
