@@ -186,13 +186,13 @@ public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallb
         int messageId = message.getId();
         String msgContent = MessageUtil.decode(debug,topicStr,message);
         JsonObject payload = JSonUtils.toObject(msgContent,JsonObject.class);
-        JsonObject headers = (JsonObject) payload.get("headers");
+        JsonObject headers = (JsonObject) payload.get(NEULINK_HEADERS);
         if(ObjectUtil.isNotEmpty(headers)){
-            JsonPrimitive _biz = (JsonPrimitive)headers.get("biz");
+            JsonPrimitive _biz = (JsonPrimitive)headers.get(NEULINK_HEADERS_BIZ);
             if(ObjectUtil.isNotEmpty(_biz)){
                 biz = _biz.getAsString();
             }
-            JsonPrimitive _reqId = (JsonPrimitive)headers.get("reqNo");
+            JsonPrimitive _reqId = (JsonPrimitive)headers.get(NEULINK_HEADERS_REQNO);
             if(ObjectUtil.isNotEmpty(_reqId)){
                 reqId = _reqId.getAsString();
             }

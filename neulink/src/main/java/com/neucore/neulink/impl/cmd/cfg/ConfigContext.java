@@ -99,6 +99,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String PRODUCT_COMPRESS = "producter.compress";
 
+    public final static String BCST_ENABLE = "bcst.enable";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }

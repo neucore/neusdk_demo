@@ -17,7 +17,7 @@ public class NeulinkTopicParser {
         String[] paths = topStr.split("/");
         int len = paths.length;
         String prefix = paths[0];
-        topic.setPrefix(prefix);
+        topic.setGroup(prefix);
         topic.setReq$res(paths[1]);
         if(topStr.startsWith("bcst/")){
             /**
@@ -66,7 +66,7 @@ public class NeulinkTopicParser {
         String[] paths = topStr.split("/");
         int len = paths.length;
         String prefix = paths[0];
-        topic.setPrefix(prefix);
+        topic.setGroup(prefix);
         topic.setReq$res(paths[1]);
 
         if(len>2){
@@ -85,7 +85,7 @@ public class NeulinkTopicParser {
     }
 
     public static class Topic{
-        private String prefix;
+        private String group;
         private String req$res;
         private String reqId;
         private String md5;
@@ -97,12 +97,12 @@ public class NeulinkTopicParser {
         public Topic(){
         }
 
-        public String getPrefix() {
-            return prefix;
+        public String getGroup() {
+            return group;
         }
 
-        public void setPrefix(String prefix) {
-            this.prefix = prefix;
+        public void setGroup(String group) {
+            this.group = group;
         }
 
         public String getReq$res() {

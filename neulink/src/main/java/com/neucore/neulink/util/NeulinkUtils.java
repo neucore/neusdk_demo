@@ -12,13 +12,36 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class NeulinkUtils implements NeulinkConst {
 
+    /**
+     *
+     * @param req
+     * @param topic
+     * @param headers
+     */
     public static void binding(Cmd req, NeulinkTopicParser.Topic topic, JsonObject headers){
-
+        String group = topic.getGroup();
+        String req$res = topic.getReq$res();
         String biz = topic.getBiz();
         String version = topic.getVersion();
         String reqNo = topic.getReqId();
         String md5 = topic.getMd5();
         if(ObjectUtil.isNotEmpty(headers)){
+            JsonPrimitive _group = (JsonPrimitive) headers.get(NEULINK_HEADERS_GROUP);
+            if(ObjectUtil.isNotEmpty(_group)){
+                String temp = _group.getAsString();
+                if(ObjectUtil.isNotEmpty(temp)){
+                    group = temp;
+                }
+            }
+
+            JsonPrimitive _cmdType = (JsonPrimitive) headers.get(NEULINK_HEADERS_REQ$RES);
+            if(ObjectUtil.isNotEmpty(_cmdType)){
+                String temp = _cmdType.getAsString();
+                if(ObjectUtil.isNotEmpty(temp)){
+                    req$res = temp;
+                }
+            }
+
             JsonPrimitive _biz = (JsonPrimitive) headers.get(NEULINK_HEADERS_BIZ);
             if(ObjectUtil.isNotEmpty(_biz)){
                 String temp = _biz.getAsString();
@@ -52,11 +75,12 @@ public class NeulinkUtils implements NeulinkConst {
         if(ObjectUtil.isEmpty(version)){
             version = "v1.0";
         }
-        req.setHeader(NEULINK_HEADERS_VERSION,version);
-        req.setHeader(NEULINK_HEADERS_REQNO,reqNo);
-        req.setHeader(NEULINK_HEADERS_DEVID, ServiceRegistry.getInstance().getDeviceService().getExtSN());
-        req.setHeader(NEULINK_HEADERS_BIZ,biz);
-        req.setHeader(NEULINK_HEADERS_MD5,md5);
+        req.setGroup(group);
+        req.setCmd(req$res);
+        req.setBiz(biz);
+        req.setVersion(version);
+        req.setReqNo(reqNo);
+        req.setMd5(md5);
     }
 
     /**

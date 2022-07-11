@@ -1,37 +1,15 @@
 package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.impl.ActionResult;
-import com.neucore.neulink.impl.cmd.rrpc.LicCmd;
-import com.neucore.neulink.impl.cmd.rrpc.LicCmdRes;
-import com.neucore.neulink.impl.cmd.rrpc.FaceData;
-import com.neucore.neulink.impl.cmd.rrpc.LicPkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.LicCmd;
 import com.neucore.neulink.impl.cmd.rrpc.LicCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.LicPkgActionResult;
-import com.neucore.neulink.impl.cmd.rrpc.SyncInfo;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.FileUtils;
-import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.NeuHttpHelper;
-import com.neucore.neulink.util.RequestContext;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 目标库处理器

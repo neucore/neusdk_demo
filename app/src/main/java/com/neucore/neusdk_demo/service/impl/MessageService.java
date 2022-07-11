@@ -28,7 +28,7 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public IMessage save(String reqNo,NeulinkTopicParser.Topic topic,String headers, String payload) {
+    public IMessage save(String reqNo,String headers, String payload) {
         Message msg = new Message();
 
         msg.setReqId(reqNo);
@@ -36,8 +36,6 @@ public class MessageService implements IMessageService {
         msg.setReqtime(DatesUtil.getNowTimeStamp());
 
         msg.setRestime(DatesUtil.getNowTimeStamp());
-
-        msg.setTopic(topic.toString());
 
         msg.setStatus(IMessage.STATUS_PROCESS);
 

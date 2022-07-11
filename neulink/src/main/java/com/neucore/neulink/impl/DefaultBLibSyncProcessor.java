@@ -42,16 +42,17 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
 
         NeulinkUtils.binding(req,topic,headers);
 
-        String reqNo = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_REQNO);
-        String version = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_VERSION);
-        String biz = req.getHeaders().get(NeulinkConst.NEULINK_HEADERS_BIZ);
+        String group = req.getGroup();
+        String biz = req.getBiz();
+        String reqNo = req.getReqNo();
+        String version = req.getVersion();
 
         payload = auth(headers,payload);
 
         /**
          * 发送响应消息给到服务端
          */
-        String resTopic = String.format("%s/%s/%s",topic.getPrefix(),"res",biz);
+        String resTopic = String.format("%s/%s/%s",group,"res",biz);
 
         //检查当前请求是否已经已经到达过
         synchronized (lock){
@@ -71,7 +72,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
 
             try {
                 if (msg == null) {
-                    msg = insert(req,topic,headers.toString(), payload.toString());
+                    msg = insert(req,headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();

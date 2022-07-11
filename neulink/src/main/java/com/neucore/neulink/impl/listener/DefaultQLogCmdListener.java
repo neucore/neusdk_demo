@@ -75,8 +75,8 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
         return result;
     }
 
-    protected File store(NeulinkTopicParser.Topic topic, String dataPath, int index, Object[] dataArray) throws IOException {
-        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + topic.getReqId() + "/";
+    protected File store(DnloadCmd cmd, String dataPath, int index, Object[] dataArray) throws IOException {
+        String path = ContextHolder.getInstance().getContext().getFilesDir() + "/" + dataPath + "/" + cmd.getReqNo() + "/";
         new File(path).mkdirs();
         path = path + "/" + index + ".json";
         File localFile = new File(path);
