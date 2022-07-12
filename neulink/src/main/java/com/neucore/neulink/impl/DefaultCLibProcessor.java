@@ -8,14 +8,13 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
-import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.check.CheckCmd;
 import com.neucore.neulink.impl.cmd.check.CheckCmdRes;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.NeulinkUtils;
+import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -39,7 +38,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
 
         req.setDebug(debug);
 
-        NeulinkUtils.binding(req,topic,headers);
+        HeadersUtil.binding(req,topic,headers);
 
         String group = req.getGroup();
         String biz = req.getBiz();

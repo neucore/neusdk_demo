@@ -14,7 +14,7 @@ import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.IActionResult;
-import com.neucore.neulink.util.NeulinkUtils;
+import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -47,7 +47,7 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
 
         req.setDebug(debug);
 
-        NeulinkUtils.binding(req,topic,headers);
+        HeadersUtil.binding(req,topic,headers);
 
         String group = req.getGroup();
         String biz = req.getBiz();

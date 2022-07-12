@@ -10,6 +10,8 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.impl.Result;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
@@ -31,14 +33,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-public class NeulinkMqttCallbackAdapter implements IMqttActionListener,MqttCallbackExtended, IMqttMessageListener, NeulinkConst {
-    private String TAG = TAG_PREFIX+"NeulinkMqttCallbackAdapter";
+public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCallbackExtended, IMqttMessageListener, NeulinkConst {
+    private String TAG = TAG_PREFIX+"NeulinkActionListenerAdapter";
     private NeulinkService service = null;
     private IDeviceService deviceService = null;
     private Context context = null;
     private ReentrantLock reentrantLock = new ReentrantLock();
 
-    public NeulinkMqttCallbackAdapter(Context context, NeulinkService service){
+    public NeulinkActionListenerAdapter(Context context, NeulinkService service){
         this.context = context;
         this.service = service;
         deviceService = ServiceRegistry.getInstance().getDeviceService();

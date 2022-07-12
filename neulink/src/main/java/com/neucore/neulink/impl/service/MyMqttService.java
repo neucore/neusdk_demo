@@ -1,18 +1,15 @@
 package com.neucore.neulink.impl.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.impl.adapter.MqttActionListenerAdapter;
+import com.neucore.neulink.impl.adapter.PublishActionListenerAdapter;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
-import com.neucore.neulink.util.CompressUtil;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
@@ -24,8 +21,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import java.nio.charset.StandardCharsets;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -177,7 +172,7 @@ public class MyMqttService implements NeulinkConst{
 
             byte[] compress= MessageUtil.encode(debug,topic,msg);
             if(ObjectUtil.isNotEmpty(iResCallback)){
-                MqttActionListenerAdapter myPublishAction = new MqttActionListenerAdapter(reqId, iResCallback);
+                PublishActionListenerAdapter myPublishAction = new PublishActionListenerAdapter(reqId, iResCallback);
                 client.publish(topic, compress, qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
             }
             else{

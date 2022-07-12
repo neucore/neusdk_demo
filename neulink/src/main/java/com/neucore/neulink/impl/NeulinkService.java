@@ -3,7 +3,8 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
-import com.neucore.neulink.impl.adapter.NeulinkMqttCallbackAdapter;
+import com.neucore.neulink.impl.adapter.NeulinkActionListenerAdapter;
+import com.neucore.neulink.impl.adapter.RegistCallback;
 import com.neucore.neulink.impl.registry.CallbackRegistry;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
@@ -29,7 +30,7 @@ import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
-import com.neucore.neulink.util.NeulinkUtils;
+import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.RequestContext;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -58,6 +59,7 @@ public class NeulinkService implements NeulinkConst{
 
     protected IResCallback defaultResCallback = new ResCallback2Log();
     private MyMqttService myMqttService = null;
+    private RegistCallback registCallback = new RegistCallback();
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
     private Boolean neulinkServiceInited = false;
     private Boolean mqttInited = false;
@@ -68,7 +70,7 @@ public class NeulinkService implements NeulinkConst{
 
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
-    private NeulinkMqttCallbackAdapter defaultNeulinkMqttCallbackAdapter;
+    private NeulinkActionListenerAdapter neulinkActionListenerAdapter;
     private NeulinkScheduledReport autoReporter = null;
     private String mqttServiceUri, httpServiceUri, userName,password;
     private UdpReceiveAndtcpSend udpReceiveAndtcpSend;
@@ -85,7 +87,7 @@ public class NeulinkService implements NeulinkConst{
         deviceService = ServiceRegistry.getInstance().getDeviceService();
         publisherFacde = new NeulinkPublisherFacde(context,this);
         subscriberFacde = new NeulinkSubscriberFacde(context,this);
-        defaultNeulinkMqttCallbackAdapter = new NeulinkMqttCallbackAdapter(context,this);
+        neulinkActionListenerAdapter = new NeulinkActionListenerAdapter(context,this);
         new RegisterAdapter();
         udpReceiveAndtcpSend = new UdpReceiveAndtcpSend();
         udpReceiveAndtcpSend.start();
@@ -151,9 +153,9 @@ public class NeulinkService implements NeulinkConst{
                         //执行超时
                         .executorServiceTimeout(ConfigContext.getInstance().getConfig(ConfigContext.EXECUTOR_SERVICE_TIMEOUT,1))
                         //设置发布和订阅回调接口
-                        .mqttCallback(defaultNeulinkMqttCallbackAdapter)
+                        .mqttCallback(neulinkActionListenerAdapter)
                         //设置连接或者发布动作侦听器
-                        .mqttActionListener(defaultNeulinkMqttCallbackAdapter)
+                        .mqttActionListener(neulinkActionListenerAdapter)
                         //设置消息侦听器
                         //.mqttMessageListener(messageListener)
                         //构建出EasyMqttService 建议用application的context
@@ -181,8 +183,8 @@ public class NeulinkService implements NeulinkConst{
         return subscriberFacde;
     }
 
-    public NeulinkMqttCallbackAdapter getDefaultNeulinkMqttCallbackAdapter(){
-        return defaultNeulinkMqttCallbackAdapter;
+    public NeulinkActionListenerAdapter getNeulinkActionListenerAdapter(){
+        return neulinkActionListenerAdapter;
     }
 
     public IDeviceService getDeviceService() {
@@ -584,6 +586,10 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    public RegistCallback getRegistCallback() {
+        return registCallback;
+    }
+
     private ReentrantLock reentrantLock = new ReentrantLock();
 
 
@@ -646,7 +652,7 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * 绑定Head
                  */
-                NeulinkUtils.binding(jsonObject,topStr,qos);
+                HeadersUtil.registBinding(jsonObject,topStr,qos);
                 this.payload = jsonObject.toString();
                 String[] temps = topStrTemp.split("/");
                 int len = temps.length;
@@ -696,7 +702,7 @@ public class NeulinkService implements NeulinkConst{
                          * MQTT机制
                          */
                         NeuLogUtils.iTag(TAG,"MQTT 注册");
-                        myMqttService.publish(false,reqId,payload,topStr, qos, retained,null);
+                        myMqttService.publish(false,reqId,payload,topStr, qos, retained,registCallback);
                         neulinkServiceInited = true;
                         registed = true;
                     }
@@ -753,6 +759,7 @@ public class NeulinkService implements NeulinkConst{
                         }
                         NeuLogUtils.iTag(TAG,"第"+trys+"次initMqttService");
                         initMqttService(mqttServiceUri,userName,password);
+                        getRegistCallback().onFinished(Result.ok());
                         neulinkServiceInited = true;
                     }
                 }
@@ -762,7 +769,7 @@ public class NeulinkService implements NeulinkConst{
                     result.setReqId(reqId);
                     result.setCode(STATUS_500);
                     result.setMsg(ex.getMessage());
-                    defaultResCallback.onFinished(result);
+                    registCallback.onFinished(result);
                 }
                 catch (NeulinkException e) {
                     NeuLogUtils.eTag(TAG,"注册失败",e);
@@ -770,7 +777,7 @@ public class NeulinkService implements NeulinkConst{
                     result.setReqId(reqId);
                     result.setCode(e.getCode());
                     result.setMsg(e.getMsg());
-                    defaultResCallback.onFinished(result);
+                    registCallback.onFinished(result);
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
@@ -779,7 +786,7 @@ public class NeulinkService implements NeulinkConst{
                     result.setReqId(UUID.fastUUID().toString());
                     result.setCode(STATUS_403);
                     result.setMsg(ex.getMessage());
-                    defaultResCallback.onFinished(result);
+                    registCallback.onFinished(result);
 
                     NeuLogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
 
@@ -848,7 +855,7 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * 绑定Head
                  */
-                NeulinkUtils.binding(jsonObject,topStr,qos);
+                HeadersUtil.binding(jsonObject,topStr,qos);
                 this.payload = jsonObject.toString();
                 String[] temps = topStrTemp.split("/");
                 int len = temps.length;
