@@ -199,6 +199,8 @@ public interface NeulinkConst {
 
     String NEULINK_HEADERS_MD5 = "md5";
 
+    String INIT_CNT = "intcnt";
+
     /**
      * 成功
      */

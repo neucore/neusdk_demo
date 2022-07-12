@@ -8,12 +8,12 @@ import com.neucore.neulink.log.NeuLogUtils;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-public class MqttActionListenerAdapter implements IMqttActionListener, NeulinkConst {
+public class PublishActionListenerAdapter implements IMqttActionListener, NeulinkConst {
 
-    private String TAG = TAG_PREFIX+"MqttActionListenerAdapter";
+    private String TAG = TAG_PREFIX+"PublishActionListenerAdapter";
     private String reqId;
     private IResCallback iResCallback;
-    public MqttActionListenerAdapter(String reqId, IResCallback iResCallback){
+    public PublishActionListenerAdapter(String reqId, IResCallback iResCallback){
         this.reqId = reqId;
         this.iResCallback = iResCallback;
     }

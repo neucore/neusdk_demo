@@ -37,5 +37,6 @@ public interface IDeviceService {
     void disconnect();
 
     LWTTopic lwtTopic();
+
     LWTPayload lwtPayload();
 }

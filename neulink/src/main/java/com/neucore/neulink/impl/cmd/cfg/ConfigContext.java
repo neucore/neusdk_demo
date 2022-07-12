@@ -201,6 +201,11 @@ public class ConfigContext implements NeulinkConst{
         }
     }
 
+    public synchronized void add(CfgItem items){
+        configs.setProperty(items.getKeyName(),items.getValue());
+        store();
+    }
+
     public synchronized void add(CfgItem[] items){
         int len=items==null?0:items.length;
         for(int i=0;i<len;i++){

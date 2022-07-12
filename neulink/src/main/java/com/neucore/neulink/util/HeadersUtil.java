@@ -6,11 +6,12 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Cmd;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class NeulinkUtils implements NeulinkConst {
+public class HeadersUtil implements NeulinkConst {
 
     /**
      *
@@ -83,6 +84,18 @@ public class NeulinkUtils implements NeulinkConst {
         req.setMd5(md5);
     }
 
+    /**
+     *
+     * @param payload
+     * @param topicStr
+     * @param qos
+     */
+    public static void registBinding(JsonObject payload,String topicStr,int qos){
+        binding(payload,topicStr,qos);
+        int initCnt = ConfigContext.getInstance().getConfig(INIT_CNT,1);
+        JsonObject headers = (JsonObject) payload.get(NeulinkConst.NEULINK_HEADERS);
+        headers.add(INIT_CNT,new JsonPrimitive(String.valueOf(initCnt)));
+    }
     /**
      *
      * @param payload
