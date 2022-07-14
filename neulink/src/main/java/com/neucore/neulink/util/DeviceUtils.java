@@ -319,11 +319,7 @@ public class DeviceUtils implements NeulinkConst{
 	}
 
 	public static String getMacAddress() {
-		String mac = MacHelper.getEthernetMac();
-		if(ObjectUtil.isEmpty(mac)){
-			mac = MacHelper.getWifiMac(ContextHolder.getInstance().getContext());
-		}
-		return mac;
+		return MacHelper.getMacAddress(ContextHolder.getInstance().getContext());
 	}
 
 	public static String getIpAddress(Context context){

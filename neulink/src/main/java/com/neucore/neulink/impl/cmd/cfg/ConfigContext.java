@@ -101,6 +101,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String BCST_ENABLE = "bcst.enable";
 
+    public final static String CLIENT_ID = "ClientId";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }
