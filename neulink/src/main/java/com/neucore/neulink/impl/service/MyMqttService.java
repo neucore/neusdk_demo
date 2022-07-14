@@ -251,7 +251,7 @@ public class MyMqttService implements NeulinkConst{
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
             byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
             conOpt.setWill(lwtTopic.getTopic(),encoded, qos, retained);
-            NeuLogUtils.iTag(TAG,String.format("end init with : %s",toString()));
+            NeuLogUtils.iTag(TAG,String.format("end init with : \n%s",toString()));
         }
         catch (MqttException ex){
             NeuLogUtils.eTag(TAG,"MQTT Init failed",ex);

@@ -159,8 +159,6 @@ public class SampleConnector implements NeulinkConst{
                         }
                     }
 
-                    NeuLogUtils.iTag(TAG,"startBuild...");
-                    NeuLogUtils.iTag(TAG,"配置项："+extConfig);
                     NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
 
                     NetBroadcastReceiver.setOnNetListener(new OnNetStatusListener());
@@ -174,8 +172,13 @@ public class SampleConnector implements NeulinkConst{
                     if(ObjectUtil.isNotEmpty(deviceService)){
                         ServiceRegistry.getInstance().setDeviceService(deviceService);
                     }
+
                     ServiceRegistry.getInstance().setMessageService(messageService);
                     ServiceRegistry.getInstance().setFileService(fileService);
+
+                    NeuLogUtils.iTag(TAG,"startBuild...");
+                    NeuLogUtils.iTag(TAG,"配置项：\n"+extConfig);
+
                     ConfigContext.getInstance().setExtConfig(extConfig);
 
                     if(mqttCallBack!=null){
