@@ -213,7 +213,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                         info.getAiData().setDir(dir);
                     }
                     String payload = JSonUtils.toString(info);
-                    String topic = "upld/req/faceinfo/"+info.getDeviceId();
+                    String topic = "upld/req/faceinfo";
                     service.publishMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
                 }
                 else{
