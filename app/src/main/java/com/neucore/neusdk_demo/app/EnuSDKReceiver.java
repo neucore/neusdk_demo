@@ -17,8 +17,8 @@ public class EnuSDKReceiver extends BroadcastReceiver {
             Intent i = new Intent(context, MenuActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
-            String npuVersion = DeviceUtils.getNpuMode(context);
-            Log.i(TAG,"NPUVersion: "+ npuVersion);
+//            String npuVersion = DeviceUtils.getNpuMode(context);
+//            Log.i(TAG,"NPUVersion: "+ npuVersion);
         }
     }
 }

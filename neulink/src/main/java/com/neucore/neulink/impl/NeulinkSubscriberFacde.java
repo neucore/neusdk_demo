@@ -6,7 +6,8 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.mqttv5.client.IMqttMessageListener;
+import org.eclipse.paho.mqttv5.client.MqttActionListener;
 
 /**
  * 终端消费者
@@ -71,12 +72,11 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
         int[] qoss = new int[]{qos};
         String[] topics = new String[]{ucst_topic};
-        IMqttMessageListener[] listeners = new IMqttMessageListener[]{service.getNeulinkActionListenerAdapter()};
+        MqttActionListener listeners = service.getNeulinkActionListenerAdapter();
         boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
         if(bcstEnable){
             String bcst_topic = "+/req/" + service.getCustId() + "/#";
             qoss = new int[]{qos,qos};
-            listeners = new IMqttMessageListener[]{service.getNeulinkActionListenerAdapter(),service.getNeulinkActionListenerAdapter()};
             topics = new String[]{ucst_topic,bcst_topic};
         }
         service.subscribeToTopic(topics, qoss, listeners);
