@@ -3,8 +3,8 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.log.NeuLogUtils;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.mqttv5.client.IMqttToken;
+
 
 /**
  * Mqtt事件回调实现
@@ -36,7 +36,7 @@ public class MyMqttCallbackImpl implements IMqttCallBack {
     }
 
     @Override
-    public void deliveryComplete(IMqttDeliveryToken arg0) {
+    public void deliveryComplete(IMqttToken arg0) {
         /**
          * 可以用在APP交互提示等
          */

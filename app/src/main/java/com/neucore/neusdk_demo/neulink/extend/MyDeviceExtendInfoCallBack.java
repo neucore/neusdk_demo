@@ -139,7 +139,8 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
      */
     @Override
     public String getNpuModel() {
-        return DeviceUtils.getNpuMode(ContextHolder.getInstance().getContext());
+//        return DeviceUtils.getNpuMode(ContextHolder.getInstance().getContext());
+        return null;
     }
 
     /**

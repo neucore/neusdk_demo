@@ -14,13 +14,15 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.eclipse.paho.mqttv5.client.MqttActionListener;
+import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
+import org.eclipse.paho.mqttv5.client.MqttCallback;
+import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
+import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
+import org.eclipse.paho.mqttv5.common.MqttException;
+import org.eclipse.paho.mqttv5.common.MqttMessage;
+
+import java.nio.charset.StandardCharsets;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -28,7 +30,7 @@ public class MyMqttService implements NeulinkConst{
 
     private final String TAG = TAG_PREFIX+"MyMqttService";
     private MqttAsyncClient client;
-    private MqttConnectOptions conOpt;
+    private MqttConnectionOptions conOpt;
 
     private Context context;
     private String serverUrl;
@@ -46,7 +48,7 @@ public class MyMqttService implements NeulinkConst{
     private boolean close = false;
     private boolean disconnect = false;
     private MqttCallback mqttCallback = null;
-    private IMqttActionListener mqttActionListener;
+    private MqttActionListener mqttActionListener;
 
     /**
      * builder设计模式
@@ -90,7 +92,7 @@ public class MyMqttService implements NeulinkConst{
         private Integer maxReconnectDelay;
 
         private MqttCallback mqttCallback = null;
-        private IMqttActionListener mqttActionListener;
+        private MqttActionListener mqttActionListener;
 
         public Builder serverUrl(String serverUrl) {
             this.serverUrl = serverUrl;
@@ -142,7 +144,7 @@ public class MyMqttService implements NeulinkConst{
             return this;
         }
 
-        public Builder mqttActionListener(IMqttActionListener mqttActionListener){
+        public Builder mqttActionListener(MqttActionListener mqttActionListener){
             this.mqttActionListener = mqttActionListener;
             return this;
         }
@@ -201,7 +203,7 @@ public class MyMqttService implements NeulinkConst{
 
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
 
-            conOpt = new MqttConnectOptions();
+            conOpt = new MqttConnectionOptions();
 
             String[] serverUrls = serverUrl.split(",");
             if(serverUrls.length>1){
@@ -212,7 +214,7 @@ public class MyMqttService implements NeulinkConst{
             client.setCallback(mqttCallback);
 
             // 清除缓存
-            conOpt.setCleanSession(cleanSession);
+            conOpt.setCleanStart(cleanSession);
             // 设置连接超时时间，单位：秒
             conOpt.setConnectionTimeout(connectTimeout);
             //设置执行服务超时时间，单位秒
@@ -228,7 +230,7 @@ public class MyMqttService implements NeulinkConst{
             if(ObjectUtil.isEmpty(passWord)){
                 throw new NeulinkException(STATUS_402,"密码为空");
             }
-            conOpt.setPassword(passWord.toCharArray());
+            conOpt.setPassword(passWord.getBytes(StandardCharsets.UTF_8));
             // 自动重连
             conOpt.setAutomaticReconnect(autoReconnect);
             //最大重连间隔
@@ -250,7 +252,9 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
             byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
-            conOpt.setWill(lwtTopic.getTopic(),encoded, qos, retained);
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setPayload(encoded);
+            conOpt.setWill(lwtTopic.getTopic(),mqttMessage);
             NeuLogUtils.iTag(TAG,String.format("end init with : \n%s",toString()));
         }
         catch (MqttException ex){
@@ -302,20 +306,20 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
-    public void subscribe(String topic, int qos,IMqttMessageListener mqttMessageListener) {
+    public void subscribe(String topic, int qos, MqttActionListener mqttMessageListener) {
         try {
             // 订阅topic话题
             NeuLogUtils.iTag(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
-            client.subscribe(topic, qos,mqttMessageListener);
+            client.subscribe(topic, qos,context,mqttMessageListener);
         } catch (Exception e) {
             NeuLogUtils.eTag(TAG, e.toString());
         }
     }
 
-    public void subscribe(String[] topics, int[] qoss,IMqttMessageListener[] mqttMessageListeners) {
+    public void subscribe(String[] topics, int[] qoss,MqttActionListener mqttMessageListeners) {
         try {
             // 订阅topic话题
-            client.subscribe(topics, qoss,mqttMessageListeners);
+            client.subscribe(topics, qoss,context,mqttMessageListeners);
         } catch (Exception e) {
             NeuLogUtils.eTag(TAG, e.toString());
         }
