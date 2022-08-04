@@ -127,7 +127,7 @@ public class MyInstaller {
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC  14:相框-Android;15:相框-Lunix】
          */
-        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"14");//默认为客流机器
+        extConfig.setProperty(ConfigContext.DEVICE_TYPE,"10");//默认为客流机器
         /**
          * 设置设备端与云端的通信通道；
          * 默认为mqtt【下发、上报都走mqtt】；
@@ -144,6 +144,10 @@ public class MyInstaller {
          * 上传内容默认压缩
          * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
          */
+        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"true"); //开启心跳
+        extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"true"); //开启运行状态
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开

@@ -62,7 +62,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                         Thread.sleep(1000 * 30);
                     }
                     catch (Exception ex){}
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.heartbeat","false"))){
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_HEARTBEAT,"false"))){
                         try {
                             HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
                             if(ObjectUtil.isNotEmpty(heatbeatInfo)){
@@ -98,7 +98,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
                         Thread.sleep(1000 * 30);
                     }
                     catch (Exception ex){}
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig("enable.runtime","false"))){
+                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_RUNTIME,"false"))){
                         try {
                             RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
                             if(ObjectUtil.isNotEmpty(runtimeInfo)){
