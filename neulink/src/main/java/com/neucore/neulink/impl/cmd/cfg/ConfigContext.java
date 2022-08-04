@@ -103,6 +103,10 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String CLIENT_ID = "ClientId";
 
+    public final static String ENABLE_HEARTBEAT = "enable.heartbeat";
+
+    public final static String ENABLE_RUNTIME = "enable.runtime";
+
     private Properties defaultConfig = new Properties();
     void loadDefault() {
     }
