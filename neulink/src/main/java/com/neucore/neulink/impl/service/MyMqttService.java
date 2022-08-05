@@ -22,6 +22,7 @@ import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
+import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 
 import java.nio.charset.StandardCharsets;
 
@@ -216,14 +217,15 @@ public class MyMqttService implements NeulinkConst{
             /**
              * mqtt 5.0 lwt 消息必须设置sessionExpiryInterval，否则不会触发 lwt事件
              */
-            Double integer = keepAliveInterval * 1.5;
-            Double sessionExpiryIntervalDouble = Math.ceil(integer);
-            Long sessionExpiryInterval = sessionExpiryIntervalDouble.longValue();
-            conOpt.setSessionExpiryInterval(sessionExpiryInterval);
+            conOpt.setSessionExpiryInterval(0L);
             // 清除缓存
             conOpt.setCleanStart(cleanSession);
             // 设置连接超时时间，单位：秒
             conOpt.setConnectionTimeout(connectTimeout);
+            /**
+             * 自动连接延时after first
+             */
+            conOpt.setAutomaticReconnectDelay(1,4);
             //设置执行服务超时时间，单位秒
             conOpt.setExecutorServiceTimeout(executorServiceTimeout);
             // 心跳包发送间隔，单位：秒
@@ -259,7 +261,7 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
             byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
-            MqttMessage mqttMessage = new MqttMessage();
+            MqttMessage mqttMessage = new MqttMessage(encoded,qos,retained,null);
             mqttMessage.setPayload(encoded);
             conOpt.setWill(lwtTopic.getTopic(),mqttMessage);
             NeuLogUtils.iTag(TAG,String.format("end init with : \n%s",toString()));
