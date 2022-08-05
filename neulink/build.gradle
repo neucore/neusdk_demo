@@ -8,7 +8,7 @@ def packageTime(){
 
 def versionMajor = 1
 def versionMinor = 17
-def versionPatch = 28
+def versionPatch = 29
 android {
 
     compileSdkVersion rootProject.ext.compile_sdk_version
