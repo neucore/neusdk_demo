@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
@@ -212,7 +213,13 @@ public class MyMqttService implements NeulinkConst{
 
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
-
+            /**
+             * mqtt 5.0 lwt 消息必须设置sessionExpiryInterval，否则不会触发 lwt事件
+             */
+            Double integer = keepAliveInterval * 1.5;
+            Double sessionExpiryIntervalDouble = Math.ceil(integer);
+            Long sessionExpiryInterval = sessionExpiryIntervalDouble.longValue();
+            conOpt.setSessionExpiryInterval(sessionExpiryInterval);
             // 清除缓存
             conOpt.setCleanStart(cleanSession);
             // 设置连接超时时间，单位：秒
