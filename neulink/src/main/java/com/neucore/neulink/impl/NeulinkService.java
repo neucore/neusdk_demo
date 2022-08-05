@@ -275,7 +275,7 @@ public class NeulinkService implements NeulinkConst{
         LWTTopic info = new LWTTopic();
         info.setTopic("msg/req/lwt");
         info.setRetained(true);
-        info.setQos(0);
+        info.setQos(1);
         return info;
     }
 
