@@ -684,100 +684,19 @@ public class NeulinkService implements NeulinkConst{
             NeuLogUtils.iTag(TAG,"开始异步注册：run");
             int trys = 1;
             while (!neulinkServiceInited){
-                try {
-                    if(channel==0){
-                        /**
-                         * MQTT机制
-                         */
-                        NeuLogUtils.iTag(TAG,"第"+trys+"次Mqtt通道异步注册");
-                        if(mqttServiceUri ==null){
-                            mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
-                        }
-                        String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
-                        String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
-                        NeuLogUtils.iTag(TAG,"MQTT 初始化");
-                        initMqttService(mqttServiceUri,userName,password);
-
-                        /**
-                         * MQTT机制
-                         */
-                        NeuLogUtils.iTag(TAG,"MQTT 注册");
-                        myMqttService.publish(false,reqId,payload,topStr, qos, retained,registCallback);
-                        neulinkServiceInited = true;
-                        registed = true;
+                try{
+                    /**
+                     * MQTT机制
+                     */
+                    NeuLogUtils.iTag(TAG,"第"+trys+"次Mqtt连接");
+                    if(mqttServiceUri ==null){
+                        mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
                     }
-                    else{
-                        /**
-                         * HTTP机制
-                         */
-                        NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道异步注册");
-                        if(!registed){
-                            Context context = ContextHolder.getInstance().getContext();
-                            String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
-                            NeuLogUtils.dTag(TAG,"registServer："+registServer);
-
-                            String response = null;
-
-                            NeuLogUtils.iTag(TAG,"Http 注册");
-
-                            String topic = URLEncoder.encode(topStr,"UTF-8");
-                            response = NeuHttpHelper.post(false,registServer+"?topic="+topic,payload,params,10,60,1);
-
-                            NeuLogUtils.dTag(TAG,"设备注册响应："+response);
-
-                            /**
-                             * {
-                             * 	"code": 200,
-                             * 	"msg": "注册成功",
-                             * 	"zone": {
-                             * 		"zoneid": 3,
-                             * 		"custcode": "saic",
-                             * 		"placecode": "test",
-                             * 		"server": "mqtt.neucore.com",
-                             * 		"port": 1883,
-                             * 	    "http.server":"https://dev.neucore.com/api/neulink/upload2cloud"
-                             *   }
-                             * }
-                             */
-                            ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
-                            NeulinkZone zone = resRegist.getZone();
-                            custid = zone.getCustid();
-                            storeid = zone.getStoreid();
-                            zoneid = zone.getId();
-
-                            httpServiceUri = zone.getUploadServer();
-                            String mqttHost = zone.getMqttServer();
-                            Integer port = zone.getMqttPort();
-                            userName = zone.getMqttUserName();
-                            password = zone.getMqttPassword();
-                            userName = userName==null?ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin"):userName;
-                            password = password==null?ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password"):password;
-                            //tcp://dev.neucore.com:1883
-                            mqttServiceUri = String.format("tcp://%s:%s",mqttHost,port);
-                            NeuLogUtils.iTag(TAG,"MQTT 初始化");
-                            registed = true;
-                        }
-                        NeuLogUtils.iTag(TAG,"第"+trys+"次initMqttService");
-                        initMqttService(mqttServiceUri,userName,password);
-                        getRegistCallback().onFinished(Result.ok());
-                        neulinkServiceInited = true;
-                    }
-                }
-                catch (UnsupportedEncodingException ex){
-                    NeuLogUtils.eTag(TAG,"注册失败",ex);
-                    Result result = new Result();
-                    result.setReqId(reqId);
-                    result.setCode(STATUS_500);
-                    result.setMsg(ex.getMessage());
-                    registCallback.onFinished(result);
-                }
-                catch (NeulinkException e) {
-                    NeuLogUtils.eTag(TAG,"注册失败",e);
-                    Result result = new Result();
-                    result.setReqId(reqId);
-                    result.setCode(e.getCode());
-                    result.setMsg(e.getMsg());
-                    registCallback.onFinished(result);
+                    String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
+                    String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
+                    NeuLogUtils.iTag(TAG,"MQTT 初始化");
+                    initMqttService(mqttServiceUri,userName,password);
+                    neulinkServiceInited = true;
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
@@ -806,6 +725,7 @@ public class NeulinkService implements NeulinkConst{
                          * 非：未知错误、网络异常、服务器故障、服务重启中直接跳出循环
                          * eg：clientId非法
                          */
+                        NeuLogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
                         break;
                     }
                 }
@@ -819,9 +739,56 @@ public class NeulinkService implements NeulinkConst{
                         } catch (InterruptedException interruptedException) {
                         }
                     }
-                    else{
-                        autoReporter = new NeulinkScheduledReport(context, instance);
-                        autoReporter.start();
+                }
+                trys = 1;
+                while (neulinkServiceInited && !registed) {
+                    try {
+                        if (isMqttConnSuccessed()) {
+                            if (channel == 0) {
+                                NeuLogUtils.iTag(TAG, "第" + trys + "次MQTT通道注册");
+                                myMqttService.publish(false, reqId, payload, topStr, qos, retained, registCallback);
+                                registed = true;
+                            } else {
+                                String response = null;
+                                NeuLogUtils.iTag(TAG, "第" + trys + "次Http通道注册");
+                                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, "https://dev.neucore.com/api/neulink/upload2cloud");
+                                NeuLogUtils.dTag(TAG, "registServer：" + registServer);
+
+                                String topic = URLEncoder.encode(topStr, "UTF-8");
+                                response = NeuHttpHelper.post(false, registServer + "?topic=" + topic, payload, params, 10, 60, 1);
+
+                                NeuLogUtils.dTag(TAG, "设备注册响应：" + response);
+                                getRegistCallback().onFinished(Result.ok());
+                                registed = true;
+                            }
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                        NeuLogUtils.eTag(TAG, "注册失败", ex);
+                        Result result = new Result();
+                        result.setReqId(reqId);
+                        result.setCode(STATUS_500);
+                        result.setMsg(ex.getMessage());
+                        registCallback.onFinished(result);
+                    } catch (NeulinkException e) {
+                        NeuLogUtils.eTag(TAG, "注册失败", e);
+                        Result result = new Result();
+                        result.setReqId(reqId);
+                        result.setCode(e.getCode());
+                        result.setMsg(e.getMsg());
+                        registCallback.onFinished(result);
+                    } finally {
+                        if (!registed) {
+                            try {
+                                Thread.sleep(1000 * trys);
+                                if (trys < 30) {
+                                    trys++;
+                                }
+                            } catch (InterruptedException interruptedException) {
+                            }
+                        } else {
+                            autoReporter = new NeulinkScheduledReport(context, instance);
+                            autoReporter.start();
+                        }
                     }
                 }
             }
