@@ -5,10 +5,10 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Result;
 import com.neucore.neulink.log.NeuLogUtils;
 
-import org.eclipse.paho.mqttv5.client.IMqttToken;
-import org.eclipse.paho.mqttv5.client.MqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 
-public class PublishActionListenerAdapter implements MqttActionListener, NeulinkConst {
+public class PublishActionListenerAdapter implements IMqttActionListener, NeulinkConst {
 
     private String TAG = TAG_PREFIX+"PublishActionListenerAdapter";
     private String reqId;
