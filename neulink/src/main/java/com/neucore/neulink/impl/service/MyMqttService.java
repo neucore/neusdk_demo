@@ -1,7 +1,6 @@
 package com.neucore.neulink.impl.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
@@ -15,16 +14,13 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
 
-import org.eclipse.paho.mqttv5.client.MqttActionListener;
-import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
-import org.eclipse.paho.mqttv5.client.MqttCallback;
-import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
-import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
-import org.eclipse.paho.mqttv5.common.MqttException;
-import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
-
-import java.nio.charset.StandardCharsets;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -32,7 +28,7 @@ public class MyMqttService implements NeulinkConst{
 
     private final String TAG = TAG_PREFIX+"MyMqttService";
     private MqttAsyncClient client;
-    private MqttConnectionOptions conOpt;
+    private MqttConnectOptions conOpt;
 
     private Context context;
     private String serverUrl;
@@ -50,7 +46,7 @@ public class MyMqttService implements NeulinkConst{
     private boolean close = false;
     private boolean disconnect = false;
     private MqttCallback mqttCallback = null;
-    private MqttActionListener mqttActionListener;
+    private IMqttActionListener mqttActionListener;
 
     /**
      * builder设计模式
@@ -94,7 +90,7 @@ public class MyMqttService implements NeulinkConst{
         private Integer maxReconnectDelay;
 
         private MqttCallback mqttCallback = null;
-        private MqttActionListener mqttActionListener;
+        private IMqttActionListener mqttActionListener;
 
         public Builder serverUrl(String serverUrl) {
             this.serverUrl = serverUrl;
@@ -146,7 +142,7 @@ public class MyMqttService implements NeulinkConst{
             return this;
         }
 
-        public Builder mqttActionListener(MqttActionListener mqttActionListener){
+        public Builder mqttActionListener(IMqttActionListener mqttActionListener){
             this.mqttActionListener = mqttActionListener;
             return this;
         }
@@ -205,7 +201,7 @@ public class MyMqttService implements NeulinkConst{
 
             client = new MqttAsyncClient(serverUrl, clientId, memoryPersistence);
 
-            conOpt = new MqttConnectionOptions();
+            conOpt = new MqttConnectOptions();
 
             String[] serverUrls = serverUrl.split(",");
             if(serverUrls.length>1){
@@ -214,18 +210,11 @@ public class MyMqttService implements NeulinkConst{
 
             // 设置MQTT监听并且接受消息
             client.setCallback(mqttCallback);
-            /**
-             * mqtt 5.0 lwt 消息必须设置sessionExpiryInterval，否则不会触发 lwt事件
-             */
-            conOpt.setSessionExpiryInterval(0L);
+
             // 清除缓存
-            conOpt.setCleanStart(cleanSession);
+            conOpt.setCleanSession(cleanSession);
             // 设置连接超时时间，单位：秒
             conOpt.setConnectionTimeout(connectTimeout);
-            /**
-             * 自动连接延时after first
-             */
-            conOpt.setAutomaticReconnectDelay(1,4);
             //设置执行服务超时时间，单位秒
             conOpt.setExecutorServiceTimeout(executorServiceTimeout);
             // 心跳包发送间隔，单位：秒
@@ -239,7 +228,7 @@ public class MyMqttService implements NeulinkConst{
             if(ObjectUtil.isEmpty(passWord)){
                 throw new NeulinkException(STATUS_402,"密码为空");
             }
-            conOpt.setPassword(passWord.getBytes(StandardCharsets.UTF_8));
+            conOpt.setPassword(passWord.toCharArray());
             // 自动重连
             conOpt.setAutomaticReconnect(autoReconnect);
             //最大重连间隔
@@ -261,9 +250,7 @@ public class MyMqttService implements NeulinkConst{
             int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,lwtTopic.getQos());
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
             byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
-            MqttMessage mqttMessage = new MqttMessage(encoded,qos,retained,null);
-            mqttMessage.setPayload(encoded);
-            conOpt.setWill(lwtTopic.getTopic(),mqttMessage);
+            conOpt.setWill(lwtTopic.getTopic(),encoded, qos, retained);
             NeuLogUtils.iTag(TAG,String.format("end init with : \n%s",toString()));
         }
         catch (MqttException ex){
@@ -315,20 +302,20 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
-    public void subscribe(String topic, int qos, MqttActionListener mqttMessageListener) {
+    public void subscribe(String topic, int qos,IMqttMessageListener mqttMessageListener) {
         try {
             // 订阅topic话题
             NeuLogUtils.iTag(TAG, "execute subscribe -- topic = " + topic + ",qos = " + qos);
-            client.subscribe(topic, qos,context,mqttMessageListener);
+            client.subscribe(topic, qos,mqttMessageListener);
         } catch (Exception e) {
             NeuLogUtils.eTag(TAG, e.toString());
         }
     }
 
-    public void subscribe(String[] topics, int[] qoss,MqttActionListener mqttMessageListeners) {
+    public void subscribe(String[] topics, int[] qoss,IMqttMessageListener[] mqttMessageListeners) {
         try {
             // 订阅topic话题
-            client.subscribe(topics, qoss,context,mqttMessageListeners);
+            client.subscribe(topics, qoss,mqttMessageListeners);
         } catch (Exception e) {
             NeuLogUtils.eTag(TAG, e.toString());
         }

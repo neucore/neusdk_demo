@@ -2,8 +2,9 @@ package com.neucore.neulink.util;
 
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.log.NeuLogUtils;
 
-import org.eclipse.paho.mqttv5.common.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,7 +21,7 @@ public class MessageUtil implements NeulinkConst {
         return compress;
     }
 
-    public static String decode(boolean debug, String topic, MqttMessage message){
+    public static String decode(boolean debug,String topic,MqttMessage message){
         int messageId = message.getId();
         int qos = message.getQos();
         boolean isRetained = message.isRetained();
