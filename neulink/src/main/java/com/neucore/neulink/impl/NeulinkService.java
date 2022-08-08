@@ -707,8 +707,6 @@ public class NeulinkService implements NeulinkConst{
                     result.setMsg(ex.getMessage());
                     registCallback.onFinished(result);
 
-                    NeuLogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
-
                     if(code == MqttException.REASON_CODE_BROKER_UNAVAILABLE
                             || code == MqttException.REASON_CODE_UNEXPECTED_ERROR
                             || code == MqttException.REASON_CODE_CLIENT_TIMEOUT
