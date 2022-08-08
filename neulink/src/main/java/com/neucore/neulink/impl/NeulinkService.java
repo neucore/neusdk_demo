@@ -33,8 +33,10 @@ import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.RequestContext;
 
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.mqttv5.client.MqttActionListener;
+import org.eclipse.paho.mqttv5.client.MqttClientException;
+import org.eclipse.paho.mqttv5.common.MqttException;
+import org.eclipse.paho.mqttv5.common.packet.MqttReturnCode;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -297,7 +299,7 @@ public class NeulinkService implements NeulinkConst{
      * @param qos
      * @param mqttMessageListener
      */
-    protected void subscribeToTopic(final String topic, int qos,IMqttMessageListener mqttMessageListener){
+    protected void subscribeToTopic(final String topic, int qos, MqttActionListener mqttMessageListener){
         myMqttService.subscribe(topic, qos,mqttMessageListener);
     }
 
@@ -307,7 +309,7 @@ public class NeulinkService implements NeulinkConst{
      * @param qos
      * @param mqttMessageListener
      */
-    protected void subscribeToTopic(final String topic[], int qos[],IMqttMessageListener[] mqttMessageListener){
+    protected void subscribeToTopic(final String topic[], int qos[],MqttActionListener mqttMessageListener){
         myMqttService.subscribe(topic, qos,mqttMessageListener);
     }
 
@@ -683,6 +685,7 @@ public class NeulinkService implements NeulinkConst{
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             NeuLogUtils.iTag(TAG,"开始异步注册：run");
             int trys = 1;
+
             while (!neulinkServiceInited){
                 try{
                     /**
@@ -707,11 +710,16 @@ public class NeulinkService implements NeulinkConst{
                     result.setMsg(ex.getMessage());
                     registCallback.onFinished(result);
 
-                    if(code == MqttException.REASON_CODE_BROKER_UNAVAILABLE
-                            || code == MqttException.REASON_CODE_UNEXPECTED_ERROR
-                            || code == MqttException.REASON_CODE_CLIENT_TIMEOUT
-                            || code == MqttException.REASON_CODE_WRITE_TIMEOUT
-                            || code == MqttException.REASON_CODE_SERVER_CONNECT_ERROR){
+                    if(code == MqttReturnCode.RETURN_CODE_SERVER_UNAVAILABLE
+                            || code == MqttReturnCode.RETURN_CODE_UNSPECIFIED_ERROR
+                            || code == MqttReturnCode.RETURN_CODE_SERVER_BUSY
+                            || code == MqttReturnCode.RETURN_CODE_SERVER_SHUTTING_DOWN
+                            || code == MqttReturnCode.RETURN_CODE_SERVER_MOVED
+                            || code == MqttReturnCode.RETURN_CODE_KEEP_ALIVE_TIMEOUT
+                            || code == MqttClientException.REASON_CODE_CLIENT_TIMEOUT
+                            || code == MqttClientException.REASON_CODE_SERVER_CONNECT_ERROR
+                            || code == MqttClientException.REASON_CODE_CLIENT_NOT_CONNECTED
+                    ){
                         /**
                          * 未知错误、网络异常、服务器故障、服务重启中需要重试
                          */
@@ -738,55 +746,62 @@ public class NeulinkService implements NeulinkConst{
                         }
                     }
                 }
-                trys = 1;
-                while (neulinkServiceInited && !registed) {
-                    try {
-                        if (isMqttConnSuccessed()) {
-                            if (channel == 0) {
-                                NeuLogUtils.iTag(TAG, "第" + trys + "次MQTT通道注册");
-                                myMqttService.publish(false, reqId, payload, topStr, qos, retained, registCallback);
-                                registed = true;
-                            } else {
-                                String response = null;
-                                NeuLogUtils.iTag(TAG, "第" + trys + "次Http通道注册");
-                                String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, "https://dev.neucore.com/api/neulink/upload2cloud");
-                                NeuLogUtils.dTag(TAG, "registServer：" + registServer);
+            }
 
-                                String topic = URLEncoder.encode(topStr, "UTF-8");
-                                response = NeuHttpHelper.post(false, registServer + "?topic=" + topic, payload, params, 10, 60, 1);
+            trys = 1;
+            while (neulinkServiceInited && !registed){
+                try {
 
-                                NeuLogUtils.dTag(TAG, "设备注册响应：" + response);
-                                getRegistCallback().onFinished(Result.ok());
-                                registed = true;
-                            }
+                    if(isMqttConnSuccessed()){
+                        if(channel==0){
+                            NeuLogUtils.iTag(TAG,"第"+trys+"次MQTT通道注册");
+                            myMqttService.publish(false,reqId,payload,topStr, qos, retained,registCallback);
+                            registed = true;
                         }
-                    } catch (UnsupportedEncodingException ex) {
-                        NeuLogUtils.eTag(TAG, "注册失败", ex);
-                        Result result = new Result();
-                        result.setReqId(reqId);
-                        result.setCode(STATUS_500);
-                        result.setMsg(ex.getMessage());
-                        registCallback.onFinished(result);
-                    } catch (NeulinkException e) {
-                        NeuLogUtils.eTag(TAG, "注册失败", e);
-                        Result result = new Result();
-                        result.setReqId(reqId);
-                        result.setCode(e.getCode());
-                        result.setMsg(e.getMsg());
-                        registCallback.onFinished(result);
-                    } finally {
-                        if (!registed) {
-                            try {
-                                Thread.sleep(1000 * trys);
-                                if (trys < 30) {
-                                    trys++;
-                                }
-                            } catch (InterruptedException interruptedException) {
-                            }
-                        } else {
-                            autoReporter = new NeulinkScheduledReport(context, instance);
-                            autoReporter.start();
+                        else{
+                            String response = null;
+                            NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道注册");
+                            String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
+                            NeuLogUtils.dTag(TAG,"registServer："+registServer);
+
+                            String topic = URLEncoder.encode(topStr,"UTF-8");
+                            response = NeuHttpHelper.post(false,registServer+"?topic="+topic,payload,params,10,60,1);
+
+                            NeuLogUtils.dTag(TAG,"设备注册响应："+response);
+                            getRegistCallback().onFinished(Result.ok());
+                            registed = true;
                         }
+                    }
+                }
+                catch (UnsupportedEncodingException ex){
+                    NeuLogUtils.eTag(TAG,"注册失败",ex);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(STATUS_500);
+                    result.setMsg(ex.getMessage());
+                    registCallback.onFinished(result);
+                }
+                catch (NeulinkException e) {
+                    NeuLogUtils.eTag(TAG,"注册失败",e);
+                    Result result = new Result();
+                    result.setReqId(reqId);
+                    result.setCode(e.getCode());
+                    result.setMsg(e.getMsg());
+                    registCallback.onFinished(result);
+                }
+                finally {
+                    if(!registed){
+                        try {
+                            Thread.sleep(1000*trys);
+                            if(trys<30){
+                                trys++;
+                            }
+                        } catch (InterruptedException interruptedException) {
+                        }
+                    }
+                    else{
+                        autoReporter = new NeulinkScheduledReport(context, instance);
+                        autoReporter.start();
                     }
                 }
             }

@@ -19,12 +19,15 @@ import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
 import com.neucore.neulink.util.RequestContext;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.mqttv5.client.IMqttDeliveryToken;
+import org.eclipse.paho.mqttv5.client.IMqttMessageListener;
+import org.eclipse.paho.mqttv5.client.IMqttToken;
+import org.eclipse.paho.mqttv5.client.MqttActionListener;
+import org.eclipse.paho.mqttv5.client.MqttCallback;
+import org.eclipse.paho.mqttv5.client.MqttDisconnectResponse;
+import org.eclipse.paho.mqttv5.common.MqttException;
+import org.eclipse.paho.mqttv5.common.MqttMessage;
+import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCallbackExtended, IMqttMessageListener, NeulinkConst {
+public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCallback, IMqttMessageListener, NeulinkConst {
     private String TAG = TAG_PREFIX+"NeulinkActionListenerAdapter";
     private NeulinkService service = null;
     private IDeviceService deviceService = null;
@@ -47,7 +50,7 @@ public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCal
     }
 
     /**
-     * IMqttActionListener
+     * MqttActionListener
      * @param asyncActionToken
      */
     @Override
@@ -69,7 +72,7 @@ public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCal
     }
 
     /**
-     * IMqttActionListener
+     * MqttActionListener
      * @param asyncActionToken
      * @param exception
      */
@@ -125,11 +128,15 @@ public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCal
         }
     }
 
+    @Override
+    public void authPacketArrived(int reasonCode, MqttProperties properties) {
+
+    }
+
     /**
      * MqttCallback
      * @param cause
      */
-    @Override
     public void connectionLost(Throwable cause) {
         NeuLogUtils.eTag(TAG,"connectionLost",cause);
         deviceService.disconnect();
@@ -150,7 +157,6 @@ public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCal
      * MqttCallback
      * @param token
      */
-    @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         NeuLogUtils.dTag(TAG,"deliveryComplete");
         List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
@@ -164,6 +170,32 @@ public class NeulinkActionListenerAdapter implements IMqttActionListener,MqttCal
                 }
             }
         }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttToken token) {
+        NeuLogUtils.dTag(TAG,"deliveryComplete");
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.deliveryComplete(token);
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void disconnected(MqttDisconnectResponse disconnectResponse) {
+
+    }
+
+    @Override
+    public void mqttErrorOccurred(MqttException exception) {
+
     }
 
     /**
