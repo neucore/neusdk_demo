@@ -18,8 +18,6 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
-import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
-import com.neucore.neulink.impl.cmd.msg.ResRegist;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.MyMqttService;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
@@ -27,6 +25,7 @@ import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HttpParamWrapper;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
@@ -42,9 +41,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,7 +56,7 @@ public class NeulinkService implements NeulinkConst{
 
     private static NeulinkService instance = new NeulinkService();
 
-    protected IResCallback defaultResCallback = new ResCallback2Log();
+    protected IResCallback defaultResCallback = ConfigContext.getInstance().getDefaultResCallback();
     private MyMqttService myMqttService = null;
     private RegistCallback registCallback = new RegistCallback();
     private List<IMqttCallBack> mqttCallBacks = new ArrayList<>();
@@ -469,7 +466,7 @@ public class NeulinkService implements NeulinkConst{
         }
         else{
 
-            Map<String,String> params = getParams();
+            Map<String,String> params = HttpParamWrapper.getParams();
             /**
              * 设备注册：
              *
@@ -521,48 +518,19 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    private Map<String,String> getParams(){
-        String token = NeulinkSecurity.getInstance().getToken();
-        final Map<String,String> params = new HashMap<>();
-        if(token!=null){
-            int index = token.indexOf(" ");
-            if(index!=-1){
-                token = token.substring(index+1);
-            }
-            params.put("Authorization","Bearer "+token);
-        }
-        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
-        if(ObjectUtil.isNotEmpty(deviceService)){
-            Locale locale = deviceService.getLocale();
-            if(ObjectUtil.isEmpty(locale)){
-                locale = Locale.getDefault();
-            }
-            params.put("Accept-Language",locale.getLanguage()+"-"+locale.getCountry());
-        }
-        return params;
-    }
-
-    private String custid="notimpl";
     public String getCustId(){
         String scopeId = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID,"1");
-        if(ObjectUtil.isNotEmpty(scopeId)){
-            return scopeId;
-        }
-        return custid;
+        return scopeId;
     }
-    private String storeid="notimpl";
+
     public String getStoreId(){
-        if(ObjectUtil.isNotEmpty(storeid)){
-            return storeid;
-        }
-        return "notimpl";
+        String storeid = ConfigContext.getInstance().getConfig(ConfigContext.STOREID,"notimpl");
+        return storeid;
     }
-    private String zoneid="0";
+
     public String getZoneId(){
-        if(ObjectUtil.isNotEmpty(zoneid)){
-            return zoneid;
-        }
-        return "notimpl";
+        String zoneid = ConfigContext.getInstance().getConfig(ConfigContext.ZONEID,"notimpl");
+        return zoneid;
     }
 
     public boolean isMqttConnSuccessed(){
@@ -699,8 +667,8 @@ public class NeulinkService implements NeulinkConst{
                     if(mqttServiceUri ==null){
                         mqttServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
                     }
-                    String userName = ConfigContext.getInstance().getConfig(ConfigContext.USERNAME,"admin");
-                    String password = ConfigContext.getInstance().getConfig(ConfigContext.PASSWORD,"password");
+                    String userName = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_USERNAME,"admin");
+                    String password = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_PASSWORD,"password");
                     NeuLogUtils.iTag(TAG,"MQTT 初始化");
                     initMqttService(mqttServiceUri,userName,password);
                     neulinkServiceInited = true;
@@ -765,7 +733,7 @@ public class NeulinkService implements NeulinkConst{
                         else{
                             String response = null;
                             NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道注册");
-                            String registServer = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
+                            String registServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
                             NeuLogUtils.dTag(TAG,"registServer："+registServer);
 
                             String topic = URLEncoder.encode(topStr,"UTF-8");
@@ -890,7 +858,7 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * HTTP机制
                  */
-                httpServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.REGIST_SERVER, httpServiceUri);
+                httpServiceUri = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER, httpServiceUri);
                 Boolean done = false;
                 int count = 0;
                 while(!done && count<3){

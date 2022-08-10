@@ -148,6 +148,10 @@ public class MyInstaller {
         extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
         extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"true"); //开启心跳
         extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"true"); //开启运行状态
+        /**
+         * 启用远程配置
+         */
+        extConfig.setProperty(ConfigContext.ENABLE_REMOTE_CONFIG,"true"); //开启远程配置状态【mqtt-server，http-upload-server】
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
@@ -155,8 +159,8 @@ public class MyInstaller {
          * MQTT_SERVER 可以用逗号连接多个服务器地址【集群、需要paho库的支持】;
          * eg：tcp://10.18.9.240:1883,tcp://10.18.9.241:1883,tcp://10.18.9.242:1883,tcp://10.18.9.243:1883,tcp://10.18.9.244:1883
          */
-        extConfig.setProperty(ConfigContext.USERNAME,"zXzc3gkY1RGS626w");
-        extConfig.setProperty(ConfigContext.PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
+        extConfig.setProperty(ConfigContext.MQTT_USERNAME,"zXzc3gkY1RGS626w");
+        extConfig.setProperty(ConfigContext.MQTT_PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
         extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         extConfig.setProperty(ConfigContext.KEEP_ALIVE_INTERVAL,"60");
         //##########################################################################################
