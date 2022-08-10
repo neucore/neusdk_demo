@@ -3,6 +3,8 @@ package com.neucore.neulink.impl.cmd.cfg;
 import android.content.Context;
 import android.util.Log;
 
+import com.neucore.neulink.IResCallback;
+import com.neucore.neulink.impl.ResCallback2Log;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.NeulinkConst;
@@ -21,6 +23,8 @@ import java.util.Properties;
 public class ConfigContext implements NeulinkConst{
 
     private static ConfigContext configContext = new ConfigContext();
+
+    protected IResCallback defaultResCallback = new ResCallback2Log();
 
     public final static String STORAGE_OSS = "OSS";
 
@@ -59,9 +63,9 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String STATUS_MANUAL_REPORT = "status.manual.report";
 
-    public final static String USERNAME = "login.username";
+    public final static String MQTT_USERNAME = "login.username";
 
-    public final static String PASSWORD = "login.password";
+    public final static String MQTT_PASSWORD = "login.password";
 
     public final static String KEEP_ALIVE_INTERVAL= "keepAliveInterval";
 
@@ -75,13 +79,19 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String MAX_RECONNECT_DELAY= "maxReconnectDelay";
 
-    public final static String REGIST_SERVER = "regist.server";
+    public final static String HTTP_UPLOAD_SERVER = "http.upload.server";
 
     public final static String DEVICE_TYPE = "device.type";
 
     public final static String HTTP_SESSION_TIMEOUT = "http.session.timeout";
 
+    public final static String CONDIG_SERVER_URL = "config.server.url";
+
     public final static String SCOPEID = "ScopeId";
+
+    public final static String STOREID = "Storeid";
+
+    public final static String ZONEID = "Zoneid";
 
     private String TAG = TAG_PREFIX+"ConfigContext";
 
@@ -106,6 +116,8 @@ public class ConfigContext implements NeulinkConst{
     public final static String ENABLE_HEARTBEAT = "enable.heartbeat";
 
     public final static String ENABLE_RUNTIME = "enable.runtime";
+
+    public final static String ENABLE_REMOTE_CONFIG = "enable.remote.config";
 
     private Properties defaultConfig = new Properties();
     void loadDefault() {
@@ -197,6 +209,13 @@ public class ConfigContext implements NeulinkConst{
         }
     }
 
+    public void update(String key,String value){
+        if(extConfig==null){
+            extConfig = new Properties();
+        }
+        extConfig.setProperty(key,value);
+    }
+
     /**
      * 设置扩展配置
      * @param extConfig
@@ -285,5 +304,9 @@ public class ConfigContext implements NeulinkConst{
         String setting = defaultConfig.getProperty(key);
 
         return setting;
+    }
+
+    public IResCallback getDefaultResCallback() {
+        return defaultResCallback;
     }
 }

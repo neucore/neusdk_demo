@@ -2,6 +2,10 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.neucore.neulink.IResCallback;
+import com.neucore.neulink.NeulinkException;
+import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
+import com.neucore.neulink.impl.cmd.msg.ResRegist;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.ILoginCallback;
@@ -12,8 +16,15 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HttpParamWrapper;
+import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NetworkHelper;
+import com.neucore.neulink.util.NeuHttpHelper;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
 
 class RegisterAdapter implements NeulinkConst{
@@ -24,6 +35,7 @@ class RegisterAdapter implements NeulinkConst{
     private boolean registed=false;
     private boolean registCalled = false;
     private final NetworkHelper networkHelper = NetworkHelper.getInstance();
+    private IResCallback defaultResCallback = ConfigContext.getInstance().getDefaultResCallback();
     private String last = null;
     public RegisterAdapter() {
 
@@ -69,10 +81,10 @@ class RegisterAdapter implements NeulinkConst{
         new Thread(){
             public void run(){
 
-                int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+
                 NeuLogUtils.iTag(TAG,"do regist ...");
                 int count = 1;
-                while (!logined&&channel==1) {
+                while (!logined) {
                     ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
                         String token = loginCallback.login();
@@ -98,6 +110,46 @@ class RegisterAdapter implements NeulinkConst{
                     } catch (InterruptedException e) {
                     }
                 }
+
+                /**
+                 * 配置请求
+                 */
+                boolean configLoaded = false;
+                boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
+                while (remoteConfig && !configLoaded){
+                    try {
+                        Thread.sleep(1000);
+                        Long scopeId = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID, 1L);
+                        String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, String.format("https://dev.neucore.com/api/user/v1/%s/configs", scopeId));
+
+                        Map<String, String> params = HttpParamWrapper.getParams();
+
+                        String response = NeuHttpHelper.post(true, configsURL, null, params, 10, 60, 1);
+
+                        NeuLogUtils.dTag(TAG, "设备configs响应：" + response);
+
+                        ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
+                        NeulinkZone zone = resRegist.getZone();
+                        ConfigContext.getInstance().update(ConfigContext.STOREID, zone.getStoreid());
+                        ConfigContext.getInstance().update(ConfigContext.ZONEID, zone.getId());
+                        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, zone.getMqttServer());
+                        ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, zone.getMqttUserName());
+                        ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, zone.getMqttPassword());
+                        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,zone.getUploadServer());
+                        configLoaded = true;
+                    }
+                    catch (NeulinkException e) {
+                        NeuLogUtils.eTag(TAG,"配置加载失败",e);
+                        Result result = new Result();
+                        result.setReqId(UUID.fastUUID().toString());
+                        result.setCode(e.getCode());
+                        result.setMsg(e.getMsg());
+                        defaultResCallback.onFinished(result);
+                    } catch (InterruptedException e) {
+                    }
+                }
+
+                int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
 
                 NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
 
