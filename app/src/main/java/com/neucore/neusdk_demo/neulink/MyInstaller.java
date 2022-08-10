@@ -154,7 +154,7 @@ public class MyInstaller {
          * ⚠️注意；http 通道启用时打开
          * 设置设备注册服务地址
          */
-//        extConfig.setProperty(ConfigContext.REGIST_SERVER,"http://dev.neucore.com/api/v1/neulink/upload2cloud");
+        extConfig.setProperty(ConfigContext.HTTP_UPLOAD_SERVER,"http://dev.neucore.com/api/v1/neulink/upload2cloud");
         /**
          * 30分钟
          */
