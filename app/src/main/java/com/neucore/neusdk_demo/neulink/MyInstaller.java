@@ -127,7 +127,7 @@ public class MyInstaller {
         /**
          * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.SCOPEID,"1");//租户id
+        extConfig.setProperty(ConfigContext.SCOPEID,"21");//租户id
         /**
          * 启用远程配置
          */

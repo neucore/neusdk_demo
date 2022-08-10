@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 
+import cn.hutool.core.util.ObjectUtil;
+
 public class ConfigContext implements NeulinkConst{
 
     private static ConfigContext configContext = new ConfigContext();
@@ -213,7 +215,9 @@ public class ConfigContext implements NeulinkConst{
         if(extConfig==null){
             extConfig = new Properties();
         }
-        extConfig.setProperty(key,value);
+        if(ObjectUtil.isNotEmpty(key) && ObjectUtil.isNotEmpty(value)){
+            extConfig.setProperty(key,value);
+        }
     }
 
     /**
