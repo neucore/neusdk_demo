@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.util.ObjectUtil;
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -378,6 +379,75 @@ public class NeuHttpHelper implements NeulinkConst{
 			request = new Request.Builder()
 					.url(url)
 					.post(requestBody)
+					.build();
+		}
+		while(trys<=tryNum){
+			try {
+				response = client.newCall(request).execute();
+				code = response.code();
+				NeuLogUtils.iTag(TAG,code);
+				if (code != 200) {
+					throw new NeulinkException(code,url + ",失败 with code=" + code);
+				}
+				String responseData = response.body().string();
+				return responseData;
+			}
+			catch (IOException ex){
+				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				if(trys==tryNum) {
+					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+				}
+				trys++;
+				continue;
+			}
+			catch (NeulinkException ex){
+				throw ex;
+			}
+			catch (RuntimeException ex){
+				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
+				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+				}
+				catch (IOException ex){}
+			}
+		}
+		throw new RuntimeException(url + ",失败 with code=" + code);
+	}
+
+	public static String post(String url, Map<String,String> params, Map<String,String> headers, int connTime, int execTime, int tryNum, Interceptor interceptor){
+		Response response = null;
+		int trys = 1;
+		int code = 200;
+		InputStream is = null;
+
+		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+		OkHttpClient client = getClient(false,connTime,execTime);
+		FormBody.Builder builder = new FormBody.Builder();
+		if(ObjectUtil.isNotEmpty(params)){
+			String[] keys = new String[params.size()];
+			params.keySet().toArray(keys);
+			for(String key:keys){
+				builder.add(key,params.get(key));
+			}
+		}
+		Request request = null;
+		if(ObjectUtil.isNotEmpty(headers)){
+			Headers headers_ = Headers.of(headers);
+			request = new Request.Builder()
+					.url(url)
+					.headers(headers_)
+					.post(builder.build())
+					.build();
+		}
+		else{
+			request = new Request.Builder()
+					.url(url)
+					.post(builder.build())
 					.build();
 		}
 		while(trys<=tryNum){

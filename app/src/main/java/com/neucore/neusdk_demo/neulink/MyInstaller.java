@@ -132,7 +132,7 @@ public class MyInstaller {
          * 启用远程配置
          */
         extConfig.setProperty(ConfigContext.ENABLE_REMOTE_CONFIG,"true"); //开启远程配置状态【mqtt-server，http-upload-server】
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,String.format("https://dev.neucore.com/api/user/v1/%s/configs", 1));//租户Id
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//租户Id
         /**
          * Neulink通道设置
          */
