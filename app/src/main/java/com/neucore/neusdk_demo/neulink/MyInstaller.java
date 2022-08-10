@@ -176,8 +176,8 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
         extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
-        extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"true"); //开启心跳
-        extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"true"); //开启运行状态
+        extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"false"); //开启心跳
+        extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"false"); //开启运行状态
 
         //##########################################################################################
         /**
