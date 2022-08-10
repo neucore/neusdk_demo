@@ -119,39 +119,25 @@ public class MyInstaller {
         Properties extConfig = new Properties();
 
         /**
-         * 设置租户Id
-         */
-        extConfig.setProperty(ConfigContext.SCOPEID,"1");//租户id
-
-        /**
          * 设备类型：根据APK功能决定进行配置
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC  14:相框-Android;15:相框-Lunix】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"10");//默认为客流机器
+
         /**
-         * 设置设备端与云端的通信通道；
-         * 默认为mqtt【下发、上报都走mqtt】；
-         * 即：所有End2Cloud的neulink上报都是mqtt消息；Cloud2End的neulink的下发都是mqtt消息；
-         * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
-         *
-         * 扩展设置：
-         * 上报通道设置【0：mqtt；1：http】，默认mqtt
-         * extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");
-         * 设置topic模式，默认：TOPIC_SHORT
-         * extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
-         * 下发内容默认压缩
-         * extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
-         * 上传内容默认压缩
-         * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
+         * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
-        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
-        extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"true"); //开启心跳
-        extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"true"); //开启运行状态
+        extConfig.setProperty(ConfigContext.SCOPEID,"1");//租户id
         /**
          * 启用远程配置
          */
         extConfig.setProperty(ConfigContext.ENABLE_REMOTE_CONFIG,"true"); //开启远程配置状态【mqtt-server，http-upload-server】
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,String.format("https://dev.neucore.com/api/user/v1/%s/configs", 1));//租户Id
+        /**
+         * Neulink通道设置
+         */
+        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//上报通道设置【0：mqtt；1：http】，默认mqtt
+
         //##########################################################################################
         /**
          * ⚠️注意；mqtt通道启用时打开
@@ -173,6 +159,26 @@ public class MyInstaller {
          * 30分钟
          */
 //        extConfig.setProperty(ConfigContext.HTTP_SESSION_TIMEOUT,String.valueOf(30*60*1000L));
+
+        /**
+         * 设置设备端与云端的通信通道；
+         * 默认为mqtt【下发、上报都走mqtt】；
+         * 即：所有End2Cloud的neulink上报都是mqtt消息；Cloud2End的neulink的下发都是mqtt消息；
+         * 当channel设置为http时，所有End2Cloud的neulink上报都是http报文；Cloud2End的neulink的下发都是mqtt消息；
+         *
+         * 扩展设置：
+         * 设置topic模式，默认：TOPIC_SHORT
+         * extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_LONG);
+         * 下发内容默认压缩
+         * extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
+         * 上传内容默认压缩
+         * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
+         */
+        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"true"); //开启心跳
+        extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"true"); //开启运行状态
+
         //##########################################################################################
         /**
          * FTP 实现
