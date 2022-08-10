@@ -23,11 +23,8 @@ public class NeulinkTopicParser {
             /**
              * 广播设备
              */
-            topic.setBiz(paths[3]);
-            topic.setVersion(paths[4]);
-            topic.setReqId(paths[5]);
-            if(len>6){
-                topic.setMd5(paths[6]);
+            if(len>3){
+                topic.setVersion(paths[3]);
             }
         }
         else{
@@ -38,17 +35,36 @@ public class NeulinkTopicParser {
              * upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
              * bcst/req/${dev_id}/alog/v1.0/${req_no}[/${md5}]
              */
-            if(len>3){
-                topic.setBiz(paths[3]);
-            }
-            if(len>4){
-                topic.setVersion(paths[4]);
-            }
-            if(len>5) {
-                topic.setReqId(paths[5]);
-            }
             if(len>6){
-                topic.setMd5(paths[6]);
+                /**
+                 * 兼容老版本
+                 */
+                if(len>3){
+                    topic.setBiz(paths[3]);
+                }
+                if(len>4){
+                    topic.setVersion(paths[4]);
+                }
+                if(len>5) {
+                    topic.setReqId(paths[5]);
+                }
+                if(len>6){
+                    topic.setMd5(paths[6]);
+                }
+            }
+            else if(len>5){
+                /**
+                 * 新版本
+                 */
+                if(len>3){
+                    topic.setVersion(paths[3]);
+                }
+                if(len>4){
+                    topic.setReqId(paths[4]);
+                }
+                if(len>5){
+                    topic.setVersion(paths[5]);
+                }
             }
         }
         return topic;
