@@ -661,6 +661,7 @@ public class NeulinkService implements NeulinkConst{
                 String group = null;
                 String req$res = null;
                 String biz = null;
+                String version = null;
                 if(len>0){
                     group = temps[0];
                 }
@@ -670,7 +671,10 @@ public class NeulinkService implements NeulinkConst{
                 if(len>2){
                     biz = temps[2];
                 }
-                this.topStr = String.format("%s/%s/%s",group,req$res,biz);
+                if(len>3){
+                    version = temps[3];
+                }
+                this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
             }
             this.qos = qos;
             this.retained = retained;
@@ -842,6 +846,7 @@ public class NeulinkService implements NeulinkConst{
                 String group = null;
                 String req$res = null;
                 String biz = null;
+                String version = null;
                 if(len>0){
                     group = temps[0];
                 }
@@ -851,7 +856,10 @@ public class NeulinkService implements NeulinkConst{
                 if(len>2){
                     biz = temps[2];
                 }
-                this.topStr = String.format("%s/%s/%s",group,req$res,biz);
+                if(len>3){
+                    version = temps[3];
+                }
+                this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
                 if(debug){
                     this.topStr = this.topStr+"/debug";
                 }
