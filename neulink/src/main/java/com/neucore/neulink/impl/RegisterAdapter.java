@@ -84,7 +84,12 @@ class RegisterAdapter implements NeulinkConst{
 
                 NeuLogUtils.iTag(TAG,"do regist ...");
                 int count = 1;
-                while (!logined) {
+                Integer channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+                boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
+
+                NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
+
+                while (!logined && (channel==1 || remoteConfig)) {
                     ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
                         String token = loginCallback.login();
@@ -115,7 +120,6 @@ class RegisterAdapter implements NeulinkConst{
                  * 配置请求
                  */
                 boolean configLoaded = false;
-                boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
                 while (remoteConfig && !configLoaded){
                     try {
                         Thread.sleep(1000);
@@ -148,10 +152,6 @@ class RegisterAdapter implements NeulinkConst{
                     } catch (InterruptedException e) {
                     }
                 }
-
-                int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-
-                NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
 
                 while(!registed){
                     try {
