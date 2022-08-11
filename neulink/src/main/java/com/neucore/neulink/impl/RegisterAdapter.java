@@ -123,9 +123,9 @@ class RegisterAdapter implements NeulinkConst{
                 while (remoteConfig && !configLoaded){
                     try {
                         Thread.sleep(1000);
-                        Long scopeId = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID, 1L);
+
                         Map<String,String> params = new HashMap<>();
-                        params.put("scopeId",scopeId.toString());
+
                         String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
 
                         Map<String, String> headers = HttpParamWrapper.getParams();
