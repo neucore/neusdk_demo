@@ -449,35 +449,14 @@ public class NeulinkService implements NeulinkConst{
      */
     protected void publishMessage(boolean debug,final String topicPrefix, String version, final String reqId, final String payload, final int qos, final boolean retained, final IResCallback callback){
 
-        int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
         final String topic = buildTopic(topicPrefix,version,reqId,md5);
-
-        if (channel==0){//向下兼容
-            if(topic.startsWith("msg/req/devinfo")) {
-                NeuLogUtils.iTag(TAG,"mqtt regist");
-                regist(reqId,topic,payload,qos,retained,null);
-            }
-            else{
-                publish(debug,reqId,topic,payload,qos,retained,null,callback);
-            }
+        if(topic.startsWith("msg/req/devinfo")){
+            regist(reqId,topic,payload,qos,retained);
         }
         else{
-
-            Map<String,String> params = HttpParamWrapper.getParams();
-            /**
-             * 设备注册：
-             *
-             */
-            if(topic.startsWith("msg/req/devinfo")){
-                NeuLogUtils.iTag(TAG,"http regist");
-                regist(reqId,topic,payload,qos,retained,params);
-            }
-            else {
-                publish(debug,reqId,topic,payload,qos,retained,params,callback);
-            }
+            publish(debug,reqId,topic,payload,qos,retained,callback);
         }
     }
 
@@ -490,16 +469,16 @@ public class NeulinkService implements NeulinkConst{
         return stringBuffer.toString();
     }
 
-    private void regist(String reqId,String topStr, String payload, int qos, Boolean retained, Map<String,String> params){
+    private void regist(String reqId,String topStr, String payload, int qos, Boolean retained){
         synchronized (this){
             if(!registCalled){
-                fixedThreadPool.execute(new AsyncRegistor(ContextHolder.getInstance().getContext(),reqId,topStr,payload,qos,retained,params));
+                fixedThreadPool.execute(new AsyncRegistor(ContextHolder.getInstance().getContext(),reqId,topStr,payload,qos,retained));
                 registCalled = true;
             }
         }
     }
 
-    private void publish(boolean debug,String reqId,String payload,String topStr,Integer qos,boolean retained,Map<String,String> params,IResCallback callback){
+    private void publish(boolean debug,String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
 
         if(ObjectUtil.isEmpty(callback)){
             NeuLogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
@@ -514,7 +493,7 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynPublisher(debug,reqId,payload,topStr,qos,retained,params,callback));
+            fixedThreadPool.execute(new AsynPublisher(debug,reqId,payload,topStr,qos,retained,callback));
         }
     }
 
@@ -608,9 +587,8 @@ public class NeulinkService implements NeulinkConst{
         private String payload;
         private int qos;
         private Boolean retained;
-        private Map<String,String> params;
         private Context context;
-        public AsyncRegistor(Context context,String reqId,String topStr, String payload, int qos, Boolean retained, Map<String,String> params){
+        public AsyncRegistor(Context context,String reqId,String topStr, String payload, int qos, Boolean retained){
             this.context = context;
             this.reqId = reqId;
             this.topStr = topStr;
@@ -646,7 +624,6 @@ public class NeulinkService implements NeulinkConst{
             }
             this.qos = qos;
             this.retained = retained;
-            this.params = params;
         }
 
         @Override
@@ -731,6 +708,7 @@ public class NeulinkService implements NeulinkConst{
                             registed = true;
                         }
                         else{
+                            Map<String,String> params = HttpParamWrapper.getParams();
                             String response = null;
                             NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道注册");
                             String registServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
@@ -791,9 +769,8 @@ public class NeulinkService implements NeulinkConst{
         private String payload;
         private Integer qos;
         private Boolean retained;
-        private Map<String,String> params;
         private IResCallback callback;
-        public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained, Map<String,String> params, IResCallback callback){
+        public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
             this.topStr = topStr;
@@ -834,7 +811,6 @@ public class NeulinkService implements NeulinkConst{
             }
             this.qos = qos;
             this.retained = retained;
-            this.params = params;
             this.callback = callback;
         }
         @Override
@@ -864,6 +840,7 @@ public class NeulinkService implements NeulinkConst{
                 while(!done && count<3){
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
+                        Map<String,String> params = HttpParamWrapper.getParams();
                         String response = NeuHttpHelper.post(debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
