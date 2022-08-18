@@ -452,7 +452,7 @@ public class NeulinkService implements NeulinkConst{
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
         final String topic = buildTopic(topicPrefix,version,reqId,md5);
-        if(topic.startsWith("msg/req/devinfo")){
+        if(topic.toLowerCase().startsWith("msg/req/devinfo")){
             regist(reqId,topic,payload,qos,retained);
         }
         else{
