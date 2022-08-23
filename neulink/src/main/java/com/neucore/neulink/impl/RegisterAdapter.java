@@ -120,7 +120,7 @@ class RegisterAdapter implements NeulinkConst{
                  * 配置请求
                  */
                 boolean configLoaded = false;
-                while (remoteConfig && !configLoaded){
+                while (logined && remoteConfig && !configLoaded){
                     try {
                         Thread.sleep(1000);
 
