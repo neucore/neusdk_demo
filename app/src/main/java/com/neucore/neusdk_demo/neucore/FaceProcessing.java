@@ -82,6 +82,7 @@ public class FaceProcessing extends Thread {
 
     private FaceProcessing(Context context)
     {
+        super("FaceProcessing");
         this.mContext = context;
 //        copyAssetResource2File(this.mContext);
 //        OpenCVLoader.initDebug();

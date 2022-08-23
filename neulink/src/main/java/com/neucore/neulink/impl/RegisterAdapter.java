@@ -78,7 +78,7 @@ class RegisterAdapter implements NeulinkConst{
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
      */
     void regist() {
-        new Thread(){
+        new Thread("RegisterAdapter"){
             public void run(){
 
 

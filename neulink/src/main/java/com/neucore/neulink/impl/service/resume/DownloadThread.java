@@ -24,6 +24,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
     private FileDownloader downloader;
 
     public DownloadThread(FileDownloader downloader, String downUrl, File saveFile, long block, long downLength, int threadId) {
+        super("DownloadThread@"+threadId);
         this.downUrl = downUrl;
         this.saveFile = saveFile;
         this.block = block;

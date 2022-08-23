@@ -138,7 +138,7 @@ public class SampleConnector implements NeulinkConst{
 
         if(!started){
 
-            new Thread(){
+            new Thread("SampleConnector"){
                 @Override
                 public void run() {
 

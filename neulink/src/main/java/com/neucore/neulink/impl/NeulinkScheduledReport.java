@@ -54,7 +54,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
     private void status() {
 
 
-        new Thread("status") {
+        new Thread("StatusReport") {
             public void run() {
 
                 while (!service.getDestroyed() && true) {
@@ -91,7 +91,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
      * msg/req/stat/v1.0/${req_no}[/${md5}], qos=0
      */
     private void stat(){
-        new Thread("stat") {
+        new Thread("StatReport") {
             public void run() {
                 while (!service.getDestroyed() &&true) {
                     try {

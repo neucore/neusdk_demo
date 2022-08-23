@@ -1308,6 +1308,9 @@ public class DetectActivity extends AppCompatActivity implements PermissionInter
     private Handler myHandler;
     private FaceProcessingThread faceProcessingThread;
     class FaceProcessingThread extends Thread {
+        public FaceProcessingThread(){
+            super("DetectActivity.FaceProcessingThread");
+        }
         public void run() {
             Looper.prepare();
 
