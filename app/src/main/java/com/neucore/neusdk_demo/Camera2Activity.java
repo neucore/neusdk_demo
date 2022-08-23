@@ -89,6 +89,9 @@ public class Camera2Activity extends AppCompatActivity {
     private ImageView iv_parent;
 
     class camera2ProcessingThread extends Thread {
+        public camera2ProcessingThread(){
+            super("Camera2Activity.camera2ProcessingThread");
+        }
         public void run() {
             Looper.prepare();
 

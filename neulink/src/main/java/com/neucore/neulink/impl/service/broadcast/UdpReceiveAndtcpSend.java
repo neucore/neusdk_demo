@@ -20,7 +20,7 @@ public class UdpReceiveAndtcpSend extends  Thread implements NeulinkConst{
     private DatagramPacket dp = null;
     private Socket socket = null;
     public UdpReceiveAndtcpSend(){
-
+        super("UdpReceiveAndtcpSend");
     }
     @Override
     public void run() {

@@ -552,6 +552,9 @@ public class NeulinkService implements NeulinkConst{
      * 日志周期清理服务
      */
     class HouseKeeping extends Thread{
+        public HouseKeeping(){
+            super("HouseKeeping");
+        }
         public void run(){
             while (!destroyed){
                 String tempDir = DeviceUtils.getTmpPath(ContextHolder.getInstance().getContext());

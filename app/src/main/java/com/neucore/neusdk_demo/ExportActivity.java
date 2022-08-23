@@ -261,7 +261,7 @@ public class ExportActivity extends AppCompatActivity implements PermissionInter
                                 exportRecordExcel(classID,records);
                             }
                         }
-                    }).start();
+                    },"ExportActivity").start();
                     dlg.dismiss();
                 }
             }

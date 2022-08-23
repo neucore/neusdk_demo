@@ -264,7 +264,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         /* now we can start update thread */
         Log.d(TAG, "Starting processing thread");
         mStopThread = false;
-        mThread = new Thread(new CameraWorker());
+        mThread = new Thread(new CameraWorker(),"CameraWorker");
         mThread.setName("CameraWorker");
         mThread.start();
 
