@@ -7,14 +7,19 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.rrpc.LicCmd;
 import com.neucore.neulink.impl.cmd.rrpc.LicCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.LicPkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
+import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
+import java.util.List;
+
 /**
  * 目标库处理器
  */
-public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<LicCmd, LicCmdRes, LicPkgActionResult> {
+public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<PkgCmd, PkgRes, PkgActionResult<List<String>>> {
 
     private String libDir;
     private Context context;
@@ -44,7 +49,7 @@ public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<Lic
         return NEULINK_BIZ_BLIB_FACE;
     }
 
-    public LicCmdRes responseWrapper(LicCmd cmd, LicPkgActionResult result) {
+    public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         LicCmdRes res = new LicCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -58,7 +63,7 @@ public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<Lic
         return res;
     }
 
-    public LicCmdRes fail(LicCmd cmd, String message) {
+    public PkgRes fail(PkgCmd cmd, String message) {
         LicCmdRes res = new LicCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -71,7 +76,7 @@ public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<Lic
         return res;
     }
 
-    public LicCmdRes fail(LicCmd cmd, int code, String message) {
+    public PkgRes fail(PkgCmd cmd, int code, String message) {
         LicCmdRes res = new LicCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -84,8 +89,12 @@ public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<Lic
         return res;
     }
     @Override
-    public LicCmd buildPkg(LicCmd cmd) throws NeulinkException {
-        //推送消息到达
-        return cmd;
+    public PkgCmd buildPkg(PkgCmd cmd) throws NeulinkException {
+        String cmdStr = cmd.getCmdStr();
+        String jsonUrl = cmd.getDataUrl();
+        long offset = cmd.getOffset();
+        //TODO 实现
+        LicCmd licCmd = new LicCmd();
+        return licCmd;
     }
 }

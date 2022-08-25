@@ -7,13 +7,19 @@ import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.rrpc.CarCmd;
 import com.neucore.neulink.impl.cmd.rrpc.CarCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.CarPkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.LicCmd;
+import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
+import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
+
+import java.util.List;
 
 /**
  * 目标库处理器
  */
-public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<CarCmd, CarCmdRes, CarPkgActionResult> {
+public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<PkgCmd, PkgRes, PkgActionResult<List<String>>> {
 
     private String libDir;
     private Context context;
@@ -41,7 +47,7 @@ public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<Car
         return NEULINK_BIZ_BLIB_FACE;
     }
 
-    public CarCmdRes responseWrapper(CarCmd cmd, CarPkgActionResult result) {
+    public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         CarCmdRes res = new CarCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -55,7 +61,7 @@ public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<Car
         return res;
     }
 
-    public CarCmdRes fail(CarCmd cmd, String message) {
+    public PkgRes fail(PkgCmd cmd, String message) {
         CarCmdRes res = new CarCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -68,7 +74,7 @@ public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<Car
         return res;
     }
 
-    public CarCmdRes fail(CarCmd cmd, int code, String message) {
+    public PkgRes fail(PkgCmd cmd, int code, String message) {
         CarCmdRes res = new CarCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -81,8 +87,12 @@ public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<Car
         return res;
     }
     @Override
-    public CarCmd buildPkg(CarCmd cmd) throws NeulinkException {
-        //推送消息到达
-        return cmd;
+    public PkgCmd buildPkg(PkgCmd cmd) throws NeulinkException {
+        String cmdStr = cmd.getCmdStr();
+        String jsonUrl = cmd.getDataUrl();
+        long offset = cmd.getOffset();
+        //TODO 实现
+        CarCmd licCmd = new CarCmd();
+        return licCmd;
     }
 }

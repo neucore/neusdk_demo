@@ -147,7 +147,7 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.MQTT_USERNAME,"zXzc3gkY1RGS626w");
         extConfig.setProperty(ConfigContext.MQTT_PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://10.18.9.159:1883");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1783");
         extConfig.setProperty(ConfigContext.KEEP_ALIVE_INTERVAL,"60");
         //##########################################################################################
         /**
