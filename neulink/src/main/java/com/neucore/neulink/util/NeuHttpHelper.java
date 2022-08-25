@@ -109,6 +109,9 @@ public class NeuHttpHelper implements NeulinkConst{
 				trys++;
 				continue;
 			}
+			catch (NeulinkException ex){
+				throw ex;
+			}
 			catch (RuntimeException ex){
 				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
 			}
