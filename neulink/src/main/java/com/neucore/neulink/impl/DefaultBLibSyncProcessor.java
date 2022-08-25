@@ -71,7 +71,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
 
             try {
                 if (msg == null) {
-                    msg = insert(req,headers.toString(), payload.toString());
+                    msg = insert(req,headers==null?null:headers.toString(), payload.toString());
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
                     id = msg.getId();

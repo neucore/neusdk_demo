@@ -2,6 +2,9 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
+import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
+import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.neucore.neulink.NeulinkException;
@@ -33,7 +36,7 @@ import java.util.Map;
 /**
  * 目标库处理器
  */
-public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<FaceCmd, FaceCmdRes, FacePkgActionResult> {
+public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<PkgCmd, PkgRes, PkgActionResult<List<String>>> {
 
     private String libDir;
     private Context context;
@@ -63,7 +66,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Fa
         return NEULINK_BIZ_BLIB_FACE;
     }
 
-    public FaceCmdRes responseWrapper(FaceCmd cmd, FacePkgActionResult result) {
+    public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -77,7 +80,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Fa
         return res;
     }
 
-    public FaceCmdRes fail(FaceCmd cmd, String message) {
+    public PkgRes fail(PkgCmd cmd, String message) {
         FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -90,7 +93,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Fa
         return res;
     }
 
-    public FaceCmdRes fail(FaceCmd cmd, int code, String message) {
+    public PkgRes fail(PkgCmd cmd, int code, String message) {
         FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         res.setCmdStr(cmd.getCmdStr());
@@ -103,7 +106,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Fa
         return res;
     }
     @Override
-    public FaceCmd buildPkg(FaceCmd cmd) throws NeulinkException {
+    public PkgCmd buildPkg(PkgCmd cmd) throws NeulinkException {
         //推送消息到达
         FaceCmd faceCmd = new FaceCmd();
         String cmdStr = cmd.getCmdStr();
