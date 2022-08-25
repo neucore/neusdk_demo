@@ -138,7 +138,7 @@ class RegisterAdapter implements NeulinkConst{
                         NeulinkZone zone = resRegist.getZone();
                         ConfigContext.getInstance().update(ConfigContext.STOREID, zone.getStoreid());
                         ConfigContext.getInstance().update(ConfigContext.ZONEID, zone.getId());
-//                        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, zone.getMqttServer());
+                        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, zone.getMqttServer());
                         ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, zone.getMqttUserName());
                         ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, zone.getMqttPassword());
                         ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,zone.getUploadServer());
