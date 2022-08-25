@@ -10,6 +10,8 @@ public class NeulinkException extends RuntimeException implements NeulinkConst {
     }
     public NeulinkException(int code, String msg, Throwable throwable){
         super(throwable);
+        this.code = code;
+        this.msg = msg;
     }
 
     public int getCode() {
