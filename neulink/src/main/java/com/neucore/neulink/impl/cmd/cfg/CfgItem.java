@@ -7,7 +7,7 @@ public class CfgItem {
     @SerializedName("key")
     private String keyName;
 
-    @SerializedName("value")
+    @SerializedName("val")
     private String value;
 
     public String getKeyName() {
