@@ -483,7 +483,7 @@ public class AuthActionResultData {
     public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload, IResCallback callback)
     
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -495,7 +495,7 @@ public class AuthActionResultData {
     public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload)
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
