@@ -460,6 +460,14 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    /**
+     * upld/req|res/biz
+     * @param topicPrefix [rmsg|rrpc|upld]/[res|req]/biz
+     * @param version
+     * @param reqId
+     * @param md5
+     * @return [rmsg|rrpc|upld]/[res|req]/biz/version/reqId/md5/custid/storeid/zoneid/devId
+     */
     private String buildTopic(String topicPrefix,String version,String reqId,String md5){
 
         StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId).append("/").append(md5);
