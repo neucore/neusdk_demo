@@ -89,7 +89,9 @@ NeulinkService.getInstance().destroy();
 #### 通道通信说明图
 ![通道通信图](images/mqtt.png)
 #### 时序图说明图
+##### Http_mqtt时序图
 ![http_mqtt时序图](images/http_mqtt_seq.png)
+##### Mqtt_mqtt时序图
 ![mqtt时序图](images/mqtt_mqtt_seq.png)
 ### 扩展实现 
 
