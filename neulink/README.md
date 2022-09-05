@@ -85,10 +85,11 @@ NeulinkService.getInstance().destroy();
 
 ```
 
-### 时序图
-
-![时序图](images/secquence.png)
-
+### 图
+![MQTT通道通信图](images/mqtt.png)
+![HTTP通道通信图](images/mqtt_http)
+![http_mqtt时序图](images/http_mqtt_seq.png)
+![mqtt时序图](images/mqtt_seq.png)
 ### 扩展实现 
 
 #### 参考 MyInstaller
