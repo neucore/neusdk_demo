@@ -16,10 +16,17 @@ public class OSSStorage extends AbsStorage implements IStorage {
 
     private String TAG = TAG_PREFIX+"OSSStorage";
 
-    private static OSS getOSSClient() {
+    private OSS getOSSClient() {
+        return getOSSClient(ConfigContext.getInstance().getConfig(ConfigContext.OSS_END_POINT),
+                ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_ID),
+                ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_SECRET),
+                ConfigContext.getInstance().getConfig(ConfigContext.CONN_TIME_OUT,15*1000),
+                ConfigContext.getInstance().getConfig(ConfigContext.READ_TIME_OUT,15*1000));
+    }
+
+    private OSS getOSSClient(String endpoint,String accessKey,String accessSecret,Integer connTimeout,Integer readTimeout) {
         OSSCredentialProvider credentialProvider =
-                new OSSPlainTextAKSKCredentialProvider(ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_ID) ,
-                        ConfigContext.getInstance().getConfig(ConfigContext.OSS_ACCESS_KEY_SECRET));
+                new OSSPlainTextAKSKCredentialProvider(accessKey ,accessSecret);
         ClientConfiguration clientConfiguration = ClientConfiguration.getDefaultConf();
 
         int connectTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.CONN_TIME_OUT,15*1000);
@@ -28,7 +35,7 @@ public class OSSStorage extends AbsStorage implements IStorage {
         clientConfiguration.setConnectionTimeout(connectTimeOut);
         clientConfiguration.setSocketTimeout(readTimeOut);
 
-        return new OSSClient(ContextHolder.getInstance().getContext(), ConfigContext.getInstance().getConfig(ConfigContext.OSS_END_POINT), credentialProvider, clientConfiguration);
+        return new OSSClient(ContextHolder.getInstance().getContext(), endpoint, credentialProvider, clientConfiguration);
     }
 
     /**
