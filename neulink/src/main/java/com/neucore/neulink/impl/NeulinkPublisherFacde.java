@@ -336,17 +336,17 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void rmsgResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload,int qos,boolean retained, IResCallback callback){
-        String topicPrefix = String.format("rmsg/res/%s",biz);
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
+        String topicPrefix = String.format("rmsg/res/%s",biz);
         response(topicPrefix,version,reqId,res,qos,retained,callback);
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -361,7 +361,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -376,7 +376,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -405,12 +405,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,int qos,boolean retained,IResCallback callback){
-        String topicPrefix = String.format("upld/req/%s/%s",biz, ServiceRegistry.getInstance().getDeviceService().getExtSN());
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
+        String topicPrefix = String.format("upld/req/%s",biz);
         response(topicPrefix,version,reqId,res,qos,retained,callback);
     }
     /**
