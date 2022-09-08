@@ -39,13 +39,22 @@ public class NeuHttpHelper implements NeulinkConst{
 		return getClient(false,5,5);
 	}
 
-	private static OkHttpClient getClient(boolean debug,int connTimeout,int readTimeout){
+	private static OkHttpClient getClient(boolean debug,Integer connTimeout,Integer readTimeout){
+
+		if(ObjectUtil.isEmpty(connTimeout)){
+			connTimeout = 5;
+		}
+
+		if(ObjectUtil.isEmpty(readTimeout)){
+			readTimeout = 5;
+		}
+
 		Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,true);
 		if(debug||!isCompress){
 			OkHttpClient okHttpClient = new OkHttpClient.Builder()
-					.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
-					.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
-					.writeTimeout(readTimeout,TimeUnit.MINUTES)
+					.connectTimeout(connTimeout, TimeUnit.SECONDS)//设置连接超时时间
+					.readTimeout(readTimeout, TimeUnit.SECONDS)//设置读取超时时间
+					.writeTimeout(readTimeout,TimeUnit.SECONDS)
 					.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
 					.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
 					.build();
@@ -54,9 +63,9 @@ public class NeuHttpHelper implements NeulinkConst{
 
 		OkHttpClient okHttpClient = new OkHttpClient.Builder()
 				.addInterceptor(new GzipRequestInterceptor())
-				.connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
-				.readTimeout(readTimeout, TimeUnit.MINUTES)//设置读取超时时间
-				.writeTimeout(readTimeout,TimeUnit.MINUTES)
+				.connectTimeout(connTimeout, TimeUnit.SECONDS)//设置连接超时时间
+				.readTimeout(readTimeout, TimeUnit.SECONDS)//设置读取超时时间
+				.writeTimeout(readTimeout,TimeUnit.SECONDS)
 				.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
 				.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
 				.build();
@@ -244,215 +253,81 @@ public class NeuHttpHelper implements NeulinkConst{
 
 		return tmpFile;
 	}
+	public static String post(String url,Map<String,String> params,int tryNum){
+		return post(url,params,null,tryNum);
+	}
+	public static String post(String url,Map<String,String> params,Map<String,String> headers,int tryNum){
+		return post(false,url,null,params,null,null,null,tryNum,null);
+	}
+	public static String post(String url,String json,Integer connTime,Integer execTime,Integer tryNum){
 
-	public static String post(String url,String json,int connTime,int execTime,int tryNum){
-
-		Response response = null;
-		int trys = 1;
-		int code = 200;
-		InputStream is = null;
-
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = getClient(false,connTime,execTime);
-		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
-		Request request = new Request.Builder()
-				.url(url)
-				.post(requestBody)
-				.build();
-		while(trys<=tryNum){
-			try {
-				response = client.newCall(request).execute();
-				code = response.code();
-				if (code != 200) {
-					throw new NeulinkException(code,url + ",失败 with code=" + code);
-				}
-				String responseData = response.body().string();
-				return responseData;
-			}
-			catch (IOException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"下载"+url+"失败：",ex);
-				if(trys==tryNum) {
-					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-				}
-				trys++;
-				continue;
-			}
-			catch (NeulinkException ex){
-				throw ex;
-			}
-			catch (RuntimeException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
-				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-			}
-			finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-				}
-				catch (IOException ex){}
-			}
-		}
-		throw new RuntimeException(url + ",失败 with code=" + code);
+		return post(false,url,json,null,connTime,execTime,tryNum);
 	}
 
-	public static String post(boolean debug,String url, String json, Map<String,String> headers, int connTime, int execTime, int tryNum){
+	public static String post(boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum){
+		return post(debug,url,json,headers,connTime,execTime,tryNum,null);
+	}
 
+
+	public static String post(String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
+		return post(false,url,json,headers,connTime,execTime,tryNum,null);
+	}
+
+	public static String post(boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
+		return post(debug,url,json,null,headers,connTime,execTime,tryNum,interceptor);
+	}
+
+	public static String post(String url, Map<String,String> params, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
+		return post(false,url,null,params,headers,connTime,execTime,tryNum,interceptor);
+	}
+
+	private static String post(boolean debug,String url,String json, Map<String,String> params, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
 		Response response = null;
 		int trys = 1;
 		int code = 200;
 		InputStream is = null;
-
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+		RequestBody requestBody = null;
+		Request.Builder requestBuilder = null;
+		Request request = null;
+		Request.Builder requestBuild = null;
+		FormBody.Builder formBodyBuilder = null;
 
 		OkHttpClient client = getClient(debug,connTime,execTime);
-		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
-		Request request = null;
-		if(ObjectUtil.isNotEmpty(headers)){
-			Headers headers_ = Headers.of(headers);
-			request = new Request.Builder()
-					.url(url)
-					.headers(headers_)
-					.post(requestBody)
-					.build();
+
+		if(ObjectUtil.isNotEmpty(json)){
+			MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+			requestBody = RequestBody.create(JSON, String.valueOf(json));
 		}
 		else{
-			request = new Request.Builder()
-					.url(url)
-					.post(requestBody)
-					.build();
+			formBodyBuilder = new FormBody.Builder();
 		}
-		while(trys<=tryNum){
-			try {
-				response = client.newCall(request).execute();
-				code = response.code();
-				NeuLogUtils.iTag(TAG,code);
-				if (code != 200) {
-					throw new NeulinkException(code,url + ",失败 with code=" + code);
-				}
-				String responseData = response.body().string();
-				return responseData;
-			}
-			catch (IOException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
-				if(trys==tryNum) {
-					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-				}
-				trys++;
-				continue;
-			}
-			catch (NeulinkException ex){
-				throw ex;
-			}
-			catch (RuntimeException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
-				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-			}
-			finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-				}
-				catch (IOException ex){}
-			}
-		}
-		throw new RuntimeException(url + ",失败 with code=" + code);
-	}
 
-	public static String post(String url, String json, Map<String,String> headers, int connTime, int execTime, int tryNum, Interceptor interceptor){
-		Response response = null;
-		int trys = 1;
-		int code = 200;
-		InputStream is = null;
-
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = getClient(false,connTime,execTime);
-		RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
-		Request request = null;
 		if(ObjectUtil.isNotEmpty(headers)){
 			Headers headers_ = Headers.of(headers);
-			request = new Request.Builder()
+			requestBuild = new Request.Builder()
 					.url(url)
-					.headers(headers_)
-					.post(requestBody)
-					.build();
+					.headers(headers_);
 		}
-		else{
-			request = new Request.Builder()
-					.url(url)
-					.post(requestBody)
-					.build();
+		else {
+			requestBuild = new Request.Builder()
+					.url(url);
 		}
-		while(trys<=tryNum){
-			try {
-				response = client.newCall(request).execute();
-				code = response.code();
-				NeuLogUtils.iTag(TAG,code);
-				if (code != 200) {
-					throw new NeulinkException(code,url + ",失败 with code=" + code);
-				}
-				String responseData = response.body().string();
-				return responseData;
-			}
-			catch (IOException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
-				if(trys==tryNum) {
-					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-				}
-				trys++;
-				continue;
-			}
-			catch (NeulinkException ex){
-				throw ex;
-			}
-			catch (RuntimeException ex){
-				NeuLogUtils.eTag(TAG,"第"+trys+"请求"+url+"失败：",ex);
-				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
-			}
-			finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-				}
-				catch (IOException ex){}
-			}
-		}
-		throw new RuntimeException(url + ",失败 with code=" + code);
-	}
 
-	public static String post(String url, Map<String,String> params, Map<String,String> headers, int connTime, int execTime, int tryNum, Interceptor interceptor){
-		Response response = null;
-		int trys = 1;
-		int code = 200;
-		InputStream is = null;
-
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		OkHttpClient client = getClient(false,connTime,execTime);
-		FormBody.Builder builder = new FormBody.Builder();
 		if(ObjectUtil.isNotEmpty(params)){
 			String[] keys = new String[params.size()];
 			params.keySet().toArray(keys);
 			for(String key:keys){
-				builder.add(key,params.get(key));
+				formBodyBuilder.add(key,params.get(key));
 			}
 		}
-		Request request = null;
-		if(ObjectUtil.isNotEmpty(headers)){
-			Headers headers_ = Headers.of(headers);
-			request = new Request.Builder()
-					.url(url)
-					.headers(headers_)
-					.post(builder.build())
-					.build();
+
+		if(ObjectUtil.isNotEmpty(requestBody)){
+			request = requestBuild.post(requestBody).build();
 		}
 		else{
-			request = new Request.Builder()
-					.url(url)
-					.post(builder.build())
-					.build();
+			request = requestBuild.post(formBodyBuilder.build()).build();
 		}
+
 		while(trys<=tryNum){
 			try {
 				response = client.newCall(request).execute();
