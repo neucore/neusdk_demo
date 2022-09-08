@@ -67,6 +67,8 @@ dependencies {
     implementation 'com.blankj:utilcode:1.30.6'
     implementation 'log4j:log4j:1.2.17'
     implementation 'pub.devrel:easypermissions:2.0.1'
+    //implementation project(':xloger')
+    implementation files('libs/xloger.jar')
 }
 
 task makeJar(type: Copy) {
