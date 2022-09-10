@@ -136,12 +136,7 @@ class RegisterAdapter implements NeulinkConst{
 
                         ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
                         NeulinkZone zone = resRegist.getZone();
-                        ConfigContext.getInstance().update(ConfigContext.STOREID, zone.getStoreid());
-                        ConfigContext.getInstance().update(ConfigContext.ZONEID, zone.getId());
-                        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, zone.getMqttServer());
-                        ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, zone.getMqttUserName());
-                        ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, zone.getMqttPassword());
-                        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,zone.getUploadServer());
+                        syncConfig(zone);
                         configLoaded = true;
                     }
                     catch (NeulinkException e) {
@@ -186,5 +181,43 @@ class RegisterAdapter implements NeulinkConst{
                 }
             }
         }.start();
+    }
+
+    private void syncConfig(NeulinkZone zone){
+        String custid = zone.getCustid();
+        if(ObjectUtil.isEmpty(custid)){
+            custid = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID);
+        }
+        String storeid = zone.getStoreid();
+        if(ObjectUtil.isEmpty(storeid)){
+            storeid = ConfigContext.getInstance().getConfig(ConfigContext.STOREID);
+        }
+        String zoneid = zone.getId();
+        if(ObjectUtil.isEmpty(storeid)){
+            zoneid = ConfigContext.getInstance().getConfig(ConfigContext.ZONEID);
+        }
+        String mqttServer = zone.getMqttServer();
+        if(ObjectUtil.isEmpty(mqttServer)){
+            mqttServer = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_SERVER);
+        }
+        String mqttUserName = zone.getMqttUserName();
+        if(ObjectUtil.isEmpty(mqttUserName)){
+            mqttUserName = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_USERNAME);
+        }
+        String mqttPassword = zone.getMqttPassword();
+        if(ObjectUtil.isEmpty(mqttPassword)){
+            mqttPassword = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_PASSWORD);
+        }
+        String upldServer = zone.getUploadServer();
+        if(ObjectUtil.isEmpty(upldServer)){
+            upldServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER);
+        }
+        ConfigContext.getInstance().update(ConfigContext.SCOPEID, custid);
+        ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
+        ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
+        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
+        ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
+        ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
     }
 }
