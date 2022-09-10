@@ -184,10 +184,7 @@ class RegisterAdapter implements NeulinkConst{
     }
 
     private void syncConfig(NeulinkZone zone){
-        String custid = zone.getCustid();
-        if(ObjectUtil.isEmpty(custid)){
-            custid = ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID);
-        }
+
         String storeid = zone.getStoreid();
         if(ObjectUtil.isEmpty(storeid)){
             storeid = ConfigContext.getInstance().getConfig(ConfigContext.STOREID);
@@ -212,7 +209,6 @@ class RegisterAdapter implements NeulinkConst{
         if(ObjectUtil.isEmpty(upldServer)){
             upldServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER);
         }
-        ConfigContext.getInstance().update(ConfigContext.SCOPEID, custid);
         ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
