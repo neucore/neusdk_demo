@@ -181,6 +181,10 @@ public interface NeulinkConst {
 
     String NEULINK_HEADERS_MODE = "mode";
 
+    String NEULINK_HEADERS_CODE = "code";
+
+    String NEULINK_HEADERS_MSG = "msg";
+
     String NEULINK_HEADERS_CUSTID = "custid";
 
     String NEULINK_HEADERS_STOREID = "storeid";
@@ -198,7 +202,9 @@ public interface NeulinkConst {
     String NEULINK_HEADERS_REQNO = "reqNo";
 
     String NEULINK_HEADERS_MD5 = "md5";
-
+    /**
+     * 注册次数
+     */
     String INIT_CNT = "intcnt";
 
     /**

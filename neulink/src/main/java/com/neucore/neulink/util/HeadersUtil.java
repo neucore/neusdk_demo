@@ -6,6 +6,7 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.Cmd;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.impl.NewCmd;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
@@ -14,12 +15,12 @@ import cn.hutool.core.util.ObjectUtil;
 public class HeadersUtil implements NeulinkConst {
 
     /**
-     *
+     * cloud2End
      * @param req
      * @param topic
      * @param headers
      */
-    public static void binding(Cmd req, NeulinkTopicParser.Topic topic, JsonObject headers){
+    public static void binding(NewCmd req, NeulinkTopicParser.Topic topic, JsonObject headers){
         String group = topic.getGroup();
         String req$res = topic.getReq$res();
         String biz = topic.getBiz();
@@ -77,7 +78,7 @@ public class HeadersUtil implements NeulinkConst {
             version = "v1.0";
         }
         req.setGroup(group);
-        req.setCmd(req$res);
+        req.setCmdType(req$res);
         req.setBiz(biz);
         req.setVersion(version);
         req.setReqNo(reqNo);
@@ -85,7 +86,7 @@ public class HeadersUtil implements NeulinkConst {
     }
 
     /**
-     *
+     * 设备注册
      * @param payload
      * @param topicStr
      * @param qos
@@ -97,7 +98,7 @@ public class HeadersUtil implements NeulinkConst {
         headers.add(INIT_CNT,new JsonPrimitive(String.valueOf(initCnt)));
     }
     /**
-     *
+     * end2Clould
      * @param payload
      * @param topicStr
      */

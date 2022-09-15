@@ -23,7 +23,7 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResult extends IActionResult> implements IProcessor {
+public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, ActionResult extends IActionResult> implements IProcessor {
 
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
     protected Context context;
@@ -176,12 +176,14 @@ public abstract class GProcessor<Req extends Cmd, Res extends CmdRes, ActionResu
              */
             reqHeaders.remove(NEULINK_HEADERS_GROUP);
             reqHeaders.remove(NEULINK_HEADERS_REQ$RES);
-            reqHeaders.remove(NEULINK_HEADERS_BIZ);
             /**
              * 返回Head
              */
             Map<String,String> resHeaders = res.getHeaders();
+
             if(ObjectUtil.isNotEmpty(resHeaders)){//返回Head不为空
+                resHeaders.remove(NEULINK_HEADERS_GROUP);
+                resHeaders.remove(NEULINK_HEADERS_REQ$RES);
                 /**
                  * res返回了header
                  */

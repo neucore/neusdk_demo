@@ -2,12 +2,12 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
-
-public class CmdRes<T> extends GCmd {
+/**
+ * replace by NewCmdRes
+ * @param <T>
+ */
+@Deprecated
+public class CmdRes<T> extends NewCmdRes<T> {
 
     @SerializedName("mode")
     protected String cmdStr;
@@ -21,9 +21,6 @@ public class CmdRes<T> extends GCmd {
     @SerializedName("dev_id")
     private String deviceId;
 
-    @SerializedName("data")
-    private T data;
-
     public String getCmdStr() {
         return cmdStr;
     }
@@ -31,12 +28,13 @@ public class CmdRes<T> extends GCmd {
     public void setCmdStr(String cmdStr) {
         this.cmdStr = cmdStr;
     }
-
-    public int getCode() {
+    @Override
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    @Override
+    public void setCode(Integer code) {
         this.code = code;
     }
 
@@ -54,13 +52,5 @@ public class CmdRes<T> extends GCmd {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }
