@@ -2,7 +2,12 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Cmd extends GCmd{
+/**
+ * replace by NewCmd
+ * @param <T>
+ */
+@Deprecated
+public class Cmd<T> extends NewCmd<T>{
 
     @SerializedName("mode")
     protected String cmdStr;
