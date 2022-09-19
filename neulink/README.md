@@ -194,7 +194,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ![响应协议](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/response.png)
 
-1,xxxCmd extends <font color = 'red'>NewCmd</font>、xxxRes extends <font color = 'red'>NewCmdRes</font>
+1,xxxCmd **extends NewCmd**、xxxRes **extends NewCmdRes**
 
 ```
 
