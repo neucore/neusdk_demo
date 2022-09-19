@@ -142,15 +142,59 @@ NeulinkService.getInstance().destroy();
 
 #### 扩展-通用业务开发
 
+##### neulink 1.0开发方式
+
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象
+1，实现payload的pojo对象【xxxCmd extends Cmd、xxxRes extends CmdRes、xxxActionResult extends ActionResult】
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+3，
 
 eg：授权处理器
 topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
 processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
+##### neulink 1.2开发方式
+
+0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+
+1，实现payload的pojo对象【xxxCmd extends Cmd、xxxRes extends CmdRes、xxxActionResult extends ActionResult】
+
+2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+eg：授权处理器
+topic：rrpc/req/${dev_id}/v1.0；
+processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
+变化点&注意事项：
+
+0，新增了header
+
+1，biz、req_no、md5三个字段从topic移到了header
+
+##### neulink 2.0开发方式
+
+0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+
+1，实现payload的pojo对象【xxxCmd extends NewCmd、xxxRes extends NewCmdRes、xxxActionResult extends ActionResult】
+
+2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+eg：授权处理器
+topic：rrpc/req/${dev_id}/v1.0；
+processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
+变化点&注意事项：
+
+0，新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
+
+![请求协议](images/request.png)
+
+![响应协议](images/response.png)
+
+1,xxxCmd extends <font color = 'red'>NewCmd</font>、xxxRes extends <font color = 'red'>NewCmdRes</font>
 
 ```
 
