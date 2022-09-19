@@ -190,10 +190,56 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
 
-![请求协议](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/request.png)
+###### 请求协议[2.0]
 
-![响应协议](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/response.png)
+```
+payload: 
+{  
+    "headers":
 
+       {
+
+              "biz":"${biz}",//业务标识：[qlib|blib….]
+
+             "reqNo":"${reqNo}",//请求ID
+
+             "md5":"${md5}",//消息体的md5
+
+             "time":"${time}",//请求时间
+
+              ...,
+
+              "${keyn}":"${valuen}"
+
+       },
+
+      "data": {}    //可选
+
+}
+```
+###### 响应协议[2.0]
+```
+payload: 
+{    
+    "headers":
+        {
+
+            "code":200, //响应码
+            "msg":"success", //响应消息
+            "biz":"${biz}",//业务标识：[qlib|blib….]
+            "reqNo":"${reqNo}",//请求ID
+            "md5":"${md5}",//消息体md5
+            "devid":"${devid}",//设备ID
+            "custid":"${custid}",//租户ID
+            "storeid":"${storeid}",//门店场所ID
+            "zoneid":"${zoneid}",//集群ID
+            "time":"${time}",//请求时间             
+             ...,
+             "${keyn}":"${valuen}"
+        },    
+    "data": {}         //可选
+}
+```
 1,xxxCmd **extends NewCmd**、xxxRes **extends NewCmdRes**
 
 ```
