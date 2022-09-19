@@ -645,7 +645,7 @@ public class AuthActionResultData {
     
 ```
 
-3，异步响应-绑定同意
+3，异步响应-绑定业务处理回调
 ```
     IPublishCallback iResCallback = new IPublishCallback<Result>() {
         @Override
