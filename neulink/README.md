@@ -146,7 +146,7 @@ NeulinkService.getInstance().destroy();
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd extends Cmd、xxxRes extends CmdRes、xxxActionResult extends ActionResult】
+1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
@@ -160,7 +160,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd extends Cmd、xxxRes extends CmdRes、xxxActionResult extends ActionResult】
+1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
@@ -178,7 +178,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd extends NewCmd、xxxRes extends NewCmdRes、xxxActionResult extends ActionResult】
+1，实现payload的pojo对象【xxxCmd **extends NewCmd**、xxxRes **extends NewCmdRes**、xxxActionResult **extends ActionResult**】
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
@@ -190,7 +190,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
 
-###### 请求协议[2.0]
+##### 请求协议[2.0]
 
 ```
 payload: 
@@ -217,7 +217,7 @@ payload:
 
 }
 ```
-###### 响应协议[2.0]
+##### 响应协议[2.0]
 ```
 payload: 
 {    
@@ -240,7 +240,7 @@ payload:
     "data": {}         //可选
 }
 ```
-1,xxxCmd **extends NewCmd**、xxxRes **extends NewCmdRes**
+#### 样例
 
 ```
 
