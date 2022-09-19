@@ -194,27 +194,17 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ```
 payload: 
-{  
+{
     "headers":
-
        {
-
               "biz":"${biz}",//业务标识：[qlib|blib….]
-
              "reqNo":"${reqNo}",//请求ID
-
              "md5":"${md5}",//消息体的md5
-
              "time":"${time}",//请求时间
-
               ...,
-
               "${keyn}":"${valuen}"
-
        },
-
       "data": {}    //可选
-
 }
 ```
 ##### 响应协议[2.0]
