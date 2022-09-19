@@ -781,6 +781,7 @@ public class NeulinkService implements NeulinkConst{
         private Integer qos;
         private Boolean retained;
         private IResCallback callback;
+        private Map<String,String> headers;
         public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
@@ -823,6 +824,9 @@ public class NeulinkService implements NeulinkConst{
             this.qos = qos;
             this.retained = retained;
             this.callback = callback;
+        }
+        public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained,Map<String,String> headers, IResCallback callback){
+            this.headers = headers;
         }
         @Override
         public void run() {

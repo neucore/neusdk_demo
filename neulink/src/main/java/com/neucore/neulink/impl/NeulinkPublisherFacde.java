@@ -16,6 +16,7 @@ import com.neucore.neulink.impl.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.JSonUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import cn.hutool.core.lang.UUID;
@@ -350,14 +351,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param biz
      * @param version
      * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
+     * @param cmd
      */
-    public void upldRequest(String biz,String version,String reqId,String mode,Integer code,String message,Object payload){
+    public void upldRequest(String biz,String version,String reqId,NewCmd cmd){
         IResCallback callback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
-        upldRequest(biz,version,reqId,mode,code,message,payload,callback);
+        upldRequest(biz,version,reqId,cmd,callback);
     }
 
     /**
@@ -365,14 +363,11 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param biz
      * @param version
      * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
+     * @param cmd
      * @param callback
      */
-    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,IResCallback callback){
-        upldRequest(biz,version,reqId,mode,code,message,payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
+    public void upldRequest(String biz, String version, String reqId, NewCmd cmd,IResCallback callback){
+        upldRequest(biz,version,reqId,cmd,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),callback);
     }
 
     /**
@@ -380,15 +375,12 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param biz
      * @param version
      * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
+     * @param cmd
      * @param qos
      * @param callback
      */
-    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,int qos,IResCallback callback){
-        upldRequest(biz,version,reqId,mode,code,message,payload,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
+    public void upldRequest(String biz, String version, String reqId, NewCmd cmd,int qos,IResCallback callback){
+        upldRequest(biz,version,reqId,cmd,qos,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false),callback);
     }
 
     /**
@@ -396,22 +388,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param biz
      * @param version
      * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param payload
+     * @param cmd
      * @param qos
      * @param retained
      * @param callback
      */
-    public void upldRequest(String biz, String version, String reqId, String mode, Integer code, String message, Object payload,int qos,boolean retained,IResCallback callback){
-        CmdRes res = new CmdRes();
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        res.setData(payload);
+    public void upldRequest(String biz, String version, String reqId,NewCmd cmd,int qos,boolean retained,IResCallback callback){
         String topicPrefix = String.format("upld/req/%s",biz);
-        response(topicPrefix,version,reqId,res,qos,retained,callback);
+        request(topicPrefix,version,reqId,cmd,qos,retained,callback);
     }
     /**
      * rrpc请求异步处理响应
@@ -496,27 +480,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     private void response(String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
         response(false,topicPrefix,version,reqId,res,qos,retained,callback);
     }
-    /**
-     *
-     * @param debug
-     * @param topicPrefix
-     * @param biz
-     * @param version
-     * @param reqId
-     * @param mode
-     * @param code
-     * @param message
-     * @param heads
-     */
-    void response(boolean debug,String topicPrefix, String biz, String version, String reqId, String mode, Integer code, String message, Map<String,String> heads){
-        CmdRes res = new CmdRes();
-        res.setHeaders(heads);
-        res.setCode(code);
-        res.setMsg(message);
-        res.setCmdStr(mode);
-        IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
-        response(debug,topicPrefix,version,reqId,res,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false), resCallback);
-    }
 
     /**
      *
@@ -533,5 +496,19 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
         service.publishMessage(debug,topicPrefix,version,reqId,payloadStr,qos,retained,callback);
+    }
+
+    /**
+     *
+     * @param topicPrefix
+     * @param version
+     * @param reqId
+     * @param cmd
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    private void request(String topicPrefix,String version,String reqId,NewCmd cmd,Integer qos,Boolean retained,IResCallback callback){
+        service.publishMessage(topicPrefix,version,reqId,JSonUtils.toString(cmd),qos,retained,callback);
     }
 }
