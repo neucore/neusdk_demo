@@ -87,12 +87,12 @@ NeulinkService.getInstance().destroy();
 
 ### 图
 #### 通道通信说明图
-![通道通信图](images/mqtt.png)
+![通道通信图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt.png)
 #### 时序图说明图
 ##### Http_mqtt时序图
-![http_mqtt时序图](images/http_mqtt_seq.png)
+![http_mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/http_mqtt_seq.png)
 ##### Mqtt_mqtt时序图
-![mqtt时序图](images/mqtt_mqtt_seq.png)
+![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
 ### 扩展实现 
 
 #### 参考 MyInstaller
@@ -190,9 +190,9 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
 
-![请求协议](images/request.png)
+![请求协议](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/request.png)
 
-![响应协议](images/response.png)
+![响应协议](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/response.png)
 
 1,xxxCmd extends <font color = 'red'>NewCmd</font>、xxxRes extends <font color = 'red'>NewCmdRes</font>
 
