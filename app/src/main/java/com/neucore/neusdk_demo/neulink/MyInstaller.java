@@ -127,15 +127,15 @@ public class MyInstaller {
         /**
          * 设置租户Id
          */
-        extConfig.setProperty(ConfigContext.SCOPEID,"21");//租户id
+        extConfig.setProperty(ConfigContext.SCOPEID,"Mg");//租户id
         /**
          * 启用远程配置
          */
         extConfig.setProperty(ConfigContext.ENABLE_REMOTE_CONFIG,"true"); //开启远程配置状态【mqtt-server，http-upload-server】
 
-        //extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//C端云平台
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//C端云平台
 
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/v1/smrtlibs/devices/configs");//只能楼宇平台
+//        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/v1/smrtlibs/devices/configs");//只能楼宇平台
 
         /**
          * Neulink通道设置

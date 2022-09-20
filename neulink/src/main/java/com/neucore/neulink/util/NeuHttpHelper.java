@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -257,7 +258,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		return post(url,params,null,tryNum);
 	}
 	public static String post(String url,Map<String,String> params,Map<String,String> headers,int tryNum){
-		return post(false,url,null,params,null,null,null,tryNum,null);
+		return post(false,url,null,params,headers,null,null,tryNum,null);
 	}
 	public static String post(String url,String json,Integer connTime,Integer execTime,Integer tryNum){
 
@@ -287,46 +288,54 @@ public class NeuHttpHelper implements NeulinkConst{
 		int code = 200;
 		InputStream is = null;
 		RequestBody requestBody = null;
+		FormBody formBody = null;
 		Request.Builder requestBuilder = null;
 		Request request = null;
 		Request.Builder requestBuild = null;
 		FormBody.Builder formBodyBuilder = null;
-
-		OkHttpClient client = getClient(debug,connTime,execTime);
-
+		/**
+		 * Request.Builder
+		 */
+		requestBuild = new Request.Builder()
+				.url(url);
+		if(ObjectUtil.isNotEmpty(headers)){
+			Iterator<String> keys = headers.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
+				requestBuild.addHeader(key,headers.get(key));
+			}
+		}
+		else {
+			requestBuild = new Request.Builder()
+					.url(url);
+		}
+		/**
+		 * RequestBody
+		 */
 		if(ObjectUtil.isNotEmpty(json)){
 			MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 			requestBody = RequestBody.create(JSON, String.valueOf(json));
 		}
 		else{
 			formBodyBuilder = new FormBody.Builder();
-		}
-
-		if(ObjectUtil.isNotEmpty(headers)){
-			Headers headers_ = Headers.of(headers);
-			requestBuild = new Request.Builder()
-					.url(url)
-					.headers(headers_);
-		}
-		else {
-			requestBuild = new Request.Builder()
-					.url(url);
-		}
-
-		if(ObjectUtil.isNotEmpty(params)){
-			String[] keys = new String[params.size()];
-			params.keySet().toArray(keys);
-			for(String key:keys){
-				formBodyBuilder.add(key,params.get(key));
+			if(ObjectUtil.isNotEmpty(params)){
+				String[] keys = new String[params.size()];
+				params.keySet().toArray(keys);
+				for(String key:keys){
+					formBodyBuilder.add(key,params.get(key));
+				}
 			}
+			formBody = formBodyBuilder.build();
 		}
 
 		if(ObjectUtil.isNotEmpty(requestBody)){
 			request = requestBuild.post(requestBody).build();
 		}
 		else{
-			request = requestBuild.post(formBodyBuilder.build()).build();
+			request = requestBuild.post(formBody).build();
 		}
+
+		OkHttpClient client = getClient(debug,connTime,execTime);
 
 		while(trys<=tryNum){
 			try {

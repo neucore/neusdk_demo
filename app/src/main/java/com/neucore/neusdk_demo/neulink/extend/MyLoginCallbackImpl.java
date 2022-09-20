@@ -20,14 +20,21 @@ public class MyLoginCallbackImpl implements ILoginCallback {
          * 实现登录返回token
          */
         NeuLogUtils.iTag(TAG,"login...");
-        Map<String,String> params = new HashMap<>();
-        params.put("client_id","client-smrtlib");
-        params.put("client_secret","client-smrtlib-secret");
-        params.put("grant_type","password");
-        params.put("username","xxxxxx");
-        params.put("password","xxxxxddd");
 
-        String response = NeuHttpHelper.post("https://dev.neucore.com/v1/oauth/token",params,3);
+        Map<String,String> headers = new HashMap<>();
+        headers.put("accept-language","zh-Hans-CN");
+        headers.put("mate-scope","Mg");
+        headers.put("from","2");
+
+        Map<String,String> params = new HashMap<>();
+        params.put("client_id","gemini");
+        params.put("client_secret","secret");
+        params.put("grant_type","password");
+        params.put("username","changwei.yao");
+        params.put("password","123456");
+
+
+        String response = NeuHttpHelper.post("https://dev.neucore.com/api/uaa/oauth/token",params,headers,3);
 
         JSONObject jsonObject = new JSONObject(response);
         String accessToken = ((JSONObject)jsonObject.get("data")).getStr("access_token");

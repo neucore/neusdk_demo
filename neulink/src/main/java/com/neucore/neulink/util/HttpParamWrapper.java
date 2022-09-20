@@ -19,7 +19,7 @@ public class HttpParamWrapper {
             if(index!=-1){
                 token = token.substring(index+1);
             }
-            params.put("Authorization","Bearer "+token);
+            params.put("Authorization","bearer "+token);
         }
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         if(ObjectUtil.isNotEmpty(deviceService)){
