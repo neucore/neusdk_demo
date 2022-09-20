@@ -2,6 +2,9 @@ package com.neucore.neulink.impl;
 
 import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.extend.annotation.IgnoreProp;
+
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +16,7 @@ public abstract class GCmd {
     @SerializedName("headers")
     protected Map<String,String> headers;
 
-    @SerializedName("debug")
+    @IgnoreProp
     private boolean debug=false;
 
     public Map<String, String> getHeaders() {
@@ -42,7 +45,7 @@ public abstract class GCmd {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
-
+    
     public String getGroup() {
         return this.getHeaders().get(NeulinkConst.NEULINK_HEADERS_GROUP);
     }
@@ -73,13 +76,15 @@ public abstract class GCmd {
      * @param cmd
      * @Deprecated
      */
+    
     public void setCmd(String cmd){
         setProp(NeulinkConst.NEULINK_HEADERS_MODE,cmd);
     }
-
+    
     public String getMode(){
         return getProp(NeulinkConst.NEULINK_HEADERS_MODE);
     }
+
     public void setMode(String mode){
         setProp(NeulinkConst.NEULINK_HEADERS_MODE,mode);
     }
@@ -95,6 +100,7 @@ public abstract class GCmd {
     public String getReqNo() {
         return getProp(NeulinkConst.NEULINK_HEADERS_REQNO);
     }
+
     public void setReqNo(String reqNo) {
         setProp(NeulinkConst.NEULINK_HEADERS_REQNO,reqNo);
     }
@@ -110,17 +116,18 @@ public abstract class GCmd {
     public String getVersion() {
         return getProp(NeulinkConst.NEULINK_HEADERS_VERSION);
     }
-
+    
     public void setVersion(String version) {
         setProp(NeulinkConst.NEULINK_HEADERS_VERSION,version);
     }
+    
     private String getProp(String key){
         if(ObjectUtil.isNull(headers)){
             return null;
         }
         return this.getHeaders().get(key);
     }
-
+    
     private void setProp(String key,String value){
         if(ObjectUtil.isNotEmpty(value)){
             if(ObjectUtil.isNull(headers)){

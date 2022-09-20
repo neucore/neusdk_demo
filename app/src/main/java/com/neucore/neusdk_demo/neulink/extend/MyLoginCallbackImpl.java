@@ -30,7 +30,7 @@ public class MyLoginCallbackImpl implements ILoginCallback {
         params.put("client_id","gemini");
         params.put("client_secret","secret");
         params.put("grant_type","password");
-        params.put("username","changwei.yao");
+        params.put("username","changwei.yao@neucore.com");
         params.put("password","123456");
 
 
