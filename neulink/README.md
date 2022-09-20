@@ -24,7 +24,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
