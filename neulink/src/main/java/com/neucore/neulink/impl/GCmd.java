@@ -28,14 +28,19 @@ public abstract class GCmd {
     }
 
     public void setHeader(String key, String value){
-        if(ObjectUtil.isEmpty(headers)){
-            headers = new HashMap<>();
+        if(ObjectUtil.isNotEmpty(key)){
+            if(ObjectUtil.isEmpty(headers)){
+                headers = new HashMap<>();
+            }
+            this.getHeaders().put(key,value);
         }
-        headers.put(key,value);
     }
 
     public String getHeader(String key){
-        return getProp(key);
+        if(ObjectUtil.isNull(headers)){
+            return null;
+        }
+        return this.getHeaders().get(key);
     }
 
     public boolean isDebug() {
@@ -51,15 +56,15 @@ public abstract class GCmd {
     }
 
     public void setGroup(String group) {
-        setProp(NeulinkConst.NEULINK_HEADERS_GROUP,group);
+        setHeader(NeulinkConst.NEULINK_HEADERS_GROUP,group);
     }
 
     public String getCmdType(){
-        return getProp(NeulinkConst.NEULINK_HEADERS_REQ$RES);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_REQ$RES);
     }
 
     public void setCmdType(String cmdType){
-        setProp(NeulinkConst.NEULINK_HEADERS_REQ$RES,cmdType);
+        setHeader(NeulinkConst.NEULINK_HEADERS_REQ$RES,cmdType);
     }
 
     /**
@@ -68,7 +73,7 @@ public abstract class GCmd {
      */
     @Deprecated
     public String getCmd(){
-        return getProp(NeulinkConst.NEULINK_HEADERS_MODE);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_MODE);
     }
 
     /**
@@ -78,67 +83,46 @@ public abstract class GCmd {
      */
     
     public void setCmd(String cmd){
-        setProp(NeulinkConst.NEULINK_HEADERS_MODE,cmd);
+        setHeader(NeulinkConst.NEULINK_HEADERS_MODE,cmd);
     }
     
     public String getMode(){
-        return getProp(NeulinkConst.NEULINK_HEADERS_MODE);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_MODE);
     }
 
     public void setMode(String mode){
-        setProp(NeulinkConst.NEULINK_HEADERS_MODE,mode);
+        setHeader(NeulinkConst.NEULINK_HEADERS_MODE,mode);
     }
 
     public String getBiz() {
-        return getProp(NeulinkConst.NEULINK_HEADERS_BIZ);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_BIZ);
     }
 
     public void setBiz(String biz) {
-        setProp(NeulinkConst.NEULINK_HEADERS_BIZ,biz);
+        setHeader(NeulinkConst.NEULINK_HEADERS_BIZ,biz);
     }
 
     public String getReqNo() {
-        return getProp(NeulinkConst.NEULINK_HEADERS_REQNO);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_REQNO);
     }
 
     public void setReqNo(String reqNo) {
-        setProp(NeulinkConst.NEULINK_HEADERS_REQNO,reqNo);
+        setHeader(NeulinkConst.NEULINK_HEADERS_REQNO,reqNo);
     }
 
     public String getMd5(){
-        return getProp(NeulinkConst.NEULINK_HEADERS_MD5);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_MD5);
     }
 
     public void setMd5(String md5){
-        setProp(NeulinkConst.NEULINK_HEADERS_MD5,md5);
+        setHeader(NeulinkConst.NEULINK_HEADERS_MD5,md5);
     }
 
     public String getVersion() {
-        return getProp(NeulinkConst.NEULINK_HEADERS_VERSION);
+        return getHeader(NeulinkConst.NEULINK_HEADERS_VERSION);
     }
     
     public void setVersion(String version) {
-        setProp(NeulinkConst.NEULINK_HEADERS_VERSION,version);
-    }
-    
-    private String getProp(String key){
-        if(ObjectUtil.isNull(headers)){
-            return null;
-        }
-        return this.getHeaders().get(key);
-    }
-    
-    private void setProp(String key,String value){
-        if(ObjectUtil.isNotEmpty(value)){
-            if(ObjectUtil.isNull(headers)){
-                headers = new HashMap<>();
-            }
-        }
-        else if(ObjectUtil.isNotEmpty(key)){
-            if(ObjectUtil.isNull(headers)){
-                headers = new HashMap<>();
-            }
-        }
-        this.getHeaders().put(key,value);
+        setHeader(NeulinkConst.NEULINK_HEADERS_VERSION,version);
     }
 }
