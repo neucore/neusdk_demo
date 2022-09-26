@@ -151,7 +151,7 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.MQTT_USERNAME,"zXzc3gkY1RGS626w");
         extConfig.setProperty(ConfigContext.MQTT_PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1783");
+        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         extConfig.setProperty(ConfigContext.KEEP_ALIVE_INTERVAL,"60");
         //##########################################################################################
         /**
@@ -178,8 +178,8 @@ public class MyInstaller {
          * 上传内容默认压缩
          * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
          */
-        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"false"); //关闭下发内容压缩处理
-        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"true"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"true"); //关闭下发内容压缩处理
         extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"false"); //开启心跳
         extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"false"); //开启运行状态
 

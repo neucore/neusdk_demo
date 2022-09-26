@@ -37,10 +37,10 @@ public class NeuHttpHelper implements NeulinkConst{
 	private static String TAG = TAG_PREFIX+"NeuHttpHelper";
 
 	private static OkHttpClient getClient(){
-		return getClient(false,5,5);
+		return getClient(false,false,5,5);
 	}
 
-	private static OkHttpClient getClient(boolean debug,Integer connTimeout,Integer readTimeout){
+	private static OkHttpClient getClient(boolean isNeulink,boolean debug,Integer connTimeout,Integer readTimeout){
 
 		if(ObjectUtil.isEmpty(connTimeout)){
 			connTimeout = 5;
@@ -51,8 +51,10 @@ public class NeuHttpHelper implements NeulinkConst{
 		}
 
 		Boolean isCompress = ConfigContext.getInstance().getConfig(ConfigContext.PRODUCT_COMPRESS,true);
-		if(debug||!isCompress){
+		if(isNeulink && (debug||isCompress)){
+
 			OkHttpClient okHttpClient = new OkHttpClient.Builder()
+					.addInterceptor(new GzipRequestInterceptor())
 					.connectTimeout(connTimeout, TimeUnit.SECONDS)//设置连接超时时间
 					.readTimeout(readTimeout, TimeUnit.SECONDS)//设置读取超时时间
 					.writeTimeout(readTimeout,TimeUnit.SECONDS)
@@ -61,16 +63,17 @@ public class NeuHttpHelper implements NeulinkConst{
 					.build();
 			return okHttpClient;
 		}
+		else {
+			OkHttpClient okHttpClient = new OkHttpClient.Builder()
+					.connectTimeout(connTimeout, TimeUnit.SECONDS)//设置连接超时时间
+					.readTimeout(readTimeout, TimeUnit.SECONDS)//设置读取超时时间
+					.writeTimeout(readTimeout,TimeUnit.SECONDS)
+					.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
+					.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
+					.build();
+			return okHttpClient;
 
-		OkHttpClient okHttpClient = new OkHttpClient.Builder()
-				.addInterceptor(new GzipRequestInterceptor())
-				.connectTimeout(connTimeout, TimeUnit.SECONDS)//设置连接超时时间
-				.readTimeout(readTimeout, TimeUnit.SECONDS)//设置读取超时时间
-				.writeTimeout(readTimeout,TimeUnit.SECONDS)
-				.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.trustManager)
-				.hostnameVerifier(SSLSocketClient.getHostnameVerifier()) //支持HTTPS请求，跳过证书验证
-				.build();
-		return okHttpClient;
+		}
 	}
 
 	private static Request createRequest(String fileUrl){
@@ -204,7 +207,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		Response response = null;
 		int trys = 1;
 
-		OkHttpClient client = getClient(false,connTime,execTime);
+		OkHttpClient client = getClient(false,false,connTime,execTime);
 		int code = 200;
 		while(trys<=tryNum){
 			try{
@@ -258,31 +261,31 @@ public class NeuHttpHelper implements NeulinkConst{
 		return post(url,params,null,tryNum);
 	}
 	public static String post(String url,Map<String,String> params,Map<String,String> headers,int tryNum){
-		return post(false,url,null,params,headers,null,null,tryNum,null);
+		return post(false,false,url,null,params,headers,null,null,tryNum,null);
 	}
 	public static String post(String url,String json,Integer connTime,Integer execTime,Integer tryNum){
 
-		return post(false,url,json,null,connTime,execTime,tryNum);
+		return post(false,false,url,json,null,connTime,execTime,tryNum);
 	}
 
-	public static String post(boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum){
-		return post(debug,url,json,headers,connTime,execTime,tryNum,null);
+	public static String post(boolean isNeulink,boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum){
+		return post(isNeulink,debug,url,json,headers,connTime,execTime,tryNum,null);
 	}
 
 
 	public static String post(String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
-		return post(false,url,json,headers,connTime,execTime,tryNum,null);
+		return post(false,false,url,json,headers,connTime,execTime,tryNum,null);
 	}
 
-	public static String post(boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
-		return post(debug,url,json,null,headers,connTime,execTime,tryNum,interceptor);
+	public static String post(boolean isNeulink,boolean debug,String url, String json, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
+		return post(isNeulink,debug,url,json,null,headers,connTime,execTime,tryNum,interceptor);
 	}
 
 	public static String post(String url, Map<String,String> params, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
-		return post(false,url,null,params,headers,connTime,execTime,tryNum,interceptor);
+		return post(false,false,url,null,params,headers,connTime,execTime,tryNum,interceptor);
 	}
 
-	private static String post(boolean debug,String url,String json, Map<String,String> params, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
+	private static String post(boolean isNeulink,boolean debug,String url,String json, Map<String,String> params, Map<String,String> headers, Integer connTime, Integer execTime, Integer tryNum, Interceptor interceptor){
 		Response response = null;
 		int trys = 1;
 		int code = 200;
@@ -335,7 +338,7 @@ public class NeuHttpHelper implements NeulinkConst{
 			request = requestBuild.post(formBody).build();
 		}
 
-		OkHttpClient client = getClient(debug,connTime,execTime);
+		OkHttpClient client = getClient(isNeulink,debug,connTime,execTime);
 
 		while(trys<=tryNum){
 			try {

@@ -726,7 +726,7 @@ public class NeulinkService implements NeulinkConst{
                             NeuLogUtils.dTag(TAG,"registServer："+registServer);
 
                             String topic = URLEncoder.encode(topStr,"UTF-8");
-                            response = NeuHttpHelper.post(false,registServer+"?topic="+topic,payload,params,10,60,1);
+                            response = NeuHttpHelper.post(true,false,registServer+"?topic="+topic,payload,params,10,60,1);
 
                             NeuLogUtils.dTag(TAG,"设备注册响应："+response);
                             getRegistCallback().onFinished(Result.ok());
@@ -856,7 +856,7 @@ public class NeulinkService implements NeulinkConst{
                     try {
                         String topicStr = URLEncoder.encode(topStr,"UTF-8");
                         Map<String,String> params = HttpParamWrapper.getParams();
-                        String response = NeuHttpHelper.post(debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
+                        String response = NeuHttpHelper.post(true,debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);
                         if(ObjectUtil.isNotEmpty(callback)){
                             Result result = JSonUtils.toObject(response,Result.class);
