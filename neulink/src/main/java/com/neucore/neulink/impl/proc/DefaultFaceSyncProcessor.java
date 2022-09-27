@@ -160,17 +160,17 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
              */
             images = getImages(reqdir);//加载并计算图片的face特征值
             faceCmd.setOffset(offset);
-            faceCmd.setData(params);
+            faceCmd.setDataList(params);
             faceCmd.setStringKVMap(images);
 
         }
         else if(NEULINK_MODE_PUSH.equalsIgnoreCase(cmdStr)){
             faceCmd.setOffset(offset);
-            faceCmd.setData(params);
+            faceCmd.setDataList(params);
         }
         else if(NEULINK_MODE_DEL.equalsIgnoreCase(cmdStr)){
             faceCmd.setOffset(offset);
-            faceCmd.setData(params);
+            faceCmd.setDataList(params);
         }
         /**
          * 清空图片临时目录

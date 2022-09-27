@@ -6,6 +6,8 @@ import com.neucore.neulink.impl.Cmd;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.annotation.PropIgnore;
+
 public class PkgCmd<T extends PkgData,K,V> extends Cmd {
     @SerializedName("objtype")
     private String objtype;
@@ -21,7 +23,9 @@ public class PkgCmd<T extends PkgData,K,V> extends Cmd {
     private String md5;
     private String cmd;
     private long reqtime;
-    private List<T> data;
+    @PropIgnore
+    private List<T> dataList;
+
     private Map<String,Map<K,V>> stringKVMap;
 
     public String getObjtype() {
@@ -90,12 +94,12 @@ public class PkgCmd<T extends PkgData,K,V> extends Cmd {
         this.reqtime = reqtime;
     }
 
-    public List<T> getData() {
-        return data;
+    public List<T> getDataList() {
+        return dataList;
     }
 
-    public void setData(List<T> data) {
-        this.data = data;
+    public void setDataList(List<T> dataList) {
+        this.dataList = dataList;
     }
 
     public Map<String, Map<K, V>> getStringKVMap() {

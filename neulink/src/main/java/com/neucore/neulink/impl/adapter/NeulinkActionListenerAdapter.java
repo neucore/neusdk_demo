@@ -262,7 +262,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
             NeuLogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
-            NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+message);
+            NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+msgContent);
         }
     }
 }
