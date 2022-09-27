@@ -62,7 +62,7 @@ public class SampleCarSyncListener implements ICmdListener<UpdateActionResult, C
         /**
          * 获取人脸描述数据
          */
-        List<CarData> params = cmd.getData();
+        List<CarData> params = cmd.getDataList();
         /**
          * FaceData 结构介绍
          * ext_id:

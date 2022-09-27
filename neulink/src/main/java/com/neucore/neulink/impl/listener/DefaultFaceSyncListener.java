@@ -60,7 +60,7 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
         /**
          * 获取人脸描述数据
          */
-        List<FaceData> params = faceCmd.getData();
+        List<FaceData> params = faceCmd.getDataList();
         /**
          * FaceData 结构介绍
          * ext_id:

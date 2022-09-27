@@ -45,7 +45,7 @@ public class DefaultLicSyncListener implements ICmdListener<CarPkgActionResult,L
         /**
          * 获取人脸描述数据
          */
-        List<LicData> params = cmd.getData();
+        List<LicData> params = cmd.getDataList();
         /**
          * FaceData 结构介绍
          * ext_id:
