@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArgCmd extends Cmd{
+public class ArgCmd<T> extends Cmd<T>{
 
     @SerializedName("args")
     private String[] args;
