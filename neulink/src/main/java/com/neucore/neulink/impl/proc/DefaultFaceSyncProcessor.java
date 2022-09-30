@@ -1,7 +1,9 @@
 package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,7 +124,19 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         StringBuffer sb = new StringBuffer();
         File tmpFile = null;
         try {
-            tmpFile = this.getFileDownloader().execute(getContext(),RequestContext.getId(),newJsonFileUrl);
+            tmpFile = ServiceRegistry.getInstance().getDownloder().start(getContext(), RequestContext.getId(), newJsonFileUrl, new IDownloadProgressListener() {
+                @Override
+                public void onDownload(Double percent) {
+                    DecimalFormat formater = new DecimalFormat("##.0");
+                    String progress = formater.format(percent);
+                    NeuLogUtils.iTag(TAG,cmd.getReqNo()+ " progress: "+progress);
+                }
+
+                @Override
+                public void onFinished(File file) {
+
+                }
+            });
             BufferedReader bufferedReader = new BufferedReader(new FileReader(tmpFile));
             String line = null;
             while ((line=bufferedReader.readLine())!=null){
@@ -152,7 +167,19 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         List<FaceData> params = null;
 
         try {
-            tmpFile = this.getFileDownloader().execute(getContext(),RequestContext.getId(),fileUrl);
+            tmpFile = ServiceRegistry.getInstance().getDownloder().start(getContext(), RequestContext.getId(), fileUrl, new IDownloadProgressListener() {
+                @Override
+                public void onDownload(Double percent) {
+                    DecimalFormat formater = new DecimalFormat("##.0");
+                    String progress = formater.format(percent);
+                    NeuLogUtils.iTag(TAG,cmd.getReqNo()+ " progress: "+progress);
+                }
+
+                @Override
+                public void onFinished(File file) {
+
+                }
+            });
             FileUtils.unzipFile(tmpFile,toDir.getAbsolutePath());//解压zip文件
             String infoFileDir = reqdir+"/info";
             File info = new File(infoFileDir+"/"+offset+".json");
@@ -251,10 +278,5 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         }
 
         return imagesData;
-    }
-
-    @Override
-    public IDownloder getFileDownloader() {
-        return null;
     }
 }

@@ -79,7 +79,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
         Response response = null;
         try {
-            response = OTAHttpResumeDownloader.getClient(5, 15).newCall(OTAHttpResumeDownloader.createRequest(downUrl, headers)).execute();
+            response = HttpResumeDownloader.getClient(5, 15).newCall(HttpResumeDownloader.createRequest(downUrl, headers)).execute();
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;

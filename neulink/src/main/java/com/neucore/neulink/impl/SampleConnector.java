@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.neucore.neulink.IDownloder;
+import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
@@ -46,6 +48,7 @@ public class SampleConnector implements NeulinkConst{
     private IExtendCallback extendCallback;
     private IFileService fileService;
     private IResCallback defaultResCallback;
+    private IDownloder downloder;
 
     private Properties extConfig;
     private Boolean started = false;
@@ -124,6 +127,10 @@ public class SampleConnector implements NeulinkConst{
         this.defaultResCallback = defaultResCallback;
     }
 
+    public void setDownloder(IDownloder downloder) {
+        this.downloder = downloder;
+    }
+
     /**
      * 必须先设置相关属性，然后再调用start
      * 不然不起效果
@@ -169,6 +176,8 @@ public class SampleConnector implements NeulinkConst{
 
                     ServiceRegistry.getInstance().setMessageService(messageService);
                     ServiceRegistry.getInstance().setFileService(fileService);
+
+                    ServiceRegistry.getInstance().setDownloder(downloder);
 
                     NeuLogUtils.iTag(TAG,"startBuild...");
                     NeuLogUtils.iTag(TAG,"配置项：\n"+extConfig);

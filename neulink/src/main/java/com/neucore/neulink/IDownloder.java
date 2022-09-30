@@ -8,5 +8,6 @@ import java.io.File;
  * 简单文件下载
  */
 public interface IDownloder {
-    File execute(Context context, String reqNo, String url) throws Exception;
+
+    File start(Context context,String reqNo, String url,IDownloadProgressListener listener) throws Exception;
 }

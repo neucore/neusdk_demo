@@ -3,10 +3,12 @@ package com.neucore.neulink.impl.registry;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
+import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IFileService;
 import com.neucore.neulink.impl.service.resume.HttpDownloader;
+import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
 
 public final class ServiceRegistry {
 
@@ -17,7 +19,6 @@ public final class ServiceRegistry {
     }
 
     private ILoginCallback loginCallback;
-
     public void setLoginCallback(ILoginCallback loginCallback) {
         this.loginCallback = loginCallback;
     }
@@ -35,15 +36,17 @@ public final class ServiceRegistry {
         return messageService;
     }
 
+    private IDeviceService defaultDeviceService = new DefaultDeviceServiceImpl();
+    private IDeviceService deviceService = null;
     public IDeviceService getDeviceService() {
-        return deviceService ;
+        return deviceService ==null?defaultDeviceService:deviceService;
     }
 
     public void setDeviceService(IDeviceService deviceService) {
         this.deviceService = deviceService;
     }
 
-    private IDeviceService deviceService = new DefaultDeviceServiceImpl();
+    private IFileService fileService;
 
     public IFileService getFileService() {
         return fileService;
@@ -53,15 +56,15 @@ public final class ServiceRegistry {
         this.fileService = fileService;
     }
 
-    private IFileService fileService;
 
-    private IDownloder downloderService = new HttpDownloader();
+    private IDownloder defaultDownloder = new HttpDownloader();
+    private IDownloder downloder = null;
 
-    public IDownloder getDownloderService() {
-        return downloderService;
+    public IDownloder getDownloder() {
+        return downloder==null?defaultDownloder:downloder;
     }
 
-    public void setDownloderService(IDownloder downloderService) {
-        this.downloderService = downloderService;
+    public void setDownloder(IDownloder downloder) {
+        this.downloder = downloder;
     }
 }
