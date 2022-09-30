@@ -24,8 +24,4 @@ public interface IBlib$ObjtypeProcessor<Req extends PkgCmd, Res extends PkgRes, 
      * @throws NeulinkException
      */
     Req buildPkg(Req cmd) throws NeulinkException;
-
-    default IDownloder getFileDownloader(){
-        return ServiceRegistry.getInstance().getDownloderService();
-    }
 }

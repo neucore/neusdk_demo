@@ -3,11 +3,15 @@ package com.neucore.neusdk_demo.neulink;
 import android.app.Application;
 
 import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.service.resume.HttpDownloader;
+import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
@@ -94,9 +98,14 @@ public class MyInstaller {
          */
         connector.setMessageService(null);
         /**
-         * OTA文件断点续传文件服务
+         * OTA文件断点续传文件服务【数据库服务】
          */
         connector.setFileService(null);
+        /**
+         * 默认文件下载器
+         */
+        connector.setDownloder(resumeDownloader);
+
         /**
          * neulink执行结果回调处理接口
          */
@@ -232,4 +241,14 @@ public class MyInstaller {
      * TODO 外部扩展
      */
     IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
+    /**
+     * TODO 单线程文件下载器
+     * 根据需要可以扩展实现Oss
+     */
+    IDownloder downloder = new HttpDownloader();
+    /**
+     * TODO 多线程下载器
+     * 根据需要可以扩展实现Oss
+     */
+    IResumeDownloader resumeDownloader = new HttpResumeDownloader();
 }

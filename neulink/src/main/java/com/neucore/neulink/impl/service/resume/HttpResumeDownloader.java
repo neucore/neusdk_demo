@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.RequestContext;
 import com.neucore.neulink.util.SSLSocketClient;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -51,7 +49,7 @@ import okhttp3.Response;
  e.printStackTrace();
  }
  */
-public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
+public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     private static final String TAG = TAG_PREFIX+"FileDownloader";
     private Context context;
     private IFileService fileService = ServiceRegistry.getInstance().getFileService();
@@ -68,7 +66,9 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     /* 每条线程下载的长度 */
     private long block;
     /* 下载路径  */
+    private String reqNo;
     private String downloadUrl;
+
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -92,20 +92,12 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
         }
         return builder.build();
     }
-    private UgrdeCmd cmd;
     /**
      * 构建文件下载器
      */
-    public OTAHttpResumeDownloader(UgrdeCmd cmd) {
-        this.cmd = cmd;
+    public HttpResumeDownloader() {
     }
 
-    /**
-     * 获取线程数
-     */
-    public int getThreadSize() {
-        return threads.length;
-    }
     /**
      * 获取文件大小
      * @return
@@ -139,7 +131,7 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
      * @return 已下载文件大小
      * @throws Exception
      */
-    private void start() throws Exception{
+    private File start() throws Exception{
         try {
             RandomAccessFile randOut = new RandomAccessFile(this.saveFile, "rw");
             if(this.fileSize>0) {
@@ -192,7 +184,7 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
                             notError = true;
                         }
                         if(threads[i].getDownLength() == -1){//如果下载失败,再重新下载
-                            threads[i] = new DownloadThread(OTAHttpResumeDownloader.this, downloadUrl, saveFile, block, data.get(i+1), i+1);
+                            threads[i] = new DownloadThread(HttpResumeDownloader.this, downloadUrl, saveFile, block, data.get(i+1), i+1);
                             threads[i].setPriority(7);
                             threads[i].start();
                         }
@@ -207,8 +199,14 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
                         String progress = formater.format(downloadSize*1.0/fileSize*1.0*100);
                         if(progress.length()>3
                                 && progress.endsWith("0.0")){
+
+                            long total = getFileSize();
+                            Double percent = downloadSize*1.0/total*1.0*100;
+                            NeuLogUtils.iTag(TAG,reqNo+ " progress: "+progress);
+
                             for (IDownloadProgressListener listener:listeners) {
-                                listener.onDownload(downloadSize);//通知目前已经下载完成的数据长度
+
+                                listener.onDownload(percent);//通知目前已经下载完成的数据长度
                             }
                         }
                     }
@@ -223,7 +221,7 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
 
                     if(finshed){
                         for (IDownloadProgressListener listener:listeners) {
-                            listener.onFinished(getSaveFile());//通知目前已经下载完成的数据长度
+                            listener.onFinished(saveFile);//通知目前已经下载完成的数据长度
                         }
                         if(ObjectUtil.isNotEmpty(fileService)){
                             fileService.delete(downloadUrl);
@@ -235,6 +233,7 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
             print(e.toString());
             throw e;
         }
+        return saveFile;
     }
 
     /**
@@ -268,40 +267,24 @@ public class OTAHttpResumeDownloader implements IResumeDownloader, NeulinkConst{
         }
         return header;
     }
-    /**
-     * 打印Http头字段
-     * @param http
-     */
-    public static void printResponseHeader(HttpURLConnection http){
-        Map<String, String> header = getHttpResponseHeader(http);
-        for(Map.Entry<String, String> entry : header.entrySet()){
-            String key = entry.getKey()!=null ? entry.getKey()+ ":" : "";
-            print(key+ entry.getValue());
-        }
-    }
 
     private static void print(String msg){
         NeuLogUtils.iTag(TAG, msg);
     }
 
-    public File getSaveFile() {
-        return saveFile;
-    }
-
     /**
      *
      * @param context
-     * @param reqNo
-     * @param url
      * @return
      * @throws IOException
      */
     @Override
-    public void start(Context context, String reqNo, String url, IDownloadProgressListener listener) throws Exception {
-        String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+ RequestContext.getId();
+    public File start(Context context, String reqNo,String url, IDownloadProgressListener listener) throws Exception {
+        this.reqNo = reqNo;
+        String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator + reqNo;
         init(context,url,new File(storeDir),6);
         addListener(listener);
-        start();
+        return start();
     }
     
     public void addListener(IDownloadProgressListener iDownloadProgressListener){
