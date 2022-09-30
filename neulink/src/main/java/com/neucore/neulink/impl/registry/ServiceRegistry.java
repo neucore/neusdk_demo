@@ -1,10 +1,12 @@
 package com.neucore.neulink.impl.registry;
 
+import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
-import com.neucore.neulink.impl.service.resume.IFileService;
+import com.neucore.neulink.IFileService;
+import com.neucore.neulink.impl.service.resume.HttpDownloader;
 
 public final class ServiceRegistry {
 
@@ -52,4 +54,14 @@ public final class ServiceRegistry {
     }
 
     private IFileService fileService;
+
+    private IDownloder downloderService = new HttpDownloader();
+
+    public IDownloder getDownloderService() {
+        return downloderService;
+    }
+
+    public void setDownloderService(IDownloder downloderService) {
+        this.downloderService = downloderService;
+    }
 }

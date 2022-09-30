@@ -1,18 +1,17 @@
 package com.neucore.neulink.impl.listener;
 
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.IDownloadProgressListener;
+import com.neucore.neulink.IFileService;
 import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.impl.service.resume.DownloadProgressListener;
-import com.neucore.neulink.impl.service.resume.FileDownloader;
-import com.neucore.neulink.impl.service.resume.IFileService;
+import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.impl.service.resume.OTAHttpResumeDownloader;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
@@ -37,15 +36,14 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
             /**
              * 发送响应消息给到服务端
              */
-            String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator+ RequestContext.getId();
             IFileService fileService = ServiceRegistry.getInstance().getFileService();
             if(ObjectUtil.isNotEmpty(fileService)){
                 throw new NeulinkException(CODE_503,"文件服务为空");
             }
-            final FileDownloader downloader = new FileDownloader(ContextHolder.getInstance().getContext(), upgrade_url, new File(storeDir), 6);
-            downloader.download(new DownloadProgressListener() {
+            final OTAHttpResumeDownloader downloader = new OTAHttpResumeDownloader(cmd);
+            downloader.start(ContextHolder.getInstance().getContext(),RequestContext.getId(), upgrade_url,new IDownloadProgressListener() {
                 @Override
-                public void onDownloadSize(long size) {
+                public void onDownload(long size) {
                     long total = downloader.getFileSize();
                     DecimalFormat formater = new DecimalFormat("##.0");
                     String progress = formater.format(size*1.0/total*1.0*100);
@@ -53,7 +51,11 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
                     NeuLogUtils.iTag(TAG,cmd.getReqNo()+ " progress: "+progress);
                     NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),progress);
                 }
-            });
+                @Override
+                public void onFinished(File file){
+
+                }
+            } );
             NeuLogUtils.iTag(TAG,"成功下载完成："+downloader.getFileSize());
             NeuLogUtils.iTag(TAG,"存储位置: "+downloader.getSaveFile().getAbsolutePath());
 

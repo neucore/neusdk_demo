@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
 import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
@@ -12,7 +13,6 @@ import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmdRes;
 import com.neucore.neulink.impl.cmd.rrpc.FaceCmd;
 import com.neucore.neulink.impl.cmd.rrpc.FaceData;
-import com.neucore.neulink.impl.cmd.rrpc.FacePkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.SyncInfo;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
@@ -20,7 +20,6 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.BufferedReader;
@@ -32,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * 目标库处理器
@@ -117,10 +118,26 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         String baseUrl = jsonUrl.substring(0,index+1);//包含'/'
 
         String newJsonFileUrl = baseUrl+offset+".json";
-
-        String body = NeuHttpHelper.dldFile2String(newJsonFileUrl,3);
-
-        SyncInfo syncInfo = JSonUtils.toObject(body, SyncInfo.class);
+        StringBuffer sb = new StringBuffer();
+        File tmpFile = null;
+        try {
+            tmpFile = this.getFileDownloader().execute(getContext(),RequestContext.getId(),newJsonFileUrl);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(tmpFile));
+            String line = null;
+            while ((line=bufferedReader.readLine())!=null){
+                sb.append(line);
+            }
+        }
+        catch (Exception ex){
+            throw new NeulinkException(CODE_50002,ex.getMessage());
+        }
+        finally {
+            if(ObjectUtil.isNotEmpty(tmpFile)){
+                tmpFile.delete();
+                tmpFile = null;
+            }
+        }
+        SyncInfo syncInfo = JSonUtils.toObject(sb.toString(), SyncInfo.class);
 
         String fileUrl = syncInfo.getFileUrl();
         //图片消息
@@ -133,21 +150,22 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         toDir.mkdirs();
 
         List<FaceData> params = null;
+
         try {
-            File tmpFile = NeuHttpHelper.dld2File(getContext(), RequestContext.getId(),fileUrl,toDir);//下载zip文件
-
+            tmpFile = this.getFileDownloader().execute(getContext(),RequestContext.getId(),fileUrl);
             FileUtils.unzipFile(tmpFile,toDir.getAbsolutePath());//解压zip文件
-
-            tmpFile.delete();//删除zip文件
             String infoFileDir = reqdir+"/info";
             File info = new File(infoFileDir+"/"+offset+".json");
             params = facelibDataReader(info);//读取并解析facelib图片元数据
-
         }
-        catch (IOException e){
+        catch (Exception e){
             throw new NeulinkException(NeulinkException.CODE_50002,e.getMessage());
         }
-
+        finally {
+            if(ObjectUtil.isNotEmpty(tmpFile)){
+                tmpFile.delete();//删除zip文件
+            }
+        }
         Map images = null;
         ActionResult<Map<String,Object>> actionResult = null;
         if(NEULINK_MODE_ADD.equalsIgnoreCase(cmdStr)||
@@ -233,5 +251,10 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         }
 
         return imagesData;
+    }
+
+    @Override
+    public IDownloder getFileDownloader() {
+        return null;
     }
 }

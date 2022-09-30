@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
@@ -21,11 +22,11 @@ public class DownloadThread extends Thread implements NeulinkConst {
     private int threadId = -1;
     private long downLength;
     private boolean finish = false,error = false;
-    private FileDownloader downloader;
+    private IResumeDownloader downloader;
 
-    public DownloadThread(FileDownloader downloader, String downUrl, File saveFile, long block, long downLength, int threadId) {
+    public DownloadThread(IResumeDownloader downloader, String url, File saveFile, long block, long downLength, int threadId) {
         super("DownloadThread@"+threadId);
-        this.downUrl = downUrl;
+        this.downUrl = url;
         this.saveFile = saveFile;
         this.block = block;
         this.downloader = downloader;
@@ -78,7 +79,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
         Response response = null;
         try {
-            response = FileDownloader.getClient(5, 15).newCall(FileDownloader.createRequest(downUrl, headers)).execute();
+            response = OTAHttpResumeDownloader.getClient(5, 15).newCall(OTAHttpResumeDownloader.createRequest(downUrl, headers)).execute();
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;

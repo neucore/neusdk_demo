@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.neucore.greendao.gen.DaoMaster;
 import com.neucore.greendao.gen.DaoSession;
 import com.neucore.greendao.gen.FileInfoDao;
-import com.neucore.neulink.impl.service.resume.IFileService;
+import com.neucore.neulink.IFileService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.service.db.bean.FileInfo;
 

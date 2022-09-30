@@ -135,7 +135,7 @@ public interface NeulinkConst {
 
     String NEULINK_BIZ_FIRMWARE = "firmware";
 
-    String NEULINK_BIZ_FIRMWARE_RESUME = "firewareresume";
+    String NEULINK_BIZ_FIRMWARE_RESUME = "firmwareresume";
 
     String NEULINK_BIZ_BACKUP = "backup";
 
