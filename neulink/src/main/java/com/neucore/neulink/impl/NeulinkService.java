@@ -497,6 +497,7 @@ public class NeulinkService implements NeulinkConst{
             if(callback!=null){
                 Result result = Result.fail(STATUS_503,"SDK还没初始化完成");
                 result.setReqId(reqId);
+                result.setData(payload);
                 callback.onFinished(result);
             }
         }
