@@ -175,7 +175,7 @@ public class MyMqttService implements NeulinkConst{
 
             byte[] compress= MessageUtil.encode(debug,topic,msg);
             if(ObjectUtil.isNotEmpty(iResCallback)){
-                PublishActionListenerAdapter myPublishAction = new PublishActionListenerAdapter(reqId, iResCallback);
+                PublishActionListenerAdapter myPublishAction = new PublishActionListenerAdapter(reqId,msg, iResCallback);
                 client.publish(topic, compress, qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
             }
             else{
