@@ -3,13 +3,9 @@ package com.neucore.neulink.impl;
 import android.Manifest;
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -28,11 +24,9 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
-import com.neucore.neulink.impl.service.resume.IFileService;
+import com.neucore.neulink.IFileService;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-
-import org.eclipse.paho.android.service.MqttService;
 
 import java.util.Arrays;
 import java.util.Properties;
