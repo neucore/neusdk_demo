@@ -178,7 +178,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd **extends NewCmd**、xxxRes **extends NewCmdRes**、xxxActionResult **extends ActionResult**】
+1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
 
 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
