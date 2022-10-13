@@ -18,7 +18,7 @@ public class Result<T> implements Serializable {
      * 状态码
      */
     @SerializedName("code")
-    private int code;
+    private Integer code;
 
     /**
      * 响应消息内容以
@@ -41,18 +41,18 @@ public class Result<T> implements Serializable {
     }
 
 
-    private Result(int resultCode, String msg) {
+    private Result(Integer resultCode, String msg) {
         this(resultCode, null, msg);
     }
 
-    public Result(int code, T data, String msg) {
+    public Result(Integer code, T data, String msg) {
         this.code = code;
         this.data = data;
         this.msg = msg;
         this.time = System.currentTimeMillis();
     }
 
-    public Result(Long total, int code, T data, String msg) {
+    public Result(Long total, Integer code, T data, String msg) {
         this.total = total;
         this.code = code;
         this.msg = msg;
@@ -73,12 +73,12 @@ public class Result<T> implements Serializable {
         return ok(NeulinkConst.STATUS_200, data, NeulinkConst.MESSAGE_SUCCESS,count);
     }
 
-    public static <T> Result<T> ok(int code, T data, String msg) {
+    public static <T> Result<T> ok(Integer code, T data, String msg) {
         return new Result<>(code, data, msg == null ? null : msg);
     }
 
 
-    public static <T> Result<T> ok(int code, T data, String msg, Long count) {
+    public static <T> Result<T> ok(Integer code, T data, String msg, Long count) {
         return new Result(count, code, data,msg);
     }
 
@@ -91,19 +91,19 @@ public class Result<T> implements Serializable {
         return new Result<>(NeulinkConst.STATUS_500, msg);
     }
 
-    public static <T> Result<T> fail(int code, String msg) {
+    public static <T> Result<T> fail(Integer code, String msg) {
         return new Result<>(code, null, msg);
     }
 
-    public static <T> Result<T> fail(int code, T data, String msg) {
+    public static <T> Result<T> fail(Integer code, T data, String msg) {
         return new Result<>(code, data, msg);
     }
 
-    public static <T> Result<T> fail(int resultCode) {
+    public static <T> Result<T> fail(Integer resultCode) {
         return new Result<>(resultCode,NeulinkConst.MESSAGE_FAILED);
     }
 
-    public static <T> Result<T> fail(int resultCode, T date) {
+    public static <T> Result<T> fail(Integer resultCode, T date) {
         return new Result<>(resultCode, date,NeulinkConst.MESSAGE_FAILED);
     }
 
@@ -123,11 +123,11 @@ public class Result<T> implements Serializable {
         this.total = total;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 
