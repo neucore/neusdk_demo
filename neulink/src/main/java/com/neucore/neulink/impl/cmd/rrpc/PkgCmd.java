@@ -22,7 +22,7 @@ public class PkgCmd<T extends PkgData,K,V> extends Cmd {
     @SerializedName("md5")
     private String md5;
     private String cmd;
-    private long reqtime;
+
     @PropIgnore
     private List<T> dataList;
 
@@ -82,16 +82,6 @@ public class PkgCmd<T extends PkgData,K,V> extends Cmd {
 
     public void setCmd(String cmd) {
         this.cmd = cmd;
-    }
-
-    @Override
-    public long getReqtime() {
-        return reqtime;
-    }
-
-    @Override
-    public void setReqtime(long reqtime) {
-        this.reqtime = reqtime;
     }
 
     public List<T> getDataList() {

@@ -21,13 +21,13 @@ public class Cmd<T> extends NewCmd<T>{
     }
 
     @SerializedName("time_stamp")
-    private long reqtime;
+    private Long reqtime;
 
-    public long getReqtime() {
+    public Long getReqtime() {
         return reqtime;
     }
 
-    protected void setReqtime(long reqtime) {
+    public void setReqtime(Long reqtime) {
         this.reqtime = reqtime;
     }
 }

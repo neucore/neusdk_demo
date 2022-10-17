@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.annotation.PropIgnore;
 import cn.hutool.core.util.ObjectUtil;
 
 public abstract class GCmd {
