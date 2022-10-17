@@ -37,7 +37,9 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
 
         PkgCmd req = parser(payload.toString());
 
-        req.setReqtime(System.currentTimeMillis());
+        if(ObjectUtil.isEmpty(req.getReqtime())){
+            req.setReqtime(System.currentTimeMillis());
+        }
 
         req.setDebug(debug);
 
