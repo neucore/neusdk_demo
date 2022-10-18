@@ -75,134 +75,106 @@ public class NeuLogUtils {
 
     public static void eTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+
+        Logger logger = getLogger(tag);
+
         logger.error(message);
-        reset(logger,oldLevel);
     }
     public static void eTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.error(message);
-        reset(logger,oldLevel);
     }
     public static void eTag(Class tag,Object message,Throwable throwable){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.error(message,throwable);
-        reset(logger,oldLevel);
     }
     public static void eTag(String tag,Object message,Throwable throwable){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.error(message,throwable);
-        reset(logger,oldLevel);
     }
 
     public static void wTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag.getSimpleName());
         logger.warn(message);
-        reset(logger,oldLevel);
     }
 
     public static void wTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.warn(message);
-        reset(logger,oldLevel);
     }
 
     public static void iTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.info(message);
-        reset(logger,oldLevel);
     }
 
     public static void iTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.info(message);
-        reset(logger,oldLevel);
     }
 
     public static void dTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.debug(message);
-        reset(logger,oldLevel);
     }
 
     public static void dTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.debug(message);
-        reset(logger,oldLevel);
     }
 
     public static void fTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.fatal(message);
-        reset(logger,oldLevel);
     }
 
     public static void fTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.fatal(message);
-        reset(logger,oldLevel);
     }
 
     public static void tTag(Class tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.trace(message);
-        reset(logger,oldLevel);
     }
 
     public static void tTag(String tag,Object message){
         configLog();
-        Logger logger = Logger.getLogger(tag);
-        Level oldLevel = logger.getLevel();
-        debug(logger);
+        Logger logger = getLogger(tag);
         logger.trace(message);
-        reset(logger,oldLevel);
     }
 
-    private static void debug(Logger logger){
+    private static boolean isDebug(){
         boolean isDebug = RequestContext.isDebug();
+        return isDebug;
+    }
+
+    private static Logger getLogger(Class tag){
+        return getLogger(tag.getSimpleName());
+    }
+
+    private static Logger getLogger(String tag){
+        Logger logger = null;
+        boolean isDebug = isDebug();
         if(isDebug){
+            logger = Logger.getLogger(String.format("%s@debugger",tag));
             logger.setLevel(Level.DEBUG);
         }
-    }
-    private static void reset(Logger logger,Level level){
-        logger.setLevel(level);
+        else{
+            logger = Logger.getLogger(tag);
+        }
+        return logger;
     }
 }
