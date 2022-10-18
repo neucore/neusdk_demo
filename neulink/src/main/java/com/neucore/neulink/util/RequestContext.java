@@ -24,21 +24,17 @@ public class RequestContext {
         ids.remove();
     }
 
-    private static ThreadLocal<IDebugger> debugs = new InheritableThreadLocal<IDebugger>();
+    private static ThreadLocal<Boolean> debugs = new InheritableThreadLocal<Boolean>();
 
     public static boolean isDebug(){
-        IDebugger debug = debugs.get();
+        Boolean debug = debugs.get();
         if(ObjectUtil.isNotEmpty(debug)){
-            return debug.isDebug();
+            return debug;
         }
         return false;
     }
 
     public static void setDebug(boolean debug){
-        debugs.set(new MyDebugger(debug));
-    }
-
-    public static void removeDebug(){
-        debugs.remove();
+        debugs.set(debug);
     }
 }
