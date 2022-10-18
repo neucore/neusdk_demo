@@ -45,6 +45,10 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
 
         Req req = parser(payload.toString());
 
+        if(ObjectUtil.isEmpty(req.getReqtime())){
+            req.setReqtime(System.currentTimeMillis());
+        }
+
         req.setDebug(debug);
 
         HeadersUtil.binding(req,topic,headers);

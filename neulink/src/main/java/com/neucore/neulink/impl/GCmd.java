@@ -20,6 +20,9 @@ public abstract class GCmd {
     @IgnoreProp
     private boolean debug=false;
 
+    @IgnoreProp
+    private Long reqtime;
+
     public Map<String, String> getHeaders() {
         return headers;
     }
@@ -51,7 +54,15 @@ public abstract class GCmd {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
-    
+
+    public Long getReqtime() {
+        return reqtime;
+    }
+
+    public void setReqtime(Long reqtime) {
+        this.reqtime = reqtime;
+    }
+
     public String getGroup() {
         return this.getHeaders().get(NeulinkConst.NEULINK_HEADERS_GROUP);
     }
