@@ -36,6 +36,10 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
 
         CheckCmd req = parser(payload.toString());
 
+        if(ObjectUtil.isEmpty(req.getReqtime())){
+            req.setReqtime(System.currentTimeMillis());
+        }
+
         req.setDebug(debug);
 
         HeadersUtil.binding(req,topic,headers);

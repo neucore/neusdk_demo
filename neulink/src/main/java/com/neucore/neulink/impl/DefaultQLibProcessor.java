@@ -37,6 +37,10 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
 
         TLibQueryCmd req = parser(payload.toString());
 
+        if(ObjectUtil.isEmpty(req.getReqtime())){
+            req.setReqtime(System.currentTimeMillis());
+        }
+
         req.setDebug(debug);
 
         HeadersUtil.binding(req,topic,headers);
