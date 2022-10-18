@@ -168,8 +168,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
                     //竖屏 6421板子 800x1280
                     SPUtils.put(MyApplication.getContext(), SharePrefConstant.EQUIPMENT_TYPE, Constants.TYPE_6421_VER);
-                    startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
-                    finish();
+                    //startActivity(new Intent(MyApplication.getContext(),MenuActivity.class));
+                    //finish();
                 }
             },3000);
         }
