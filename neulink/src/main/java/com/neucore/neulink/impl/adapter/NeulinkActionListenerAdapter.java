@@ -211,7 +211,6 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     public void messageArrived(String topicStr, MqttMessage message) {
         boolean debug = topicStr.toLowerCase().endsWith("/debug");
         RequestContext.setDebug(debug);
-
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().cloud2EndParser(topicStr);
         String biz = topic.getBiz();
         String reqId = topic.getReqId();
@@ -232,7 +231,6 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
             }
         }
         RequestContext.setId(reqId==null? UUID.randomUUID().toString():reqId);
-
         String detailLog = topic + ";qos:" + qos + ";retained:" + isRetained + "messageId:"+messageId;
         NeuLogUtils.iTag(TAG, detailLog);
         NeuLogUtils.iTag(TAG, "messageArrived:" + msgContent);
@@ -241,6 +239,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
 
         try {
             if(processor!=null){
+
                 processor.execute(debug,qos,topic,headers,payload);
             }
             else {
@@ -262,6 +261,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
             NeuLogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
+            RequestContext.removeDebug();
             NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+msgContent);
         }
     }

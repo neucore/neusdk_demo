@@ -1,5 +1,8 @@
 package com.neucore.neulink.util;
 
+import com.neucore.neulink.IDebugger;
+import com.neucore.neulink.impl.MyDebugger;
+
 import java.util.UUID;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -21,18 +24,20 @@ public class RequestContext {
         ids.remove();
     }
 
-    private static ThreadLocal<Boolean> debugs = new InheritableThreadLocal<Boolean>();
+    private static ThreadLocal<IDebugger> debugs = new InheritableThreadLocal<IDebugger>();
+
     public static boolean isDebug(){
-        Boolean debug = debugs.get();
+        IDebugger debug = debugs.get();
         if(ObjectUtil.isNotEmpty(debug)){
-            return debug;
+            return debug.isDebug();
         }
         return false;
     }
 
     public static void setDebug(boolean debug){
-        debugs.set(debug);
+        debugs.set(new MyDebugger(debug));
     }
+
     public static void removeDebug(){
         debugs.remove();
     }
