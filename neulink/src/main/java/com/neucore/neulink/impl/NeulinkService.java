@@ -166,6 +166,10 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
+    public MyMqttService getMqttService(){
+        return myMqttService;
+    }
+
     public IResCallback getDefaultResCallback() {
         return defaultResCallback;
     }
