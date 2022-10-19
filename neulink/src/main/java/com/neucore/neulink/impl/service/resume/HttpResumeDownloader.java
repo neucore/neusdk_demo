@@ -69,6 +69,8 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     private String reqNo;
     private String downloadUrl;
 
+    private Long BlockSize = 1024*1024L;
+
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -213,7 +215,7 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
 
                     boolean finshed = true;
                     for (int i = 0; i < threads.length; i++){
-                        if(!threads[i].isFinish()){
+                        if(threads[i] != null && !threads[i].isFinish()){
                             finshed = false;
                             break;
                         }
@@ -282,7 +284,7 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     public File start(Context context, String reqNo,String url, IDownloadProgressListener listener) throws Exception {
         this.reqNo = reqNo;
         String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator + reqNo;
-        init(context,url,new File(storeDir),6);
+        init(context,url,new File(storeDir));
         addListener(listener);
         return start();
     }
@@ -296,14 +298,12 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
      * @param context
      * @param url
      * @param fileSaveDir
-     * @param threadNum
      */
-    private void init(Context context, String url, File fileSaveDir, int threadNum){
+    private void init(Context context, String url, File fileSaveDir){
         Response response = null;
         try {
             this.context = context;
             this.downloadUrl = url;
-            this.threads = new DownloadThread[threadNum];
             if(!fileSaveDir.exists()) {
                 fileSaveDir.mkdirs();
             }
@@ -317,9 +317,17 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
             response = getClient(5,15).newCall(createRequest(url,headers)).execute();
             int code = response.code();
             NeuLogUtils.iTag(TAG,code+"");
-            if (code == 206||code == 200) {
+            if (code == 206
+                    ||code == 200) {
                 this.fileSize = Long.valueOf(response.header("Content-Length"));//根据响应获取文件大小
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
+                Long threads = fileSize / BlockSize;
+                Long mod = fileSize%BlockSize;
+                if(mod>0){
+                    threads+=1;
+                }
+                Integer threadNum = threads.intValue();
+                this.threads = new DownloadThread[threadNum];
 
                 String filename = getFileName(url,response);//获取文件名称
 

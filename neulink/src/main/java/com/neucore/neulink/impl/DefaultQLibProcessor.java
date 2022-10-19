@@ -242,7 +242,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      */
     @Override
     protected TLQueryRes responseWrapper(TLibQueryCmd cmd, QResult actionResult) {
-        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
@@ -256,7 +256,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @return
      */
     protected TLQueryRes fail(TLibQueryCmd cmd, String error){
-        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
@@ -271,7 +271,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @return
      */
     protected TLQueryRes fail(TLibQueryCmd cmd,int code, String error){
-        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
@@ -285,7 +285,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @throws NeulinkException
      */
     protected TLibQueryCmd buildPkg(TLibQueryCmd cmd) throws NeulinkException{
-        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibBatch(cmd.getObjtype());
+        IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
         }
