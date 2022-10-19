@@ -131,6 +131,14 @@ public interface NeulinkConst {
 
     String NEULINK_BIZ_AUTH = "auth";
 
+    String NEULINK_BIZ_RSVCTRL = "rsvctrl";
+
+    String NEULINK_BIZ_RESERVE = "reserve";
+
+    String NEULINK_BIZ_HKIT = "hkit";
+
+    String NEULINK_BIZ_SCENE = "scene";
+
     String NEULINK_BIZ_FILE = "file";
 
     String NEULINK_BIZ_BFILE = "bfile";
