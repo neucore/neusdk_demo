@@ -12,6 +12,7 @@ import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.service.resume.HttpDownloader;
 import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
+import com.neucore.neulink.impl.service.resume.OssDownloader;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
@@ -104,7 +105,7 @@ public class MyInstaller {
         /**
          * 默认文件下载器
          */
-        connector.setDownloder(resumeDownloader);
+        connector.setDownloder(ossDownloader);
 
         /**
          * neulink执行结果回调处理接口
@@ -145,6 +146,10 @@ public class MyInstaller {
         extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//C端云平台
 
 //        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/v1/smrtlibs/devices/configs");//只能楼宇平台
+        /**
+         * OSS存储时需要开启&设置
+         */
+        extConfig.setProperty(ConfigContext.OSS_STS_AUTH_URL,String.format("https://dev.neucore.com/api/storage/v1/%s/authorization",extConfig.getProperty(ConfigContext.SCOPEID)));//OSS存储临时授权地址
 
         /**
          * Neulink通道设置
@@ -251,4 +256,8 @@ public class MyInstaller {
      * 根据需要可以扩展实现Oss
      */
     IResumeDownloader resumeDownloader = new HttpResumeDownloader();
+
+    IDownloder ossDownloader = new OssDownloader();
+
+    IDownloder ossResumeDownloader = new OssDownloader();
 }

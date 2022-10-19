@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -76,12 +77,19 @@ public class NeuHttpHelper implements NeulinkConst{
 		}
 	}
 
-	private static Request createRequest(String fileUrl){
+	private static Request createRequest(String fileUrl, Map<String,String> headers){
 		//第二步构建Request对象
-		okhttp3.Request request = new Request.Builder()
-				.url(fileUrl)
-				.get()
-				.build();
+		Request.Builder builder = new Request.Builder().url(fileUrl).get();
+		if(ObjectUtil.isNotEmpty(headers)){
+			String[] keys = new String[headers.size()];
+			headers.keySet().toArray(keys);
+			for (String key:keys) {
+				String value = headers.get(key);
+				builder.addHeader(key,value);
+			}
+		}
+		okhttp3.Request request = builder.build();
+
 		return request;
 	}
 
@@ -107,7 +115,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		int trys = 1;
 		while(trys<=tryNum){
 			try {
-				Response response = getClient().newCall(createRequest(fileUrl)).execute();
+				Response response = getClient().newCall(createRequest(fileUrl,null)).execute();
 				int code = response.code();
 				if(code!=200){
 					throw new NeulinkException(code,fileUrl+",下载失败 with code="+code);
@@ -160,6 +168,10 @@ public class NeuHttpHelper implements NeulinkConst{
 		return dld2File(context, reqId, fileUrl, toDir,10,60);
 	}
 
+	public static File dld2File(Context context, Map<String,String> headers,String reqId,String fileUrl, File toDir) throws IOException {
+		return dld2File(context, reqId, fileUrl, toDir,10,60);
+	}
+
 	/**
 	 *
 	 * @param context
@@ -175,6 +187,12 @@ public class NeuHttpHelper implements NeulinkConst{
 		return dld2File(context,reqId,fileUrl,toDir,connTime,execTime,3);
 	}
 
+	public static File dld2File(Context context,Map<String,String> headers, String reqId,String fileUrl, File toDir,int connTime,int execTime) throws IOException {
+		return dld2File(context,reqId,fileUrl,toDir,connTime,execTime,3);
+	}
+
+
+
 	/**
 	 * 下载远程文件
 	 * @param fileUrl
@@ -183,7 +201,10 @@ public class NeuHttpHelper implements NeulinkConst{
 	 * @throws IOException
 	 */
 	public static File dld2File(Context context, String reqId,String fileUrl, File toDir,int connTime,int execTime,int tryNum) throws IOException {
+		return dld2File(context,null,reqId,fileUrl,toDir,connTime,execTime,tryNum);
+	}
 
+	public static File dld2File(Context context,Map<String,String> headers, String reqId,String fileUrl, File toDir,int connTime,int execTime,int tryNum) throws IOException {
 		File tmpFile = null;
 		InputStream is = null;
 		FileOutputStream outStream = null;
@@ -211,7 +232,7 @@ public class NeuHttpHelper implements NeulinkConst{
 		int code = 200;
 		while(trys<=tryNum){
 			try{
-				response = client.newCall(createRequest(fileUrl)).execute();
+				response = client.newCall(createRequest(fileUrl,headers)).execute();
 				code = response.code();
 				if(code!=200){
 					throw new NeulinkException(code,fileUrl+",下载失败 with code="+code);
@@ -257,6 +278,7 @@ public class NeuHttpHelper implements NeulinkConst{
 
 		return tmpFile;
 	}
+
 	public static String post(String url,Map<String,String> params,int tryNum){
 		return post(url,params,null,tryNum);
 	}

@@ -2,7 +2,24 @@ package com.neucore.neulink.impl.registry;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.listener.DefaultCarCheckListener;
+import com.neucore.neulink.impl.listener.DefaultCarQueryListener;
+import com.neucore.neulink.impl.listener.DefaultCarSyncListener;
+import com.neucore.neulink.impl.listener.DefaultFaceCheckListener;
+import com.neucore.neulink.impl.listener.DefaultFaceQueryListener;
+import com.neucore.neulink.impl.listener.DefaultFaceSyncListener;
+import com.neucore.neulink.impl.listener.DefaultLicCheckListener;
+import com.neucore.neulink.impl.listener.DefaultLicQueryListener;
+import com.neucore.neulink.impl.listener.DefaultLicSyncListener;
+import com.neucore.neulink.impl.proc.DefaultCarCheckProcessor;
+import com.neucore.neulink.impl.proc.DefaultCarQueryProcessor;
+import com.neucore.neulink.impl.proc.DefaultCarSyncProcessor;
+import com.neucore.neulink.impl.proc.DefaultFaceCheckProcessor;
+import com.neucore.neulink.impl.proc.DefaultFaceQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
+import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
+import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
+import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
@@ -14,7 +31,6 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.DefaultBLibSyncProcessor;
 import com.neucore.neulink.impl.DefaultCLibProcessor;
 import com.neucore.neulink.impl.DefaultQLibProcessor;
-import com.neucore.neulink.impl.NeulinkTopicParser;
 import com.neucore.neulink.impl.proc.DefaultALogProcessor;
 import com.neucore.neulink.impl.proc.DefaultAwakenProcessor;
 import com.neucore.neulink.impl.proc.DefaultBackupProcessor;
@@ -36,9 +52,9 @@ import cn.hutool.core.util.StrUtil;
 
 public final class ProcessRegistry implements NeulinkConst {
     private static ConcurrentHashMap<String, IProcessor> processors = new ConcurrentHashMap<String,IProcessor>();
-    private static ConcurrentHashMap<String, IBlib$ObjtypeProcessor> blibBatchProcessors = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String, IQlib$ObjtypeProcessor> qlibBatchProcessors = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String, IClib$ObjtypeProcessor> clibBatchProcessors = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, IBlib$ObjtypeProcessor> blibObjtypeProcessors = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, IQlib$ObjtypeProcessor> qlibObjtypeProcessors = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, IClib$ObjtypeProcessor> clibObjtypeProcessors = new ConcurrentHashMap<>();
     private static String TAG = TAG_PREFIX+"ProcessRegistry";
     /**
      *
@@ -100,9 +116,15 @@ public final class ProcessRegistry implements NeulinkConst {
         }
         else if(NEULINK_BIZ_BLIB.equalsIgnoreCase(biz)){//目标库批量处理器
             regist(biz,new DefaultBLibSyncProcessor(context));
+            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
+            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
         }
         else if(NEULINK_BIZ_QLIB.equalsIgnoreCase(biz)){//目标库单记录处理器
             regist(biz,new DefaultQLibProcessor(context));
+            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
+            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
         }
         else if(NEULINK_BIZ_CFG.equalsIgnoreCase(biz)){//配置管理处理器
             regist(biz,new DefaultCfgProcessor(context));
@@ -118,6 +140,9 @@ public final class ProcessRegistry implements NeulinkConst {
         }
         else if(NEULINK_BIZ_CLIB.equalsIgnoreCase(biz)){//数据校验处理器
             regist(biz,new DefaultCLibProcessor(context));
+            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
+            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
+            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
         }
         IProcessor processor = processors.get(biz);
         if(ObjectUtil.isEmpty(processor)){
@@ -174,7 +199,7 @@ public final class ProcessRegistry implements NeulinkConst {
       * @param bLibSyncProcessor
      */
     public static void registBlibProcessor(DefaultBLibSyncProcessor bLibSyncProcessor){
-        processors.put(NEULINK_BIZ_BLIB,bLibSyncProcessor);
+        regist(NEULINK_BIZ_BLIB,bLibSyncProcessor);
     }
     /**
      *
@@ -184,8 +209,8 @@ public final class ProcessRegistry implements NeulinkConst {
      */
     public static void registBlib$ObjtypeProcessor(String objType, IBlib$ObjtypeProcessor objtypeProcessor, ICmdListener cmdListener){
         String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
-        blibBatchProcessors.put(batchBiz,objtypeProcessor);
-        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+        blibObjtypeProcessors.put(batchBiz,objtypeProcessor);
+        ListenerRegistry.getInstance().setBlibExtendListener(objType,cmdListener);
     }
 
     /**
@@ -195,7 +220,7 @@ public final class ProcessRegistry implements NeulinkConst {
      */
     public static IBlib$ObjtypeProcessor getBlib$ObjtypeProcessor(String objType){
         String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
-        return blibBatchProcessors.get(batchBiz);
+        return blibObjtypeProcessors.get(batchBiz);
     }
 
     /**
@@ -214,8 +239,8 @@ public final class ProcessRegistry implements NeulinkConst {
      */
     public static void registQlib$ObjtypeProcessor(String objType, IQlib$ObjtypeProcessor objtypeProcessor, ICmdListener cmdListener){
         String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
-        qlibBatchProcessors.put(batchBiz,objtypeProcessor);
-        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+        qlibObjtypeProcessors.put(batchBiz,objtypeProcessor);
+        ListenerRegistry.getInstance().setQlibExtendListener(objType,cmdListener);
     }
 
     /**
@@ -225,7 +250,7 @@ public final class ProcessRegistry implements NeulinkConst {
      */
     public static IQlib$ObjtypeProcessor getQlibProcessor(String objType){
         String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
-        return qlibBatchProcessors.get(batchBiz);
+        return qlibObjtypeProcessors.get(batchBiz);
     }
 
     /**
@@ -245,8 +270,8 @@ public final class ProcessRegistry implements NeulinkConst {
     public static void registClib$ObjtypeProcessor(String objType, IClib$ObjtypeProcessor batchProcessor, ICmdListener cmdListener){
         processors.put(NEULINK_BIZ_CLIB,new DefaultCLibProcessor());
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
-        clibBatchProcessors.put(batchBiz,batchProcessor);
-        ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
+        clibObjtypeProcessors.put(batchBiz,batchProcessor);
+        ListenerRegistry.getInstance().setClibExtendListener(objType,cmdListener);
     }
 
     /**
@@ -256,6 +281,6 @@ public final class ProcessRegistry implements NeulinkConst {
      */
     public static IClib$ObjtypeProcessor getClibProcessor(String objType){
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
-        return clibBatchProcessors.get(batchBiz);
+        return clibObjtypeProcessors.get(batchBiz);
     }
 }

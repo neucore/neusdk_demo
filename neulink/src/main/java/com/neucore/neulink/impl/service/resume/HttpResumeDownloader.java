@@ -20,13 +20,17 @@ import android.content.Context;
 
 import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IFileService;
+import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
+import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.NeuHttpHelper;
+import com.neucore.neulink.util.RequestContext;
 import com.neucore.neulink.util.SSLSocketClient;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -134,6 +138,7 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
      * @throws Exception
      */
     private File start() throws Exception{
+
         try {
             RandomAccessFile randOut = new RandomAccessFile(this.saveFile, "rw");
             if(this.fileSize>0) {
@@ -302,12 +307,29 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     private void init(Context context, String url, File fileSaveDir){
         Response response = null;
         try {
+
+            ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
+            String token = loginCallback.login();
+            if(token!=null){
+                int index = token.indexOf(" ");
+                if(index!=-1){
+                    token = token.substring(index+1);
+                }
+            }
+            if(ObjectUtil.isNotEmpty(token)){
+                NeulinkSecurity.getInstance().setToken(token);
+            }
+
+            HashMap<String,String> headers = new HashMap<>();
+            headers.put("Authorization","bearer "+token);
+            String tmpPath = DeviceUtils.getTmpPath(context);
+            String reqdir = tmpPath+File.separator+ RequestContext.getId();
+            File toDir = new File(reqdir);
             this.context = context;
             this.downloadUrl = url;
             if(!fileSaveDir.exists()) {
                 fileSaveDir.mkdirs();
             }
-            Map<String,String> headers = new HashMap<>();
             headers.put("Accept","image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-img, */*");
             headers.put("Accept-Language","zh-CN");
             headers.put("Referer",url);

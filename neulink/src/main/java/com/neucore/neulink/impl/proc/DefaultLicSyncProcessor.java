@@ -41,14 +41,6 @@ public final class DefaultLicSyncProcessor implements IBlib$ObjtypeProcessor<Pkg
         this.context = context;
     }
 
-    public String getBiz(){
-        return NEULINK_BIZ_BLIB;
-    }
-
-    public String getObjType(){
-        return NEULINK_BIZ_BLIB_FACE;
-    }
-
     public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         LicCmdRes res = new LicCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());

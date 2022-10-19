@@ -191,7 +191,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @return
      */
     protected ICmdListener<QueryActionResult,CheckCmd> getListener(String objType){
-        return ListenerRegistry.getInstance().getExtendListener(NEULINK_BIZ_CLIB+"."+objType);
+        return ListenerRegistry.getInstance().getClibExtendListener(objType);
     }
     /**
      * 解析处理

@@ -20,6 +20,7 @@ import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
@@ -50,41 +51,79 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
         /**
          * 人脸下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+//        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncListener());
+
         /**
          * 车辆下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
+//        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncListener());
+
         /**
          * 车牌下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
+//        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncListener());
 
         /**
          * 人脸查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+//        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setQlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryListener());
         /**
          * 车辆查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
+//        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setQlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryListener());
         /**
          * 车牌查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
+//        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setQlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryListener());
 
         /**
          * 人脸比对 扩展【默认实现】
          */
-        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
+//        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setClibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckListener());
         /**
          * 车辆比对 扩展【默认实现】
          */
-        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
+//        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setClibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckListener());
         /**
          * 车牌比对 扩展【默认实现】
          */
-        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
+//        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
+        /**
+         * 或者
+         */
+//        ListenerRegistry.getInstance().setClibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckListener());
 
         /**
          * 重启 扩展【取消注释，覆盖默认实现】

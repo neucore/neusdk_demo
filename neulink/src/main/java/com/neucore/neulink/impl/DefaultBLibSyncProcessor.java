@@ -223,7 +223,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @return
      */
     protected ICmdListener<PkgActionResult,PkgCmd> getListener(String objType){
-        return ListenerRegistry.getInstance().getExtendListener(NEULINK_BIZ_BLIB+"."+objType);
+        return ListenerRegistry.getInstance().getBlibExtendListener(objType);
     }
     /**
      * 解析处理

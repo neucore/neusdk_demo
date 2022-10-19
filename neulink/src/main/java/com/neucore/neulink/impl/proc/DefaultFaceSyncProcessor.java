@@ -62,14 +62,6 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         this.context = context;
     }
 
-    public String getBiz(){
-        return NEULINK_BIZ_BLIB;
-    }
-
-    public String getObjType(){
-        return NEULINK_BIZ_BLIB_FACE;
-    }
-
     public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         FaceCmdRes res = new FaceCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());

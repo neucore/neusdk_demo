@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.neucore.neulink.IResumeDownloader;
+import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
@@ -66,6 +67,9 @@ public class DownloadThread extends Thread implements NeulinkConst {
 
     private void download(){
         Map<String,String> headers = new HashMap<>();
+
+        String token = NeulinkSecurity.getInstance().getToken();
+        headers.put("Authorization","bearer "+token);
         headers.put("Accept","image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-img, */*");
         headers.put("Accept-Language","zh-CN");
         headers.put("Referer",downUrl);
