@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
+import com.neucore.neulink.ICLibProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> implements IProcessor {
+public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes, QueryActionResult<Map<String,Object>>> implements ICLibProcessor {
 
     private String libDir;
     public DefaultCLibProcessor() {
@@ -175,7 +176,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @param cmd
      * @return
      */
-    protected QueryActionResult process(NeulinkTopicParser.Topic topic, CheckCmd cmd) {
+    public QueryActionResult process(NeulinkTopicParser.Topic topic, CheckCmd cmd) {
         ICmdListener<QueryActionResult,CheckCmd> listener = getListener(cmd.getObjtype());
         if(listener==null){
             throw new NeulinkException(STATUS_404,cmd.getBiz()+ " Listener does not implemention");
@@ -190,7 +191,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @param objType
      * @return
      */
-    protected ICmdListener<QueryActionResult,CheckCmd> getListener(String objType){
+    public ICmdListener<QueryActionResult,CheckCmd> getListener(String objType){
         return ListenerRegistry.getInstance().getClibExtendListener(objType);
     }
     /**
@@ -198,7 +199,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @param payload
      * @return
      */
-    protected CheckCmd parser(String payload){
+    public CheckCmd parser(String payload){
         return JSonUtils.toObject(payload,CheckCmd.class);
     }
     /**
@@ -208,7 +209,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @return
      */
     @Override
-    protected CheckCmdRes responseWrapper(CheckCmd cmd, QueryActionResult actionResult) {
+    public CheckCmdRes responseWrapper(CheckCmd cmd, QueryActionResult actionResult) {
         IClib$ObjtypeProcessor processor = ProcessRegistry.getClibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -222,7 +223,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @param error
      * @return
      */
-    protected CheckCmdRes fail(CheckCmd cmd, String error){
+    public CheckCmdRes fail(CheckCmd cmd, String error){
         IClib$ObjtypeProcessor processor = ProcessRegistry.getClibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -237,7 +238,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @param error
      * @return
      */
-    protected CheckCmdRes fail(CheckCmd cmd,int code, String error){
+    public CheckCmdRes fail(CheckCmd cmd,int code, String error){
         IClib$ObjtypeProcessor processor = ProcessRegistry.getClibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -251,7 +252,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
      * @return
      * @throws NeulinkException
      */
-    protected CheckCmd buildPkg(CheckCmd cmd) throws NeulinkException{
+    public CheckCmd buildPkg(CheckCmd cmd) throws NeulinkException{
         IClib$ObjtypeProcessor processor = ProcessRegistry.getClibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");

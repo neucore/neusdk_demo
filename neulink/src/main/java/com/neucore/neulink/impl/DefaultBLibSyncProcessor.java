@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
+import com.neucore.neulink.IBLibSyncProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.ICmdListener;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActionResult> implements IProcessor {
+public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, PkgActionResult> implements IBLibSyncProcessor {
 
     private String libDir;
     public DefaultBLibSyncProcessor() {
@@ -207,7 +208,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @param cmd
      * @return
      */
-    protected PkgActionResult process(NeulinkTopicParser.Topic topic, PkgCmd cmd) {
+    public PkgActionResult process(NeulinkTopicParser.Topic topic, PkgCmd cmd) {
         ICmdListener<PkgActionResult,PkgCmd> listener = getListener(cmd.getObjtype());
         if(listener==null){
             throw new NeulinkException(STATUS_404,cmd.getBiz()+ " Listener does not implemention");
@@ -222,7 +223,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @param objType
      * @return
      */
-    protected ICmdListener<PkgActionResult,PkgCmd> getListener(String objType){
+    public ICmdListener<PkgActionResult,PkgCmd> getListener(String objType){
         return ListenerRegistry.getInstance().getBlibExtendListener(objType);
     }
     /**
@@ -230,7 +231,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @param payload
      * @return
      */
-    protected PkgCmd parser(String payload){
+    public PkgCmd parser(String payload){
         return JSonUtils.toObject(payload,PkgCmd.class);
     }
     /**
@@ -240,7 +241,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @return
      */
     @Override
-    protected PkgRes responseWrapper(PkgCmd cmd, PkgActionResult actionResult) {
+    public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult actionResult) {
         IBlib$ObjtypeProcessor processor = ProcessRegistry.getBlib$ObjtypeProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -254,7 +255,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @param error
      * @return
      */
-    protected PkgRes fail(PkgCmd cmd, String error){
+    public PkgRes fail(PkgCmd cmd, String error){
         IBlib$ObjtypeProcessor processor = ProcessRegistry.getBlib$ObjtypeProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -269,7 +270,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @param error
      * @return
      */
-    protected PkgRes fail(PkgCmd cmd,int code, String error){
+    public PkgRes fail(PkgCmd cmd,int code, String error){
         IBlib$ObjtypeProcessor processor = ProcessRegistry.getBlib$ObjtypeProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -285,7 +286,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
      * @return
      * @throws NeulinkException
      */
-    protected PkgCmd buildPkg(PkgCmd cmd, String dataUrl, long offset) throws NeulinkException{
+    public PkgCmd buildPkg(PkgCmd cmd, String dataUrl, long offset) throws NeulinkException{
         IBlib$ObjtypeProcessor processor = ProcessRegistry.getBlib$ObjtypeProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");

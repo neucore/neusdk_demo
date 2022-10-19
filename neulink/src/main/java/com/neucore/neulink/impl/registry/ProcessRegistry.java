@@ -2,6 +2,9 @@ package com.neucore.neulink.impl.registry;
 
 import android.content.Context;
 
+import com.neucore.neulink.IBLibSyncProcessor;
+import com.neucore.neulink.ICLibProcessor;
+import com.neucore.neulink.IQLibProcessor;
 import com.neucore.neulink.impl.listener.DefaultCarCheckListener;
 import com.neucore.neulink.impl.listener.DefaultCarQueryListener;
 import com.neucore.neulink.impl.listener.DefaultCarSyncListener;
@@ -115,13 +118,13 @@ public final class ProcessRegistry implements NeulinkConst {
             regist(biz, new DefaultQLogProcessor(context));
         }
         else if(NEULINK_BIZ_BLIB.equalsIgnoreCase(biz)){//目标库批量处理器
-            regist(biz,new DefaultBLibSyncProcessor(context));
+            registBlibProcessor(new DefaultBLibSyncProcessor(context));
             registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
             registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
             registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
         }
         else if(NEULINK_BIZ_QLIB.equalsIgnoreCase(biz)){//目标库单记录处理器
-            regist(biz,new DefaultQLibProcessor(context));
+            registQlibProcessor(new DefaultQLibProcessor(context));
             registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
             registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
             registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
@@ -139,7 +142,7 @@ public final class ProcessRegistry implements NeulinkConst {
             regist(biz,new DefaultRecoverProcessor(context));
         }
         else if(NEULINK_BIZ_CLIB.equalsIgnoreCase(biz)){//数据校验处理器
-            regist(biz,new DefaultCLibProcessor(context));
+            registClibProcessor(new DefaultCLibProcessor(context));
             registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
             registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
             registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
@@ -198,7 +201,7 @@ public final class ProcessRegistry implements NeulinkConst {
      *
       * @param bLibSyncProcessor
      */
-    public static void registBlibProcessor(DefaultBLibSyncProcessor bLibSyncProcessor){
+    public static void registBlibProcessor(IBLibSyncProcessor bLibSyncProcessor){
         regist(NEULINK_BIZ_BLIB,bLibSyncProcessor);
     }
     /**
@@ -227,7 +230,7 @@ public final class ProcessRegistry implements NeulinkConst {
      *
      * @param qLibSyncProcessor
      */
-    public static void registQlibProcessor(DefaultQLibProcessor qLibSyncProcessor){
+    public static void registQlibProcessor(IQLibProcessor qLibSyncProcessor){
         processors.put(NEULINK_BIZ_QLIB,qLibSyncProcessor);
     }
 
@@ -257,7 +260,7 @@ public final class ProcessRegistry implements NeulinkConst {
      *
      * @param cLibProcessor
      */
-    public static void registClibProcessor(DefaultCLibProcessor cLibProcessor){
+    public static void registClibProcessor(ICLibProcessor cLibProcessor){
         processors.put(NEULINK_BIZ_CLIB,cLibProcessor);
     }
 
@@ -268,7 +271,6 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param cmdListener
      */
     public static void registClib$ObjtypeProcessor(String objType, IClib$ObjtypeProcessor batchProcessor, ICmdListener cmdListener){
-        processors.put(NEULINK_BIZ_CLIB,new DefaultCLibProcessor());
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
         clibObjtypeProcessors.put(batchBiz,batchProcessor);
         ListenerRegistry.getInstance().setClibExtendListener(objType,cmdListener);
