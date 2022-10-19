@@ -14,6 +14,7 @@ import com.neucore.neulink.impl.cmd.rmsg.UpgrRes;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTemp;
 import com.neucore.neulink.impl.cmd.tmptr.FaceTempCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
+import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.HashMap;
@@ -411,6 +412,28 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     public void rrpcResponse(String biz,String version,String reqId,String mode,Integer code,String message,String payload){
         IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
         rrpcResponse(biz,version,reqId,mode,code,message,payload,resCallback);
+    }
+
+    public void upldDownloadFailed(String topicPrefix,String reqId, String error, boolean isApp){
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(404);
+        upgrRes.setMsg(error);
+        //upgrRes.setType(isApp ? "app" : "firmware");
+        upgrRes.setCmdStr("download");
+        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        String payload = JSonUtils.toString(upgrRes);
+        rrpcResponse("firmware",IProcessor.V1$0,reqId,"download",404,error,payload);
+    }
+
+    public void upldDownloadFailedNoSpace(String topicPrefix,String reqId, String error, boolean isApp){
+        UpgrRes upgrRes = new UpgrRes();
+        upgrRes.setCode(507);
+        upgrRes.setMsg(error);
+        //upgrRes.setType(isApp ? "app" : "firmware");
+        upgrRes.setCmdStr("download");
+        upgrRes.setDeviceId(DeviceUtils.getDeviceId(context));
+        String payload = JSonUtils.toString(upgrRes);
+        rrpcResponse("firmware",IProcessor.V1$0,reqId,"download",507,error,payload);
     }
 
     /**
