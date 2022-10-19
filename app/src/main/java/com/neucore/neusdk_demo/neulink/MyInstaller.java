@@ -13,6 +13,7 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.service.resume.HttpDownloader;
 import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
 import com.neucore.neulink.impl.service.resume.OssDownloader;
+import com.neucore.neulink.impl.service.resume.OssResumeDownloader;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
@@ -248,16 +249,23 @@ public class MyInstaller {
     IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
     /**
      * TODO 单线程文件下载器
-     * 根据需要可以扩展实现Oss
+     * 根据需要可以扩展实现
      */
     IDownloder downloder = new HttpDownloader();
     /**
      * TODO 多线程下载器
-     * 根据需要可以扩展实现Oss
+     * 根据需要可以扩展实现
      */
     IResumeDownloader resumeDownloader = new HttpResumeDownloader();
-
+    /**
+     * TODO Oss下载器
+     * 根据需要可以扩展实现
+     */
     IDownloder ossDownloader = new OssDownloader();
 
-    IDownloder ossResumeDownloader = new OssDownloader();
+    /**
+     * TODO Oss断点续传下载器
+     * 根据需要可以扩展实现
+     */
+    IDownloder ossResumeDownloader = new OssResumeDownloader();
 }
