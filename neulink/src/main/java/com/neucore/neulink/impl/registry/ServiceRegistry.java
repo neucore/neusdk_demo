@@ -3,12 +3,10 @@ package com.neucore.neulink.impl.registry;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
-import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IFileService;
-import com.neucore.neulink.impl.service.resume.HttpDownloader;
-import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
+import com.neucore.neulink.impl.down.http.HttpDownloader;
 
 public final class ServiceRegistry {
 
