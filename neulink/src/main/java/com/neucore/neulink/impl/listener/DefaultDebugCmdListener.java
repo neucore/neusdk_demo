@@ -1,12 +1,12 @@
 package com.neucore.neulink.impl.listener;
 
+import com.android.api.SystemProperties;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.cmd.cfg.CfgItem;
-import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
-import com.neucore.neulink.impl.cmd.rmsg.app.DebugCmd;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.cmd.rmsg.app.DebugCmd;
 
 import java.util.Map;
 
@@ -20,13 +20,17 @@ public class DefaultDebugCmdListener implements ICmdListener<ActionResult<Map<St
         try {
             DebugCmd cmd = event.getSource();
             Map<String,String> argsMap = cmd.argsToMap();
-            Map<String,String> env = System.getenv();
             if(ObjectUtil.isEmpty(argsMap)){
                 ConfigContext.getInstance().update(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
-                env.put(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
+                SystemProperties.set(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
             }
             else{
-                env.putAll(argsMap);
+                int size = argsMap.size();
+                String[] keys = new String[size];
+                argsMap.keySet().toArray(keys);
+                for(String key:keys){
+                    SystemProperties.set(key,argsMap.get(key));
+                }
             }
             ActionResult<Map<String,String>> result = new ActionResult<>();
             result.setData(argsMap);
