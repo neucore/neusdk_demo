@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.service.resume;
 
 import android.content.Context;
 
+import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
@@ -78,14 +79,15 @@ public class OssDownloader implements IDownloder, NeulinkConst {
         Long expiration = data.get("expiration",Long.class);
         String securityToken = data.get("securityToken",String.class);
 
-        OSSCredentialProvider provider = new OSSFederationCredentialProvider() {
-            @Override
-            public OSSFederationToken getFederationToken() throws ClientException {
-                return new OSSFederationToken(accessKeyId,accessKeySecret,securityToken,expiration);
-            }
-        };
+        ClientConfiguration clientConfig = new ClientConfiguration();
+        clientConfig.setConnectionTimeout(20 * 60 * 1000); //连接超时 默认15秒
+        clientConfig.setSocketTimeout(20 * 60 * 1000); //socket超时 默认15秒
+        clientConfig.setMaxConcurrentRequest(8);//最大并发请求计数 默认5个
+        clientConfig.setMaxErrorRetry(0); //失败重试次数 默认2次
+
+        OSSCredentialProvider provider = new OSSStsTokenCredentialProvider(accessKeyId,accessKeySecret,securityToken);
         String objectKey = new URL(url).getPath();
-        OSS ossClient = new OSSClient(ContextHolder.getInstance().getContext(),ossEndpoint, provider);
+        OSS ossClient = new OSSClient(ContextHolder.getInstance().getContext(),ossEndpoint, provider,clientConfig);
         try {
             String tmpPath = DeviceUtils.getTmpPath(context);
             String reqdir = tmpPath+File.separator+ RequestContext.getId();
