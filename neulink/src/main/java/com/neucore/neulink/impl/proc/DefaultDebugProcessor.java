@@ -38,7 +38,7 @@ public final class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, 
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(STATUS_500);
         res.setMsg(MESSAGE_FAILED);
-        res.setData(message);
+        res.setData(cmd.argsToMap());
         return res;
     }
     public DebugRes fail(DebugCmd cmd, int code, String message) {
@@ -47,7 +47,7 @@ public final class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, 
         res.setCmdStr(cmd.getCmdStr());
         res.setCode(code);
         res.setMsg(MESSAGE_FAILED);
-        res.setData(message);
+        res.setData(cmd.argsToMap());
         return res;
     }
 }

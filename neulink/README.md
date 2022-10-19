@@ -192,8 +192,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ##### 请求协议[2.0]
 
-```
-payload: 
+```json
 {
     "headers":
        {
@@ -201,15 +200,13 @@ payload:
              "reqNo":"${reqNo}",//请求ID
              "md5":"${md5}",//消息体的md5
              "time":"${time}",//请求时间
-              ...,
-              "${keyn}":"${valuen}"
+             "${keyn}":"${valuen}"
        },
       "data": {}    //可选
 }
 ```
 ##### 响应协议[2.0]
-```
-payload: 
+```json
 {    
     "headers":
         {
@@ -223,16 +220,15 @@ payload:
             "custid":"${custid}",//租户ID
             "storeid":"${storeid}",//门店场所ID
             "zoneid":"${zoneid}",//集群ID
-            "time":"${time}",//请求时间             
-             ...,
-             "${keyn}":"${valuen}"
+            "time":"${time}",//请求时间
+            "${keyn}":"${valuen}"
         },    
     "data": {}         //可选
 }
 ```
 #### 样例
 
-```
+```java
 
 package com.neucore.neusdk_demo.neulink.extend.auth;
 
@@ -314,7 +310,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 
 #### 注意事项
 
-```
+```java
 
 package com.neucore.neusdk_demo.neulink.extend.auth.listener;
 
@@ -363,7 +359,7 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
 
 4, listener 的doAction 返回值 AuthActionResult
 
-```
+```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
 
 import com.neucore.neulink.impl.ActionResult;
@@ -377,7 +373,7 @@ public class AuthActionResult extends ActionResult<AuthActionResultData/*响应�
 
 5, listener 的doAction 返回值 AuthActionResultData
 
-```
+```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data;
 
 import com.google.gson.annotations.SerializedName;
@@ -483,7 +479,7 @@ public class AuthActionResultData {
 
 1，在Apk应用中采用NeulinkService.getInstance().getPublisherFacde()获取消息发送接口进行进行消息发送;
 
-```
+```java
 
     /**
      * 车牌抓拍上报
@@ -624,7 +620,7 @@ public class AuthActionResultData {
 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功；
 
 2，异步响应-绑定接收成功
-```
+```java
     IPublishCallback iResCallback = new IPublishCallback<Result>() {
         @Override
         public Class<Result> getResultType() {
@@ -754,3 +750,12 @@ SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 ## 通用图片&文件上传
 
 StorageFactory.getInstance().uploadBak("/sdcard/twocamera/icon/1593399670069.jpg", UUID.randomUUID().toString(),1);
+
+## debug规范
+
++ 单个请求debug
+  在消息topic的末尾加上【/debug】即可开启当前请求的debug机制，不压缩，打印更详细的日志等；
++ 单条数据
+  通过设置系统属性的机制动态设置
+    + 让人员Id为22的数据为debug数据，即：setprop person.id.22 on;
+    + 让人员Id为22的数据为debug正常数据，即：setprop person.id.22 off;
