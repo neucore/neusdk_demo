@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.registry;
 
 import android.content.Context;
 
+import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
@@ -170,13 +171,20 @@ public final class ProcessRegistry implements NeulinkConst {
 
     /**
      *
+      * @param bLibSyncProcessor
+     */
+    public static void registBlibProcessor(DefaultBLibSyncProcessor bLibSyncProcessor){
+        processors.put(NEULINK_BIZ_BLIB,bLibSyncProcessor);
+    }
+    /**
+     *
      * @param objType
-     * @param batchProcessor
+     * @param objtypeProcessor
      * @param cmdListener
      */
-    public static void registBlibBatch(String objType,IBlib$ObjtypeProcessor batchProcessor,ICmdListener cmdListener){
+    public static void registBlib$ObjtypeProcessor(String objType, IBlib$ObjtypeProcessor objtypeProcessor, ICmdListener cmdListener){
         String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
-        blibBatchProcessors.put(batchBiz,batchProcessor);
+        blibBatchProcessors.put(batchBiz,objtypeProcessor);
         ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
     }
 
@@ -185,20 +193,28 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param objType
      * @return
      */
-    public static IBlib$ObjtypeProcessor getBlibBatch(String objType){
+    public static IBlib$ObjtypeProcessor getBlib$ObjtypeProcessor(String objType){
         String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
         return blibBatchProcessors.get(batchBiz);
     }
 
     /**
      *
+     * @param qLibSyncProcessor
+     */
+    public static void registQlibProcessor(DefaultQLibProcessor qLibSyncProcessor){
+        processors.put(NEULINK_BIZ_QLIB,qLibSyncProcessor);
+    }
+
+    /**
+     *
      * @param objType
-     * @param batchProcessor
+     * @param objtypeProcessor
      * @param cmdListener
      */
-    public static void registQlibBatch(String objType, IQlib$ObjtypeProcessor batchProcessor, ICmdListener cmdListener){
+    public static void registQlib$ObjtypeProcessor(String objType, IQlib$ObjtypeProcessor objtypeProcessor, ICmdListener cmdListener){
         String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
-        qlibBatchProcessors.put(batchBiz,batchProcessor);
+        qlibBatchProcessors.put(batchBiz,objtypeProcessor);
         ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
     }
 
@@ -207,9 +223,17 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param objType
      * @return
      */
-    public static IQlib$ObjtypeProcessor getQlibBatch(String objType){
+    public static IQlib$ObjtypeProcessor getQlibProcessor(String objType){
         String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
         return qlibBatchProcessors.get(batchBiz);
+    }
+
+    /**
+     *
+     * @param cLibProcessor
+     */
+    public static void registClibProcessor(DefaultCLibProcessor cLibProcessor){
+        processors.put(NEULINK_BIZ_CLIB,cLibProcessor);
     }
 
     /**
@@ -218,7 +242,8 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param batchProcessor
      * @param cmdListener
      */
-    public static void registClibBatch(String objType,IClib$ObjtypeProcessor batchProcessor,ICmdListener cmdListener){
+    public static void registClib$ObjtypeProcessor(String objType, IClib$ObjtypeProcessor batchProcessor, ICmdListener cmdListener){
+        processors.put(NEULINK_BIZ_CLIB,new DefaultCLibProcessor());
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
         clibBatchProcessors.put(batchBiz,batchProcessor);
         ListenerRegistry.getInstance().setExtendListener(batchBiz,cmdListener);
@@ -229,7 +254,7 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param objType
      * @return
      */
-    public static IClib$ObjtypeProcessor getClibBatch(String objType){
+    public static IClib$ObjtypeProcessor getClibProcessor(String objType){
         String batchBiz = NEULINK_BIZ_CLIB+"."+objType.toLowerCase();
         return clibBatchProcessors.get(batchBiz);
     }

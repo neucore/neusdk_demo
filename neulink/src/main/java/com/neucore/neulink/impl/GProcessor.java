@@ -249,7 +249,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param status
      * @param msg
      */
-    protected void update(long id, String status, String msg) {
+    protected void update(Long id, String status, String msg) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.update(id,status,msg);
@@ -263,7 +263,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param status
      * @param msg
      */
-    protected void updatePkg(long id, long offset,String status,String msg) {
+    protected void updatePkg(Long id, long offset,String status,String msg) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);

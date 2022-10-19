@@ -20,7 +20,6 @@ import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neusdk_demo.neulink.extend.auth.AuthProcessor;
@@ -30,7 +29,6 @@ import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
-import com.neucore.neusdk_demo.neulink.extend.other.SampleFaceSyncListener;
 
 /**
  * 扩展业务注册回调实现
@@ -52,41 +50,41 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
         /**
          * 人脸下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
         /**
          * 车辆下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
+        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
         /**
          * 车牌下发 扩展【默认实现】
          */
-        ProcessRegistry.registBlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
+        ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
 
         /**
          * 人脸查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
         /**
          * 车辆查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
+        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
         /**
          * 车牌查询 扩展【默认实现】
          */
-        ProcessRegistry.registQlibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
+        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
 
         /**
          * 人脸比对 扩展【默认实现】
          */
-        ProcessRegistry.registClibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
+        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
         /**
          * 车辆比对 扩展【默认实现】
          */
-        ProcessRegistry.registClibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
+        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
         /**
          * 车牌比对 扩展【默认实现】
          */
-        ProcessRegistry.registClibBatch(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
+        ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
 
         /**
          * 重启 扩展【取消注释，覆盖默认实现】

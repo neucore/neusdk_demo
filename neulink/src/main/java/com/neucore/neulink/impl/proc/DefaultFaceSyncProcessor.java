@@ -113,6 +113,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
     public PkgCmd buildPkg(PkgCmd cmd) throws NeulinkException {
         //推送消息到达
         FaceCmd faceCmd = new FaceCmd();
+        faceCmd.setReqtime(cmd.getReqtime());
         String cmdStr = cmd.getCmdStr();
         String jsonUrl = cmd.getDataUrl();
         long offset = cmd.getOffset();

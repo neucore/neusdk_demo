@@ -43,11 +43,11 @@ public class DefaultFaceSyncListener implements ICmdListener<FacePkgActionResult
 
     @Override
     public FacePkgActionResult doAction(NeulinkEvent<FaceCmd> event) {
-        FaceCmd cmd = event.getSource();
+
         FaceCmd faceCmd = event.getSource();
         String cmdStr = faceCmd.getCmd();//add：添加|del：删除|update：更新|sync：同步
 
-        long reqTime = faceCmd.getReqtime();
+        Long reqTime = faceCmd.getReqtime();
         /**
          * 总包数
          */
