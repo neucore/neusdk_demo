@@ -69,6 +69,7 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.1'
     //implementation project(':xloger')
     implementation files('libs/xloger.jar')
+    implementation files('libs/SystemApi.aar')
 }
 
 task makeJar(type: Copy) {
