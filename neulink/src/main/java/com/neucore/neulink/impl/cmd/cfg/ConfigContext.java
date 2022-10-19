@@ -92,6 +92,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String CONDIG_SERVER_URL = "config.server.url";
 
+    public final static String OSS_STS_AUTH_URL = "oss.sts.auth.url";
+
     public final static String SCOPEID = "ScopeId";
 
     public final static String STOREID = "Storeid";

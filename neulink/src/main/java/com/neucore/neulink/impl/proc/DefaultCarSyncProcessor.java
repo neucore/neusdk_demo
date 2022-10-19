@@ -39,14 +39,6 @@ public final class DefaultCarSyncProcessor implements IBlib$ObjtypeProcessor<Pkg
         this.context = context;
     }
 
-    public String getBiz(){
-        return NEULINK_BIZ_BLIB;
-    }
-
-    public String getObjType(){
-        return NEULINK_BIZ_BLIB_FACE;
-    }
-
     public PkgRes responseWrapper(PkgCmd cmd, PkgActionResult<List<String>> result) {
         CarCmdRes res = new CarCmdRes();
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());

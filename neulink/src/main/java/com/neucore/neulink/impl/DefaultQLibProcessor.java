@@ -224,7 +224,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @return
      */
     protected ICmdListener<QResult,TLibQueryCmd> getListener(String objType){
-        return ListenerRegistry.getInstance().getExtendListener(NEULINK_BIZ_QLIB+"."+objType);
+        return ListenerRegistry.getInstance().getQlibExtendListener(objType);
     }
     /**
      * 解析处理

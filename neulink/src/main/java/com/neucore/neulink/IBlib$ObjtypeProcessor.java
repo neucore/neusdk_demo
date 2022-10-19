@@ -7,10 +7,6 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 public interface IBlib$ObjtypeProcessor<Req extends PkgCmd, Res extends PkgRes, ActionResult extends PkgActionResult> extends NeulinkConst {
 
-    String getBiz();
-
-    String getObjType();
-
     Res responseWrapper(Req req, ActionResult actionResult);
 
     Res fail(Req req, String error);
