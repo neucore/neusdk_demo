@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
+import com.neucore.neulink.IQLibProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IMessage;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IProcessor {
+public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQueryRes, QResult> implements IQLibProcessor {
 
     private String libDir;
     public DefaultQLibProcessor() {
@@ -208,7 +209,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @param cmd
      * @return
      */
-    protected QResult process(NeulinkTopicParser.Topic topic, TLibQueryCmd cmd) {
+    public QResult process(NeulinkTopicParser.Topic topic, TLibQueryCmd cmd) {
         ICmdListener<QResult,TLibQueryCmd> listener = getListener(cmd.getObjtype());
         if(listener==null){
             throw new NeulinkException(STATUS_404,cmd.getBiz()+ " Listener does not implemention");
@@ -223,7 +224,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @param objType
      * @return
      */
-    protected ICmdListener<QResult,TLibQueryCmd> getListener(String objType){
+    public ICmdListener<QResult,TLibQueryCmd> getListener(String objType){
         return ListenerRegistry.getInstance().getQlibExtendListener(objType);
     }
     /**
@@ -231,7 +232,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @param payload
      * @return
      */
-    protected TLibQueryCmd parser(String payload){
+    public TLibQueryCmd parser(String payload){
         return JSonUtils.toObject(payload,TLibQueryCmd.class);
     }
     /**
@@ -241,7 +242,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @return
      */
     @Override
-    protected TLQueryRes responseWrapper(TLibQueryCmd cmd, QResult actionResult) {
+    public TLQueryRes responseWrapper(TLibQueryCmd cmd, QResult actionResult) {
         IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -255,7 +256,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @param error
      * @return
      */
-    protected TLQueryRes fail(TLibQueryCmd cmd, String error){
+    public TLQueryRes fail(TLibQueryCmd cmd, String error){
         IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -270,7 +271,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @param error
      * @return
      */
-    protected TLQueryRes fail(TLibQueryCmd cmd,int code, String error){
+    public TLQueryRes fail(TLibQueryCmd cmd,int code, String error){
         IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
@@ -284,7 +285,7 @@ public final class DefaultQLibProcessor extends GProcessor<TLibQueryCmd, TLQuery
      * @return
      * @throws NeulinkException
      */
-    protected TLibQueryCmd buildPkg(TLibQueryCmd cmd) throws NeulinkException{
+    public TLibQueryCmd buildPkg(TLibQueryCmd cmd) throws NeulinkException{
         IQlib$ObjtypeProcessor processor = ProcessRegistry.getQlibProcessor(cmd.getObjtype());
         if(processor==null){
             throw new NeulinkException(STATUS_404,cmd.getObjtype()+ " Processor does not implemention");
