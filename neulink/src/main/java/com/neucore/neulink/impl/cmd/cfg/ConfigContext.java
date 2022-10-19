@@ -17,7 +17,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -251,6 +254,18 @@ public class ConfigContext implements NeulinkConst{
             configs.setProperty(items[i].getKeyName(),items[i].getValue());
         }
         if(len>0){
+            store();
+        }
+    }
+
+    public synchronized void update(Hashtable<String,String> items){
+        if(ObjectUtil.isNotEmpty(items)){
+            int size = items.size();
+            String[] keys = new String[size];
+            items.keySet().toArray(keys);
+            for (String key:keys){
+                configs.setProperty(key,items.get(key));
+            }
             store();
         }
     }
