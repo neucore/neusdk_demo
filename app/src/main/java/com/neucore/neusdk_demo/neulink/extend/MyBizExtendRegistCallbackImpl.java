@@ -2,6 +2,9 @@ package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.DefaultBLibSyncProcessor;
+import com.neucore.neulink.impl.DefaultCLibProcessor;
+import com.neucore.neulink.impl.DefaultQLibProcessor;
 import com.neucore.neulink.impl.listener.DefaultCarCheckListener;
 import com.neucore.neulink.impl.listener.DefaultCarQueryListener;
 import com.neucore.neulink.impl.listener.DefaultCarSyncListener;
@@ -47,7 +50,10 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
          * 配置下发 扩展【取消注释，覆盖默认实现】
          */
         //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CFG,new SampleCfgActionListener());
-
+        /**
+         * 目标库同步【默认实现】
+         */
+//        ProcessRegistry.registBlibProcessor(new DefaultBLibSyncProcessor());
         /**
          * 人脸下发 扩展【默认实现】
          */
@@ -76,6 +82,10 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
 //        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncListener());
 
         /**
+         * 目标库查询【默认实现】
+         */
+//        ProcessRegistry.registQlibProcessor(new DefaultQLibProcessor());
+        /**
          * 人脸查询 扩展【默认实现】
          */
 //        ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
@@ -99,7 +109,10 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
          * 或者
          */
 //        ListenerRegistry.getInstance().setQlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryListener());
-
+        /**
+         * 目标库比对【默认实现】
+         */
+//        ProcessRegistry.registClibProcessor(new DefaultCLibProcessor());
         /**
          * 人脸比对 扩展【默认实现】
          */

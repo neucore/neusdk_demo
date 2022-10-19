@@ -51,6 +51,10 @@ public final class DefaultExtendCallback implements IExtendCallback {
          */
         ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_CFG,new DefaultCfgCmdListener());
         /**
+         * 目标库同步【默认实现】
+         */
+        ProcessRegistry.registBlibProcessor(new DefaultBLibSyncProcessor());
+        /**
          * 人脸下发 扩展【默认实现】
          */
         ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
@@ -64,6 +68,10 @@ public final class DefaultExtendCallback implements IExtendCallback {
         ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
 
         /**
+         * 目标库查询【默认实现】
+         */
+        ProcessRegistry.registQlibProcessor(new DefaultQLibProcessor());
+        /**
          * 人脸查询 扩展【默认实现】
          */
         ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
@@ -76,6 +84,10 @@ public final class DefaultExtendCallback implements IExtendCallback {
          */
         ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
 
+        /**
+         * 目标库比对【默认实现】
+         */
+        ProcessRegistry.registClibProcessor(new DefaultCLibProcessor());
         /**
          * 人脸比对 扩展【默认实现】
          */
