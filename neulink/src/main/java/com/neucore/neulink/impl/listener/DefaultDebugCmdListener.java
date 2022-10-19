@@ -1,6 +1,5 @@
 package com.neucore.neulink.impl.listener;
 
-import com.android.api.SystemProperties;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.ActionResult;
@@ -22,15 +21,10 @@ public class DefaultDebugCmdListener implements ICmdListener<ActionResult<Map<St
             Map<String,String> argsMap = cmd.argsToMap();
             if(ObjectUtil.isEmpty(argsMap)){
                 ConfigContext.getInstance().update(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
-                SystemProperties.set(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
+                System.getenv().put(NeulinkConst.SYSTEM_DEBUG_KEY,DEBUG_OFF);
             }
             else{
-                int size = argsMap.size();
-                String[] keys = new String[size];
-                argsMap.keySet().toArray(keys);
-                for(String key:keys){
-                    SystemProperties.set(key,argsMap.get(key));
-                }
+                System.getenv().putAll(argsMap);
             }
             ActionResult<Map<String,String>> result = new ActionResult<>();
             result.setData(argsMap);
