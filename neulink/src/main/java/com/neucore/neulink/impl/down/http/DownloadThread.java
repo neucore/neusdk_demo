@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service.resume;
+package com.neucore.neulink.impl.down.http;
 
 import java.io.File;
 import java.io.IOException;

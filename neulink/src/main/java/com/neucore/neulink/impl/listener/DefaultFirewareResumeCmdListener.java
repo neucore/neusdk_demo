@@ -6,14 +6,12 @@ import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.IFileService;
-import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.service.resume.HttpResumeDownloader;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 

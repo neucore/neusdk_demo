@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service.resume;
+package com.neucore.neulink.impl.down.http;
 
 import android.content.Context;
 
@@ -8,7 +8,6 @@ import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;

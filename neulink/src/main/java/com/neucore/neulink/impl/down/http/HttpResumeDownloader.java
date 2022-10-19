@@ -1,4 +1,4 @@
-package com.neucore.neulink.impl.service.resume;
+package com.neucore.neulink.impl.down.http;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,14 +22,12 @@ import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IFileService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IResumeDownloader;
-import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 import com.neucore.neulink.util.SSLSocketClient;
 
