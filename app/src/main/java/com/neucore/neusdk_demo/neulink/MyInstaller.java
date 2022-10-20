@@ -81,7 +81,7 @@ public class MyInstaller {
          * 扩展实现。。。
          */
         /**
-         * READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+         * 相关权限检测器
          */
         connector.setPermissionChecker(permissionChecker);
         /**
@@ -237,7 +237,7 @@ public class MyInstaller {
     }
 
     /**
-     * TODO READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+     * TODO 默认：READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
      */
     IPermissionChecker permissionChecker = new MyPermissionChecker();
     /**
