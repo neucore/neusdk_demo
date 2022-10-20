@@ -3,7 +3,6 @@ package com.neucore.neusdk_demo.neulink.extend;
 import android.Manifest;
 
 import com.neucore.neulink.IPermissionChecker;
-import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
