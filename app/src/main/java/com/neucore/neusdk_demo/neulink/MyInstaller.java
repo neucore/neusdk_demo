@@ -7,6 +7,7 @@ import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IPermissionChecker;
 import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
@@ -18,6 +19,7 @@ import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyDeviceExtendServiceImpl;
+import com.neucore.neusdk_demo.neulink.extend.MyPermissionChecker;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import java.util.Properties;
@@ -78,6 +80,10 @@ public class MyInstaller {
         /**
          * 扩展实现。。。
          */
+        /**
+         * READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+         */
+        connector.setPermissionChecker(permissionChecker);
         /**
          * http登录授权回调[当系统不需要安全认证时，可以不设置]
          */
@@ -230,6 +236,10 @@ public class MyInstaller {
         return extConfig;
     }
 
+    /**
+     * TODO READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+     */
+    IPermissionChecker permissionChecker = new MyPermissionChecker();
     /**
      * TODO MQTT 网络、消息扩展
      */
