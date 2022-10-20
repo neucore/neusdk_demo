@@ -22,13 +22,10 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     implementation files('libs/xloger.jar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.13'
     implementation 'org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-    implementation 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.qianwen:okhttp-utils:3.8.0'
