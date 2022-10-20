@@ -7,6 +7,9 @@ import com.neucore.neulink.util.DeviceUtils;
 
 import java.util.Arrays;
 
+/**
+ * 相关权限检测
+ */
 public class MyPermissionChecker implements IPermissionChecker {
 
     public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
