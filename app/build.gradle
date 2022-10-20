@@ -91,7 +91,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.android.support:multidex:2.0.1'
-    implementation 'com.squareup.okio:okio:2.10.0'
     implementation 'commons-codec:commons-codec:1.10'
     implementation 'org.aspectj:aspectjrt:1.8.10'
     implementation 'com.google.android.material:material:1.4.0'

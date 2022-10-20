@@ -4,12 +4,12 @@ package com.neucore.neulink.util;
 import android.content.Context;
 import android.util.Base64;
 
+import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.GzipRequestInterceptor;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.log.NeuLogUtils;
-import com.google.gson.annotations.SerializedName;
-import com.neucore.neulink.NeulinkException;
-import com.neucore.neulink.NeulinkConst;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,14 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.util.ObjectUtil;
 import okhttp3.FormBody;
-import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
