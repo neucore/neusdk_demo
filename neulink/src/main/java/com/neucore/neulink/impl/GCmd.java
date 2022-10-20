@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.extend.annotation.IgnoreProp;
 
-import org.greenrobot.greendao.annotation.Transient;
-
 import java.util.HashMap;
 import java.util.Map;
 
