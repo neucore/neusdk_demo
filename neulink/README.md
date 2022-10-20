@@ -25,7 +25,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.aliyun.dpa:oss-android-sdk:2.7.0'
+//    implementation 'com.aliyun.dpa:oss-android-sdk:+'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.13'
     implementation 'org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     //implementation 'com.squareup.okhttp3:okhttp:4.5.0'
@@ -38,8 +39,11 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     implementation 'commons-net:commons-net:3.8.0'
     implementation 'cn.hutool:hutool-all:5.6.0'
     implementation 'org.greenrobot:greendao:3.3.0' // add library
+    implementation 'com.blankj:utilcode:1.30.6'
     implementation 'log4j:log4j:1.2.17'
     implementation 'pub.devrel:easypermissions:2.0.1'
+    //implementation project(':xloger')
+    implementation files('libs/xloger.jar')
 ```   
     
 ## 集成&扩展
