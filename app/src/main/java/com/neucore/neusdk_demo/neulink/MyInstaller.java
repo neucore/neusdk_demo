@@ -105,7 +105,7 @@ public class MyInstaller {
         /**
          * 默认文件下载器
          */
-        connector.setDownloder(downloder);
+        connector.setDownloder(ossDownloader);
 
         /**
          * neulink执行结果回调处理接口
