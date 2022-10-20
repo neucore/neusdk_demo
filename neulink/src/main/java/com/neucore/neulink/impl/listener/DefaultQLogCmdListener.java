@@ -1,14 +1,11 @@
 package com.neucore.neulink.impl.listener;
 
-import com.alibaba.sdk.android.oss.ClientException;
-import com.alibaba.sdk.android.oss.ServiceException;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
-import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
-import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.StorageFactory;
-import com.neucore.neulink.impl.NeulinkTopicParser;
+import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
+import com.neucore.neulink.impl.cmd.rmsg.log.LogActionResult;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.FileUtils;
@@ -54,7 +51,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
     }
 
 
-    private LogActionResult getUser(DnloadCmd cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
+    private LogActionResult getUser(DnloadCmd cmd) throws IOException, NoSuchAlgorithmException {
 
         int offset = 0;
 
@@ -90,7 +87,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");//日志名称格式
 
-    private LogActionResult getSys(final DnloadCmd cmd) throws IOException, NoSuchAlgorithmException, ClientException, ServiceException {
+    private LogActionResult getSys(final DnloadCmd cmd) throws IOException, NoSuchAlgorithmException {
 
         File logs = new File(DeviceUtils.getLogPath(ContextHolder.getInstance().getContext()));
 
