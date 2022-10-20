@@ -1,6 +1,5 @@
 package com.neucore.neulink.impl;
 
-import android.Manifest;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -11,35 +10,33 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.IDownloder;
-import com.neucore.neulink.IResumeDownloader;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IExtendCallback;
+import com.neucore.neulink.IFileService;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMessageService;
 import com.neucore.neulink.IMqttCallBack;
+import com.neucore.neulink.IPermissionChecker;
 import com.neucore.neulink.IResCallback;
-import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
-import com.neucore.neulink.IDeviceService;
-import com.neucore.neulink.IFileService;
+import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.DeviceUtils;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import cn.hutool.core.util.ObjectUtil;
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class SampleConnector implements NeulinkConst{
 
     private String TAG = TAG_PREFIX+"SampleConnector";
     private Application application;
+    private IPermissionChecker permissionChecker;
     private IMessageService messageService;
     private ILoginCallback loginCallback;
     private IDeviceService deviceService = new DefaultDeviceServiceImpl();
@@ -55,24 +52,6 @@ public class SampleConnector implements NeulinkConst{
     private boolean networkReady = false;
     private boolean initMqttService = false;
     private boolean mqttServiceReady =false;
-
-    public String[] STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-    public String[] PERMISSIONS;
-
-    public <T> T[] concatAll(T[] first, T[]... rest) {
-        int totalLength = first.length;
-        for (T[] array : rest) {
-            totalLength += array.length;
-        }
-        T[] result = Arrays.copyOf(first, totalLength);
-        int offset = first.length;
-        for (T[] array : rest) {
-            System.arraycopy(array, 0, result, offset, array.length);
-            offset += array.length;
-        }
-        return result;
-    }
 
     @Deprecated
     public SampleConnector(Application application, IExtendCallback callback){
@@ -98,6 +77,9 @@ public class SampleConnector implements NeulinkConst{
         this.extConfig = extConfig;
     }
 
+    public void setPermissionChecker(IPermissionChecker permissionChecker) {
+        this.permissionChecker = permissionChecker;
+    }
 
     public void setLoginCallback(ILoginCallback loginCallback) {
         this.loginCallback = loginCallback;
@@ -143,16 +125,18 @@ public class SampleConnector implements NeulinkConst{
                 @Override
                 public void run() {
 
-                    int storeType = DeviceUtils.getStoreType();
-
-                    if(storeType==DeviceUtils.SDCARD_TYPE){
-                        PERMISSIONS = concatAll(STORAGE);
-                    }
                     boolean allow = false;
                     /**
                      * onPermissionsGranted之后调用
                      */
-                    while (!(allow= EasyPermissions.hasPermissions(application, PERMISSIONS))){
+                    if(ObjectUtil.isEmpty(permissionChecker)){
+                        try {
+                            Thread.sleep(1000);
+                            Log.i(TAG,"IPermissionChecker has Not Found !!!");
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    while (!(allow= permissionChecker.has())){
                         try {
                             Thread.sleep(1000);
                             Log.i(TAG,"Permissions Not Granted,Please Do Grant!!!");
