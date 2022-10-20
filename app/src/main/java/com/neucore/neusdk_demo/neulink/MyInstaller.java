@@ -105,7 +105,7 @@ public class MyInstaller {
         /**
          * 默认文件下载器
          */
-        connector.setDownloder(ossDownloader);
+        connector.setDownloder(downloder);
 
         /**
          * neulink执行结果回调处理接口
@@ -261,10 +261,4 @@ public class MyInstaller {
      * 根据需要可以扩展实现
      */
     IDownloder ossDownloader = new OssDownloader();
-
-    /**
-     * TODO Oss断点续传下载器
-     * 根据需要可以扩展实现
-     */
-    IDownloder ossResumeDownloader = new OssResumeDownloader();
 }
