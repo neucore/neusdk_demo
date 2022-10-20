@@ -36,7 +36,6 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     implementation 'cn.hutool:hutool-all:5.6.0'
     implementation 'com.blankj:utilcode:1.30.6'
     implementation 'log4j:log4j:1.2.17'
-    implementation 'pub.devrel:easypermissions:2.0.1'
 ```   
     
 ## 集成&扩展
