@@ -3,9 +3,13 @@ package com.neucore.neusdk_demo.neulink.extend;
 import android.Manifest;
 
 import com.neucore.neulink.IPermissionChecker;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
 import java.util.Arrays;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 相关权限检测
@@ -32,12 +36,13 @@ public class MyPermissionChecker implements IPermissionChecker {
 
     @Override
     public boolean has() {
+
         int storeType = DeviceUtils.getStoreType();
 
         if(storeType==DeviceUtils.SDCARD_TYPE){
             PERMISSIONS = concatAll(STORAGE);
         }
 
-        return false;
+        return EasyPermissions.hasPermissions(ContextHolder.getInstance().getContext(), PERMISSIONS);
     }
 }
