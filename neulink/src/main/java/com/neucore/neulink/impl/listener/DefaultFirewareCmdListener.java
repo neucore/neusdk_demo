@@ -1,5 +1,10 @@
 package com.neucore.neulink.impl.listener;
 
+import android.util.Log;
+
+import com.neucore.neulink.IDownloadProgressListener;
+import com.neucore.neulink.IDownloder;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkException;
@@ -13,6 +18,7 @@ import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, UgrdeCmd> {
 
@@ -21,22 +27,32 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
     @Override
     public ActionResult doAction(NeulinkEvent<UgrdeCmd> event) {
         String[] cmds = null;
-        File srcFile = null;
         try {
             UgrdeCmd cmd = event.getSource();
             String upgrade_url = cmd.getUrl();
             String md5 = cmd.getMd5();
             NeuLogUtils.iTag(TAG,"开始下载："+upgrade_url);
 
-            String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext());
-            /**
-             * 单线程
-             */
-            srcFile = NeuHttpHelper.dld2File(ContextHolder.getInstance().getContext(), RequestContext.getId(), upgrade_url+"&osooso=debug",new File(storeDir));
             /**
              * 新增上报下载进度
              */
             String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
+
+            IDownloder downloader = ServiceRegistry.getInstance().getDownloder();;
+            File saveFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {
+                @Override
+                public void onDownload(Double percent) {
+                    DecimalFormat formater = new DecimalFormat("##.0");
+                    String progress = formater.format(percent);
+                    NeuLogUtils.iTag(TAG,cmd.getReqNo()+ " progress: "+progress);
+                    NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),progress);
+                }
+                @Override
+                public void onFinished(File file){
+                    Log.i(TAG,"成功下载完成");
+                }
+            } );
+
             NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),"100");
 
             /**

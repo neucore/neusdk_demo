@@ -2,6 +2,7 @@ package com.neucore.neulink.impl.service.storage;
 
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
+import java.io.File;
 import java.util.Calendar;
 
 public abstract class AbsStorage {
@@ -40,12 +41,7 @@ public abstract class AbsStorage {
      * @return xx.zip
      */
     protected String getName(String path){
-        int idx = path.lastIndexOf("/");
-        String name = path;
-        if(idx!=-1){
-            name = path.substring(idx+1);
-        }
-        return name;
+        return new File(path).getName();
     }
 
     public String uploadBak(String path, String requestId, int index) {
@@ -72,9 +68,9 @@ public abstract class AbsStorage {
 
         String name = getName(path);
 
-        String ftpSavePath = getDateFolder(appName,getDeviceId(),requestId);
+        String savePath = getDateFolder(appName,getDeviceId(),requestId);
 
-        return uploadFile(ftpSavePath,name,path);
+        return uploadFile(savePath,name,path);
 
     }
 

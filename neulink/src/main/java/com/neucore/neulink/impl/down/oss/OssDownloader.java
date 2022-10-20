@@ -2,15 +2,15 @@ package com.neucore.neulink.impl.down.oss;
 
 import android.content.Context;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.DownloadFileRequest;
-import com.aliyun.oss.model.DownloadFileResult;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectMetadata;
+import com.alibaba.sdk.android.oss.ClientConfiguration;
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
+import com.alibaba.sdk.android.oss.model.GetObjectRequest;
+import com.alibaba.sdk.android.oss.model.GetObjectResult;
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.ILoginCallback;
@@ -19,11 +19,14 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
+import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -86,8 +89,12 @@ public class OssDownloader implements IDownloder, NeulinkConst {
         File toDir = new File(reqdir);
         toDir.mkdirs();
 
-        OSS ossClient = new OSSClientBuilder().build(ossEndpoint, accessKeyId, accessKeySecret);
-
+        ClientConfiguration clientConfig = new ClientConfiguration();
+        clientConfig.setConnectionTimeout(20 * 60 * 1000); //连接超时 默认15秒
+        clientConfig.setSocketTimeout(20 * 60 * 1000); //socket超时 默认15秒
+        clientConfig.setMaxConcurrentRequest(8);//最大并发请求计数 默认5个
+        clientConfig.setMaxErrorRetry(0); //失败重试次数 默认2次
+        OSSClient ossClient = new OSSClient(ContextHolder.getInstance().getContext(), ossEndpoint, new OSSStsTokenCredentialProvider(accessKeyId, accessKeySecret, securityToken), clientConfig);
         try {
 
             String objectKey = new URL(url).getPath();
@@ -98,127 +105,36 @@ public class OssDownloader implements IDownloder, NeulinkConst {
             String fileName = new File(objectKey).getName();
             String localFile = toDir.getPath() + "/" + fileName;
 
-
-            ObjectMetadata metadata = ossClient.getObjectMetadata(bucketName, objectKey);
-            long objectSize = metadata.getContentLength();
-            RandomAccessFile raf = new RandomAccessFile(localFile, "rw");
-            raf.setLength(objectSize);
-            raf.close();
-
-            /*
-             * Calculate how many blocks to be divided
-             */
-            final long blockSize = 5 * 1024 * 1024L;   // 5MB
-            int blockCount = (int) (objectSize / blockSize);
-            if (objectSize % blockSize != 0) {
-                blockCount++;
+            GetObjectRequest oriGet = new GetObjectRequest(bucketName, objectKey);
+            GetObjectResult oriResult = ossClient.getObject(oriGet);
+            int oriStatusCode = oriResult.getStatusCode();
+            NeuLogUtils.iTag(TAG, "startDownload()..oriResult.getStatusCode()..oriStatusCode: " + oriStatusCode);
+            if (oriStatusCode == 200) {
+                long oriLength = oriResult.getContentLength();
+                NeuLogUtils.iTag(TAG, "startDownload()..oriLength: " + oriLength);
+                if (oriLength > 0) {
+                    byte[] oriBuffer = new byte[1024*1024];
+                    int oriReadCount = 0;
+                    FileOutputStream fileOutputStream = new FileOutputStream(new File(localFile));
+                    InputStream inputStream = oriResult.getObjectContent();
+                    while (oriReadCount < oriLength) {
+                        int readed = inputStream.read(oriBuffer);
+                        fileOutputStream.write(oriBuffer,0,readed);
+                        oriReadCount += readed;
+                    }
+                    fileOutputStream.close();
+                    return new File(localFile);
+                }
             }
-
-            NeuLogUtils.iTag(TAG,"Total blocks count " + blockCount + "\n");
-
-            /*
-             * Download the object concurrently
-             */
-            NeuLogUtils.iTag(TAG,"Start to download " + objectKey + "\n");
-            for (int i = 0; i < blockCount; i++) {
-                long startPos = i * blockSize;
-                long endPos = (i + 1 == blockCount) ? objectSize - 1 : (i + 1) * blockSize;
-                executorService.execute(new BlockFetcher(ossClient,bucketName,objectKey,startPos, endPos, i + 1,localFile));
-            }
-
-            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, objectKey);
-            // Sets the local file to download to
-            downloadFileRequest.setDownloadFile(localFile);
-            // Sets the concurrent task thread count 5. By default it's 1.
-            downloadFileRequest.setTaskNum(5);
-            // Sets the part size, by default it's 100K.
-            downloadFileRequest.setPartSize(1024 * 1024 * 1);
-            // Enable checkpoint. By default it's false.
-            downloadFileRequest.setEnableCheckpoint(true);
-
-            DownloadFileResult downloadResult = ossClient.downloadFile(downloadFileRequest);
-
-            ObjectMetadata objectMetadata = downloadResult.getObjectMetadata();
-            if(objectMetadata.isRestoreCompleted()){
-                return new File(localFile);
-            }
-
-        } catch (OSSException oe) {
-            NeuLogUtils.iTag(TAG,"Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            NeuLogUtils.iTag(TAG,"Error Message: " + oe.getErrorMessage());
-            NeuLogUtils.iTag(TAG,"Error Code:       " + oe.getErrorCode());
-            NeuLogUtils.iTag(TAG,"Request ID:      " + oe.getRequestId());
-            NeuLogUtils.iTag(TAG,"Host ID:           " + oe.getHostId());
-        } catch (ClientException ce) {
+        }catch (ClientException e) {
             NeuLogUtils.iTag(TAG,"Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
-            NeuLogUtils.iTag(TAG,"Error Message: " + ce.getMessage());
-        } catch (Throwable e) {
-            NeuLogUtils.eTag(TAG,e.getMessage(),e);
-        } finally {
-            ossClient.shutdown();
+            NeuLogUtils.eTag(TAG,"Error Message: " + e.getMessage(),e);
+        } catch (ServiceException e) {
+            NeuLogUtils.eTag(TAG,"Error Message: " + e.getMessage(),e);
         }
         return null;
     }
 
-    private static class BlockFetcher implements Runnable {
-
-        private OSS ossClient;
-        private String bucketName;
-        private String objectKey;
-        private long startPos;
-        private long endPos;
-        private int blockNumber;
-        private String localFilePath;
-
-
-        public BlockFetcher(OSS ossClient, String bucketName, String objectKey, long startPos, long endPos, int blockNumber, String localFilePath) {
-            this.ossClient = ossClient;
-            this.bucketName = bucketName;
-            this.objectKey = objectKey;
-            this.startPos = startPos;
-            this.endPos = endPos;
-            this.blockNumber = blockNumber;
-            this.localFilePath = localFilePath;
-        }
-
-        @Override
-        public void run() {
-            RandomAccessFile raf = null;
-            try {
-                raf = new RandomAccessFile(localFilePath, "rw");
-                raf.seek(startPos);
-
-                GetObjectRequest request = new GetObjectRequest(bucketName, objectKey).withRange(startPos, endPos);
-                request.addHeader("x-oss-range-behavior", "standard");
-                OSSObject object = ossClient.getObject(request);
-                InputStream objectContent = object.getObjectContent();
-                try {
-                    byte[] buf = new byte[4096];
-                    int bytesRead = 0;
-                    while ((bytesRead = objectContent.read(buf)) != -1) {
-                        raf.write(buf, 0, bytesRead);
-                    }
-                    completedBlocks.incrementAndGet();
-                    NeuLogUtils.iTag(TAG,"Block#" + blockNumber + " done\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    objectContent.close();
-                }
-            } catch (Exception e) {
-                NeuLogUtils.eTag(TAG,e.getMessage(),e);
-            } finally {
-                if (raf != null) {
-                    try {
-                        raf.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
 }
