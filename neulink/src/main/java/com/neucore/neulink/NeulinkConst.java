@@ -1,7 +1,5 @@
 package com.neucore.neulink;
 
-import android.os.Environment;
-
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
