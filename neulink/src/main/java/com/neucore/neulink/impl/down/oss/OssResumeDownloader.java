@@ -6,11 +6,14 @@ import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSSClient;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
 import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.GetObjectRequest;
 import com.alibaba.sdk.android.oss.model.GetObjectResult;
-import com.blankj.utilcode.util.FileIOUtils;
-import com.blankj.utilcode.util.LogUtils;
+import com.alibaba.sdk.android.oss.model.ResumableDownloadRequest;
+import com.alibaba.sdk.android.oss.model.ResumableDownloadResult;
 import com.neucore.neulink.IDownloadProgressListener;
 import com.neucore.neulink.IDownloder;
 import com.neucore.neulink.ILoginCallback;
@@ -25,11 +28,9 @@ import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 
-public class OssDownloader implements IDownloder, NeulinkConst {
+public class OssResumeDownloader implements IDownloder, NeulinkConst {
 
     private static String TAG = NeulinkConst.TAG_PREFIX+"OssDownloader";
 
@@ -105,41 +106,36 @@ public class OssDownloader implements IDownloder, NeulinkConst {
             String fileName = new File(objectKey).getName();
             String localFile = toDir.getPath() + "/" + fileName;
 
-            GetObjectRequest oriGet = new GetObjectRequest(bucketName, objectKey);
-            GetObjectResult oriResult = ossClient.getObject(oriGet);
-            int oriStatusCode = oriResult.getStatusCode();
-            NeuLogUtils.iTag(TAG, "startDownload()..oriResult.getStatusCode()..oriStatusCode: " + oriStatusCode);
-            if (oriStatusCode == 200) {
-                long oriLength = oriResult.getContentLength();
-                NeuLogUtils.iTag(TAG, "startDownload()..oriLength: " + oriLength);
-                if (oriLength > 0) {
-                    byte[] oriBuffer = new byte[1024*1024];
-                    int oriReadCount = 0;
-                    FileOutputStream fileOutputStream = new FileOutputStream(new File(localFile));
-                    InputStream inputStream = oriResult.getObjectContent();
-                    while (oriReadCount < oriLength) {
-                        int readed = inputStream.read(oriBuffer);
-                        fileOutputStream.write(oriBuffer,0,readed);
-                        oriReadCount += readed;
-                    }
-                    File dest = new File(localFile);
+
+            ResumableDownloadRequest request = new ResumableDownloadRequest(bucketName, objectKey, localFile);
+            request.setProgressListener(new OSSProgressCallback() {
+                @Override
+                public void onProgress(Object request, long currentSize, long totalSize) {
+                    Double percent = currentSize*1.0/totalSize*1.0*100;
                     if(ObjectUtil.isNotEmpty(listener)){
-                        listener.onDownload(100D);
-                        listener.onFinished(dest);
+                        listener.onDownload(percent);
                     }
-                    fileOutputStream.close();
-                    return dest;
                 }
+            });
+
+            OSSAsyncTask<ResumableDownloadResult> task = ossClient.asyncResumableDownload(request, callback);
+
+            task.waitUntilFinished();
+
+            ClientException exception = callback.getClientException();
+            if(ObjectUtil.isNotEmpty(exception)){
+                throw exception;
             }
+            return new File(localFile);
+
         }catch (ClientException e) {
             NeuLogUtils.iTag(TAG,"Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
             NeuLogUtils.eTag(TAG,"Error Message: " + e.getMessage(),e);
-        } catch (ServiceException e) {
-            NeuLogUtils.eTag(TAG,"Error Message: " + e.getMessage(),e);
         }
         return null;
     }
 
+    MyOssCompletedCallback callback = new MyOssCompletedCallback();
 }

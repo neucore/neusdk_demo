@@ -121,16 +121,41 @@ NeulinkService.getInstance().destroy();
     /**
      * 设备服务扩展
      */
+     IDeviceService deviceService = new MyDeviceServiceImpl();
     
 ```
     
-#### 扩展-设备信息上报
+#### 扩展-设备信息扩展
 ```
     /**
      * 设备信息上报扩展 参考 MyDeviceServiceImpl
      */
-    IDeviceService deviceService = new MyDeviceServiceImpl();
+    IDeviceExtendInfoCallback extendInfoCallback = new MyDeviceExtendInfoCallBack();
 
+```
+
+#### 扩展-Neulink外部扩展注册器
+```
+    /**
+     * 外部扩展注册器
+     */
+    IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
+```
+
+#### 扩展-权限检测扩展
+```
+    /**
+     * 默认：READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+     */
+    IPermissionChecker permissionChecker = new MyPermissionChecker();
+```
+
+#### 扩展-系统属性改变侦听器
+```
+    /**
+     * 系统属性修改侦听器
+     */
+    IPropChgListener listener = new MyPropChgListener();
 ```
 
 #### 扩展-通用业务开发
