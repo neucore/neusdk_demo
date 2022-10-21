@@ -107,6 +107,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
         FaceCmd faceCmd = new FaceCmd();
         faceCmd.setReqtime(cmd.getReqtime());
         String cmdStr = cmd.getCmdStr();
+        faceCmd.setCmd(cmdStr);
         String jsonUrl = cmd.getDataUrl();
         long offset = cmd.getOffset();
 
