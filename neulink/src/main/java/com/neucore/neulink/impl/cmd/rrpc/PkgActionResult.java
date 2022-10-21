@@ -5,31 +5,31 @@ import com.neucore.neulink.impl.ActionResult;
 
 public class PkgActionResult<T> extends ActionResult<T> implements IActionResult {
 
-    private long total;
-    private long pages;
-    private long offset;
+    private Long total;
+    private Long pages;
+    private Long offset;
 
-    public long getTotal() {
+    public Long getTotal() {
         return total;
     }
 
-    public void setTotal(long total) {
+    public void setTotal(Long total) {
         this.total = total;
     }
 
-    public long getPages() {
+    public Long getPages() {
         return pages;
     }
 
-    public void setPages(long pages) {
+    public void setPages(Long pages) {
         this.pages = pages;
     }
 
-    public long getOffset() {
+    public Long getOffset() {
         return offset;
     }
 
-    public void setOffset(long offset) {
+    public void setOffset(Long offset) {
         this.offset = offset;
     }
 }

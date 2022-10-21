@@ -223,6 +223,9 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
         }
         PkgCmd pkgCmd = buildPkg(cmd,cmd.getDataUrl(), cmd.getOffset());
         PkgActionResult actionResult = listener.doAction(new NeulinkEvent<>(pkgCmd));
+        actionResult.setTotal(pkgCmd.getTotal());
+        actionResult.setPages(pkgCmd.getPages());
+        actionResult.setOffset(pkgCmd.getOffset());
         return actionResult;
     }
 
