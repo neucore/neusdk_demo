@@ -8,6 +8,7 @@ import com.neucore.neulink.IExtendCallback;
 import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IPermissionChecker;
+import com.neucore.neulink.IPropChgListener;
 import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
@@ -247,7 +248,7 @@ public class MyInstaller {
      * add、del、upd
      */
     private void registerPropChgListener() {
-        ListenerRegistry.getInstance().addPropChgListener(new MyPropChgListener());
+        ListenerRegistry.getInstance().addPropChgListener(listener);
     }
 
     /**
@@ -285,4 +286,8 @@ public class MyInstaller {
      * 根据需要可以扩展实现
      */
     IDownloder ossDownloader = new OssDownloader();
+    /**
+     * TODO 系统属性修改侦听器
+     */
+    IPropChgListener listener = new MyPropChgListener();
 }
