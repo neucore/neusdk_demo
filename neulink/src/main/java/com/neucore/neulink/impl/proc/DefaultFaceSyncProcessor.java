@@ -47,7 +47,7 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
     protected String TAG = TAG_PREFIX+this.getClass().getSimpleName();
     public DefaultFaceSyncProcessor(){
         Context context = ContextHolder.getInstance().getContext();
-        libDir = DeviceUtils.getTmpPath(context)+"/faceDir";
+        libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
     public DefaultFaceSyncProcessor(Context context){
         this.context = context;
