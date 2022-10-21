@@ -130,13 +130,14 @@ public class SampleConnector implements NeulinkConst{
                     /**
                      * onPermissionsGranted之后调用
                      */
-                    if(ObjectUtil.isEmpty(permissionChecker)){
+                    while(ObjectUtil.isEmpty(permissionChecker)){
                         try {
                             Thread.sleep(1000);
                             Log.i(TAG,"IPermissionChecker has Not Found !!!");
                         } catch (InterruptedException e) {
                         }
                     }
+
                     while (!(allow= permissionChecker.has())){
                         try {
                             Thread.sleep(1000);
