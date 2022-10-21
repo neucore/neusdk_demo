@@ -16,9 +16,12 @@ import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.FileUtils;
 import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.RequestContext;
 
+import java.io.File;
 import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -198,6 +201,10 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                     }
                 }
                 catch(Exception e){}
+            }
+            finally {
+                String reqdir = libDir+ File.separator+ RequestContext.getId();
+                FileUtils.deleteDirectory(reqdir);//清空
             }
         }
     }
