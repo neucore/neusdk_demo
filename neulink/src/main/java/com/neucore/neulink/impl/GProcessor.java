@@ -263,7 +263,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param status
      * @param msg
      */
-    protected void updatePkg(Long id, long offset,String status,String msg) {
+    protected void updatePkg(Long id, Long offset,String status,String msg) {
         IMessageService messageService = ServiceRegistry.getInstance().getMessageService();
         if(ObjectUtil.isNotEmpty(messageService)){
             messageService.updatePkg(id,offset,status,msg);

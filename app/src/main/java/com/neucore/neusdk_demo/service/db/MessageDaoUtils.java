@@ -56,7 +56,7 @@ public class MessageDaoUtils {
 
     }
 
-    public Boolean updatePkg(final long id, final long offset,final String status, final String msg) {
+    public Boolean updatePkg(final Long id, final long offset,final String status, final String msg) {
 
         return mManager.getDaoSession().callInTxNoException(new Callable<Boolean>() {
                 @Override

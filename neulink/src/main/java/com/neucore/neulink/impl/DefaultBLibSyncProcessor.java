@@ -121,10 +121,11 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             if (res.getCode() == STATUS_200
                                     ||res.getCode()==STATUS_202
                                     ||res.getCode()==STATUS_403){//支撑多包批处理，所有包处理成功才叫做成功
-                                updatePkg(msg.getId(),i, IMessage.STATUS_SUCCESS, res.getMsg());
+                                updatePkg(id,i, IMessage.STATUS_SUCCESS, res.getMsg());
+
                             }
                             else {
-                                updatePkg(msg.getId(),i, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
+                                updatePkg(id,i, IMessage.STATUS_FAIL, res.getMsg());//支撑多包批处理，当某个包处理失败的断点续传机制
                             }
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);

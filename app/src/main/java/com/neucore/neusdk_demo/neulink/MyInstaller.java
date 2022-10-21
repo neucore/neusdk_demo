@@ -115,7 +115,7 @@ public class MyInstaller {
         /**
          * 默认文件下载器
          */
-        connector.setDownloder(ossResumeDownloader);
+        connector.setDownloder(resumeDownloader);
 
         /**
          * neulink执行结果回调处理接口
@@ -157,9 +157,9 @@ public class MyInstaller {
          */
         extConfig.setProperty(ConfigContext.ENABLE_REMOTE_CONFIG,"true"); //开启远程配置状态【mqtt-server，http-upload-server】
 
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//C端云平台
+//        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//C端云平台
 
-//        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/v1/smrtlibs/devices/configs");//只能楼宇平台
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/v1/smrtlibs/devices/configs");//只能楼宇平台
         /**
          * OSS存储时需要开启&设置
          */
