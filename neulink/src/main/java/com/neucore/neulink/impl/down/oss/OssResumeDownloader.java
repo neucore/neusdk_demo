@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -47,6 +48,7 @@ public class OssResumeDownloader implements IDownloder, NeulinkConst {
 
     private static AtomicInteger completedBlocks = new AtomicInteger(0);
     private static ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private DecimalFormat formater = new DecimalFormat("##.0");
 
     @Override
     public File start(Context context, String reqNo, String url, IDownloadProgressListener listener) throws IOException {
@@ -111,9 +113,15 @@ public class OssResumeDownloader implements IDownloder, NeulinkConst {
             request.setProgressListener(new OSSProgressCallback() {
                 @Override
                 public void onProgress(Object request, long currentSize, long totalSize) {
+
                     Double percent = currentSize*1.0/totalSize*1.0*100;
-                    if(ObjectUtil.isNotEmpty(listener)){
-                        listener.onDownload(percent);
+
+                    String progress = formater.format(percent);
+                    if(progress.length()>3
+                            && progress.endsWith("0.0")){
+                        if(ObjectUtil.isNotEmpty(listener)){
+                            listener.onDownload(percent);
+                        }
                     }
                 }
             });

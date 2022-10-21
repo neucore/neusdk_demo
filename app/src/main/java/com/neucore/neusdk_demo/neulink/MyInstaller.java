@@ -15,6 +15,7 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.down.http.HttpDownloader;
 import com.neucore.neulink.impl.down.http.HttpResumeDownloader;
 import com.neucore.neulink.impl.down.oss.OssDownloader;
+import com.neucore.neulink.impl.down.oss.OssResumeDownloader;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
@@ -114,7 +115,7 @@ public class MyInstaller {
         /**
          * 默认文件下载器
          */
-        connector.setDownloder(ossDownloader);
+        connector.setDownloder(ossResumeDownloader);
 
         /**
          * neulink执行结果回调处理接口
@@ -280,12 +281,17 @@ public class MyInstaller {
      * TODO 多线程下载器
      * 根据需要可以扩展实现
      */
-    IResumeDownloader resumeDownloader = new HttpResumeDownloader();
+    IDownloder resumeDownloader = new HttpResumeDownloader();
     /**
      * TODO Oss下载器
      * 根据需要可以扩展实现
      */
     IDownloder ossDownloader = new OssDownloader();
+    /**
+     * TODO Oss多线程续传下载器
+     * 根据需要可以扩展实现
+     */
+    IDownloder ossResumeDownloader = new OssResumeDownloader();
     /**
      * TODO 系统属性修改侦听器
      */
