@@ -211,11 +211,6 @@ public final class DefaultFaceSyncProcessor implements IBlib$ObjtypeProcessor<Pk
             faceCmd.setOffset(offset);
             faceCmd.setDataList(params);
         }
-        /**
-         * 清空图片临时目录
-         */
-        FileUtils.deleteDirectory(toDir.getAbsolutePath());//清空
-
         return faceCmd;
     }
 
