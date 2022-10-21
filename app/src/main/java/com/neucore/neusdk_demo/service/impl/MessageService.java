@@ -54,7 +54,7 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public void updatePkg(long id, long offset, String status,String msg) {
+    public void updatePkg(Long id, long offset, String status,String msg) {
         messageDaoUtils.updatePkg(id,offset,status,msg);
     }
 }

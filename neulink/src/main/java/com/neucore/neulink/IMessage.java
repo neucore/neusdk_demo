@@ -1,12 +1,10 @@
 package com.neucore.neulink;
 
-import java.util.Map;
-
 public interface IMessage {
 
-    final static String STATUS_PROCESS = "运行中";
-    final static String STATUS_SUCCESS = "成功";
-    final static String STATUS_FAIL = "失败";
+    String STATUS_PROCESS = "运行中";
+    String STATUS_SUCCESS = "成功";
+    String STATUS_FAIL = "失败";
 
     Long getId();
 

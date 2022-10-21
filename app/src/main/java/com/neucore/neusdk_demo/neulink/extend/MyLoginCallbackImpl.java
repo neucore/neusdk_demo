@@ -27,14 +27,16 @@ public class MyLoginCallbackImpl implements ILoginCallback {
         headers.put("from","2");
 
         Map<String,String> params = new HashMap<>();
-        params.put("client_id","gemini");
-        params.put("client_secret","secret");
-        params.put("grant_type","password");
-        params.put("username","changwei.yao@neucore.com");
-        params.put("password","123456");
+        params.put("client_id","client-smrtlib");//client-smrtlib,gemini
+        params.put("client_secret","client-smrtlib-secret");//client-smrtlib-secret,secret
+        params.put("grant_type","password");//password
+        params.put("username","15800860806");//15800860806,changwei.yao@neucore.com
+        params.put("password","123456");//123456
 
+        String url = "https://dev.neucore.com/v1/oauth/token";
+//        String url = "https://dev.neucore.com/api/uaa/oauth/token";
 
-        String response = NeuHttpHelper.post("https://dev.neucore.com/api/uaa/oauth/token",params,headers,3);
+        String response = NeuHttpHelper.post(url,params,headers,3);
 
         JSONObject jsonObject = new JSONObject(response);
         String accessToken = ((JSONObject)jsonObject.get("data")).getStr("access_token");
