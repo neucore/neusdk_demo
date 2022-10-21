@@ -150,7 +150,21 @@ NeulinkService.getInstance().destroy();
     IPermissionChecker permissionChecker = new MyPermissionChecker();
 ```
 
+#### 扩展-文件下载器
+```
+    /**
+     * 文件下载器【人脸目标库、OTA升级】
+     * 单线程文件下载器：HttpDownloader
+     * 多线程文件下载器：HttpResumeDownloader
+     * Oss单线程文件下载器：OssDownloader
+     * Oss多线程文件下载器：OssResumeDownloader
+     */
+    IPropChgListener listener = new MyPropChgListener();
+```
 #### 扩展-系统属性改变侦听器
+可以自定义PropChgListener，来同步系统属性设置信息到设备数据库记录；
+eg：人脸识别的时候，摄像头抓到图片，通过算法提起人脸特征； 与设备端数据库人脸特征库进行比较，当数据库某一条记录为debug数据库时，
+则其后续处理相关日志级别为debug【方便调试】
 ```
     /**
      * 系统属性修改侦听器
@@ -194,21 +208,11 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ##### neulink 2.0开发方式
 
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-
-1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
-
-2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
-
-eg：授权处理器
-topic：rrpc/req/${dev_id}/v1.0；
-processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
-
 变化点&注意事项：
 
-0，新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
+新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
 
-##### 请求协议[2.0]
+###### 请求协议[2.0]
 
 ```json
 {
@@ -223,12 +227,11 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
       "data": {}    //可选
 }
 ```
-##### 响应协议[2.0]
+###### 响应协议[2.0]
 ```json
 {    
     "headers":
         {
-
             "code":200, //响应码
             "msg":"success", //响应消息
             "biz":"${biz}",//业务标识：[qlib|blib….]
@@ -244,6 +247,35 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
     "data": {}         //可选
 }
 ```
+###### 上报协议[2.0]
+```json
+{    
+    "headers":
+        {
+            "biz":"${biz}",//业务标识：[qlib|blib….]
+            "reqNo":"${reqNo}",//请求ID
+            "md5":"${md5}",//消息体md5
+            "devid":"${devid}",//设备ID
+            "custid":"${custid}",//租户ID
+            "storeid":"${storeid}",//门店场所ID
+            "zoneid":"${zoneid}",//集群ID
+            "time":"${time}",//请求时间
+            "${keyn}":"${valuen}"
+        },    
+    "data": {}         //可选
+}
+```
+
+0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+
+1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
+
+2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+eg：授权处理器
+topic：rrpc/req/${dev_id}/v1.0；
+processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
 #### 样例
 
 ```java
@@ -774,6 +806,6 @@ StorageFactory.getInstance().uploadBak("/sdcard/twocamera/icon/1593399670069.jpg
 + 单个请求debug
   在消息topic的末尾加上【/debug】即可开启当前请求的debug机制，不压缩，打印更详细的日志等；
 + 单条数据
-  通过设置系统属性的机制动态设置
+  通过设置系统属性的机制动态设置[eg:android setprop]
     + 让人员Id为22的数据为debug数据，即：setprop person.id.22 on;
     + 让人员Id为22的数据为debug正常数据，即：setprop person.id.22 off;

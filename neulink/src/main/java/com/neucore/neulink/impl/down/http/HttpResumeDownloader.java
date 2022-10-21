@@ -73,6 +73,8 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
 
     private Long BlockSize = 1024*1024L;
 
+    private DecimalFormat formater = new DecimalFormat("##.0");
+
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -200,7 +202,6 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
                      * 保证上报下载进度
                      */
                     if(notError){
-                        DecimalFormat formater = new DecimalFormat("##.0");
                         String progress = formater.format(downloadSize*1.0/fileSize*1.0*100);
                         if(progress.length()>3
                                 && progress.endsWith("0.0")){
