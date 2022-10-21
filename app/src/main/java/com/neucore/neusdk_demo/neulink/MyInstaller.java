@@ -14,12 +14,14 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.down.http.HttpDownloader;
 import com.neucore.neulink.impl.down.http.HttpResumeDownloader;
 import com.neucore.neulink.impl.down.oss.OssDownloader;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neusdk_demo.neulink.extend.MyBizExtendRegistCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyLoginCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyMqttCallbackImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyDeviceExtendServiceImpl;
 import com.neucore.neusdk_demo.neulink.extend.MyPermissionChecker;
+import com.neucore.neusdk_demo.neulink.extend.MyPropChgListener;
 import com.neucore.neusdk_demo.service.impl.UserService;
 
 import java.util.Properties;
@@ -117,6 +119,10 @@ public class MyInstaller {
          * neulink执行结果回调处理接口
          */
         connector.setDefaultResCallback(null);
+        /**
+         *
+         */
+        registerPropChgListener();
         //##########################################################################################
         /**
          * 开始连接
@@ -234,6 +240,14 @@ public class MyInstaller {
 
         extConfig.setProperty(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
         return extConfig;
+    }
+
+    /**
+     * 注册：系统属性设置侦听器
+     * add、del、upd
+     */
+    private void registerPropChgListener() {
+        ListenerRegistry.getInstance().addPropChgListener(new MyPropChgListener());
     }
 
     /**

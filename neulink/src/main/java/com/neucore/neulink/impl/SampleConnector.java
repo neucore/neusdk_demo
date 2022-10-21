@@ -22,6 +22,7 @@ import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.app.CarshHandler;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.OnNetStatusListener;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
@@ -143,6 +144,8 @@ public class SampleConnector implements NeulinkConst{
                         } catch (InterruptedException e) {
                         }
                     }
+
+                    PropChgWatcher propChgWatcher = new PropChgWatcher();
 
                     NetBroadcastReceiver netBroadcastReceiver = new NetBroadcastReceiver();
 

@@ -1,10 +1,17 @@
 package com.neucore.neulink.impl.registry;
 
 import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.IPropChgListener;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.NeulinkEvent;
+import com.neucore.neulink.impl.SysPropAction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import cn.hutool.core.util.ObjectUtil;
 
 public final class ListenerRegistry implements NeulinkConst {
 
@@ -53,5 +60,23 @@ public final class ListenerRegistry implements NeulinkConst {
     public void setQlibExtendListener(String objType, ICmdListener listener){
         String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
         listenerMap.put(batchBiz,listener);
+    }
+
+    private List<IPropChgListener> propChgListenerList = new ArrayList<>();
+    public void addPropChgListener(IPropChgListener listener){
+        if(ObjectUtil.isNotEmpty(listener)){
+            this.propChgListenerList.add(listener);
+        }
+    }
+
+    /**
+     * 触发
+     * @param actions
+     */
+    public void fireProChgListener(List<SysPropAction> actions){
+        for (IPropChgListener propChgListener:propChgListenerList){
+            NeulinkEvent<List<SysPropAction>> event = new NeulinkEvent<>(actions);
+            propChgListener.doAction(event);
+        }
     }
 }

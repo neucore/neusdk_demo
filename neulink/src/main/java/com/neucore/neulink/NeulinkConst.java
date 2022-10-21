@@ -357,5 +357,17 @@ public interface NeulinkConst {
     String DEBUG_ON = "on";
 
     String DEBUG_OFF = "off";
+    /**
+     * 新增
+     */
+    String PROP_CHG_ACTION_ADD = "add";
+    /**
+     * 更新
+     */
+    String PROP_CHG_ACTION_UPD = "udp";
+    /**
+     * 删除
+     */
+    String PROP_CHG_ACTION_DEL = "del";
 
 }
