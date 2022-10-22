@@ -119,11 +119,6 @@ public class MyInstaller {
          */
         //connector.setMessageService(new MessageService(application));
         /**
-         * HttpResumeDownloader 下载器 文件断点续传文件服务【数据库服务】【可选】
-         */
-        //connector.setFileService(FileService.getInstance());
-
-        /**
          * 默认文件下载器【启用默认的process实现时，必须】
          * eg：SDK的默认处理器【人脸同步、固件等】采用了IDownloader接口集成了
          *
