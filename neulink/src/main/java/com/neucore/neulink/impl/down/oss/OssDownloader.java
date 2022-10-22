@@ -66,7 +66,7 @@ public class OssDownloader implements IDownloder, NeulinkConst {
         /**
          * 获取OSS临时授权
          */
-        String ossStsAuthUrl = ConfigContext.getInstance().getConfig(ConfigContext.OSS_STS_AUTH_URL);
+        String ossStsAuthUrl = ConfigContext.getInstance().getConfig(ConfigContext.OSS_STS_AUTH_URL,String.format("https://dev.neucore.com/api/storage/v1/%s/authorization",ConfigContext.getInstance().getConfig(ConfigContext.SCOPEID)));
         Map<String,String> params = new HashMap<>();
         params.put("action","7");
         String response = NeuHttpHelper.post(ossStsAuthUrl,params,headers,10,60,3,null);

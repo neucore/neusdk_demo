@@ -71,6 +71,8 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
     private String reqNo;
     private String downloadUrl;
 
+    protected final int CPU_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+
     private Long BlockSize = 1024*1024L;
 
     private DecimalFormat formater = new DecimalFormat("##.0");
@@ -259,20 +261,6 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
             return filename;
         }
     }
-    /**
-     * 获取Http响应头字段
-     * @param http
-     * @return
-     */
-    public static Map<String, String> getHttpResponseHeader(HttpURLConnection http) {
-        Map<String, String> header = new LinkedHashMap<String, String>();
-        for (int i = 0;; i++) {
-            String mine = http.getHeaderField(i);
-            if (mine == null) break;
-            header.put(http.getHeaderFieldKey(i), mine);
-        }
-        return header;
-    }
 
     private static void print(String msg){
         NeuLogUtils.iTag(TAG, msg);
@@ -342,12 +330,9 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
                     ||code == 200) {
                 this.fileSize = Long.valueOf(response.header("Content-Length"));//根据响应获取文件大小
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
-                Long threads = fileSize / BlockSize;
-                Long mod = fileSize%BlockSize;
-                if(mod>0){
-                    threads+=1;
-                }
-                Integer threadNum = threads.intValue();
+
+                Integer threadNum = CPU_SIZE;
+
                 this.threads = new DownloadThread[threadNum];
 
                 String filename = getFileName(url,response);//获取文件名称
