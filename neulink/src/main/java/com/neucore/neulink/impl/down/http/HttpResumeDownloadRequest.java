@@ -31,11 +31,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ResumeDownloadRequest implements NeulinkConst {
+public class HttpResumeDownloadRequest implements NeulinkConst {
     private static final String TAG = TAG_PREFIX+"HttpResumableDownloadRequest";
     private Context context;
     /* 已下载文件长度 */
-    private long downloadSize = 0;
+    private Long downloadSize = 0L;
     /* 原始文件长度 */
     private long fileSize = 0l;
     /**
@@ -43,7 +43,7 @@ public class ResumeDownloadRequest implements NeulinkConst {
      */
     private Integer taskNum;
     /* 线程数 */
-    private ResumableDownloadTask[] tasks;
+    private HttpResumeDownloadTask[] tasks;
     /* 本地保存文件 */
     private File saveFile;
     /* 缓存各线程下载的长度*/
@@ -65,7 +65,7 @@ public class ResumeDownloadRequest implements NeulinkConst {
 
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
 
-    private ExecutionContext executionContext;
+    private HttpResumeDownloadRequestContext httpResumeDownloadRequestContext;
 
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -101,11 +101,14 @@ public class ResumeDownloadRequest implements NeulinkConst {
      * 累计已下载大小
      * @param size
      */
-    public synchronized void append(int size) {
-        downloadSize += size;
-        if(downloadSize>=fileSize){
-            downloadSize = fileSize;
+    public void append(int size) {
+        synchronized (downloadSize){
+            downloadSize += size;
         }
+    }
+
+    public void store(int id,long size){
+        httpResumeDownloadRequestContext.store(id,size);
     }
 
     /**
@@ -214,13 +217,13 @@ public class ResumeDownloadRequest implements NeulinkConst {
      * @param downloaded
      * @return
      */
-    private ResumableDownloadTask createTask(boolean mod, int id, int blocks, long blockSize, long downloaded){
+    private HttpResumeDownloadTask createTask(boolean mod, int id, int blocks, long blockSize, long downloaded){
 
-        DownloadTaskContext taskContext = createTaskContext(mod,id,blocks,blockSize);
+        HttpResumeDownloadTaskContext taskContext = createTaskContext(mod,id,blocks,blockSize,downloaded);
 
-        ResumableDownloadTask resumableDownloadTask = new ResumableDownloadTask(this, executionContext, downloadUrl, this.saveFile, taskContext,downloaded , id+1);
+        HttpResumeDownloadTask httpResumeDownloadTask = new HttpResumeDownloadTask(id,this, downloadUrl, this.saveFile, taskContext);
 
-        return resumableDownloadTask;
+        return httpResumeDownloadTask;
     }
 
     /**
@@ -231,7 +234,7 @@ public class ResumeDownloadRequest implements NeulinkConst {
      * @param blockSize
      * @return
      */
-    private DownloadTaskContext createTaskContext(boolean mod, int id, int blocks, long blockSize){
+    private HttpResumeDownloadTaskContext createTaskContext(boolean mod, int id, int blocks, long blockSize, long downloaded){
 
         long startPos = id*blockSize;
 
@@ -243,7 +246,7 @@ public class ResumeDownloadRequest implements NeulinkConst {
         else{
             endPos = fileSize-blockSize*(id+1);
         }
-        return new DownloadTaskContext(startPos,endPos);
+        return new HttpResumeDownloadTaskContext(startPos,endPos,downloaded);
     }
 
     /**
@@ -288,6 +291,10 @@ public class ResumeDownloadRequest implements NeulinkConst {
 
     public void addListener(IDownloadProgressListener iDownloadProgressListener){
         listeners.add(iDownloadProgressListener);
+    }
+
+    public HttpResumeDownloadRequestContext getExecutionContext() {
+        return httpResumeDownloadRequestContext;
     }
 
     /**
@@ -336,24 +343,26 @@ public class ResumeDownloadRequest implements NeulinkConst {
 
                 this.taskNum = MAX_CORE_POOL_SIZE;
 
-                executionContext = new ExecutionContext(fileSaveDir,reqNo,this.taskNum);
+                httpResumeDownloadRequestContext = new HttpResumeDownloadRequestContext(fileSaveDir,reqNo,this.taskNum);
 
-                this.data = executionContext.init();
+                this.data = httpResumeDownloadRequestContext.init();
 
-                this.tasks = new ResumableDownloadTask[this.taskNum];
+                this.tasks = new HttpResumeDownloadTask[this.taskNum];
 
                 String filename = getFileName(url,response);//获取文件名称
 
                 this.saveFile = new File(fileSaveDir, filename);//构建保存文件
 
-                NeuLogUtils.iTag(TAG,"开始下载到："+saveFile.getAbsolutePath());
+                NeuLogUtils.iTag(TAG,"开始下载到："+ saveFile.getAbsolutePath());
                 /**
                  * 获取历史下载进度
                  */
                 if(this.data.size()==this.taskNum){//下面计算所有线程已经下载的数据长度
+
                     for (int id = 0; id < this.taskNum; id++) {
                         this.downloadSize += this.data.get(id);
                     }
+
                     print("已经下载的长度"+ this.downloadSize);
                 }
                 //计算每条线程下载的数据长度
@@ -363,10 +372,6 @@ public class ResumeDownloadRequest implements NeulinkConst {
             }else{
                 throw new RuntimeException("server no response "+code);
             }
-        } catch (RuntimeException e){
-            NeuLogUtils.eTag(TAG,"下载失败",e);
-            print(e.toString());
-            throw e;
         }
         catch (Exception e) {
             NeuLogUtils.eTag(TAG,"下载失败",e);

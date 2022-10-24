@@ -16,7 +16,7 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class ExecutionContext implements NeulinkConst {
+public class HttpResumeDownloadRequestContext implements NeulinkConst {
 
     private static final String TAG = TAG_PREFIX+"DownloadContext";
 
@@ -24,7 +24,7 @@ public class ExecutionContext implements NeulinkConst {
     private Integer blocks;
     private Map<Integer,Long> blocksData = new HashMap<>();;
     private String storeDir;
-    public ExecutionContext(String storeDir, String reqNo, Integer blocks){
+    public HttpResumeDownloadRequestContext(String storeDir, String reqNo, Integer blocks){
         this.storeDir = storeDir;
         this.reqNo = reqNo;
         this.blocks = blocks;

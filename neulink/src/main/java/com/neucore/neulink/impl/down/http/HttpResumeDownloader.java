@@ -23,7 +23,7 @@ public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
      */
     @Override
     public File start(Context context, String reqNo,String url, IDownloadProgressListener listener) throws Exception {
-        ResumeDownloadRequest resumeDownloadRequest = new ResumeDownloadRequest();
-        return resumeDownloadRequest.start(context,reqNo,url,listener);
+        HttpResumeDownloadRequest httpResumeDownloadRequest = new HttpResumeDownloadRequest();
+        return httpResumeDownloadRequest.start(context,reqNo,url,listener);
     }
 }
