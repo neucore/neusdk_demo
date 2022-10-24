@@ -341,7 +341,15 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
-                this.taskNum = MAX_CORE_POOL_SIZE;
+                if(this.fileSize<1024*1024*5){
+                    this.taskNum = Long.valueOf(fileSize/(1024*1024)).intValue();
+                    if(this.taskNum==0){
+                        this.taskNum = 1;
+                    }
+                }
+                else{
+                    this.taskNum = MAX_CORE_POOL_SIZE;
+                }
 
                 httpResumeDownloadRequestContext = new HttpResumeDownloadRequestContext(fileSaveDir,reqNo,this.taskNum);
 
