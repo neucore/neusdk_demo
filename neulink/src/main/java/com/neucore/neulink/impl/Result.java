@@ -8,11 +8,6 @@ import java.io.Serializable;
 public class Result<T> implements Serializable {
 
     private String reqId;
-    /**
-     * 记录总条数
-     */
-    @SerializedName("total")
-    private Long total;
 
     /**
      * 状态码
@@ -52,14 +47,6 @@ public class Result<T> implements Serializable {
         this.time = System.currentTimeMillis();
     }
 
-    public Result(Long total, Integer code, T data, String msg) {
-        this.total = total;
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
-        this.time = System.currentTimeMillis();
-    }
-
     public static <T> Result<T> ok() {
         return ok(NeulinkConst.STATUS_200, null, NeulinkConst.MESSAGE_SUCCESS);
     }
@@ -69,17 +56,8 @@ public class Result<T> implements Serializable {
         return ok(NeulinkConst.STATUS_200, data, NeulinkConst.MESSAGE_SUCCESS);
     }
 
-    public static <T> Result<T> ok(T data, Long count) {
-        return ok(NeulinkConst.STATUS_200, data, NeulinkConst.MESSAGE_SUCCESS,count);
-    }
-
     public static <T> Result<T> ok(Integer code, T data, String msg) {
         return new Result<>(code, data, msg == null ? null : msg);
-    }
-
-
-    public static <T> Result<T> ok(Integer code, T data, String msg, Long count) {
-        return new Result(count, code, data,msg);
     }
 
 
@@ -113,14 +91,6 @@ public class Result<T> implements Serializable {
 
     public void setReqId(String reqId) {
         this.reqId = reqId;
-    }
-
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
     }
 
     public Integer getCode() {
@@ -162,7 +132,6 @@ public class Result<T> implements Serializable {
                 ", time=" + time +
                 ", code=" + code +
                 ", msg='" + msg + '\'' +
-                ", total=" + total +
                 ", data=" + data +
                 '}';
     }
