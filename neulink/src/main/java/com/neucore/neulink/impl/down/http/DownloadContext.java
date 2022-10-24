@@ -21,21 +21,20 @@ public class DownloadContext implements NeulinkConst {
     private static final String TAG = TAG_PREFIX+"DownloadContext";
 
     private String reqNo;
-    private Integer blocks;
+    private Integer threadNum;
     private Map<Integer,Long> blocksData = new HashMap<>();;
     private String storeDir;
-    public DownloadContext(String storeDir,String reqNo,Integer blocks){
+    public DownloadContext(String storeDir,String reqNo,Integer threadNum){
         this.storeDir = storeDir;
         this.reqNo = reqNo;
-        this.blocks = blocks;
-        File file = new File(String.format("%s/%s/tmp",storeDir,reqNo));
+        this.threadNum = threadNum;
+        File file = new File(String.format("%s/tmp",storeDir));
         file.mkdirs();
-        init();
     }
 
-    private void init(){
-        for (int i=1;i<blocks+1;i++){
-            File file = new File(String.format("%s/%s/tmp/%s.block",storeDir,reqNo,i));
+    public Map<Integer,Long> init(){
+        for (int i=1;i<threadNum+1;i++){
+            File file = new File(String.format("%s/tmp/%s.block",storeDir,i));
             if(file.exists()){
                 ObjectInputStream ois = null;
                 try {
@@ -45,7 +44,6 @@ public class DownloadContext implements NeulinkConst {
                     NeuLogUtils.iTag(TAG, String.format("已经下载的长度 %s",size));
                     blocksData.put(i,size);
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 finally {
                     if(ObjectUtil.isNotEmpty(ois)){
@@ -61,13 +59,14 @@ public class DownloadContext implements NeulinkConst {
                 store(i,0L);
             }
         }
+        return blocksData;
     }
 
-    public synchronized void store(Integer block,Long size){
+    public void store(Integer block,Long size){
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try{
-            File file = new File(String.format("%s/%s/tmp/%s.block",storeDir,reqNo,block));
+            File file = new File(String.format("%s/tmp/%s.block",storeDir,block));
             file.createNewFile();
             fos = new FileOutputStream(file);
             oos = new ObjectOutputStream(fos);
@@ -99,6 +98,6 @@ public class DownloadContext implements NeulinkConst {
     }
 
     public void clear(){
-        FileUtils.deleteDirectory(String.format("%s/%s/tmp",storeDir,reqNo));
+        FileUtils.deleteDirectory(String.format("%s/tmp",storeDir));
     }
 }

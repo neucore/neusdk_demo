@@ -24,13 +24,15 @@ public class DownloadThread extends Thread implements NeulinkConst {
     private long downLength;
     private boolean finish = false,error = false;
     private HttpResumableDownloadRequest downloader;
+    private DownloadContext context;
 
-    public DownloadThread(HttpResumableDownloadRequest downloader, String url, File saveFile, long block, long downLength, int threadId) {
+    public DownloadThread(HttpResumableDownloadRequest downloader,DownloadContext context, String url, File saveFile, long block, long downLength, int threadId) {
         super("DownloadThread@"+threadId);
         this.downUrl = url;
         this.saveFile = saveFile;
         this.block = block;
         this.downloader = downloader;
+        this.context = context;
         this.threadId = threadId;
         this.downLength = downLength;
         NeuLogUtils.iTag(TAG,String.format("threadId=%s, block=%s, downLength=%s",threadId,block,downLength));
@@ -93,7 +95,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
             while ((readed = inStream.read(buffer, 0, buffer.length)) != -1) {
                 threadfile.write(buffer, 0, readed);
                 downLength += readed;
-                downloader.update(this.threadId, downLength);
+                context.store(threadId,downLength);
                 /**
                  * 更新下载进度
                  */

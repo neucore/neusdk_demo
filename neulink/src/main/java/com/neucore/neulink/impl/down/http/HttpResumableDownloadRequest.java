@@ -61,7 +61,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
     private DecimalFormat formater = new DecimalFormat("##.0");
 
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
-
+    private DownloadContext downloadContext;
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
@@ -99,18 +99,10 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
     public synchronized void append(int size) {
         downloadSize += size;
         if(downloadSize>=fileSize){
-            NeuLogUtils.iTag(TAG,String.format("fileSize=%s, downloadSize=%s",fileSize,downloadSize));
             downloadSize = fileSize;
         }
     }
-    /**
-     * 更新指定线程最后下载的位置
-     * @param threadId 线程id
-     * @param pos 最后下载的位置
-     */
-    public synchronized void update(int threadId, long pos) {
 
-    }
     /**
      *  开始下载文件
      * @return 已下载文件大小
@@ -127,12 +119,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
             /**
              * 初始化多线程状态
              */
-            if(this.data.size() != this.threads.length){
-                this.data.clear();
-                for (int i = 0; i < this.threads.length; i++) {
-                    this.data.put(i+1, 0l);//初始化每条线程已经下载的数据长度为0
-                }
-            }
+            this.data = downloadContext.init();
             /**
              * 启动多线程下载
              */
@@ -144,7 +131,6 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 if(downLength < this.block && this.downloadSize<this.fileSize){//判断线程是否已经完成下载,否则继续下载
                     long downloaded = this.data.get(i+1);
                     this.threads[i] = init(mod,i, threads.length, block,downloaded);
-                    //this.threads[i] = new DownloadThread(this, downloadUrl, this.saveFile, this.block,downloaded , i+1);
                     this.threads[i].setPriority(7);
                     this.threads[i].start();
                 }else{
@@ -215,15 +201,15 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
         DownloadThread downloadThread = null;
         long tempSize = block;
         if(mod){
-            downloadThread = new DownloadThread(this, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
+            downloadThread = new DownloadThread(this,downloadContext, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
         }
         else{
             if(i<threadNums-1){
-                downloadThread = new DownloadThread(this, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
+                downloadThread = new DownloadThread(this, downloadContext,downloadUrl, this.saveFile, tempSize,downloaded , i+1);
             }
             else{
                 tempSize = fileSize-block*(i+1);
-                downloadThread = new DownloadThread(this, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
+                downloadThread = new DownloadThread(this,downloadContext, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
             }
         }
         return downloadThread;
@@ -293,9 +279,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
 
             HashMap<String,String> headers = new HashMap<>();
             headers.put("Authorization","bearer "+token);
-            String tmpPath = DeviceUtils.getTmpPath(context);
-            String reqdir = tmpPath+File.separator+ RequestContext.getId();
-            File toDir = new File(reqdir);
+
             this.context = context;
             this.downloadUrl = url;
             if(!fileSaveDir.exists()) {
@@ -316,6 +300,8 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
                 Integer threadNum = MAX_CORE_POOL_SIZE;
+
+                downloadContext = new DownloadContext(fileSaveDir.getAbsolutePath(),reqNo,threadNum);
 
                 this.threads = new DownloadThread[threadNum];
 
