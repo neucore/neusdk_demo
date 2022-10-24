@@ -13,45 +13,47 @@ import com.neucore.neulink.NeulinkConst;
 
 import okhttp3.Response;
 
-public class ResumableDownloadTask extends Thread implements NeulinkConst {
-    private static final String TAG = TAG_PREFIX+"DownloadThread";
+public class HttpResumeDownloadTask extends Thread implements NeulinkConst {
+    private static final String TAG = TAG_PREFIX+"DownloadTask";
+
+    private HttpResumeDownloadRequest httpResumeDownloadRequest;
+    private HttpResumeDownloadRequestContext httpResumeDownloadRequestContext;
     private File saveFile;
     private String downUrl;
-    private DownloadTaskContext downloadTaskContext;
+    private HttpResumeDownloadTaskContext httpResumeDownloadTaskContext;
+    private long downloaded;
     /* 下载开始位置  */
     private int id = -1;
-    private long downLength;
     private boolean finish = false,error = false;
-    private ResumeDownloadRequest resumeDownloadRequest;
-    private ExecutionContext context;
 
-    public ResumableDownloadTask(ResumeDownloadRequest resumeDownloadRequest, ExecutionContext context, String url, File saveFile, DownloadTaskContext downloadTaskContext, long downLength, int id) {
-        super("DownloadThread@"+ id);
+
+    public HttpResumeDownloadTask(int id, HttpResumeDownloadRequest httpResumeDownloadRequest, String url, File saveFile, HttpResumeDownloadTaskContext httpResumeDownloadTaskContext) {
+        super("DownloadTask@"+ id);
+        this.id = id;
+        this.httpResumeDownloadRequest = httpResumeDownloadRequest;
         this.downUrl = url;
         this.saveFile = saveFile;
-        this.downloadTaskContext = downloadTaskContext;
-        this.resumeDownloadRequest = resumeDownloadRequest;
-        this.context = context;
-        this.id = id;
-        this.downLength = downLength;
-        NeuLogUtils.iTag(TAG,String.format("threadId=%s, downloadTaskContext=%s, downLength=%s", id, downloadTaskContext,downLength));
+        this.httpResumeDownloadTaskContext = httpResumeDownloadTaskContext;
+        this.downloaded = httpResumeDownloadTaskContext.getDownloaded();
+        NeuLogUtils.iTag(TAG,String.format("TaskId=%s, downloadTaskContext=%s, downloaded=%s", id, httpResumeDownloadTaskContext,downloaded));
     }
 
     @Override
     public void run() {
         Response response = null;
-        if(downLength < downloadTaskContext.getData()){//未下载完成
+
+        if(downloaded < httpResumeDownloadTaskContext.getData()){//未下载完成
             int trys = 1;
             while(trys<=3){
                 try {
-                    NeuLogUtils.iTag(TAG,String.format("Thread=%s, trys=%s",this.id,trys));
+                    NeuLogUtils.iTag(TAG,String.format("Task=%s, trys=%s",this.id,trys));
                     download();
                     break;
                 } catch (Exception e) {
                     if(trys>3){
-                        NeuLogUtils.eTag(TAG,"Thread "+ this.id + " 下载失败",e);
-                        this.downLength = -1;
-                        print("Thread "+ this.id + ":"+ e);
+                        NeuLogUtils.eTag(TAG,"Task "+ this.id + " 下载失败",e);
+                        this.downloaded = -1;
+                        print("Task "+ this.id + ":"+ e);
                         this.error = true;
                     }
                     else {
@@ -79,9 +81,9 @@ public class ResumableDownloadTask extends Thread implements NeulinkConst {
         headers.put("User-Agent","Mozilla/4.0{Neulink} (compatible; MSIE 8.0; Windows NT 5.2; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729;)");
         headers.put("Connection", "Keep-Alive");
 
-        long startPos = downloadTaskContext.getStartPos() + downLength;//开始位置
+        long startPos = httpResumeDownloadTaskContext.getStartPos() + downloaded;//开始位置
 
-        long endPos = downloadTaskContext.getEndPos();//结束位置
+        long endPos = httpResumeDownloadTaskContext.getEndPos();//结束位置
 
         NeuLogUtils.iTag(TAG,"线程 "+ id + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
 
@@ -89,25 +91,25 @@ public class ResumableDownloadTask extends Thread implements NeulinkConst {
 
         Response response = null;
         try {
-            response = ResumeDownloadRequest.getClient(5, 15).newCall(ResumeDownloadRequest.createRequest(downUrl, headers)).execute();
+            response = HttpResumeDownloadRequest.getClient(5, 15).newCall(HttpResumeDownloadRequest.createRequest(downUrl, headers)).execute();
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;
-            print("Thread " + this.id + " start download from position " + startPos);
-            RandomAccessFile threadfile = new RandomAccessFile(this.saveFile, "rwd");
-            threadfile.seek(startPos);
+            print("Task " + this.id + " start download from position " + startPos);
+            RandomAccessFile taskfile = new RandomAccessFile(this.saveFile, "rwd");
+            taskfile.seek(startPos);
             while ((readed = inStream.read(buffer, 0, buffer.length)) != -1) {
-                threadfile.write(buffer, 0, readed);
-                downLength += readed;
-                context.store(id,downLength);
+                taskfile.write(buffer, 0, readed);
+                downloaded += readed;
+                httpResumeDownloadRequest.store(id,downloaded);
                 /**
                  * 更新下载进度
                  */
-                resumeDownloadRequest.append(readed);
+                httpResumeDownloadRequest.append(readed);
             }
             this.finish = true;
-            print("Thread " + this.id + " download finish");
-            threadfile.close();
+            print("Task " + this.id + " download finish");
+            taskfile.close();
             inStream.close();
         }
         catch (IOException ex){
@@ -128,12 +130,5 @@ public class ResumableDownloadTask extends Thread implements NeulinkConst {
 
     public boolean isError(){
         return error;
-    }
-    /**
-     * 已经下载的内容大小
-     * @return 如果返回值为-1,代表下载失败
-     */
-    public long getDownLength() {
-        return downLength;
     }
 }
