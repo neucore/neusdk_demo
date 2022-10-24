@@ -37,7 +37,7 @@ public class SampleFirewareResumeCmdListener implements ICmdListener<ActionResul
              */
             final String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
             IDownloder downloader = ServiceRegistry.getInstance().getDownloder();
-            File savedFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {
+            File saveFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {
                 @Override
                 public void onDownload(Double percent) {
                     DecimalFormat formater = new DecimalFormat("##.0");
@@ -54,8 +54,11 @@ public class SampleFirewareResumeCmdListener implements ICmdListener<ActionResul
                 }
             } );
 
-            Log.i(TAG,"存储位置: "+savedFile.getAbsolutePath());
-
+            Log.i(TAG,"存储位置: "+saveFile.getAbsolutePath());
+            /**
+             * TODO saveAs to dest for OTA
+             */
+            saveFile.delete();
 
             ActionResult<String> result = new ActionResult<>();
             result.setData(MESSAGE_SUCCESS);

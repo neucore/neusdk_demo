@@ -53,8 +53,10 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
             NeuLogUtils.iTag(TAG,"存储位置: "+saveFile.getAbsolutePath());
 
             /**
-             * @TODO: 业务实现
+             * TODO saveAs to dest for OTA
              */
+            saveFile.delete();
+
             ActionResult<String> result = new ActionResult<>();
             result.setData(MESSAGE_SUCCESS);
             return result;

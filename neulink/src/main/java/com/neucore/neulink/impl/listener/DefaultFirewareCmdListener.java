@@ -53,7 +53,10 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
                 }
             } );
 
-            NeulinkService.getInstance().getPublisherFacde().upldDownloadProgress(resTopic,cmd.getVersion(),cmd.getReqNo(),"100");
+            /**
+             * TODO saveAs to dest for OTA
+             */
+            saveFile.delete();
 
             /**
              * @TODO: 业务实现
