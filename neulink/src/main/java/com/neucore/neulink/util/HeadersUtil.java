@@ -93,8 +93,6 @@ public class HeadersUtil implements NeulinkConst {
      */
     public static void registBinding(JsonObject payload,String topicStr,int qos){
         binding(payload,topicStr,qos);
-        int initCnt = ConfigContext.getInstance().getConfig(INIT_CNT,1);
-        payload.add(INIT_CNT,new JsonPrimitive(String.valueOf(initCnt)));
     }
     /**
      * end2Clould

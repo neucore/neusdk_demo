@@ -23,9 +23,9 @@ public class DownloadThread extends Thread implements NeulinkConst {
     private int threadId = -1;
     private long downLength;
     private boolean finish = false,error = false;
-    private IResumeDownloader downloader;
+    private HttpResumableDownloadRequest downloader;
 
-    public DownloadThread(IResumeDownloader downloader, String url, File saveFile, long block, long downLength, int threadId) {
+    public DownloadThread(HttpResumableDownloadRequest downloader, String url, File saveFile, long block, long downLength, int threadId) {
         super("DownloadThread@"+threadId);
         this.downUrl = url;
         this.saveFile = saveFile;
@@ -83,7 +83,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
         Response response = null;
         try {
-            response = HttpResumeDownloader.getClient(5, 15).newCall(HttpResumeDownloader.createRequest(downUrl, headers)).execute();
+            response = HttpResumableDownloadRequest.getClient(5, 15).newCall(HttpResumableDownloadRequest.createRequest(downUrl, headers)).execute();
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;

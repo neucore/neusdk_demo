@@ -34,13 +34,7 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
             NeuLogUtils.iTag(TAG,"开始下载："+upgrade_url);
             final String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
             String md5 = cmd.getMd5();
-            /**
-             * 发送响应消息给到服务端
-             */
-            IFileService fileService = ServiceRegistry.getInstance().getFileService();
-            if(ObjectUtil.isNotEmpty(fileService)){
-                throw new NeulinkException(CODE_503,"文件服务为空");
-            }
+
             IDownloder downloader = ServiceRegistry.getInstance().getDownloder();;
             File saveFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {
                 @Override
