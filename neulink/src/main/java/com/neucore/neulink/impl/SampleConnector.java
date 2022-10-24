@@ -44,7 +44,6 @@ public class SampleConnector implements NeulinkConst{
     private IExtendCallback defaultExtendCallback = new DefaultExtendCallback();
     private IMqttCallBack mqttCallBack;
     private IExtendCallback extendCallback;
-    private IFileService fileService;
     private IResCallback defaultResCallback;
     private IDownloder downloder;
 
@@ -100,10 +99,6 @@ public class SampleConnector implements NeulinkConst{
 
     public void setMessageService(IMessageService messageService){
         this.messageService = messageService;
-    }
-
-    public void setFileService(IFileService fileService) {
-        this.fileService = fileService;
     }
 
     public void setDefaultResCallback(IResCallback defaultResCallback) {
@@ -163,7 +158,6 @@ public class SampleConnector implements NeulinkConst{
                     }
 
                     ServiceRegistry.getInstance().setMessageService(messageService);
-                    ServiceRegistry.getInstance().setFileService(fileService);
 
                     ServiceRegistry.getInstance().setDownloder(downloder);
 

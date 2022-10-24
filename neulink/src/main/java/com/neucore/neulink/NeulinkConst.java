@@ -190,10 +190,6 @@ public interface NeulinkConst {
     String NEULINK_HEADERS_REQNO = "reqNo";
 
     String NEULINK_HEADERS_MD5 = "md5";
-    /**
-     * 注册次数
-     */
-    String INIT_CNT = "intcnt";
 
     /**
      * 成功

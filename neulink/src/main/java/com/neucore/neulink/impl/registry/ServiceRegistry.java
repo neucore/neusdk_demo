@@ -44,17 +44,6 @@ public final class ServiceRegistry {
         this.deviceService = deviceService;
     }
 
-    private IFileService fileService;
-
-    public IFileService getFileService() {
-        return fileService;
-    }
-
-    public void setFileService(IFileService fileService) {
-        this.fileService = fileService;
-    }
-
-
     private IDownloder defaultDownloder = new HttpDownloader();
     private IDownloder downloder = null;
 
