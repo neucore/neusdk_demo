@@ -16,25 +16,25 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class DownloadContext implements NeulinkConst {
+public class ExecutionContext implements NeulinkConst {
 
     private static final String TAG = TAG_PREFIX+"DownloadContext";
 
     private String reqNo;
-    private Integer threadNum;
+    private Integer blocks;
     private Map<Integer,Long> blocksData = new HashMap<>();;
     private String storeDir;
-    public DownloadContext(String storeDir,String reqNo,Integer threadNum){
+    public ExecutionContext(String storeDir, String reqNo, Integer blocks){
         this.storeDir = storeDir;
         this.reqNo = reqNo;
-        this.threadNum = threadNum;
+        this.blocks = blocks;
         File file = new File(String.format("%s/tmp",storeDir));
         file.mkdirs();
     }
 
     public Map<Integer,Long> init(){
-        for (int i=1;i<threadNum+1;i++){
-            File file = new File(String.format("%s/tmp/%s.block",storeDir,i));
+        for (int id=0;id<blocks;id++){
+            File file = new File(String.format("%s/tmp/%s.block",storeDir,id));
             if(file.exists()){
                 ObjectInputStream ois = null;
                 try {
@@ -42,7 +42,7 @@ public class DownloadContext implements NeulinkConst {
 
                     Long size = (Long)ois.readObject();
                     NeuLogUtils.iTag(TAG, String.format("已经下载的长度 %s",size));
-                    blocksData.put(i,size);
+                    blocksData.put(id,size);
                 } catch (Exception e) {
                 }
                 finally {
@@ -55,18 +55,18 @@ public class DownloadContext implements NeulinkConst {
                 }
             }
             else{
-                blocksData.put(i,0L);
-                store(i,0L);
+                blocksData.put(id,0L);
+                store(id,0L);
             }
         }
         return blocksData;
     }
 
-    public void store(Integer block,Long size){
+    public void store(Integer id,Long size){
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try{
-            File file = new File(String.format("%s/tmp/%s.block",storeDir,block));
+            File file = new File(String.format("%s/tmp/%s.block",storeDir,id));
             file.createNewFile();
             fos = new FileOutputStream(file);
             oos = new ObjectOutputStream(fos);
