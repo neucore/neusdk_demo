@@ -1,40 +1,13 @@
 package com.neucore.neulink.impl.down.http;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.Context;
 
 import com.neucore.neulink.IDownloadProgressListener;
-import com.neucore.neulink.IFileService;
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IResumeDownloader;
-import com.neucore.neulink.impl.service.NeulinkSecurity;
-import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.RequestContext;
-import com.neucore.neulink.util.SSLSocketClient;
 
-import cn.hutool.core.util.ObjectUtil;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 文件下载器
@@ -52,7 +25,6 @@ import okhttp3.Response;
  }
  */
 public class HttpResumeDownloader implements IResumeDownloader, NeulinkConst{
-
     /**
      * 构建文件下载器
      */

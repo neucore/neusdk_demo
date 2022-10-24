@@ -52,7 +52,9 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
     private String reqNo;
     private String downloadUrl;
 
-    protected final int CPU_SIZE = Runtime.getRuntime().availableProcessors() +1;
+    protected final int CPU_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+
+    protected final int MAX_CORE_POOL_SIZE = CPU_SIZE < 5 ? CPU_SIZE : 5;
 
     private Long BlockSize = 1024*1024L;
 
@@ -313,7 +315,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 this.fileSize = Long.valueOf(response.header("Content-Length"));//根据响应获取文件大小
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
-                Integer threadNum = CPU_SIZE;
+                Integer threadNum = MAX_CORE_POOL_SIZE;
 
                 this.threads = new DownloadThread[threadNum];
 
