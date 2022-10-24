@@ -7,52 +7,51 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.neucore.neulink.IResumeDownloader;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.NeulinkConst;
 
 import okhttp3.Response;
 
-public class DownloadThread extends Thread implements NeulinkConst {
+public class ResumableDownloadTask extends Thread implements NeulinkConst {
     private static final String TAG = TAG_PREFIX+"DownloadThread";
     private File saveFile;
     private String downUrl;
-    private long block;
+    private DownloadTaskContext downloadTaskContext;
     /* 下载开始位置  */
-    private int threadId = -1;
+    private int id = -1;
     private long downLength;
     private boolean finish = false,error = false;
-    private HttpResumableDownloadRequest downloader;
-    private DownloadContext context;
+    private ResumeDownloadRequest resumeDownloadRequest;
+    private ExecutionContext context;
 
-    public DownloadThread(HttpResumableDownloadRequest downloader,DownloadContext context, String url, File saveFile, long block, long downLength, int threadId) {
-        super("DownloadThread@"+threadId);
+    public ResumableDownloadTask(ResumeDownloadRequest resumeDownloadRequest, ExecutionContext context, String url, File saveFile, DownloadTaskContext downloadTaskContext, long downLength, int id) {
+        super("DownloadThread@"+ id);
         this.downUrl = url;
         this.saveFile = saveFile;
-        this.block = block;
-        this.downloader = downloader;
+        this.downloadTaskContext = downloadTaskContext;
+        this.resumeDownloadRequest = resumeDownloadRequest;
         this.context = context;
-        this.threadId = threadId;
+        this.id = id;
         this.downLength = downLength;
-        NeuLogUtils.iTag(TAG,String.format("threadId=%s, block=%s, downLength=%s",threadId,block,downLength));
+        NeuLogUtils.iTag(TAG,String.format("threadId=%s, downloadTaskContext=%s, downLength=%s", id, downloadTaskContext,downLength));
     }
 
     @Override
     public void run() {
         Response response = null;
-        if(downLength < block){//未下载完成
+        if(downLength < downloadTaskContext.getData()){//未下载完成
             int trys = 1;
             while(trys<=3){
                 try {
-                    NeuLogUtils.iTag(TAG,String.format("Thread=%s, trys=%s",this.threadId,trys));
+                    NeuLogUtils.iTag(TAG,String.format("Thread=%s, trys=%s",this.id,trys));
                     download();
                     break;
                 } catch (Exception e) {
                     if(trys>3){
-                        NeuLogUtils.eTag(TAG,"Thread "+ this.threadId + " 下载失败",e);
+                        NeuLogUtils.eTag(TAG,"Thread "+ this.id + " 下载失败",e);
                         this.downLength = -1;
-                        print("Thread "+ this.threadId+ ":"+ e);
+                        print("Thread "+ this.id + ":"+ e);
                         this.error = true;
                     }
                     else {
@@ -68,6 +67,7 @@ public class DownloadThread extends Thread implements NeulinkConst {
     }
 
     private void download(){
+
         Map<String,String> headers = new HashMap<>();
 
         String token = NeulinkSecurity.getInstance().getToken();
@@ -79,30 +79,34 @@ public class DownloadThread extends Thread implements NeulinkConst {
         headers.put("User-Agent","Mozilla/4.0{Neulink} (compatible; MSIE 8.0; Windows NT 5.2; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729;)");
         headers.put("Connection", "Keep-Alive");
 
-        long startPos = block * (threadId - 1) + downLength;//开始位置
-        long endPos = block * threadId -1;//结束位置
-        NeuLogUtils.iTag(TAG,"线程 "+ threadId + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
+        long startPos = downloadTaskContext.getStartPos() + downLength;//开始位置
+
+        long endPos = downloadTaskContext.getEndPos();//结束位置
+
+        NeuLogUtils.iTag(TAG,"线程 "+ id + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
+
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
+
         Response response = null;
         try {
-            response = HttpResumableDownloadRequest.getClient(5, 15).newCall(HttpResumableDownloadRequest.createRequest(downUrl, headers)).execute();
+            response = ResumeDownloadRequest.getClient(5, 15).newCall(ResumeDownloadRequest.createRequest(downUrl, headers)).execute();
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;
-            print("Thread " + this.threadId + " start download from position " + startPos);
+            print("Thread " + this.id + " start download from position " + startPos);
             RandomAccessFile threadfile = new RandomAccessFile(this.saveFile, "rwd");
             threadfile.seek(startPos);
             while ((readed = inStream.read(buffer, 0, buffer.length)) != -1) {
                 threadfile.write(buffer, 0, readed);
                 downLength += readed;
-                context.store(threadId,downLength);
+                context.store(id,downLength);
                 /**
                  * 更新下载进度
                  */
-                downloader.append(readed);
+                resumeDownloadRequest.append(readed);
             }
             this.finish = true;
-            print("Thread " + this.threadId + " download finish");
+            print("Thread " + this.id + " download finish");
             threadfile.close();
             inStream.close();
         }

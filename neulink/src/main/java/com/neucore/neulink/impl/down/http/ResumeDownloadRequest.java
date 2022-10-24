@@ -10,7 +10,6 @@ import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.RequestContext;
 import com.neucore.neulink.util.SSLSocketClient;
 
 import java.io.File;
@@ -32,21 +31,25 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class HttpResumableDownloadRequest implements NeulinkConst {
+public class ResumeDownloadRequest implements NeulinkConst {
     private static final String TAG = TAG_PREFIX+"HttpResumableDownloadRequest";
     private Context context;
     /* 已下载文件长度 */
     private long downloadSize = 0;
     /* 原始文件长度 */
     private long fileSize = 0l;
+    /**
+     * 线程数
+     */
+    private Integer taskNum;
     /* 线程数 */
-    private DownloadThread[] threads;
+    private ResumableDownloadTask[] tasks;
     /* 本地保存文件 */
     private File saveFile;
     /* 缓存各线程下载的长度*/
     private Map<Integer, Long> data = new ConcurrentHashMap<Integer, Long>();
     /* 每条线程下载的长度 */
-    private long block;
+    private long blockSize;
     private boolean mod;
     /* 下载路径  */
     private String reqNo;
@@ -61,7 +64,9 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
     private DecimalFormat formater = new DecimalFormat("##.0");
 
     private List<IDownloadProgressListener> listeners = new ArrayList<>();
-    private DownloadContext downloadContext;
+
+    private ExecutionContext executionContext;
+
     static OkHttpClient getClient(int connTimeout, int readTimeout){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(connTimeout, TimeUnit.MINUTES)//设置连接超时时间
@@ -116,25 +121,28 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 randOut.setLength(this.fileSize);
             }
             randOut.close();
-            /**
-             * 初始化多线程状态
-             */
-            this.data = downloadContext.init();
+
             /**
              * 启动多线程下载
              */
-            for (int i = 0; i < this.threads.length; i++) {//开启线程进行下载
+            for (int id = 0; id < this.taskNum; id++) {//开启线程进行下载
                 /**
                  * 历史下载长度
                  */
-                long downLength = this.data.get(i+1);
-                if(downLength < this.block && this.downloadSize<this.fileSize){//判断线程是否已经完成下载,否则继续下载
-                    long downloaded = this.data.get(i+1);
-                    this.threads[i] = init(mod,i, threads.length, block,downloaded);
-                    this.threads[i].setPriority(7);
-                    this.threads[i].start();
+                long downLength = this.data.get(id);
+
+                if(downLength < this.blockSize
+                        && this.downloadSize < this.fileSize){//判断线程是否已经完成下载,否则继续下载
+
+                    long downloaded = this.data.get(id);
+
+                    this.tasks[id] = createTask(mod,id, taskNum, blockSize,downloaded);
+
+                    this.tasks[id].setPriority(7);
+
+                    this.tasks[id].start();
                 }else{
-                    this.threads[i] = null;
+                    this.tasks[id] = null;
                 }
             }
 
@@ -147,10 +155,10 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 }
                 notFinish = false;//假定全部线程下载完成
                 notError = false;//假设全部遇到错误
-                for (int i = 0; i < threads.length; i++){
-                    if (threads[i] != null && !threads[i].isFinish()) {//如果发现线程未完成下载
+                for (int id = 0; id < taskNum; id++){
+                    if (tasks[id] != null && !tasks[id].isFinish()) {//如果发现线程未完成下载
                         notFinish = true;//设置标志为下载没有完成
-                        if(!threads[i].isError()){
+                        if(!tasks[id].isError()){
                             notError = true;
                         }
                     }
@@ -176,8 +184,8 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                     }
 
                     boolean finshed = true;
-                    for (int i = 0; i < threads.length; i++){
-                        if(threads[i] != null && !threads[i].isFinish()){
+                    for (int id = 0; id < taskNum; id++){
+                        if(tasks[id] != null && !tasks[id].isFinish()){
                             finshed = false;
                             break;
                         }
@@ -197,22 +205,45 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
         return saveFile;
     }
 
-    private DownloadThread init(boolean mod,int i,int threadNums,long block,long downloaded){
-        DownloadThread downloadThread = null;
-        long tempSize = block;
-        if(mod){
-            downloadThread = new DownloadThread(this,downloadContext, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
+    /**
+     *
+     * @param mod
+     * @param id
+     * @param blocks
+     * @param blockSize
+     * @param downloaded
+     * @return
+     */
+    private ResumableDownloadTask createTask(boolean mod, int id, int blocks, long blockSize, long downloaded){
+
+        DownloadTaskContext taskContext = createTaskContext(mod,id,blocks,blockSize);
+
+        ResumableDownloadTask resumableDownloadTask = new ResumableDownloadTask(this, executionContext, downloadUrl, this.saveFile, taskContext,downloaded , id+1);
+
+        return resumableDownloadTask;
+    }
+
+    /**
+     *
+     * @param mod
+     * @param id
+     * @param blocks
+     * @param blockSize
+     * @return
+     */
+    private DownloadTaskContext createTaskContext(boolean mod, int id, int blocks, long blockSize){
+
+        long startPos = id*blockSize;
+
+        long endPos = 0;
+
+        if(mod || id<blocks-1 ){
+            endPos = (id+1)*blockSize;
         }
         else{
-            if(i<threadNums-1){
-                downloadThread = new DownloadThread(this, downloadContext,downloadUrl, this.saveFile, tempSize,downloaded , i+1);
-            }
-            else{
-                tempSize = fileSize-block*(i+1);
-                downloadThread = new DownloadThread(this,downloadContext, downloadUrl, this.saveFile, tempSize,downloaded , i+1);
-            }
+            endPos = fileSize-blockSize*(id+1);
         }
-        return downloadThread;
+        return new DownloadTaskContext(startPos,endPos);
     }
 
     /**
@@ -246,7 +277,11 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
     public File start(Context context, String reqNo,String url, IDownloadProgressListener listener) throws Exception {
         this.reqNo = reqNo;
         String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator + reqNo;
-        init(context,url,new File(storeDir));
+        File fileSaveDir = new File(storeDir);
+        if(!fileSaveDir.exists()) {
+            fileSaveDir.mkdirs();
+        }
+        createTask(context,url,storeDir);
         addListener(listener);
         return start();
     }
@@ -261,7 +296,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
      * @param url
      * @param fileSaveDir
      */
-    private void init(Context context, String url, File fileSaveDir){
+    private void createTask(Context context, String url, String fileSaveDir){
         Response response = null;
         try {
 
@@ -282,9 +317,7 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
 
             this.context = context;
             this.downloadUrl = url;
-            if(!fileSaveDir.exists()) {
-                fileSaveDir.mkdirs();
-            }
+
             headers.put("Accept","image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-img, */*");
             headers.put("Accept-Language","zh-CN");
             headers.put("Referer",url);
@@ -295,15 +328,19 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
             int code = response.code();
             NeuLogUtils.iTag(TAG,code+"");
             if (code == 206
-                    ||code == 200) {
+                    || code == 200) {
+
                 this.fileSize = Long.valueOf(response.header("Content-Length"));//根据响应获取文件大小
+
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
-                Integer threadNum = MAX_CORE_POOL_SIZE;
+                this.taskNum = MAX_CORE_POOL_SIZE;
 
-                downloadContext = new DownloadContext(fileSaveDir.getAbsolutePath(),reqNo,threadNum);
+                executionContext = new ExecutionContext(fileSaveDir,reqNo,this.taskNum);
 
-                this.threads = new DownloadThread[threadNum];
+                this.data = executionContext.init();
+
+                this.tasks = new ResumableDownloadTask[this.taskNum];
 
                 String filename = getFileName(url,response);//获取文件名称
 
@@ -313,15 +350,15 @@ public class HttpResumableDownloadRequest implements NeulinkConst {
                 /**
                  * 获取历史下载进度
                  */
-                if(this.data.size()==this.threads.length){//下面计算所有线程已经下载的数据长度
-                    for (int i = 0; i < this.threads.length; i++) {
-                        this.downloadSize += this.data.get(i+1);
+                if(this.data.size()==this.taskNum){//下面计算所有线程已经下载的数据长度
+                    for (int id = 0; id < this.taskNum; id++) {
+                        this.downloadSize += this.data.get(id);
                     }
                     print("已经下载的长度"+ this.downloadSize);
                 }
                 //计算每条线程下载的数据长度
-                this.block = this.fileSize / this.threads.length;
-                this.mod = this.fileSize%this.threads.length==0;
+                this.blockSize = this.fileSize / this.taskNum;
+                this.mod = this.fileSize%this.taskNum ==0;
 
             }else{
                 throw new RuntimeException("server no response "+code);
