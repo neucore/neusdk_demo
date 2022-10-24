@@ -59,7 +59,7 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
     protected final int MAX_CORE_POOL_SIZE = CPU_SIZE < 5 ? CPU_SIZE : 5;
 
-    private Long BlockSize = 1024*1024L;
+    private Long CellSize = 1024*1024L;
 
     private DecimalFormat formater = new DecimalFormat("##.0");
 
@@ -341,8 +341,8 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
                 if (this.fileSize <= 0) throw new RuntimeException("Unkown file size ");
 
-                if(this.fileSize<1024*1024*5){
-                    this.taskNum = Long.valueOf(fileSize/(1024*1024)).intValue();
+                if(this.fileSize<CellSize*5){
+                    this.taskNum = Long.valueOf(fileSize/CellSize).intValue();
                     if(this.taskNum==0){
                         this.taskNum = 1;
                     }

@@ -21,19 +21,19 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
     private static final String TAG = TAG_PREFIX+"DownloadContext";
 
     private String reqNo;
-    private Integer blocks;
+    private Integer taskNum;
     private Map<Integer,Long> blocksData = new HashMap<>();;
     private String storeDir;
-    public HttpResumeDownloadRequestContext(String storeDir, String reqNo, Integer blocks){
+    public HttpResumeDownloadRequestContext(String storeDir, String reqNo, Integer taskNum){
         this.storeDir = storeDir;
         this.reqNo = reqNo;
-        this.blocks = blocks;
+        this.taskNum = taskNum;
         File file = new File(String.format("%s/tmp",storeDir));
         file.mkdirs();
     }
 
     public Map<Integer,Long> init(){
-        for (int id=0;id<blocks;id++){
+        for (int id=0;id<taskNum;id++){
             File file = new File(String.format("%s/tmp/%s.block",storeDir,id));
             if(file.exists()){
                 ObjectInputStream ois = null;
@@ -62,11 +62,11 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
         return blocksData;
     }
 
-    public void store(Integer id,Long size){
+    public void store(Integer taskId,Long size){
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try{
-            File file = new File(String.format("%s/tmp/%s.block",storeDir,id));
+            File file = new File(String.format("%s/tmp/%s.block",storeDir,taskId));
             file.createNewFile();
             fos = new FileOutputStream(file);
             oos = new ObjectOutputStream(fos);
