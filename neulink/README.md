@@ -547,9 +547,13 @@ public class AuthActionResultData {
      * 外部扩展 参照 MyBizExtendRegistCallbackImpl
      */
     IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
-   
-   
     
+    /**
+     * SDK 自定义业务扩展实现
+     * 框架已经实现消息的接收及响应处理机制
+     * 新业务可以参考Hello业务的实现业务就行
+     */
+    ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_AUTH,new AuthProcessor(),new AuthCmdListener());
 ```
 
 
