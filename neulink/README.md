@@ -22,8 +22,99 @@
 ##### Mqtt_mqtt时序图
 ![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
 
+#### 协议说明
 
-### 注意事项
+##### neulink[1.0]
+
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+
++ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
+
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
+##### neulink[1.2]
+
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+
++ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
+
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/v1.0；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
++ 3，变化点&注意事项：
+
+  + 0，新增了header
+
+  + 1，biz、req_no、md5三个字段从topic移到了header
+
+##### neulink[2.0]
+
++ 变化点&注意事项：
+
++ 新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
+
+##### 请求协议[2.0]
+
+```json
+{
+    "headers":
+       {
+             "biz":"${biz}",//业务标识：[qlib|blib….]
+             "reqNo":"${reqNo}",//请求ID
+             "md5":"${md5}",//消息体的md5
+             "time":"${time}",//请求时间
+             "${keyn}":"${valuen}"//自定义
+       },
+      "data": {}    //可选
+}
+```
+##### 响应协议[2.0]
+```json
+{    
+    "headers":
+        {
+            "code":200, //响应码
+            "msg":"success", //响应消息
+            "biz":"${biz}",//业务标识：[qlib|blib….]
+            "reqNo":"${reqNo}",//请求ID
+            "md5":"${md5}",//消息体md5
+            "devid":"${devid}",//设备ID
+            "custid":"${custid}",//租户ID
+            "storeid":"${storeid}",//门店场所ID
+            "zoneid":"${zoneid}",//集群ID
+            "time":"${time}",//请求时间
+            "${keyn}":"${valuen}"//自定义
+        },    
+    "data": {}         //可选
+}
+```
+##### 上报协议[2.0]
+```json
+{    
+    "headers":
+        {
+            "biz":"${biz}",//业务标识：[qlib|blib….]
+            "reqNo":"${reqNo}",//请求ID
+            "md5":"${md5}",//消息体md5
+            "devid":"${devid}",//设备ID
+            "custid":"${custid}",//租户ID
+            "storeid":"${storeid}",//门店场所ID
+            "zoneid":"${zoneid}",//集群ID
+            "time":"${time}",//请求时间
+            "${keyn}":"${valuen}"//自定义
+        },    
+    "data": {}         //可选
+}
+```
+
+### 升级注意事项
 
 apk升级建议采用增量升级方式【即：patch方式，这样可以保留系统的业务数据】
 
@@ -95,11 +186,11 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 ```
 
-### 扩展实现 
+#### 扩展实现 
 
-#### 参考 MyInstaller[详见代码]
+##### 参考 MyInstaller[详见代码]
 
-#### 扩展-HTTP安全登录
+##### 扩展-HTTP安全登录
 ```java
     /**
      * HTTP(S)安全登录 loginCallback
@@ -116,7 +207,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 ```
 
-#### 扩展-MQTT联网状态
+##### 扩展-MQTT联网状态
 
 ```java
     /**
@@ -125,7 +216,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
      IMqttCallBack mqttCallBack = new MyMqttCallbackImpl();
 ```
 
-#### 扩展-设备服务
+##### 扩展-设备服务
 ```java
     /**
      * 设备服务扩展
@@ -134,7 +225,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     
 ```
     
-#### 扩展-设备信息扩展
+##### 扩展-设备信息扩展
 ```java
     /**
      * 设备信息上报扩展 参考 MyDeviceServiceImpl
@@ -143,7 +234,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 ```
 
-#### 扩展-Neulink外部扩展注册器
+##### 扩展-Neulink外部扩展注册器
 ```java
     /**
      * 外部扩展注册器
@@ -151,7 +242,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
 ```
 
-#### 扩展-权限检测扩展
+##### 扩展-权限检测扩展
 ```java
     /**
      * 默认：READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
@@ -159,7 +250,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     IPermissionChecker permissionChecker = new MyPermissionChecker();
 ```
 
-#### 扩展-文件下载器
+##### 扩展-文件下载器
 ```java
     
     /**
@@ -189,7 +280,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ```
 
 
-#### 扩展-系统属性改变侦听器
+##### 扩展-系统属性改变侦听器
 可以自定义PropChgListener，来同步系统属性设置信息到设备数据库记录；
 eg：人脸识别的时候，摄像头抓到图片，通过算法提起人脸特征； 与设备端数据库人脸特征库进行比较，当数据库某一条记录为debug数据库时，
 则其后续处理相关日志级别为debug【方便调试】
@@ -201,108 +292,21 @@ eg：人脸识别的时候，摄像头抓到图片，通过算法提起人脸特
     IPropChgListener listener = new MyPropChgListener();
 ```
 
-#### 扩展-通用业务开发
+##### 扩展-通用业务开发
 
-##### neulink 1.0开发方式
-
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-
-+ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
-
-+ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
-
-  + eg：授权处理器
-  + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
-  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
-
-##### neulink 1.2开发方式
+###### 业务扩展实现步骤
 
 + 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-
-+ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
-
-+ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
-
-  + eg：授权处理器
-  + topic：rrpc/req/${dev_id}/v1.0；
-  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
-
-+ 3，变化点&注意事项：
-
-  + 0，新增了header
-
-  + 1，biz、req_no、md5三个字段从topic移到了header
-
-##### neulink 2.0开发方式
-
-+ 变化点&注意事项：
-
-+ 新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
-
-###### 请求协议[2.0]
-
-```json
-{
-    "headers":
-       {
-             "biz":"${biz}",//业务标识：[qlib|blib….]
-             "reqNo":"${reqNo}",//请求ID
-             "md5":"${md5}",//消息体的md5
-             "time":"${time}",//请求时间
-             "${keyn}":"${valuen}"//自定义
-       },
-      "data": {}    //可选
-}
-```
-###### 响应协议[2.0]
-```json
-{    
-    "headers":
-        {
-            "code":200, //响应码
-            "msg":"success", //响应消息
-            "biz":"${biz}",//业务标识：[qlib|blib….]
-            "reqNo":"${reqNo}",//请求ID
-            "md5":"${md5}",//消息体md5
-            "devid":"${devid}",//设备ID
-            "custid":"${custid}",//租户ID
-            "storeid":"${storeid}",//门店场所ID
-            "zoneid":"${zoneid}",//集群ID
-            "time":"${time}",//请求时间
-            "${keyn}":"${valuen}"//自定义
-        },    
-    "data": {}         //可选
-}
-```
-###### 上报协议[2.0]
-```json
-{    
-    "headers":
-        {
-            "biz":"${biz}",//业务标识：[qlib|blib….]
-            "reqNo":"${reqNo}",//请求ID
-            "md5":"${md5}",//消息体md5
-            "devid":"${devid}",//设备ID
-            "custid":"${custid}",//租户ID
-            "storeid":"${storeid}",//门店场所ID
-            "zoneid":"${zoneid}",//集群ID
-            "time":"${time}",//请求时间
-            "${keyn}":"${valuen}"//自定义
-        },    
-    "data": {}         //可选
-}
-```
-
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-
 + 1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
-
 + 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
   + eg：授权处理器
   + topic：rrpc/req/${dev_id}/v1.0；
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
++ 3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
++ 4, listener 的doAction 返回值 AuthActionResult
++ 5, listener 的doAction 返回值 AuthActionResultData
 
-#### 样例
+###### Processor样例
 
 ```java
 
@@ -382,9 +386,7 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 
 ```
 
-+ 3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
-
-#### 样例
+###### CmdListener样例
 
 ```java
 
@@ -433,9 +435,7 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
 
 ```
 
-+ 4, listener 的doAction 返回值 AuthActionResult
-
-#### 样例
+###### ActionResult样例
 
 ```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
@@ -448,10 +448,7 @@ public class AuthActionResult extends ActionResult<AuthActionResultData/*响应�
 }
 
 ```
-
-+ 5, listener 的doAction 返回值 AuthActionResultData
-
-#### 样例
+###### ActionResultData样例
 
 ```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data;
@@ -541,19 +538,22 @@ public class AuthActionResultData {
 
 ```
 
-#### 扩展业务集成
+##### 扩展业务集成
 
 参照：MyApplication内installSDK()方法；
 
 ```
     /**
-     * 外部扩展 参照 MyExtendCallbackImpl
+     * 外部扩展 参照 MyBizExtendRegistCallbackImpl
      */
-    IExtendCallback callback = new MyExtendCallbackImpl();
+    IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
+   
+   
+    
 ```
 
 
-### 上报消息到云端
+##### 上报消息到云端
 
 0，在NeulinkPublisherFacde中实现
 
@@ -695,7 +695,7 @@ public class AuthActionResultData {
 
 ```
 
-### 异步响应注意事项
+##### 异步响应注意事项
 
 异步响应必须在NeulinkService.getInstance().isNeulinkServiceInited()==true之后调用，否则不会成功；
 
@@ -791,7 +791,7 @@ Context.getFilesDir()/
 
     + neucore/config 配置文件目录
     
-## 配置扩展机制
+### 配置扩展机制
 ```java
 Properties extConfig = new Properties();
 /**
@@ -808,23 +808,18 @@ extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
 SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 ```
 
-0，优先级【扩展配置>配置文件>框架默认配置】
-
-
-1,扩展配置使用方式：参考MyApplication
-
-2，配置文件使用方式：参考ConfigContext的实现，这个实现可以通过云端管理
-
-3，默认配置：参考：ConfigContext内的defaultConfig【加密写死】
++ 0，优先级【扩展配置>配置文件>框架默认配置】
++ 1,扩展配置使用方式：参考MyApplication
++ 2，配置文件使用方式：参考ConfigContext的实现，这个实现可以通过云端管理
++ 3，默认配置：参考：ConfigContext内的defaultConfig【加密写死】
 
 ## 人脸下发扩展
 
-参考下列代码SampleFaceListener.java实现完成其团队的人脸存储
++ 参考下列代码SampleFaceListener.java实现完成其团队的人脸存储
 
 ## 人脸识别上报
 
 参考下列代码SampleFaceUpload.java
-
 
 ## 通用图片&文件上传
 
