@@ -58,7 +58,7 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
     protected final int CPU_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 
-    protected final int MAX_CORE_POOL_SIZE = 2;//CPU_SIZE < 5 ? CPU_SIZE : 5;
+    protected final int MAX_CORE_POOL_SIZE = CPU_SIZE < 5 ? CPU_SIZE : 5;
 
     private Long CellSize = 1024*1024L;
 
