@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class HttpResumeDownloadTask extends Thread implements NeulinkConst {
     private File saveFile;
     private String downUrl;
     private HttpResumeDownloadTaskContext httpResumeDownloadTaskContext;
+    private DecimalFormat formater = new DecimalFormat("##.0");
     private long downloaded;
     /* 下载开始位置  */
     private int id = -1;
@@ -35,14 +37,14 @@ public class HttpResumeDownloadTask extends Thread implements NeulinkConst {
         this.saveFile = saveFile;
         this.httpResumeDownloadTaskContext = httpResumeDownloadTaskContext;
         this.downloaded = httpResumeDownloadTaskContext.getDownloaded();
-        NeuLogUtils.iTag(TAG,String.format("TaskId=%s, downloadTaskContext=%s, downloaded=%s", id, httpResumeDownloadTaskContext,downloaded));
+        NeuLogUtils.iTag(TAG,String.format("TaskId=%s, taskContext=%s", id, httpResumeDownloadTaskContext));
     }
 
     @Override
     public void run() {
         Response response = null;
 
-        if(downloaded < httpResumeDownloadTaskContext.getData()){//未下载完成
+        if(downloaded < httpResumeDownloadTaskContext.getSize()){//未下载完成
             int trys = 1;
             while(trys<=3){
                 try {
@@ -85,7 +87,7 @@ public class HttpResumeDownloadTask extends Thread implements NeulinkConst {
 
         long endPos = httpResumeDownloadTaskContext.getEndPos();//结束位置
 
-        NeuLogUtils.iTag(TAG,"线程 "+ id + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
+        NeuLogUtils.iTag(TAG,"Task "+ id + "，开始下载的位置: " + startPos+ "，结束位置："+ endPos);
 
         headers.put("Range", "bytes=" + startPos + "-"+ endPos);//设置获取实体数据的范围
 
@@ -95,20 +97,29 @@ public class HttpResumeDownloadTask extends Thread implements NeulinkConst {
             InputStream inStream = response.body().byteStream();
             byte[] buffer = new byte[2048];
             int readed = 0;
+
             print("Task " + this.id + " start download from position " + startPos);
+
             RandomAccessFile taskfile = new RandomAccessFile(this.saveFile, "rwd");
+
             taskfile.seek(startPos);
+
             while ((readed = inStream.read(buffer, 0, buffer.length)) != -1) {
+
                 taskfile.write(buffer, 0, readed);
+
                 downloaded += readed;
-                httpResumeDownloadRequest.store(id,downloaded);
-                /**
-                 * 更新下载进度
-                 */
-                httpResumeDownloadRequest.append(readed);
+
+                if(downloaded<=httpResumeDownloadTaskContext.getSize()){
+                    httpResumeDownloadRequest.store(id,downloaded);
+                    /**
+                     * 更新下载进度
+                     */
+                    httpResumeDownloadRequest.append(readed);
+                }
             }
             this.finish = true;
-            print("Task " + this.id + " download finish");
+            NeuLogUtils.iTag(TAG,String.format("TaskId=%s finished, taskContext=%s, fileSize=%s, executed=%s", id, httpResumeDownloadTaskContext,httpResumeDownloadRequest.getFileSize(),downloaded));
             taskfile.close();
             inStream.close();
         }

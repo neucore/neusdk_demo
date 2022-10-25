@@ -53,11 +53,12 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
     private boolean mod;
     /* 下载路径  */
     private String reqNo;
+
     private String downloadUrl;
 
     protected final int CPU_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 
-    protected final int MAX_CORE_POOL_SIZE = CPU_SIZE < 5 ? CPU_SIZE : 5;
+    protected final int MAX_CORE_POOL_SIZE = 2;//CPU_SIZE < 5 ? CPU_SIZE : 5;
 
     private Long CellSize = 1024*1024L;
 
@@ -102,8 +103,11 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
      * @param size
      */
     public void append(int size) {
-        synchronized (downloadSize){
+        synchronized (this){
             downloadSize += size;
+            if(downloadSize>=fileSize){
+                downloadSize = fileSize;
+            }
         }
     }
 
@@ -112,11 +116,55 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
     }
 
     /**
+     * 获取文件名
+     */
+    private String getFileName(String urlStr, Response response) {
+        String filename = response.header("Content-Disposition");
+        if(ObjectUtil.isNotEmpty(filename)){
+            Matcher m = Pattern.compile(".*filename=(.*)").matcher(filename);
+            if(m.find()) {
+                return m.group(1);
+            }
+            return UUID.randomUUID()+ ".tmp";//默认取一个文件名
+        }
+        else{
+            filename = new File(urlStr).getName();
+            return filename;
+        }
+    }
+
+    private static void print(String msg){
+        NeuLogUtils.iTag(TAG, msg);
+    }
+
+    /**
+     *
+     * @param context
+     * @return
+     * @throws IOException
+     */
+    public File start(Context context, String reqNo, String url, IDownloadProgressListener listener) throws Exception {
+        this.reqNo = reqNo;
+        String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator + reqNo;
+        File fileSaveDir = new File(storeDir);
+        if(!fileSaveDir.exists()) {
+            fileSaveDir.mkdirs();
+        }
+        init(context,url,storeDir);
+        addListener(listener);
+        return download();
+    }
+
+    public void addListener(IDownloadProgressListener iDownloadProgressListener){
+        listeners.add(iDownloadProgressListener);
+    }
+
+    /**
      *  开始下载文件
      * @return 已下载文件大小
      * @throws Exception
      */
-    private File start() throws Exception{
+    private File download() throws Exception{
 
         try {
             RandomAccessFile randOut = new RandomAccessFile(this.saveFile, "rw");
@@ -171,17 +219,13 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
                      * 保证上报下载进度
                      */
                     if(notError){
-                        String progress = formater.format(downloadSize*1.0/fileSize*1.0*100);
-                        if(progress.length()>3
-                                && progress.endsWith("0.0")){
-
-                            long total = getFileSize();
-                            Double percent = downloadSize*1.0/total*1.0*100;
-                            NeuLogUtils.iTag(TAG,reqNo+ " progress: "+progress);
-
+                        Double progress = downloadSize*1.0/fileSize*1.0*100;
+                        String progressStr = formater.format(progress);
+                        if(progressStr.length()>3
+                                && progressStr.endsWith("0.0")){
+                            NeuLogUtils.iTag(TAG,reqNo+ " progress: "+progressStr);
                             for (IDownloadProgressListener listener:listeners) {
-
-                                listener.onDownload(percent);//通知目前已经下载完成的数据长度
+                                listener.onDownload(progress);//通知目前已经下载完成的数据长度
                             }
                         }
                     }
@@ -230,71 +274,23 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
      *
      * @param mod
      * @param id
-     * @param blocks
+     * @param blockNum
      * @param blockSize
      * @return
      */
-    private HttpResumeDownloadTaskContext createTaskContext(boolean mod, int id, int blocks, long blockSize, long downloaded){
+    private HttpResumeDownloadTaskContext createTaskContext(boolean mod, int id, int blockNum, long blockSize, long downloaded){
 
         long startPos = id*blockSize;
 
         long endPos = 0;
 
-        if(mod || id<blocks-1 ){
+        if(mod || id<blockNum-1 ){
             endPos = (id+1)*blockSize;
         }
         else{
-            endPos = fileSize-blockSize*(id+1);
+            endPos = fileSize;
         }
         return new HttpResumeDownloadTaskContext(startPos,endPos,downloaded);
-    }
-
-    /**
-     * 获取文件名
-     */
-    private String getFileName(String urlStr, Response response) {
-        String filename = response.header("Content-Disposition");
-        if(ObjectUtil.isNotEmpty(filename)){
-            Matcher m = Pattern.compile(".*filename=(.*)").matcher(filename);
-            if(m.find()) {
-                return m.group(1);
-            }
-            return UUID.randomUUID()+ ".tmp";//默认取一个文件名
-        }
-        else{
-            filename = new File(urlStr).getName();
-            return filename;
-        }
-    }
-
-    private static void print(String msg){
-        NeuLogUtils.iTag(TAG, msg);
-    }
-
-    /**
-     *
-     * @param context
-     * @return
-     * @throws IOException
-     */
-    public File start(Context context, String reqNo,String url, IDownloadProgressListener listener) throws Exception {
-        this.reqNo = reqNo;
-        String storeDir = DeviceUtils.getExternalCacheDir(ContextHolder.getInstance().getContext())+File.separator + reqNo;
-        File fileSaveDir = new File(storeDir);
-        if(!fileSaveDir.exists()) {
-            fileSaveDir.mkdirs();
-        }
-        createTask(context,url,storeDir);
-        addListener(listener);
-        return start();
-    }
-
-    public void addListener(IDownloadProgressListener iDownloadProgressListener){
-        listeners.add(iDownloadProgressListener);
-    }
-
-    public HttpResumeDownloadRequestContext getExecutionContext() {
-        return httpResumeDownloadRequestContext;
     }
 
     /**
@@ -303,7 +299,7 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
      * @param url
      * @param fileSaveDir
      */
-    private void createTask(Context context, String url, String fileSaveDir){
+    private void init(Context context, String url, String fileSaveDir){
         Response response = null;
         try {
 
@@ -343,17 +339,31 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
                 if(this.fileSize<CellSize*5){
                     this.taskNum = Long.valueOf(fileSize/CellSize).intValue();
-                    if(this.taskNum==0){
-                        this.taskNum = 1;
+                    this.mod = fileSize%CellSize==0;
+                    if(!mod){
+                        taskNum = taskNum +1;
                     }
                 }
                 else{
                     this.taskNum = MAX_CORE_POOL_SIZE;
                 }
 
+                //计算每条线程下载的数据长度
+                this.blockSize = this.fileSize / this.taskNum;
+                /**
+                 * 是否平分【每个任务下载的一样大的数据包】
+                 */
+                this.mod = this.fileSize%this.taskNum ==0;
+
+                if(!mod){
+                    taskNum = taskNum+1;
+                }
+
                 httpResumeDownloadRequestContext = new HttpResumeDownloadRequestContext(fileSaveDir,reqNo,this.taskNum);
 
                 this.data = httpResumeDownloadRequestContext.init();
+
+                NeuLogUtils.iTag(TAG,String.format("DownloadTaskContext=%s", data));
 
                 this.tasks = new HttpResumeDownloadTask[this.taskNum];
 
@@ -373,9 +383,7 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
 
                     print("已经下载的长度"+ this.downloadSize);
                 }
-                //计算每条线程下载的数据长度
-                this.blockSize = this.fileSize / this.taskNum;
-                this.mod = this.fileSize%this.taskNum ==0;
+
 
             }else{
                 throw new RuntimeException("server no response "+code);

@@ -27,7 +27,7 @@ public class HttpResumeDownloadTaskContext {
         this.endPos = endPos;
     }
 
-    public long getData(){
+    public long getSize(){
         return endPos-startPos;
     }
 
@@ -37,5 +37,9 @@ public class HttpResumeDownloadTaskContext {
 
     public void setDownloaded(long downloaded) {
         this.downloaded = downloaded;
+    }
+
+    public String toString(){
+        return String.format("start=%s,end=%s,size=%s,downloaded=%s",startPos,endPos,endPos-startPos,downloaded);
     }
 }

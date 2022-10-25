@@ -56,7 +56,7 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
             /**
              * TODO saveAs to dest for OTA
              */
-            saveFile.delete();
+//            saveFile.delete();
 
             /**
              * @TODO: 业务实现
