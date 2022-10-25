@@ -205,41 +205,39 @@ eg：人脸识别的时候，摄像头抓到图片，通过算法提起人脸特
 
 ##### neulink 1.0开发方式
 
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
++ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
-2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
-3，
-
-eg：授权处理器
-topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
-processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 ##### neulink 1.2开发方式
 
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
++ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
-2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
-eg：授权处理器
-topic：rrpc/req/${dev_id}/v1.0；
-processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/v1.0；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
-变化点&注意事项：
++ 3，变化点&注意事项：
 
-0，新增了header
+  + 0，新增了header
 
-1，biz、req_no、md5三个字段从topic移到了header
+  + 1，biz、req_no、md5三个字段从topic移到了header
 
 ##### neulink 2.0开发方式
 
-变化点&注意事项：
++ 变化点&注意事项：
 
-新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
++ 新增了统一的data对象【这个对象完全由具体的业务开发自己定义】
 
 ###### 请求协议[2.0]
 
@@ -247,11 +245,11 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 {
     "headers":
        {
-              "biz":"${biz}",//业务标识：[qlib|blib….]
+             "biz":"${biz}",//业务标识：[qlib|blib….]
              "reqNo":"${reqNo}",//请求ID
              "md5":"${md5}",//消息体的md5
              "time":"${time}",//请求时间
-             "${keyn}":"${valuen}"
+             "${keyn}":"${valuen}"//自定义
        },
       "data": {}    //可选
 }
@@ -271,7 +269,7 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
             "storeid":"${storeid}",//门店场所ID
             "zoneid":"${zoneid}",//集群ID
             "time":"${time}",//请求时间
-            "${keyn}":"${valuen}"
+            "${keyn}":"${valuen}"//自定义
         },    
     "data": {}         //可选
 }
@@ -289,21 +287,20 @@ processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
             "storeid":"${storeid}",//门店场所ID
             "zoneid":"${zoneid}",//集群ID
             "time":"${time}",//请求时间
-            "${keyn}":"${valuen}"
+            "${keyn}":"${valuen}"//自定义
         },    
     "data": {}         //可选
 }
 ```
 
-0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
-1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
++ 1，实现payload的pojo对象【xxxCmd **extends NewCmd<xxReqData>**、xxxRes **extends NewCmdRes<xxxResData>**、xxxActionResult **extends ActionResult**】
 
-2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
-
-eg：授权处理器
-topic：rrpc/req/${dev_id}/v1.0；
-processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/v1.0；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 #### 样例
 
@@ -385,9 +382,9 @@ public class AuthProcessor  extends GProcessor<AuthSyncCmd, AuthSyncCmdRes, Auth
 
 ```
 
-3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
++ 3，定义xxxCmdListener实现ICmdListener;eg:AuthCmdListener
 
-#### 注意事项
+#### 样例
 
 ```java
 
@@ -436,7 +433,9 @@ public class AuthCmdListener implements ICmdListener<AuthActionResult, AuthSyncC
 
 ```
 
-4, listener 的doAction 返回值 AuthActionResult
++ 4, listener 的doAction 返回值 AuthActionResult
+
+#### 样例
 
 ```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result;
@@ -450,7 +449,9 @@ public class AuthActionResult extends ActionResult<AuthActionResultData/*响应�
 
 ```
 
-5, listener 的doAction 返回值 AuthActionResultData
++ 5, listener 的doAction 返回值 AuthActionResultData
+
+#### 样例
 
 ```java
 package com.neucore.neusdk_demo.neulink.extend.auth.listener.result.data;
