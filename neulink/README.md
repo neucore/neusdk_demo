@@ -9,6 +9,20 @@ neulink sdk已经完成了mqtt网络的连接、断网重连机制；
 实现了响应上传回调机制
 实现了消息、用户、设备等服务默认实现及其扩展机制
 
+### 图
+
+#### 通道通信说明图
+![通道通信图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt.png)
+
+#### 时序图说明图
+
+##### Http_mqtt时序图
+![http_mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/http_mqtt_seq.png)
+
+##### Mqtt_mqtt时序图
+![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
+
+
 ### 注意事项
 
 apk升级建议采用增量升级方式【即：patch方式，这样可以保留系统的业务数据】
@@ -44,7 +58,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
     在AndroidManifest.xml中添加下列内容
 
-    ```
+```xml
     <uses-sdk
             android:minSdkVersion="21"
             android:targetSdkVersion="28" />
@@ -64,34 +78,29 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     <!--允许应用程序完全使用网络-->
     <uses-permission android:name="android.permission.INTERNET"/>
   
-    ```
+```
 
 #### 代码集成
 
-MyApplication.installSDK();
+```java
+    MyApplication.installSDK();
+```
+
 
 #### neulink服务退出
 
+```java
+
+    NeulinkService.getInstance().destroy();
+
 ```
 
-NeulinkService.getInstance().destroy();
-
-```
-
-### 图
-#### 通道通信说明图
-![通道通信图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt.png)
-#### 时序图说明图
-##### Http_mqtt时序图
-![http_mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/http_mqtt_seq.png)
-##### Mqtt_mqtt时序图
-![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
 ### 扩展实现 
 
-#### 参考 MyInstaller
+#### 参考 MyInstaller[详见代码]
 
 #### 扩展-HTTP安全登录
-```
+```java
     /**
      * HTTP(S)安全登录 loginCallback
      */
@@ -109,7 +118,7 @@ NeulinkService.getInstance().destroy();
 
 #### 扩展-MQTT联网状态
 
-```
+```java
     /**
      * MQTT 网络、消息扩展 参考 MyMqttCallbackImpl
      */
@@ -117,7 +126,7 @@ NeulinkService.getInstance().destroy();
 ```
 
 #### 扩展-设备服务
-```
+```java
     /**
      * 设备服务扩展
      */
@@ -126,7 +135,7 @@ NeulinkService.getInstance().destroy();
 ```
     
 #### 扩展-设备信息扩展
-```
+```java
     /**
      * 设备信息上报扩展 参考 MyDeviceServiceImpl
      */
@@ -135,7 +144,7 @@ NeulinkService.getInstance().destroy();
 ```
 
 #### 扩展-Neulink外部扩展注册器
-```
+```java
     /**
      * 外部扩展注册器
      */
@@ -143,7 +152,7 @@ NeulinkService.getInstance().destroy();
 ```
 
 #### 扩展-权限检测扩展
-```
+```java
     /**
      * 默认：READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
      */
@@ -151,21 +160,41 @@ NeulinkService.getInstance().destroy();
 ```
 
 #### 扩展-文件下载器
-```
+```java
+    
     /**
+     * 下载器使用方式
      * 文件下载器【人脸目标库、OTA升级】
      * 单线程文件下载器：HttpDownloader
      * 多线程文件下载器：HttpResumeDownloader
      * Oss单线程文件下载器：OssDownloader
      * Oss多线程文件下载器：OssResumeDownloader
      */
-    IPropChgListener listener = new MyPropChgListener();
+    IDownloder downloader = ServiceRegistry.getInstance().getDownloder();
+    File saveFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {
+        @Override
+        public void onDownload(Double percent) {
+            //TODO
+        }
+        @Override
+        public void onFinished(File file){
+            /**
+             * 开始安装处理
+             */
+            Log.i(TAG,"成功下载完成");
+        }
+    } );
+    //下载完毕
+    //TODO 业务
 ```
+
+
 #### 扩展-系统属性改变侦听器
 可以自定义PropChgListener，来同步系统属性设置信息到设备数据库记录；
 eg：人脸识别的时候，摄像头抓到图片，通过算法提起人脸特征； 与设备端数据库人脸特征库进行比较，当数据库某一条记录为debug数据库时，
 则其后续处理相关日志级别为debug【方便调试】
-```
+
+```java
     /**
      * 系统属性修改侦听器
      */
@@ -762,8 +791,7 @@ Context.getFilesDir()/
     + neucore/config 配置文件目录
     
 ## 配置扩展机制
-```
-扩展配置集成
+```java
 Properties extConfig = new Properties();
 /**
  * 配置扩展: key可以参考ConfigContext内的定义
