@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -22,7 +23,7 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
 
     private String reqNo;
     private Integer taskNum;
-    private Map<Integer,Long> blocksData = new HashMap<>();;
+    private Map<Integer,Long> blocksData = new ConcurrentHashMap<>();;
     private String storeDir;
     public HttpResumeDownloadRequestContext(String storeDir, String reqNo, Integer taskNum){
         this.storeDir = storeDir;
@@ -55,7 +56,6 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
                 }
             }
             else{
-                blocksData.put(id,0L);
                 store(id,0L);
             }
         }
@@ -73,17 +73,11 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
             oos.writeObject(size);
             FileDescriptor fd = fos.getFD();
             fd.sync();
+            blocksData.put(taskId,size);
         }
         catch (IOException e) {
-            e.printStackTrace();
         }
         finally {
-            if(ObjectUtil.isNotEmpty(fos)){
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                }
-            }
             if(ObjectUtil.isNotEmpty(oos)){
                 try {
                     oos.close();
@@ -93,8 +87,8 @@ public class HttpResumeDownloadRequestContext implements NeulinkConst {
         }
     }
 
-    public Map<Integer, Long> getBlocksData() {
-        return blocksData;
+    public Long getSize(Integer id){
+        return blocksData.get(id);
     }
 
     public void clear(){

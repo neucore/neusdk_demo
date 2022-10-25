@@ -55,7 +55,7 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
             /**
              * TODO saveAs to dest for OTA
              */
-            saveFile.delete();
+//            saveFile.delete();
 
             ActionResult<String> result = new ActionResult<>();
             result.setData(MESSAGE_SUCCESS);
