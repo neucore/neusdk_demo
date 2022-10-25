@@ -547,7 +547,11 @@ public class AuthActionResultData {
      * 外部扩展 参照 MyBizExtendRegistCallbackImpl
      */
     IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
-    
+```
+
+参照：MyBizExtendRegistCallbackImpl.onCallBack()方法；
+
+```java
     /**
      * SDK 自定义业务扩展实现
      * 框架已经实现消息的接收及响应处理机制
