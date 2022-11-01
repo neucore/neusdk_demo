@@ -1,6 +1,8 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.ILoginCallback;
+import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
@@ -12,7 +14,7 @@ import cn.hutool.json.JSONObject;
 /**
  * 登录服务回调实现
  */
-public class MyLoginCallbackImpl implements ILoginCallback {
+public class MyLoginCallbackImpl implements ILoginCallback, NeulinkConst {
     private String TAG = "MyLoginCallbackImpl";
     @Override
     public String login() {
@@ -25,6 +27,10 @@ public class MyLoginCallbackImpl implements ILoginCallback {
         headers.put("accept-language","zh-Hans-CN");
         headers.put("mate-scope","Mg");
         headers.put("from","2");
+        /**
+         * 新增时区字段
+         */
+        headers.put("ltz", ConfigContext.getInstance().getConfig(TimeZoneId,TimeZoneId_Asia$ShangHai));
 
         Map<String,String> params = new HashMap<>();
         params.put("client_id","client-smrtlib");//client-smrtlib,gemini

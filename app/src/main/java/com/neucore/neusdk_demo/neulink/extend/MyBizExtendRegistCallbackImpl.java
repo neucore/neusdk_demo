@@ -61,7 +61,7 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
         /**
          * 或者
          */
-//        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncListener());
+        ListenerRegistry.getInstance().setBlibExtendListener(NeulinkConst.NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncListener());
 
         /**
          * 车辆下发 扩展【默认实现】
