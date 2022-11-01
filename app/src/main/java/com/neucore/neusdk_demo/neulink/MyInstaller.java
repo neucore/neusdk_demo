@@ -9,6 +9,7 @@ import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IPermissionChecker;
 import com.neucore.neulink.IPropChgListener;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.ResCallback2Log;
 import com.neucore.neulink.impl.SampleConnector;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
@@ -31,7 +32,7 @@ import java.util.Properties;
 /**
  * 可以扩展实现
  */
-public class MyInstaller {
+public class MyInstaller implements NeulinkConst {
 
     private String TAG = "MyInstaller";
 
@@ -158,6 +159,10 @@ public class MyInstaller {
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC  14:相框-Android;15:相框-Lunix】
          */
         extConfig.setProperty(ConfigContext.DEVICE_TYPE,"10");//默认为客流机器
+        /**
+         * 设置设备所属时区
+         */
+        extConfig.setProperty(ConfigContext.NEULINK_HEADERS_LZR,TimeZoneId_Asia$ShangHai);
 
         /**
          * 设置租户Id【必须】

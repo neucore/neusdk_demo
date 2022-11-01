@@ -5,6 +5,7 @@ import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
 import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
+import com.neucore.neulink.impl.service.device.LocalTimezone;
 
 import java.util.Locale;
 
@@ -29,6 +30,8 @@ public interface IDeviceService {
     RuntimeInfo runtime();
 
     Locale getLocale();
+
+    LocalTimezone getTimezone();
 
     boolean regist(DeviceInfo deviceInfo);
 

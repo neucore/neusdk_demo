@@ -191,6 +191,8 @@ public interface NeulinkConst {
 
     String NEULINK_HEADERS_MD5 = "md5";
 
+    String NEULINK_HEADERS_LZR = "lzt";
+
     /**
      * 成功
      */
@@ -364,4 +366,21 @@ public interface NeulinkConst {
      */
     String PROP_CHG_ACTION_DEL = "del";
 
+    String TimeZoneId = "TimeZoneId";
+
+    String TimeZoneId_Asia$ShangHai = "Asia/Shanghai";
+
+    String DateTimeFormat = "dateTimeFormat";
+
+    String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+    String DateFormat = "DateFormat";
+
+    String YYYY_MM_DD = "yyyy-MM-dd";
+
+    String TimeFormat = "TimeFormat";
+
+    String HH_MM_SS = "HH:mm:ss";
+
+    String HH_MM = "HH:mm";
 }

@@ -9,13 +9,22 @@ import com.neucore.neulink.extend.IgnorePropExclusionStrategy;
 import java.lang.reflect.Type;
 import java.util.List;
 
+
 public class JSonUtils {
 
     private static Gson gson = null;
     private static GsonBuilder builder = null;
     //private static ObjectMapper mapper = new ObjectMapper();
     static {
-        builder = new GsonBuilder().setExclusionStrategies(new IgnorePropExclusionStrategy()).setPrettyPrinting();
+        builder = new GsonBuilder()
+//                .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeSerializer())
+//                .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeDeserializer())
+//                .registerTypeAdapter(LocalDate.class,new LocalDateSerializer())
+//                .registerTypeAdapter(LocalDate.class,new LocalDateDeserializer())
+//                .registerTypeAdapter(LocalTime.class,new LocalTimeSerializer())
+//                .registerTypeAdapter(LocalTime.class,new LocalTimeDeserializer())
+                .setExclusionStrategies(new IgnorePropExclusionStrategy())
+                .setPrettyPrinting();
         gson = builder.create();
     }
 

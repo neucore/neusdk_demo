@@ -93,6 +93,8 @@ public class HeadersUtil implements NeulinkConst {
      */
     public static void registBinding(JsonObject payload,String topicStr,int qos){
         binding(payload,topicStr,qos);
+        String lzr = ConfigContext.getInstance().getConfig(NeulinkConst.NEULINK_HEADERS_LZR,TimeZoneId_Asia$ShangHai);
+        payload.add(NEULINK_HEADERS_LZR,new JsonPrimitive(String.valueOf(lzr)));
     }
     /**
      * end2Clould

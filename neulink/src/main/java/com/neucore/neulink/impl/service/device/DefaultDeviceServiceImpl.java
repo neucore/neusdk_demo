@@ -79,6 +79,13 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
         return Locale.getDefault();
     }
 
+
+    @Override
+    public LocalTimezone getTimezone(){
+        return new LocalTimezone();
+    }
+
+
     @Override
     public boolean regist(DeviceInfo deviceInfo) {
         return NeulinkService.getInstance().regist(deviceInfo);
