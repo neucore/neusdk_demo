@@ -21,7 +21,7 @@ public class PublishActionListenerAdapter implements MqttActionListener, Neulink
     }
     @Override
     public void onSuccess(IMqttToken asyncActionToken) {
-        NeuLogUtils.iTag(TAG,"onSuccess");
+        NeuLogUtils.iTag(TAG,"publishSuccess");
         Result result = Result.ok();
         result.setReqId(reqId);
         result.setData(payload);
