@@ -10,8 +10,6 @@ import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.NeulinkTopicParser;
-import com.neucore.neulink.impl.Result;
-import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
@@ -66,9 +64,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
             if (mqttCallBacks != null) {
                 for (IMqttCallBack callback: mqttCallBacks) {
                     try {
-                        if(!asyncActionToken.isComplete()){
-                            callback.connectSuccess(asyncActionToken);
-                        }
+                        callback.connectSuccess(asyncActionToken);
                     }
                     catch (Exception ex){
                         NeuLogUtils.eTag(TAG,ex.getMessage());

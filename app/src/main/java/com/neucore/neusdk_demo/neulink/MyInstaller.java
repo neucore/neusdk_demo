@@ -114,7 +114,7 @@ public class MyInstaller implements NeulinkConst {
         /**
          * mqtt回调，当需要监控mqtt状态时，需要设置【可选】
          */
-        //connector.setMqttCallBack(mqttCallBack);
+        connector.setMqttCallBack(mqttCallBack);
         /**
          * neulink消息线性处理存储服务【可选】
          */
