@@ -25,6 +25,7 @@ import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttActionListener;
 import org.eclipse.paho.mqttv5.client.MqttCallback;
 import org.eclipse.paho.mqttv5.client.MqttDisconnectResponse;
+import org.eclipse.paho.mqttv5.client.internal.ConnectActionListener;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
@@ -55,17 +56,23 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
      */
     @Override
     public void onSuccess(IMqttToken asyncActionToken) {
-        NeuLogUtils.iTag(TAG, "onSuccess ");
-        service.setFailException(null);
-        service.setMqttConnSuccessed(true);
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.connectSuccess(asyncActionToken);
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
+
+        MqttActionListener actionListener = asyncActionToken.getActionCallback();
+        if(actionListener instanceof ConnectActionListener){
+            service.setFailException(null);
+            service.setMqttConnSuccessed(true);
+            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+            NeuLogUtils.iTag(TAG, "connectSuccess ");
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback: mqttCallBacks) {
+                    try {
+                        if(!asyncActionToken.isComplete()){
+                            callback.connectSuccess(asyncActionToken);
+                        }
+                    }
+                    catch (Exception ex){
+                        NeuLogUtils.eTag(TAG,ex.getMessage());
+                    }
                 }
             }
         }
@@ -243,7 +250,8 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
                 processor.execute(debug,qos,topic,headers,payload);
             }
             else {
-                throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
+                NeuLogUtils.eTag(TAG,topicStr+String.format("没有找到相关的%sProcessor实现类...",StrUtil.upperFirst(biz)));
+                //throw new Exception(topicStr+String.format("没有找到相关的%sProcessor实现类...", StrUtil.upperFirst(biz)));
             }
             List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
             if (mqttCallBacks != null) {
