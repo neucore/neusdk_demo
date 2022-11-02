@@ -1,6 +1,5 @@
 package com.neucore.neulink;
 
-import org.eclipse.paho.mqttv5.client.IMqttDeliveryToken;
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 
 public interface IMqttCallBack extends NeulinkConst {
