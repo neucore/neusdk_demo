@@ -58,7 +58,6 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         MqttActionListener actionListener = asyncActionToken.getActionCallback();
         if(actionListener instanceof ConnectActionListener){
             service.setFailException(null);
-            service.setMqttConnSuccessed(true);
             List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
             NeuLogUtils.iTag(TAG, "connectSuccess ");
             if (mqttCallBacks != null) {
@@ -82,18 +81,21 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     @Override
     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
         NeuLogUtils.eTag(TAG, "onFailure ",exception);
-        if (!service.isMqttConnSuccessed()) {
-            service.setFailException(exception);
-        } else {
-            service.setFailException(null);
-        }
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback : mqttCallBacks) {
-                try {
-                    callback.connectFailed(asyncActionToken, exception);
-                } catch (Exception ex) {
-                    NeuLogUtils.eTag(TAG, ex.getMessage());
+        MqttActionListener actionListener = asyncActionToken.getActionCallback();
+        if(actionListener instanceof ConnectActionListener){
+            NeuLogUtils.eTag(TAG, "connectFailed ",exception);
+            if (!service.isMqttConnSuccessed()) {
+                NeuLogUtils.iTag(TAG, "历史没有连接连接成功");
+                service.setFailException(exception);
+            }
+            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback : mqttCallBacks) {
+                    try {
+                        callback.connectFailed(asyncActionToken, exception);
+                    } catch (Exception ex) {
+                        NeuLogUtils.eTag(TAG, ex.getMessage());
+                    }
                 }
             }
         }
@@ -124,57 +126,26 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
                     }
                 }
             }
-            service.setMqttConnSuccessed(true);
         }
         finally {
             reentrantLock.unlock();
         }
     }
 
+    /**
+     *
+     * @param reasonCode
+     * @param properties
+     */
     @Override
     public void authPacketArrived(int reasonCode, MqttProperties properties) {
-
+        NeuLogUtils.dTag(TAG,String.format("authPacketArrived reasonCode=%s,properties=%s",reasonCode,properties));
     }
 
     /**
-     * MqttCallback
-     * @param cause
-     */
-    public void connectionLost(Throwable cause) {
-        NeuLogUtils.eTag(TAG,"connectionLost",cause);
-        deviceService.disconnect();
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.connectionLost(cause);
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
-                }
-            }
-        }
-    }
-
-    /**
-     * MqttCallback
+     *
      * @param token
      */
-    public void deliveryComplete(IMqttDeliveryToken token) {
-        NeuLogUtils.dTag(TAG,"deliveryComplete");
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.deliveryComplete(token);
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
-                }
-            }
-        }
-    }
-
     @Override
     public void deliveryComplete(IMqttToken token) {
         NeuLogUtils.dTag(TAG,"deliveryComplete");
@@ -191,14 +162,34 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         }
     }
 
+    /**
+     *
+     * @param disconnectResponse
+     */
     @Override
     public void disconnected(MqttDisconnectResponse disconnectResponse) {
-
+        NeuLogUtils.eTag(TAG,"disconnected",disconnectResponse.getException());
+        deviceService.disconnect();
+        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+        if (mqttCallBacks != null) {
+            for (IMqttCallBack callback: mqttCallBacks) {
+                try {
+                    callback.connectionLost(disconnectResponse.getException());
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,ex.getMessage());
+                }
+            }
+        }
     }
 
+    /**
+     *
+     * @param exception
+     */
     @Override
     public void mqttErrorOccurred(MqttException exception) {
-
+        NeuLogUtils.eTag(TAG,"mqttErrorOccurred",exception);
     }
 
     /**
