@@ -92,26 +92,23 @@ public class NeulinkService implements NeulinkConst{
         udpReceiveAndtcpSend.start();
     }
 
-    public void initMqttService(String mqttServiceUri, String userName, String password) throws MqttException{
+    public synchronized void initMqttService(String mqttServiceUri, String userName, String password) throws MqttException{
         createMqttService(mqttServiceUri,userName,password);
         int count = 1;
         while (!isMqttConnSuccessed()){
             try {
-                NeuLogUtils.iTag(TAG,"start connectMqtt");
+                NeuLogUtils.iTag(TAG,String.format("try %s 次 start connectMqtt。。。。",count));
                 connect();
-                NeuLogUtils.iTag(TAG,"end connectMqtt");
             }
             catch (MqttException ex){
-                NeuLogUtils.eTag(TAG,"连接失败：",ex);
+                NeuLogUtils.eTag(TAG,"连接失败",ex);
             }
             finally {
-                NeuLogUtils.iTag(TAG,"try "+count+"次连接。。。。");
                 if(!isMqttConnSuccessed()){
                     if(isFailed()){
-                        Throwable throwable = getFailException();
-                        NeuLogUtils.eTag(TAG,"连接失败：",throwable);
-                        if(throwable instanceof MqttException){
-                            throw (MqttException)throwable;
+                        NeuLogUtils.eTag(TAG,"连接失败：",failException);
+                        if(failException instanceof MqttException){
+                            throw (MqttException)failException;
                         }
                     }
                     try {
@@ -122,13 +119,14 @@ public class NeulinkService implements NeulinkConst{
                     } catch (InterruptedException e) {
                     }
                 }
+                NeuLogUtils.iTag(TAG,String.format("end %s 次 connectMqtt",count));
             }
         }
-        NeuLogUtils.iTag(TAG,"mqttInited");
+        NeuLogUtils.iTag(TAG,String.format("end connect success=%s with 第 %s 次",isMqttConnSuccessed(),count));
     }
 
     private void createMqttService(String serverUri, String userName, String password){
-        synchronized (mqttInited){
+        synchronized (this){
             if(!mqttInited){
                 NeuLogUtils.iTag(TAG,String.format("createMqttService inited %s", mqttInited));
                 Context context = ContextHolder.getInstance().getContext();
@@ -194,26 +192,22 @@ public class NeulinkService implements NeulinkConst{
         return deviceService;
     }
 
-    public void setDeviceService(IDeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
-
     /**
      * 连接Mqtt服务器
      */
-    private void connect() throws MqttException{
-        synchronized (this) {
-            if (!mqttConnCalled
-                    && !mqttConnSuccessed) {
-                myMqttService.connect();
-                mqttConnCalled = true;
-            }
+    private synchronized void connect() throws MqttException{
+        if (!mqttConnCalled
+                && !mqttConnSuccessed) {
+            myMqttService.connect();
+            mqttConnCalled = true;
+            NeuLogUtils.iTag(TAG,String.format("connect mqttConnCalled=%s",mqttConnCalled));
         }
     }
 
-    private void resetMqttConnCalled(){
+    private synchronized void resetMqttConnCalled(){
         mqttConnCalled = false;
         failException = null;
+        NeuLogUtils.iTag(TAG,"resetMqttConnCalled");
     }
 
     public void destroy(){
@@ -222,7 +216,7 @@ public class NeulinkService implements NeulinkConst{
             myMqttService.destory();
             destroyed = true;
             mqttConnCalled = false;
-            NeuLogUtils.iTag(TAG,"断开Mqtt Service");
+            NeuLogUtils.iTag(TAG,"destroy");
         }
     }
 
@@ -232,7 +226,7 @@ public class NeulinkService implements NeulinkConst{
             myMqttService.close();
             closed = true;
             mqttConnCalled = false;
-            NeuLogUtils.iTag(TAG,"断开Mqtt Service");
+            NeuLogUtils.iTag(TAG,"close");
         }
     }
 
@@ -526,34 +520,32 @@ public class NeulinkService implements NeulinkConst{
     }
 
     public boolean isMqttConnSuccessed(){
-        synchronized (this){
+        synchronized (mqttConnSuccessed) {
             return mqttConnSuccessed;
         }
     }
-    public boolean isFailed(){
-        return ObjectUtil.isNotEmpty(failException);
-    }
+    public synchronized boolean isFailed(){
+        synchronized (mqttConnSuccessed){
+            return ObjectUtil.isNotEmpty(failException);
+        }
 
-    Throwable getFailException(){
-        return failException;
     }
 
     public void setFailException(Throwable failException){
-        this.failException = failException;
-    }
-
-    public void setMqttConnSuccessed(Boolean connSuccessed){
-        synchronized (this) {
-            this.mqttConnSuccessed = connSuccessed;
+        synchronized (mqttConnSuccessed){
+            if(ObjectUtil.isEmpty(failException)){
+                mqttConnSuccessed = true;
+            }
+            else{
+                mqttConnSuccessed = false;
+            }
+            this.failException = failException;
         }
     }
 
     public RegistCallback getRegistCallback() {
         return registCallback;
     }
-
-    private ReentrantLock reentrantLock = new ReentrantLock();
-
 
     public List<IMqttCallBack> getMqttCallBacks() {
         return mqttCallBacks;
@@ -648,8 +640,10 @@ public class NeulinkService implements NeulinkConst{
             RequestContext.setId(reqId);
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
-            NeuLogUtils.iTag(TAG,"开始异步注册：run");
+
             int trys = 1;
+
+            NeuLogUtils.iTag(TAG,"开始建立Mqtt连接");
 
             while (!neulinkServiceInited){
                 try{
@@ -712,6 +706,8 @@ public class NeulinkService implements NeulinkConst{
                     }
                 }
             }
+
+            NeuLogUtils.iTag(TAG,String.format("开始异步注册：neulinkServiceInited=%s,registed=%s",neulinkServiceInited,registed));
 
             trys = 1;
             while (neulinkServiceInited && !registed){
