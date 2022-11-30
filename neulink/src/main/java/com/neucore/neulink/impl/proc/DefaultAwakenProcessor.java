@@ -4,13 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.AwakenCmd;
 import com.neucore.neulink.impl.cmd.rmsg.AwakenRes;
-import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.listener.DefaultAwakenCmdListener;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.listener.DefaultAwakenCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -23,7 +24,6 @@ public final class DefaultAwakenProcessor extends GProcessor<AwakenCmd, AwakenRe
     @SuppressLint("InvalidWakeLockTag")
     public DefaultAwakenProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("awaken",new DefaultAwakenCmdListener());
     }
 
     @Override

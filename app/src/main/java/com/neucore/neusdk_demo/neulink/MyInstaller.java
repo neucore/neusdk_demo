@@ -182,7 +182,7 @@ public class MyInstaller implements NeulinkConst {
          * 智能楼宇地址：https://dev.neucore.com/v1/smrtlibs/devices/configs【智能楼宇平台】
          *
          */
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");//智能楼宇平台
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"http://10.18.104.250/v1/smrtlibs/devices/configs");//智能楼宇平台
         /**
          * 当存储服务为OSS时需要开启&设置【可选，本地部署时一般不需要，eg：智能楼宇系统】
          */

@@ -2,14 +2,15 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.cfg.CfgItem;
 import com.neucore.neulink.impl.cmd.cfg.CfgQueryCmdRes;
 import com.neucore.neulink.impl.cmd.cfg.QCfgCmd;
-import com.neucore.neulink.impl.ActionResult;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultQCfgCmdListener;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.JSonUtils;
 
 public final class DefaultQCfgProcessor extends GProcessor<QCfgCmd, CfgQueryCmdRes, ActionResult<CfgItem[]>> {
@@ -17,7 +18,6 @@ public final class DefaultQCfgProcessor extends GProcessor<QCfgCmd, CfgQueryCmdR
 
     public DefaultQCfgProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("qcfg",new DefaultQCfgCmdListener());
     }
 
     public QCfgCmd parser(String payload){

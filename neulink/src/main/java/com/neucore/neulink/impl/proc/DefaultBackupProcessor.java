@@ -2,14 +2,15 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.bak.BackupCmd;
 import com.neucore.neulink.impl.cmd.bak.BackupCmdRes;
-import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.listener.DefaultBackupCmdListener;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.listener.DefaultBackupCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -18,7 +19,6 @@ public final class DefaultBackupProcessor extends GProcessor<BackupCmd, BackupCm
 
     public DefaultBackupProcessor(Context context) {
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("backup",new DefaultBackupCmdListener());
     }
 
     @Override
