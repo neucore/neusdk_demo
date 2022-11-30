@@ -2,20 +2,20 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.app.DebugCmd;
 import com.neucore.neulink.impl.cmd.rmsg.app.DebugRes;
-import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.listener.DefaultDebugCmdListener;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.listener.DefaultDebugCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
 public final class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, ActionResult<String>> {
 
     public DefaultDebugProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("debug",new DefaultDebugCmdListener());
     }
 
     public DebugCmd parser(String payload){

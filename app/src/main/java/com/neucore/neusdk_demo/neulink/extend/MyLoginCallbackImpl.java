@@ -33,14 +33,14 @@ public class MyLoginCallbackImpl implements ILoginCallback, NeulinkConst {
         headers.put("ltz", ConfigContext.getInstance().getConfig(TimeZoneId,TimeZoneId_Asia$ShangHai));
 
         Map<String,String> params = new HashMap<>();
-        params.put("client_id","gemini");//client-smrtlib,gemini
-        params.put("client_secret","secret");//client-smrtlib-secret,secret
+        params.put("client_id","client-smrtlib");//client-smrtlib,gemini
+        params.put("client_secret","client-smrtlib-secret");//client-smrtlib-secret,secret
         params.put("grant_type","password");//password
-        params.put("username","frame2");//15800860806,frame2
+        params.put("username","15800860806");//15800860806,frame2
         params.put("password","123456");//123456
 
-//        String url = "http://10.18.104.250/v1/oauth/token";
-        String url = "https://dev.neucore.com/api/uaa/oauth/token";
+        String url = "http://10.18.104.250/v1/oauth/token";
+//        String url = "https://dev.neucore.com/api/uaa/oauth/token";
 
         String response = NeuHttpHelper.post(url,params,headers,3);
 

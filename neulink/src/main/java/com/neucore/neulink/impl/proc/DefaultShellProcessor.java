@@ -2,13 +2,14 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.ShellCmd;
 import com.neucore.neulink.impl.cmd.rmsg.ShellCmdRes;
-import com.neucore.neulink.impl.ActionResult;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultShellCmdListener;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.JSonUtils;
 
 import java.util.Map;
@@ -17,7 +18,6 @@ public final class DefaultShellProcessor extends GProcessor<ShellCmd, ShellCmdRe
 
     public DefaultShellProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("shell",new DefaultShellCmdListener());
     }
 
     @Override

@@ -2,20 +2,20 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.cfg.CfgCmd;
 import com.neucore.neulink.impl.cmd.cfg.CfgCmdRes;
-import com.neucore.neulink.impl.ActionResult;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.listener.DefaultCfgCmdListener;
+import com.neucore.neulink.impl.registry.ListenerRegistry;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.JSonUtils;
 
 public final class DefaultCfgProcessor extends GProcessor<CfgCmd, CfgCmdRes, ActionResult<String>> {
 
     public DefaultCfgProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("cfg",new DefaultCfgCmdListener());
     }
 
     public CfgCmd parser(String payload){

@@ -2,20 +2,20 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.app.AlogUpgrCmd;
 import com.neucore.neulink.impl.cmd.rmsg.app.AlogUpgrRes;
-import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.listener.DefaultAlogCmdListener;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.listener.DefaultAlogCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
 public final class DefaultALogProcessor extends GProcessor<AlogUpgrCmd,AlogUpgrRes, ActionResult<String>> {
 
     public DefaultALogProcessor(Context context){
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("alog",new DefaultAlogCmdListener());
     }
     
     public AlogUpgrCmd parser(String payload){

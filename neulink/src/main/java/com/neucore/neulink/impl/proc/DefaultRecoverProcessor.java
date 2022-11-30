@@ -2,21 +2,21 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
+import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.NeulinkConst;
+import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.recv.RecoverCmd;
 import com.neucore.neulink.impl.cmd.recv.RecoverCmdRes;
-import com.neucore.neulink.impl.ActionResult;
+import com.neucore.neulink.impl.listener.DefaultRecoverCmdListener;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.listener.DefaultRecoverCmdListener;
 import com.neucore.neulink.util.JSonUtils;
 
 public final class DefaultRecoverProcessor extends GProcessor<RecoverCmd, RecoverCmdRes, ActionResult<String>> implements NeulinkConst {
 
     public DefaultRecoverProcessor(Context context) {
         super(context);
-        ListenerRegistry.getInstance().setExtendListener("recover",new DefaultRecoverCmdListener());
     }
 
     @Override
