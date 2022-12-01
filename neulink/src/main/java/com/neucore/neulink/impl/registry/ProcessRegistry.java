@@ -23,6 +23,7 @@ import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
+import com.neucore.neulink.impl.proc.DefaultResetProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
@@ -47,6 +48,7 @@ import com.neucore.neulink.impl.proc.DefaultQLogProcessor;
 import com.neucore.neulink.impl.proc.DefaultRebootProcessor;
 import com.neucore.neulink.impl.proc.DefaultRecoverProcessor;
 import com.neucore.neulink.impl.proc.DefaultShellProcessor;
+import com.neucore.neulink.util.ContextHolder;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,6 +61,45 @@ public final class ProcessRegistry implements NeulinkConst {
     private static ConcurrentHashMap<String, IQlib$ObjtypeProcessor> qlibObjtypeProcessors = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, IClib$ObjtypeProcessor> clibObjtypeProcessors = new ConcurrentHashMap<>();
     private static String TAG = TAG_PREFIX+"ProcessRegistry";
+
+    static {
+        Context context = ContextHolder.getInstance().getContext();
+
+        regist(NEULINK_BIZ_REBOOT,new DefaultRebootProcessor(context));
+        regist(NEULINK_BIZ_SHELL,new DefaultShellProcessor(context));
+        regist(NEULINK_BIZ_AWAKEN,new DefaultAwakenProcessor(context));
+        regist(NEULINK_BIZ_HIBRATE,new DefaultHibrateProcessor(context));
+        regist(NEULINK_BIZ_ALOG,new DefaultALogProcessor(context));
+        regist(NEULINK_BIZ_FIRMWARE,new DefaultFirewareProcessor(context));
+        regist(NEULINK_BIZ_FIRMWARE_RESUME,new DefaultFirewareProcessorResume(context));
+        regist(NEULINK_BIZ_BACKUP,new DefaultBackupProcessor(context));
+        regist(NEULINK_BIZ_RECOVER,new DefaultRecoverProcessor(context));
+        regist(NEULINK_BIZ_RESET,new DefaultResetProcessor(context));
+        regist(NEULINK_BIZ_DEBUG,new DefaultDebugProcessor(context));
+        regist(NEULINK_BIZ_QLOG,new DefaultQLogProcessor(context));
+        regist(NEULINK_BIZ_CFG,new DefaultCfgProcessor(context));
+        regist(NEULINK_BIZ_QCFG,new DefaultQCfgProcessor(context));
+
+
+        /**
+         * 批处理
+         */
+        registBlibProcessor(new DefaultBLibSyncProcessor(context));
+        registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
+        registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
+        registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
+
+        registQlibProcessor(new DefaultQLibProcessor(context));
+        registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
+        registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
+        registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
+
+        registClibProcessor(new DefaultCLibProcessor(context));
+        registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
+        registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
+        registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
+    }
+
     /**
      *
      * 设备重启 rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
@@ -89,63 +130,6 @@ public final class ProcessRegistry implements NeulinkConst {
     public synchronized static IProcessor build(Context context, String biz){
         if(processors.containsKey(biz)){
             return processors.get(biz);
-        }
-        if(NEULINK_BIZ_REBOOT.equalsIgnoreCase(biz)){//设备重启
-            regist(biz,new DefaultRebootProcessor(context));
-        }
-        else if(NEULINK_BIZ_FIRMWARE.equalsIgnoreCase(biz)){//设备固件升级
-            regist(biz,new DefaultFirewareProcessor(context));
-        }
-        else if(NEULINK_BIZ_FIRMWARE_RESUME.equalsIgnoreCase(biz)){//设备固件升级
-            regist(biz,new DefaultFirewareProcessorResume(context));
-        }
-        else if(NEULINK_BIZ_HIBRATE.equalsIgnoreCase(biz)){//设备休眠
-            regist(biz,new DefaultHibrateProcessor(context));
-        }
-        else if(NEULINK_BIZ_AWAKEN.equalsIgnoreCase(biz)){//设备唤醒
-            regist(biz,new DefaultAwakenProcessor(context));
-        }
-        else if(NEULINK_BIZ_DEBUG.equalsIgnoreCase(biz)){//Shell命令处理器
-            regist(biz,new DefaultDebugProcessor(context));
-        }
-        else if(NEULINK_BIZ_SHELL.equalsIgnoreCase(biz)){//Shell命令处理器
-            regist(biz,new DefaultShellProcessor(context));
-        }
-        else if(NEULINK_BIZ_ALOG.equalsIgnoreCase(biz)){//算法升级处理器
-            regist(biz, new DefaultALogProcessor(context));
-        }
-        else if(NEULINK_BIZ_QLOG.equalsIgnoreCase(biz)){//日志请求处理器
-            regist(biz, new DefaultQLogProcessor(context));
-        }
-        else if(NEULINK_BIZ_BLIB.equalsIgnoreCase(biz)){//目标库批量处理器
-            registBlibProcessor(new DefaultBLibSyncProcessor(context));
-            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceSyncProcessor(),new DefaultFaceSyncListener());
-            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
-            registBlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
-        }
-        else if(NEULINK_BIZ_QLIB.equalsIgnoreCase(biz)){//目标库单记录处理器
-            registQlibProcessor(new DefaultQLibProcessor(context));
-            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceQueryProcessor(),new DefaultFaceQueryListener());
-            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
-            registQlib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
-        }
-        else if(NEULINK_BIZ_CFG.equalsIgnoreCase(biz)){//配置管理处理器
-            regist(biz,new DefaultCfgProcessor(context));
-        }
-        else if(NEULINK_BIZ_QCFG.equalsIgnoreCase(biz)){//配置管理处理器
-            regist(biz,new DefaultQCfgProcessor(context));
-        }
-        else if(NEULINK_BIZ_BACKUP.equalsIgnoreCase(biz)){//备份处理器
-            regist(biz,new DefaultBackupProcessor(context));
-        }
-        else if(NEULINK_BIZ_RECOVER.equalsIgnoreCase(biz)){//备份恢复处理器
-            regist(biz,new DefaultRecoverProcessor(context));
-        }
-        else if(NEULINK_BIZ_CLIB.equalsIgnoreCase(biz)){//数据校验处理器
-            registClibProcessor(new DefaultCLibProcessor(context));
-            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_FACE,new DefaultFaceCheckProcessor(),new DefaultFaceCheckListener());
-            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
-            registClib$ObjtypeProcessor(NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
         }
         IProcessor processor = processors.get(biz);
         if(ObjectUtil.isEmpty(processor)){
@@ -237,6 +221,16 @@ public final class ProcessRegistry implements NeulinkConst {
     /**
      *
      * @param objType
+     * @return
+     */
+    public static IQlib$ObjtypeProcessor getQlibProcessor(String objType){
+        String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
+        return qlibObjtypeProcessors.get(batchBiz);
+    }
+
+    /**
+     *
+     * @param objType
      * @param objtypeProcessor
      * @param cmdListener
      */
@@ -251,11 +245,10 @@ public final class ProcessRegistry implements NeulinkConst {
      * @param objType
      * @return
      */
-    public static IQlib$ObjtypeProcessor getQlibProcessor(String objType){
-        String batchBiz = NEULINK_BIZ_QLIB+"."+objType.toLowerCase();
+    public static IQlib$ObjtypeProcessor getQlib$ObjtypeProcessor(String objType){
+        String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
         return qlibObjtypeProcessors.get(batchBiz);
     }
-
     /**
      *
      * @param cLibProcessor
@@ -276,6 +269,15 @@ public final class ProcessRegistry implements NeulinkConst {
         ListenerRegistry.getInstance().setClibExtendListener(objType,cmdListener);
     }
 
+    /**
+     *
+     * @param objType
+     * @return
+     */
+    public static IClib$ObjtypeProcessor getClib$ObjtypeProcessor(String objType){
+        String batchBiz = NEULINK_BIZ_BLIB+"."+objType.toLowerCase();
+        return clibObjtypeProcessors.get(batchBiz);
+    }
     /**
      *
      * @param objType
