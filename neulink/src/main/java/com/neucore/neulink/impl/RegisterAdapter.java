@@ -136,6 +136,9 @@ class RegisterAdapter implements NeulinkConst{
 
                         ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
                         NeulinkZone zone = resRegist.getZone();
+                        if(ObjectUtil.isEmpty(zone)){
+                            zone = resRegist.getData();
+                        }
                         syncConfig(zone);
                         configLoaded = true;
                     }
