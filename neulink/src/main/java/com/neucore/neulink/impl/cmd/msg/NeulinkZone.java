@@ -14,13 +14,14 @@ public class NeulinkZone {
     private String mqttUserName;
     @SerializedName("mqtt_password")
     private String mqttPassword;
-
     @SerializedName("mqtt_server")
     private String mqttServer;
     @SerializedName("mqtt_port")
     private int mqttPort;
     @SerializedName("upload_server")
     private String uploadServer="https://dev.neucore.com/api/v1/neulink/upload2cloud";
+    @SerializedName("req_ip")
+    private String reqIp;
 
     public String getId() {
         return id;
@@ -84,5 +85,13 @@ public class NeulinkZone {
 
     public void setUploadServer(String uploadServer) {
         this.uploadServer = uploadServer;
+    }
+
+    public String getReqIp() {
+        return reqIp;
+    }
+
+    public void setReqIp(String reqIp) {
+        this.reqIp = reqIp;
     }
 }

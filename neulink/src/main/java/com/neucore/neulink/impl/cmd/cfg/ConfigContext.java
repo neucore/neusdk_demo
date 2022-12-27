@@ -86,6 +86,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String HTTP_UPLOAD_SERVER = "http.upload.server";
 
+    public final static String HTTP_REQ_IP = "http.req.ip";
+
     public final static String DEVICE_TYPE = "device.type";
 
     public final static String HTTP_SESSION_TIMEOUT = "http.session.timeout";
