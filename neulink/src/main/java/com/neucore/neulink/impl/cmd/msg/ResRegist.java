@@ -10,6 +10,9 @@ public class ResRegist {
     @SerializedName("zone")
     private NeulinkZone zone;
 
+    @SerializedName("data")
+    private NeulinkZone data;
+
     public int getCode() {
         return code;
     }
@@ -32,5 +35,13 @@ public class ResRegist {
 
     public void setZone(NeulinkZone zone) {
         this.zone = zone;
+    }
+
+    public NeulinkZone getData() {
+        return data;
+    }
+
+    public void setData(NeulinkZone data) {
+        this.data = data;
     }
 }
