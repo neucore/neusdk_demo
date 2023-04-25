@@ -1,7 +1,5 @@
 package com.neucore.neulink.impl;
 
-import android.util.Log;
-
 import com.neucore.neulink.IStorage;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
