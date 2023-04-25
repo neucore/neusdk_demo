@@ -148,7 +148,7 @@ public class DefaultQLogCmdListener implements ICmdListener<LogActionResult, Dnl
 
             String md5 = MD5Utils.getInstance().getMD5File(path);
 
-            String url = StorageFactory.getInstance().uploadLog(path, RequestContext.getId(),(i));
+            String url = StorageFactory.getInstance().create().uploadLog(path, RequestContext.getId(),(i));
 
             md5s.add(md5);
             urls.add(url);

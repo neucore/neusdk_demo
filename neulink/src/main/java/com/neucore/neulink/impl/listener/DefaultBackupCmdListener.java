@@ -74,7 +74,7 @@ public class DefaultBackupCmdListener implements ICmdListener<ActionResult, Back
             if(path!=null){
                 BackupItem item = new BackupItem();
                 item.setObj(backups[i]);
-                String url = StorageFactory.getInstance().uploadBak(path, RequestContext.getId(),1);
+                String url = StorageFactory.getInstance().create().uploadBak(path, RequestContext.getId(),1);
                 item.setUrl(url);
                 try {
                     item.setMd5(MD5Utils.getInstance().getMD5File(path));
@@ -87,7 +87,7 @@ public class DefaultBackupCmdListener implements ICmdListener<ActionResult, Back
         String bakUrl = null;
         if(urls.size()>0){
             String tmpFile = backJson(urls);
-            bakUrl = StorageFactory.getInstance().uploadBak(tmpFile,RequestContext.getId(),1);
+            bakUrl = StorageFactory.getInstance().create().uploadBak(tmpFile,RequestContext.getId(),1);
         }
 
         return bakUrl;

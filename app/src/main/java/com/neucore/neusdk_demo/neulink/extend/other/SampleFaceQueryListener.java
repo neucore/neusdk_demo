@@ -66,7 +66,7 @@ public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,T
                     md5 = MD5Utils.getInstance().getMD5File(localFile.getAbsolutePath());
                 }
                 catch (Exception ex){}
-                String url = StorageFactory.getInstance().uploadQData(localFile.getAbsolutePath(), RequestContext.getId(),i);
+                String url = StorageFactory.getInstance().create().uploadQData(localFile.getAbsolutePath(), RequestContext.getId(),i);
                 md5s.add(md5);
                 urls.add(url);
                 localFile.delete();

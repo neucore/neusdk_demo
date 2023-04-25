@@ -244,11 +244,11 @@ public class MyInstaller implements NeulinkConst {
          * ConfigContext.READ_TIME_OUT：执行超时
          * ConfigContext.FTP_BUCKET_NAME: ftp根目录
          */
-//        extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
-//        extConfig.setProperty(ConfigContext.FTP_SERVER,"dev.neucore.com");
-//        extConfig.setProperty(ConfigContext.FTP_USER_NAME,"neu2ftp");
-//        extConfig.setProperty(ConfigContext.FTP_PASSWORD,"123456");
-//        extConfig.setProperty(ConfigContext.FTP_BUCKET_NAME,"ftproot");
+        extConfig.setProperty(ConfigContext.STORAGE_TYPE,ConfigContext.STORAGE_MYFTP);
+        extConfig.setProperty(ConfigContext.FTP_SERVER,"dev.neucore.com");
+        extConfig.setProperty(ConfigContext.FTP_USER_NAME,"neu2ftp");
+        extConfig.setProperty(ConfigContext.FTP_PASSWORD,"123456");
+        extConfig.setProperty(ConfigContext.FTP_BUCKET_NAME,"ftproot");
 
         //##########################################################################################
         /**
