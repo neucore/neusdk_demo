@@ -43,7 +43,7 @@ public class StorageFactory {
                     && !storages.containsKey(typeKey)) {
                 storages.put(typeKey, new MyFTPStorage());
             }
-            if (!storages.containsKey(type.toUpperCase())) {
+            if (!storages.containsKey(typeKey)) {
                 throw new RuntimeException(type + " 存储类型不支持");
             }
             return storages.get(typeKey);
