@@ -1,14 +1,20 @@
 package com.neucore.neulink.impl;
 
+import android.util.Log;
+
 import com.neucore.neulink.IStorage;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.service.storage.MyFTPStorage;
 import com.neucore.neulink.impl.service.storage.OSSStorage;
+import com.neucore.neulink.log.NeuLogUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StorageFactory {
+public class StorageFactory implements NeulinkConst {
+
+    private String TAG = TAG_PREFIX+"StorageFactory";
 
     private static Map<String,IStorage> storages = new ConcurrentHashMap<String, IStorage>();
 
@@ -27,6 +33,9 @@ public class StorageFactory {
 
     public IStorage create(){
         String type = ConfigContext.getInstance().getConfig("Storage.Type","OSS");
+        if (type == null){
+            NeuLogUtils.iTag(TAG,String.format("type is null and storages = %s",storages));
+        }
         return getInstance(type);
     }
 
