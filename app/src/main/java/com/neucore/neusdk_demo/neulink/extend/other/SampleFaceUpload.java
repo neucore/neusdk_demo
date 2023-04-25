@@ -36,7 +36,7 @@ public class SampleFaceUpload {
         /**
          *
          */
-        IStorage storage = StorageFactory.getInstance();//目前只实现了【OSS｜FTP】
+        IStorage storage = StorageFactory.getInstance().create();//目前只实现了【OSS｜FTP】
         //上传人脸图片至存储服务器上
         String urlStr = storage.uploadImage(path,requestId,index);//返回图片FTP|OSS路径
         if(urlStr!=null){
