@@ -64,8 +64,9 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
             successed = ftp.upload(savePath, saveFileName, inputStream);
             url = savePath+"/"+saveFileName;
         } catch (Exception e) {
-            NeuLogUtils.eTag(TAG, e.getMessage() + "  " + e);
+            NeuLogUtils.eTag(TAG, e.getMessage() , e);
         }
+
         NeuLogUtils.iTag(TAG,"uploadFile: "+successed);
         if(successed){
             return url;
