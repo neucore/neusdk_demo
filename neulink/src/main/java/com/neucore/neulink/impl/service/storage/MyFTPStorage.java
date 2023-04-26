@@ -60,6 +60,7 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
         boolean successed = false;
         String url = null;
         try {
+            ftp.reconnectIfTimeout();
             FileInputStream inputStream = new FileInputStream(new File(originFileName));
             successed = ftp.upload(savePath, saveFileName, inputStream);
             url = savePath+"/"+saveFileName;
