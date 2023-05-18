@@ -194,7 +194,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
             }else if (Constants.TYPE_6421_VER.equals(equip_type1)){
                 //竖屏6421板子
 
-                String cameraId = "0";
+                String cameraId = "1"; //YK6682-AML 0是IR ；1是RGB
                 characteristics = manager.getCameraCharacteristics(cameraId);
                 fitCameraID = cameraId;
                 System.out.println("cameraIdList: "+fitCameraID);
@@ -238,6 +238,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                                 mImageReader = ImageReader.newInstance(previewTargetSizeHeight, previewTargetSizeWidth, ImageFormat.YUV_420_888, 2);
                                 surfaceTexture.setDefaultBufferSize(previewTargetSizeHeight, previewTargetSizeWidth);
                             } else {
+                                //YK6682-AML 启动这里
                                 mImageReader = ImageReader.newInstance(previewTargetSizeWidth, previewTargetSizeHeight, ImageFormat.YUV_420_888, 2);
                                 surfaceTexture.setDefaultBufferSize(previewTargetSizeWidth, previewTargetSizeHeight);
                             }
@@ -506,6 +507,7 @@ public class BZCamera2View extends TextureView implements TextureView.SurfaceTex
                     onStatusChangeListener.onPreviewSuccess(mCameraDevice, height, width);
                     calculateTransform(height, width);
                 } else {
+                    //YK6682-AML 启动这里
                     onStatusChangeListener.onPreviewSuccess(mCameraDevice, width, height);
                     calculateTransform(width, height);
                 }
