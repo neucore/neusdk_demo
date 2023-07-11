@@ -356,7 +356,7 @@ public class Camera2PortraitActivity extends AppCompatActivity {
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取人脸数据
-        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,true); //withTracking 是否进行人脸追踪
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect(rgbMat,true); //withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
 
@@ -745,7 +745,7 @@ public class Camera2PortraitActivity extends AppCompatActivity {
         //本人测试的camera获取到的帧数据是旋转270度的，所以需要手动再旋转90度，如果camera获取的原始数据方向是正确的，上面代码将不再需要
         LogUtils.d(TAG,"rgb  8888" );
         //获取人脸关键点数据
-        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect_recognize(rgbMat,false); // withTracking 是否进行人脸追踪
+        NeuFaceRecgNode[] resultRgb = NeuFaceFactory.getInstance().create().neu_iva_face_detect(rgbMat,false); // withTracking 是否进行人脸追踪
         LogUtils.d(TAG,"rgb  9999" );
 
 

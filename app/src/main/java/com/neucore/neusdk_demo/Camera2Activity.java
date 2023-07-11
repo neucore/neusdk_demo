@@ -63,6 +63,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -221,7 +222,7 @@ public class Camera2Activity extends AppCompatActivity {
         image_view = findViewById(R.id.image_view);
         BZCamera2View bz_camera2_view = findViewById(R.id.bz_camera2_view);
         bz_camera2_view.setCheckCameraCapacity(false);
-        bz_camera2_view.setPreviewTargetSize(640, 480);
+        bz_camera2_view.setPreviewTargetSize(480, 640);//640*480 变更为 480*640
         bz_camera2_view.setOnStatusChangeListener(new BZCamera2View.OnStatusChangeListener() {
             @Override
             public void onPreviewSuccess(CameraDevice mCameraDevice, int width, int height) {
@@ -390,52 +391,36 @@ public class Camera2Activity extends AppCompatActivity {
                 //清除记录
                 mainHandler.sendEmptyMessage(1);
             }
+            //6443最新变更，计算人脸特征，比较人脸，C++中处理
             for (int i = 0; i < resultRgb.length; i++) {
+                //recog_matched ，  1-匹配上 0-未匹配上
+                //recog_matched_index， 匹配上的人脸地库索引值，即表示匹配上人脸地库中的第几张人脸
+                //recog_matched_similarity 与匹配上的人脸地库的相似度值
+                int recog_matched = resultRgb[i].getRecogmatched();  //0-匹配上 1-未匹配上
+                int recog_matched_index = resultRgb[i].getRecogmatchedindex(); //匹配上的人脸地库索引值，即表示匹配上人脸地库中的第几张人脸
+                float recog_matched_similarity = resultRgb[i].getRecogmatchedsimilarity();  //与匹配上的人脸地库的相似度值
+                float face_score    = resultRgb[i].getFaceScore();
+                boolean isLive      = resultRgb[i].getIslive();
+                int face_sizeWidth  = resultRgb[i].getWidth();
+                int face_sizeHeight = resultRgb[i].getHeight();
+                int isMask5 = resultRgb[i].getIsmask();
+                android.util.Log.d(TAG, "recog_matched = " + recog_matched + "     recog_matched_index = " + recog_matched_index + "       recog_matched_similarity = " + recog_matched_similarity
+                        +"     face_score = " + face_score +"     isLive = " + isLive + "   face_sizeWidth = " + face_sizeWidth  + "    face_sizeHeight = " + face_sizeHeight
+                        + "     isMask = " + isMask5);
+
+                // 从注册图中找到相似度最大的ID 和 最大相似度
+                float maxSum = recog_matched_similarity;
+                int maxID = recog_matched_index;
                 //如果特征值有效,进行人脸识别
-                if (resultRgb[i].getFeatureValid() == true) {
+                if (maxID != -1 && recog_matched == 1){
+                    String name = name_org.get(maxID);
+                    faceTime = System.currentTimeMillis();
+                    System.out.println("eee     识别name: " + name);
 
-                    float maxSum = 0;
-                    int maxID = 0;
-
-                    if (resultRgb[i].getIsmask() == 1) {
-                        // 从注册图中找到相似度最大的ID 和 最大相似度
-                        for (int org_size = 0; org_size < feature_mask.size(); org_size++) {
-                            float sum = NeuFaceFactory.getInstance().create().neu_iva_face_similarity(feature_mask.get(org_size), resultRgb[i].getFeature());
-                            if (sum > maxSum) {
-                                maxSum = sum;
-                                maxID = org_size;
-                            }
-                        }
-                    } else {
-                        // 从注册图中找到相似度最大的ID 和 最大相似度
-                        for (int org_size = 0; org_size < feature_org.size(); org_size++) {
-                            float sum = NeuFaceFactory.getInstance().create().neu_iva_face_similarity(feature_org.get(org_size), resultRgb[i].getFeature());
-                            if (sum > maxSum) {
-                                maxSum = sum;
-                                maxID = org_size;
-                            }
-                        }
-                    }
-
-                    if (name_org.size() != 0) {
-                        Log.d(TAG, "max sum name=" + name_org.get(maxID) + "  maxSum=" + maxSum);
-                    }
-
-                    if (maxSum > 0.8) {
-                        //如果大于阈值,识别结果绘制到 mat 中
-                        //String name = name_org.get(maxID) + " maxSum=" + String.format("%.2f", maxSum);
-                        String name = name_org.get(maxID);
-                        faceTime = System.currentTimeMillis();
-                        System.out.println("eee     识别name: " + name);
-
-                        Message msg = new Message();
-                        msg.what = 4;
-                        msg.obj = name;
-                        mainHandler.sendMessage(msg);
-                    }else {
-                        //清除记录
-                        mainHandler.sendEmptyMessage(1);
-                    }
+                    Message msg = new Message();
+                    msg.what = 4;
+                    msg.obj = name;
+                    mainHandler.sendMessage(msg);
                 }else {
                     //清除记录
                     mainHandler.sendEmptyMessage(1);
@@ -1030,6 +1015,18 @@ public class Camera2Activity extends AppCompatActivity {
                     Log.e(TAG,face.getName().split("\\.")[0] +" register failed quality="+NeuFaceQuality.typeToString(register_face.getQuality()));
                 }
             }
+        }
+
+        if (feature_org.size() > 0){
+            short[] alleryFeat = new short[feature_org.size() * 524];
+            for (int org_size = 0; org_size < feature_org.size(); org_size++) {
+                short[] shortsPo = feature_org.get(org_size);
+                for (int i = 0; i < shortsPo.length; i++){
+                    alleryFeat[org_size*524 + i] = shortsPo[i];
+                }
+            }
+            int sumRe= NeuFaceFactory.getInstance().create().neu_iva_face_recog_set_gallery(alleryFeat,feature_org.size());
+            Log.d(TAG, "neu_iva_face_recog_set_gallery return sum = " + sumRe );
         }
     }
 
