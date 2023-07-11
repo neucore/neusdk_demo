@@ -1,7 +1,10 @@
 package com.neucore.neulink.impl.cmd.cfg;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.neucore.neulink.IResCallback;
 import com.neucore.neulink.impl.ResCallback2Log;
@@ -161,6 +164,7 @@ public class ConfigContext implements NeulinkConst{
         return configContext;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void load(){
 
         FileReader reader = null;
@@ -296,28 +300,35 @@ public class ConfigContext implements NeulinkConst{
     public Properties getConfigs(){
         return configs;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String getConfig(String key){
-        return extConfig.getProperty(key,configs.getProperty(key,getDefault(key,null)));
+        return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,null))));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String getConfig(String key, String defaultValue){
-        return extConfig.getProperty(key,configs.getProperty(key,getDefault(key,defaultValue)));
+        return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,defaultValue))));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public int getConfig(String key, int defaultValue){
-        return Integer.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
+        return Integer.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public long getConfig(String key, long defaultValue){
-        return Long.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
+        return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public double getConfig(String key, double defaultValue){
-        return Long.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
+        return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Boolean getConfig(String key, boolean defaultValue){
-        return Boolean.valueOf(extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue)))));
+        return Boolean.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
     private String getDefault(String key,String defaultValue){
