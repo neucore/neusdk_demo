@@ -153,7 +153,10 @@ public class MyInstaller implements NeulinkConst {
          * 集成Neulink
          */
         Properties extConfig = new Properties();
-
+        /**
+         * 设置mqtt qos
+         */
+        extConfig.setProperty(ConfigContext.MQTT_QOS,"1");
         /**
          * 设备类型：根据APK功能决定进行配置【必须】
          * 设备类型【0:客流机；1:智能门禁；2:刷卡器；3:门磁；4:智能网关；5:智能中控;6:展示设备;7:人脸IPC;8:控制面板;9:车牌IPC  14:相框-Android;15:相框-Lunix】
