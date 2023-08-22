@@ -27,6 +27,7 @@ public class HeadersUtil implements NeulinkConst {
         String version = topic.getVersion();
         String reqNo = topic.getReqId();
         String md5 = topic.getMd5();
+        String clientId = null;
         if(ObjectUtil.isNotEmpty(headers)){
             JsonPrimitive _group = (JsonPrimitive) headers.get(NEULINK_HEADERS_GROUP);
             if(ObjectUtil.isNotEmpty(_group)){
@@ -73,6 +74,13 @@ public class HeadersUtil implements NeulinkConst {
                     md5 = temp;
                 }
             }
+            JsonPrimitive _clientId = (JsonPrimitive)headers.get(NEULINK_HEADERS_CLIENT_ID);
+            if(ObjectUtil.isNotEmpty(_clientId)){
+                String temp = _clientId.getAsString();
+                if(ObjectUtil.isNotEmpty(temp)){
+                    clientId = temp;
+                }
+            }
         }
         if(ObjectUtil.isEmpty(version)){
             version = "v1.0";
@@ -83,6 +91,7 @@ public class HeadersUtil implements NeulinkConst {
         req.setVersion(version);
         req.setReqNo(reqNo);
         req.setMd5(md5);
+        req.setClientId(clientId);
     }
 
     /**

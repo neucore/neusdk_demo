@@ -164,7 +164,6 @@ public class ConfigContext implements NeulinkConst{
         return configContext;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void load(){
 
         FileReader reader = null;
@@ -301,32 +300,32 @@ public class ConfigContext implements NeulinkConst{
         return configs;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public String getConfig(String key){
         return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,null))));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public String getConfig(String key, String defaultValue){
         return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,defaultValue))));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public int getConfig(String key, int defaultValue){
         return Integer.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public long getConfig(String key, long defaultValue){
         return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public double getConfig(String key, double defaultValue){
         return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public Boolean getConfig(String key, boolean defaultValue){
         return Boolean.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
     }

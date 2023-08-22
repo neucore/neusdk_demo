@@ -128,6 +128,14 @@ public abstract class GCmd {
         setHeader(NeulinkConst.NEULINK_HEADERS_MD5,md5);
     }
 
+    public String getClientId(){
+        return getHeader(NeulinkConst.NEULINK_HEADERS_CLIENT_ID);
+    }
+
+    public void setClientId(String clientId){
+        setHeader(NeulinkConst.NEULINK_HEADERS_CLIENT_ID,clientId);
+    }
+
     public String getVersion() {
         return getHeader(NeulinkConst.NEULINK_HEADERS_VERSION);
     }
