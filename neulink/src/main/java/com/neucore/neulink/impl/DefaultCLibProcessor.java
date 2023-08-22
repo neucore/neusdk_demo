@@ -34,7 +34,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    final public void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
+    final public void execute(boolean debug,int qos,boolean retained,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         CheckCmd req = parser(payload.toString());
 
@@ -50,7 +50,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
         String biz = req.getBiz();
         String reqNo = req.getReqNo();
         String version = req.getVersion();
-
+        String clientId = req.getClientId();
         payload = auth(headers,payload);
 
         /**
@@ -68,7 +68,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                             )
                     )
             ) {
-                resLstRsl2Cloud(debug,resTopic,version,reqNo,msg);
+                resLstRsl2Cloud(debug,resTopic,version,reqNo,clientId,msg);
                 return;
             }
 
@@ -85,7 +85,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                 /**
                  * 响应消息已到达
                  */
-                resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
+                resReceived2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,req.getHeaders());
                 try {
                     QueryActionResult result = process(topic,req);
 
@@ -102,7 +102,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                         }
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
                 catch(NeulinkException ex){
@@ -115,7 +115,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                         if(ObjectUtil.isNotEmpty(res)) {
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                         }
                     }
                     catch(Exception e){
@@ -130,7 +130,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
             }
@@ -144,7 +144,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
 
                 }
@@ -161,7 +161,7 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
                 catch(Exception e){}

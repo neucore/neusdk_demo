@@ -41,7 +41,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         return context;
     }
 
-    public void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic,JsonObject headers, JsonObject payload) {
+    public void execute(boolean debug,int qos,boolean retained,NeulinkTopicParser.Topic topic,JsonObject headers, JsonObject payload) {
 
         Req req = parser(payload.toString());
 
@@ -57,6 +57,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         String biz = req.getBiz();
         String reqNo = req.getReqNo();
         String version = req.getVersion();
+        String clientId = req.getClientId();
 
         payload = auth(headers,payload);
 
@@ -75,7 +76,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                             )
                     )
             ) {
-                resLstRsl2Cloud(debug,resTopic,version,reqNo,msg);
+                resLstRsl2Cloud(debug,resTopic,version,reqNo,clientId,msg);
                 return;
             }
 
@@ -91,6 +92,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                     if(ObjectUtil.isNotEmpty(payload)){
                         payloadStr = payload.toString();
                     }
+                    /**
+                     * 保存消息，实现断点续传
+                     */
                     msg = insert(req,headersStr, payloadStr);
                 }
                 if(ObjectUtil.isNotEmpty(msg)){
@@ -99,7 +103,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                 /**
                  * 响应消息已到达
                  */
-                resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
+                resReceived2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,req.getHeaders());
 
                 ActionResult actionResult = process(req);
                 if(ObjectUtil.isNotEmpty(actionResult)){
@@ -116,7 +120,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                         }
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic, version,reqNo,jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
             }
@@ -128,7 +132,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic, version,reqNo,jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
                 catch(Exception e){
@@ -142,7 +146,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic, version,reqNo,jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,jsonStr);
                     }
                 }
                 catch(Exception e){}
@@ -288,16 +292,17 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param reqNo
      * @param headers
      */
-    protected void resReceived2Cloud(boolean debug,String resTopic,String biz,String version,String reqNo,Map<String,String> headers){
-        NeulinkService.getInstance().publishMessage(debug,resTopic,biz,version,reqNo,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,headers);
+    protected void resReceived2Cloud(boolean debug,int qos,boolean retained,String resTopic,String biz,String version,String reqNo,String clientId,Map<String,String> headers){
+        NeulinkService.getInstance().response(debug,qos,retained,resTopic,biz,version,reqNo,clientId,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,headers);
     }
+
     /**
      * 根据requestId查询历史记录，如果已经执行完成了则直接返回执行结果
      * 把最后执行结果返回给到云端
      * @param message
      */
-    protected void resLstRsl2Cloud(boolean debug,String resTopic,String version,String reqNo, IMessage message){
-        NeulinkService.getInstance().publishMessage(debug,resTopic,version,reqNo,message.getPayload(),message.getQos());
+    protected void resLstRsl2Cloud(boolean debug,String resTopic,String version,String reqNo,String clientId, IMessage message){
+        NeulinkService.getInstance().response(debug,message.getQos(),message.isRetained(),resTopic,version,reqNo,clientId,message);
     }
 
     /**
@@ -306,8 +311,8 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param resTopic
      * @param result
      */
-    protected void resLstRsl2Cloud(boolean debug,int qos,String resTopic,String version,String reqNo,String result){
-        NeulinkService.getInstance().publishMessage(debug,resTopic,version,reqNo,result,qos);
+    protected void resLstRsl2Cloud(boolean debug,int qos,boolean retained,String resTopic,String biz,String version,String reqNo,String clientId,String result){
+        NeulinkService.getInstance().response(debug,qos,retained,resTopic,biz,version,reqNo,clientId,result);
     }
 
     /**

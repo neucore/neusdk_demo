@@ -37,7 +37,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
         libDir = DeviceUtils.getTmpPath(context)+"/libDir";
     }
 
-    public void execute(boolean debug,int qos,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
+    public void execute(boolean debug,int qos,boolean retained,NeulinkTopicParser.Topic topic, JsonObject headers, JsonObject payload) {
 
         PkgCmd req = parser(payload.toString());
 
@@ -53,6 +53,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
         String biz = req.getBiz();
         String reqNo = req.getReqNo();
         String version = req.getVersion();
+        String clientId = req.getClientId();
 
         payload = auth(headers,payload);
 
@@ -71,7 +72,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             )
                     )
             ) {
-                resLstRsl2Cloud(debug,resTopic,version,reqNo,msg);
+                resLstRsl2Cloud(debug,resTopic,version,reqNo,clientId,msg);
                 return;
             }
 
@@ -88,7 +89,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                 /**
                  * 响应消息已到达
                  */
-                resReceived2Cloud(debug,resTopic,biz,version,reqNo,req.getHeaders());
+                resReceived2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId,req.getHeaders());
                 long pages = req.getPages();
 
                 long offset = req.getOffset();
@@ -132,7 +133,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             }
                             mergeHeaders(req,res);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId, jsonStr);
                             NeuLogUtils.dTag(TAG,"成功完成人脸offset:"+i+"下载");
                         }
                     }
@@ -146,7 +147,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             if(ObjectUtil.isNotEmpty(res)) {
                                 mergeHeaders(req,res);
                                 String jsonStr = JSonUtils.toString(res);
-                                resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                                resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId, jsonStr);
                             }
                         }
                         catch(Exception e){
@@ -165,7 +166,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                             res.setPages(pages);
                             res.setOffset(i);
                             String jsonStr = JSonUtils.toString(res);
-                            resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId, jsonStr);
                         }
                     }
                 }
@@ -180,7 +181,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,clientId, jsonStr);
                     }
 
                 }
@@ -197,7 +198,7 @@ public final class DefaultBLibSyncProcessor extends GProcessor<PkgCmd, PkgRes, P
                     if(ObjectUtil.isNotEmpty(res)) {
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,resTopic,version,reqNo, jsonStr);
+                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo, clientId,jsonStr);
                     }
                 }
                 catch(Exception e){}

@@ -192,6 +192,10 @@ public interface NeulinkConst {
     String NEULINK_HEADERS_MD5 = "md5";
 
     String NEULINK_HEADERS_LZR = "lzt";
+    /**
+     * 请求方id
+     */
+    String NEULINK_HEADERS_CLIENT_ID = "clientId";
 
     /**
      * 成功

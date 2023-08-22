@@ -234,7 +234,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         try {
             if(processor!=null){
 
-                processor.execute(debug,qos,topic,headers,payload);
+                processor.execute(debug,qos,isRetained,topic,headers,payload);
             }
             else {
                 NeuLogUtils.eTag(TAG,topicStr+String.format("没有找到相关的%sProcessor实现类...",StrUtil.upperFirst(biz)));
