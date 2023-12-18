@@ -161,7 +161,7 @@ public class NeulinkService implements NeulinkConst{
                         .bulid(context);
                 mqttInited = true;
                 new HouseKeeping().start();
-                NeuLogUtils.iTag(TAG,String.format("end createMqttService inited %s", mqttInited));
+                NeuLogUtils.iTag(TAG,String.format("end createMqttService inited %s,serverUri=%s,userName=%s,password=%s", mqttInited,serverUri,userName,password));
             }
         }
     }

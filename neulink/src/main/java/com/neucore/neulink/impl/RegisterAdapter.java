@@ -120,6 +120,7 @@ class RegisterAdapter implements NeulinkConst{
                  * 配置请求
                  */
                 boolean configLoaded = false;
+                NeuLogUtils.dTag(TAG, String.format("logined=%s,remoteConfig=%s,configLoaded=%s",logined,remoteConfig,configLoaded));
                 while (logined && remoteConfig && !configLoaded){
                     try {
                         Thread.sleep(1000);
