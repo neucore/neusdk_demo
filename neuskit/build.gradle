@@ -1,0 +1,87 @@
+
+apply plugin: 'com.android.library'
+
+apply plugin: 'android-aspectjx'
+
+def packageTime(){
+    return new Date().format("yyyyMMddHHmmSS");
+}
+
+def versionMajor = 1
+def versionMinor = 24
+def versionPatch = 10
+android {
+
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.build_tools_version
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
+        versionCode rootProject.ext.version_code
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation files('libs/xloger.jar')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'io.netty:netty-all:4.1.104.Final'
+    implementation 'io.projectreactor.netty:reactor-netty:4.1.104.Final'
+    implementation 'cn.hutool:hutool-all:5.8.18'
+    implementation 'log4j:log4j:1.2.17'
+}
+
+task makeJar(type: Copy) {
+    def SDK_BASENAME = "neuskit";
+    def SDK_VERSION = "${versionMajor}.${versionMinor}.${versionPatch}"
+    def SDK_RELEASE = SDK_BASENAME+"-"+SDK_VERSION+".jar";
+    delete 'build/libs/*' //删除build/libs/文件夹下名字为TestJarV1.jar的jar包
+    from('build/intermediates/packaged-classes/release/') //从这个目录下取出默认jar包
+    into('build/libs/') //将jar包输出到指定目录下
+    include('classes.jar')
+    rename('classes.jar', SDK_RELEASE) //自定义jar包的名字
+}
+
+makeJar.dependsOn(build)
+
+aspectjx {
+    //关闭AspectJX功能
+    enabled true
+
+    //排除所有package路径中包含`android.support`的class文件及库（jar文件）
+    exclude 'android.support'
+    //exclude 'com.fasterxml'
+    exclude '.jar'
+    //includes the libs that you want to weave
+    //includeJarFilter 'universal-image-loader', 'AspectJX-Demo/library'
+
+    //excludes the libs that you don't want to weave
+    //excludeJarFilter 'universal-image-loader'
+
+}
