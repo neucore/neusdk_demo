@@ -54,7 +54,7 @@ public interface IMessage {
 
     void setQos(int qos);
 
-    boolean isRetained();
+    boolean getRetained();
 
     void setRetained(boolean retained);
 }

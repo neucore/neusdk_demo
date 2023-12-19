@@ -302,7 +302,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param message
      */
     protected void resLstRsl2Cloud(boolean debug,String resTopic,String version,String reqNo,String clientId, IMessage message){
-        NeulinkService.getInstance().response(debug,message.getQos(),message.isRetained(),resTopic,version,reqNo,clientId,message);
+        NeulinkService.getInstance().response(debug,message.getQos(),message.getRetained(),resTopic,version,reqNo,clientId,message);
     }
 
     /**
