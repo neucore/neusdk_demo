@@ -68,11 +68,14 @@ public class Message implements IMessage {
     @SerializedName("qos")
     private int qos;
 
+    @SerializedName("retained")
+    private boolean retained;
 
-    @Generated(hash = 1247282151)
+
+    @Generated(hash = 1340426776)
     public Message(Long id, String reqId, String topic, long offset, String headers,
             String payload, String pkgStatus, String status, String result,
-            Long reqtime, Long restime, int qos) {
+            Long reqtime, Long restime, int qos, boolean retained) {
         this.id = id;
         this.reqId = reqId;
         this.topic = topic;
@@ -85,6 +88,7 @@ public class Message implements IMessage {
         this.reqtime = reqtime;
         this.restime = restime;
         this.qos = qos;
+        this.retained = retained;
     }
 
     @Generated(hash = 637306882)
@@ -188,5 +192,13 @@ public class Message implements IMessage {
 
     public void setQos(int qos) {
         this.qos = qos;
+    }
+
+    public boolean getRetained() {
+        return this.retained;
+    }
+
+    public void setRetained(boolean retained) {
+        this.retained = retained;
     }
 }

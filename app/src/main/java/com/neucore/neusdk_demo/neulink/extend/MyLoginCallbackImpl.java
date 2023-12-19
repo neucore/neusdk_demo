@@ -39,8 +39,8 @@ public class MyLoginCallbackImpl implements ILoginCallback, NeulinkConst {
         params.put("username","frame2");//15800860806,frame2
         params.put("password","123456");//123456
 
-        String url = "http://10.18.9.35:18091/oauth/token";
-//        String url = "https://dev.magm.com.cn/api/uaa/oauth/token";
+//        String url = "http://10.18.9.35:18091/oauth/token";
+        String url = "https://dev.neucore.com/api/uaa/oauth/token";
 
         String response = NeuHttpHelper.post(url,params,headers,3);
 

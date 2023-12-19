@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         //for mac
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         //for win
         //classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0'
