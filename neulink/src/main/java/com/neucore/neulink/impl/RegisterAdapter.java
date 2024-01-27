@@ -73,6 +73,12 @@ class RegisterAdapter implements NeulinkConst{
             }
         }
     }
+    private void toSleep(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
+    }
 
     /**
      * 设备注册 msg/req/devinfo/v1.0/${req_no}[/${md5}], qos=0
@@ -83,7 +89,7 @@ class RegisterAdapter implements NeulinkConst{
 
 
                 NeuLogUtils.iTag(TAG,"do regist ...");
-                int count = 1;
+
                 Integer channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
                 boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
 
@@ -92,27 +98,30 @@ class RegisterAdapter implements NeulinkConst{
                 while (!logined && (channel==1 || remoteConfig)) {
                     ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                     if(loginCallback!=null) {
-                        String token = loginCallback.login();
-                        if(ObjectUtil.isEmpty(token)){
-                            NeuLogUtils.iTag(TAG,"token非法。。。");
+                        String token = null;
+                        try {
+                            token = loginCallback.login();
+                            if(ObjectUtil.isEmpty(token)){
+                                NeuLogUtils.iTag(TAG,"token非法。。。");
+                                toSleep();
+                                continue;
+                            }
+                            else{
+                                logined = true;
+                                NeulinkSecurity.getInstance().setToken(token);
+                                NeuLogUtils.iTag(TAG,"success logined");
+                                break;
+                            }
                         }
-                        else{
-                            logined = true;
-                            NeulinkSecurity.getInstance().setToken(token);
-                            NeuLogUtils.iTag(TAG,"success logined");
-                            break;
+                        catch (Exception e){
+                            NeuLogUtils.eTag(TAG,"登陆失败",e);
+                            toSleep();
+                            continue;
                         }
                     }
                     else{
                         logined = true;
                         NeuLogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
-                    }
-                    try {
-                        Thread.sleep(1000*count);
-                        if(count<30){
-                            count++;
-                        }
-                    } catch (InterruptedException e) {
                     }
                 }
 
@@ -121,21 +130,27 @@ class RegisterAdapter implements NeulinkConst{
                  */
                 boolean configLoaded = false;
                 NeuLogUtils.dTag(TAG, String.format("logined=%s,remoteConfig=%s,configLoaded=%s",logined,remoteConfig,configLoaded));
+
+                Map<String,String> params = new HashMap<>();
+                String extSn = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+                if(ObjectUtil.isNotEmpty(extSn)){
+                    String licId = extSn.split("@")[0];
+                    params.put("licId",licId);
+                }
+                String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
+
+                Map<String, String> headers = HttpParamWrapper.getParams();
+
                 while (logined && remoteConfig && !configLoaded){
+                    String response = null;
                     try {
-                        Thread.sleep(1000);
 
-                        Map<String,String> params = new HashMap<>();
-                        String extSn = ServiceRegistry.getInstance().getDeviceService().getExtSN();
-                        if(ObjectUtil.isNotEmpty(extSn)){
-                            String licId = extSn.split("@")[0];
-                            params.put("licId",licId);
+                        response = NeuHttpHelper.post(configsURL, params, headers, 10, 60, 1,null);
+                        if(ObjectUtil.isEmpty(response)){
+                            NeuLogUtils.iTag(TAG,"配置非法。。。");
+                            toSleep();
+                            continue;
                         }
-                        String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
-
-                        Map<String, String> headers = HttpParamWrapper.getParams();
-
-                        String response = NeuHttpHelper.post(configsURL, params, headers, 10, 60, 1,null);
 
                         NeuLogUtils.dTag(TAG, "设备configs响应：" + response);
 
@@ -154,14 +169,15 @@ class RegisterAdapter implements NeulinkConst{
                         result.setCode(e.getCode());
                         result.setMsg(e.getMsg());
                         defaultResCallback.onFinished(result);
-                    } catch (InterruptedException e) {
+                        toSleep();
+                        continue;
                     }
                 }
 
+                NeuLogUtils.iTag(TAG,"start regist");
+
                 while(!registed){
                     try {
-                        Thread.sleep(1000);
-                        NeuLogUtils.iTag(TAG,"start regist");
 
                         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
@@ -185,6 +201,7 @@ class RegisterAdapter implements NeulinkConst{
                     }
                     catch(Exception ex){
                         NeuLogUtils.eTag(TAG,"注册失败："+ex.getMessage());
+                        toSleep();
                     }
                 }
             }
