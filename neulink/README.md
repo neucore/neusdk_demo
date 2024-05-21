@@ -221,7 +221,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     /**
      * 设备服务扩展
      */
-     IDeviceService deviceService = new MyDeviceServiceImpl();
+     IDeviceService deviceService = new MyDeviceExtendServiceImpl();
     
 ```
     
