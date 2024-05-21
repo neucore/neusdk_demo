@@ -12,6 +12,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 配置查询
+ */
 public class SampleQCfgCmdListener implements ICmdListener<ActionResult<CfgItem[]>, QCfgCmd> {
     @Override
     public ActionResult<CfgItem[]> doAction(NeulinkEvent<QCfgCmd> event) {

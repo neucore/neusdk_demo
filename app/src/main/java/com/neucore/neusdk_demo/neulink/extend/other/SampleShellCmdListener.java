@@ -9,6 +9,9 @@ import com.neucore.neulink.util.ShellExecutor;
 
 import java.util.Map;
 
+/**
+ * 远程下发shell命令，并执行shell命令
+ */
 public class SampleShellCmdListener implements ICmdListener<ActionResult<Map<String, String>>,ShellCmd> {
 
     @Override

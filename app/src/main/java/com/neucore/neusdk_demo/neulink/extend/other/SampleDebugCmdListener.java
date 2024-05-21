@@ -7,6 +7,9 @@ import com.neucore.neulink.impl.cmd.rmsg.app.DebugCmd;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 
+/**
+ * 开启/关闭debug
+ */
 public class SampleDebugCmdListener implements ICmdListener<ActionResult, DebugCmd> {
     @Override
     public ActionResult doAction(NeulinkEvent<DebugCmd> event) {

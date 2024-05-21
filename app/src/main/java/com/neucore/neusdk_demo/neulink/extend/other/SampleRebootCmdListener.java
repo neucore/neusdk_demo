@@ -9,6 +9,9 @@ import com.neucore.neulink.util.ShellExecutor;
 
 import java.util.Map;
 
+/**
+ * 重启设备
+ */
 public class SampleRebootCmdListener implements ICmdListener<ActionResult<Map<String,String>>, RebootCmd> {
     @Override
     public ActionResult<Map<String, String>> doAction(NeulinkEvent<RebootCmd> event) {

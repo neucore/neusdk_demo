@@ -24,7 +24,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
 
 /**
- * sdk应用信息上报接口：主要包括车牌上报、体温上报、人脸信息上报
+ * sdk应用信息上报接口：主要包括车辆上报、体温上报、人脸信息上报
  */
 public class NeulinkPublisherFacde implements NeulinkConst{
 
@@ -39,7 +39,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 车牌抓拍上报
+     * 车辆抓拍上报
      * upld/req/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      */
     public void upldLic(String num,String color,String imageUrl,String cmpCode,String locationCode,String position){
@@ -48,7 +48,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 车牌抓拍上报
+     * 车辆抓拍上报
      * @param num
      * @param color
      * @param imageUrl
@@ -62,7 +62,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 车牌抓拍上报
+     * 车辆抓拍上报
      * @param num
      * @param color
      * @param imageUrl
@@ -77,7 +77,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 车牌抓拍上报
+     * 车辆抓拍上报
      * @param num
      * @param color
      * @param imageUrl
@@ -348,7 +348,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车辆抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -360,7 +360,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车辆抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId
@@ -372,7 +372,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     }
 
     /**
-     * 设备发起的主动请求【人脸抓拍、体温检测、车牌抓拍、设备配置等上传】
+     * 设备发起的主动请求【人脸抓拍、体温检测、车辆抓拍、设备配置等上传】
      * @param biz
      * @param version
      * @param reqId

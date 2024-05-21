@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 人脸查询
+ */
 public class SampleFaceQueryListener implements ICmdListener<QueryActionResult,TLibQueryCmd> {
     private LibManagerService libManagerService;
     private UserDaoUtils userDaoUtils = null;

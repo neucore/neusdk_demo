@@ -34,6 +34,9 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
+/**
+ * 人脸同步
+ */
 public class SampleFaceSyncListener implements ICmdListener<FacePkgActionResult,FaceCmd> {
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private LibManagerService libManagerService;

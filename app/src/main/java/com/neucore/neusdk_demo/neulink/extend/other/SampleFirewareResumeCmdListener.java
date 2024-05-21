@@ -17,6 +17,9 @@ import com.neucore.neulink.util.ContextHolder;
 import java.io.File;
 import java.text.DecimalFormat;
 
+/**
+ * 通过手机升级设备应用、固件【断点续传】
+ */
 public class SampleFirewareResumeCmdListener implements ICmdListener<ActionResult, UgrdeCmd> {
     private String TAG = "DefaultFirewareResumeCmdListener";
     @Override

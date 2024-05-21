@@ -25,7 +25,7 @@ public class DefaultFaceQueryListener implements ICmdListener<QResult, TLibQuery
                 throw new RuntimeException("车辆目标库还在建设中");
             }
             else if("lic".equalsIgnoreCase(objtype)){
-                throw new RuntimeException("车牌目标库还在建设中");
+                throw new RuntimeException("车辆目标库还在建设中");
             }
             return result;
         }

@@ -8,6 +8,9 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 
+/**
+ * 配置下发
+ */
 public class SampleCfgActionListener implements ICmdListener<ActionResult,CfgCmd>, NeulinkConst {
     @Override
     public ActionResult doAction(NeulinkEvent<CfgCmd> event) {

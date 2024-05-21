@@ -11,6 +11,9 @@ import com.neucore.neusdk_demo.service.impl.LibManagerService;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 车牌检查
+ */
 public class SampleLicCheckListener implements ICmdListener<QueryActionResult,CheckCmd> {
 
     private String TAG = "SampleFaceCheckListener";
@@ -26,7 +29,7 @@ public class SampleLicCheckListener implements ICmdListener<QueryActionResult,Ch
 
         QueryActionResult result = new QueryActionResult();
         /**
-         * TODO 比对，如果不一致，则返回所有车牌号码
+         * TODO 比对，如果不一致，则返回所有车辆号码
          */
         String ids = "....";
 

@@ -9,6 +9,9 @@ import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.NeuHttpHelper;
 
+/**
+ * 配置回滚
+ */
 public class SampleRecoverActionListener implements ICmdListener<ActionResult,RecoverCmd>, NeulinkConst {
     @Override
     public ActionResult doAction(NeulinkEvent<RecoverCmd> event) {
