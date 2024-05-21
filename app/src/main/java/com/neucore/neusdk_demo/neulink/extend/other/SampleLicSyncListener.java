@@ -1,38 +1,23 @@
 package com.neucore.neusdk_demo.neulink.extend.other;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.util.Log;
-
 import com.neucore.NeuSDK.NeuFace;
-import com.neucore.NeuSDK.NeuFaceRegisterNode;
 import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.UpdateActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.CarCmd;
 import com.neucore.neulink.impl.cmd.rrpc.CarData;
-import com.neucore.neulink.impl.cmd.rrpc.FaceData;
-import com.neucore.neulink.impl.cmd.rrpc.FaceNode;
 import com.neucore.neulink.impl.cmd.rrpc.KVPair.KeyEnum;
 import com.neucore.neulink.util.ContextHolder;
-import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neusdk_demo.neucore.NeuFaceFactory;
 import com.neucore.neusdk_demo.service.impl.LibManagerService;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.util.ObjectUtil;
-
+/**
+ * 车牌同步
+ */
 public class SampleLicSyncListener implements ICmdListener<UpdateActionResult, CarCmd> {
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private LibManagerService libManagerService;

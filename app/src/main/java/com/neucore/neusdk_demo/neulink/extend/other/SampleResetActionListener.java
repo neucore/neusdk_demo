@@ -5,6 +5,9 @@ import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.Cmd;
 
+/**
+ * 系统重置
+ */
 public class SampleResetActionListener implements ICmdListener<ActionResult, Cmd> {
     @Override
     public ActionResult doAction(NeulinkEvent<Cmd> neulinkEvent) {

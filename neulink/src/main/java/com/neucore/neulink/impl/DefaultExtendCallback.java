@@ -127,7 +127,7 @@ public final class DefaultExtendCallback implements IExtendCallback {
          */
         ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarSyncProcessor(),new DefaultCarSyncListener());
         /**
-         * 车牌下发 扩展【默认实现】
+         * 车辆下发 扩展【默认实现】
          */
         ProcessRegistry.registBlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicSyncProcessor(),new DefaultLicSyncListener());
 
@@ -144,7 +144,7 @@ public final class DefaultExtendCallback implements IExtendCallback {
          */
         ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarQueryProcessor(),new DefaultCarQueryListener());
         /**
-         * 车牌查询 扩展【默认实现】
+         * 车辆查询 扩展【默认实现】
          */
         ProcessRegistry.registQlib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicQueryProcessor(),new DefaultLicQueryListener());
 
@@ -161,7 +161,7 @@ public final class DefaultExtendCallback implements IExtendCallback {
          */
         ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_CAR,new DefaultCarCheckProcessor(),new DefaultCarCheckListener());
         /**
-         * 车牌比对 扩展【默认实现】
+         * 车辆比对 扩展【默认实现】
          */
         ProcessRegistry.registClib$ObjtypeProcessor(NeulinkConst.NEULINK_BIZ_OBJTYPE_LIC,new DefaultLicCheckProcessor(),new DefaultLicCheckListener());
     }

@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+/**
+ * 人脸检查
+ */
 public class SampleFaceCheckListener implements ICmdListener<QueryActionResult,CheckCmd> {
     private LibManagerService libManagerService;
     private String TAG = "SampleFaceCheckListener";

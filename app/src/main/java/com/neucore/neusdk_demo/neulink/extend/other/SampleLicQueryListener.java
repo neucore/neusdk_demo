@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 车牌查询
+ */
 public class SampleLicQueryListener implements ICmdListener<QueryActionResult,TLibQueryCmd> {
 
     private String TAG = "SampleFaceQueryListener";

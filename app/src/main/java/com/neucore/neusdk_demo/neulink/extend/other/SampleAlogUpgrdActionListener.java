@@ -6,6 +6,9 @@ import com.neucore.neulink.impl.NeulinkEvent;
 
 import java.io.File;
 
+/**
+ * 算法升级
+ */
 public class SampleAlogUpgrdActionListener implements ICmdListener<ActionResult, File> {
     @Override
     public ActionResult doAction(NeulinkEvent<File> event) {

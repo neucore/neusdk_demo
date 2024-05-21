@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 设备备份
+ */
 public class SampleBackupActionListener implements ICmdListener<QueryActionResult, BackupCmd>, NeulinkConst {
     @Override
     public QueryActionResult doAction(NeulinkEvent<BackupCmd> event) {

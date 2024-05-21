@@ -35,6 +35,9 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
+/**
+ * 车辆同步
+ */
 public class SampleCarSyncListener implements ICmdListener<UpdateActionResult, CarCmd> {
     final private String ADD = "add",DEL = "del",UPDATE = "update",SYNC = "sync";
     private LibManagerService libManagerService;

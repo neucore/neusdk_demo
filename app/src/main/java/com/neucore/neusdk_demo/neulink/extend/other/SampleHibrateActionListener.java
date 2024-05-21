@@ -5,6 +5,9 @@ import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.NeulinkEvent;
 import com.neucore.neulink.impl.ArgCmd;
 
+/**
+ * 设备休眠
+ */
 public class SampleHibrateActionListener implements ICmdListener<ActionResult,ArgCmd> {
     @Override
     public ActionResult doAction(NeulinkEvent<ArgCmd> event) {

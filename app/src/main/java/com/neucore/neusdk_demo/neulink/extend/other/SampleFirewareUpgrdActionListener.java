@@ -8,6 +8,9 @@ import com.neucore.neulink.impl.NeulinkEvent;
 import java.io.File;
 import java.util.Map;
 
+/**
+ * 通过手机升级设备应用、固件
+ */
 public class SampleFirewareUpgrdActionListener implements ICmdListener<ActionResult,UgrdeCmd> {
     @Override
     public ActionResult doAction(NeulinkEvent<UgrdeCmd> event) {

@@ -123,7 +123,7 @@ public final class ProcessRegistry implements NeulinkConst {
      *
      * ------------------------------------------------------------------
      *
-     * 车牌信息上报响应 upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
+     * 车辆信息上报响应 upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
      * 温度信息上报响应 upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
      *
      */
