@@ -7,7 +7,7 @@ def packageTime(){
 }
 
 def versionMajor = 1
-def versionMinor = 27
+def versionMinor = 28
 def versionPatch = 10
 android {
 
