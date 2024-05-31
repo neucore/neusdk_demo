@@ -270,7 +270,12 @@ public class NeulinkService implements NeulinkConst{
     public LWTTopic lwtTopic(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTTopic info = new LWTTopic();
-        info.setTopic("msg/req/lwt");
+        String topic = "msg/req/lwt";
+        String productId = deviceService.getProductId();
+        if(ObjectUtil.isNotEmpty(productId)){
+            topic = productId+"/"+topic;
+        }
+        info.setTopic(topic);
         info.setRetained(true);
         info.setQos(1);
         return info;
