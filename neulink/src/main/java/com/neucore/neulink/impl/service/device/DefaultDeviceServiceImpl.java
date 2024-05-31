@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.service.device;
 
 import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.CPUInfo;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
@@ -11,12 +12,16 @@ import com.neucore.neulink.impl.cmd.msg.SDInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.util.AESUtil;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.MemoryUtils;
 
 import java.util.Locale;
+
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 
 public class DefaultDeviceServiceImpl implements IDeviceService {
 
@@ -27,7 +32,43 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
          * 每台设备固定不变【必须和设备出厂时的设备序列号一致，当不一致的时候设备将无法使用neucore云管理设备】
          * 这个主要时提供给中小企业不想建立云平台，想使用neucore云服务
          */
+        if(ObjectUtil.isEmpty(getDevId())){
+            return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+        }
+        else{
+            return getDevId()+"@"+ DeviceUtils.getMacAddress();
+        }
+    }
+
+    @Override
+    public String getProductId(){
+        return null;
+    }
+    @Override
+    public String getDevId(){
+        /**
+         * 读取设备烧录的椰壳Id，即：设备Id
+         */
         return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+    }
+
+    @Override
+    public String getDeviceSecret(){
+        /**
+         * 读取设备烧录的设备密钥
+         */
+        return "";
+    }
+
+    @Override
+    public String sign(String devId,String deviceSecret){
+        if(ObjectUtil.isEmpty(devId)){
+            throw new RuntimeException("设备授权Id不能为空");
+        }
+        if(ObjectUtil.isEmpty(deviceSecret)){
+            throw new RuntimeException("设备密钥不能为空");
+        }
+        return AESUtil.v1V2Encrypt(deviceSecret,devId);
     }
 
     @Override

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.util.Base64;
 
 import com.google.gson.annotations.SerializedName;
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.GzipRequestInterceptor;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -75,9 +78,9 @@ public class NeuHttpHelper implements NeulinkConst{
 		}
 	}
 
-	private static Request createRequest(String fileUrl, Map<String,String> headers){
+	private static Request createRequest(String url, Map<String,String> headers){
 		//第二步构建Request对象
-		Request.Builder builder = new Request.Builder().url(fileUrl).get();
+		Request.Builder builder = new Request.Builder().url(url).get();
 		if(ObjectUtil.isNotEmpty(headers)){
 			String[] keys = new String[headers.size()];
 			headers.keySet().toArray(keys);
@@ -189,8 +192,6 @@ public class NeuHttpHelper implements NeulinkConst{
 		return dld2File(context,reqId,fileUrl,toDir,connTime,execTime,3);
 	}
 
-
-
 	/**
 	 * 下载远程文件
 	 * @param fileUrl
@@ -277,6 +278,64 @@ public class NeuHttpHelper implements NeulinkConst{
 		return tmpFile;
 	}
 
+	public static String get(Context context,Map<String,String> headers, String reqId,String url) throws IOException {
+		return get(context,headers,reqId,url,10,60,3);
+	}
+
+	public static String get(Context context,Map<String,String> headers, String reqId,String url,int connTime,int execTime) throws IOException {
+		return get(context,headers,reqId,url,connTime,execTime,3);
+	}
+	public static String get(Context context,Map<String,String> headers, String reqId,String url,int connTime,int execTime,int tryNum) throws IOException {
+		StringBuilder stringBuilder = new StringBuilder();
+		InputStream is = null;
+
+		Response response = null;
+		int trys = 1;
+
+		OkHttpClient client = getClient(false,false,connTime,execTime);
+		int code = 200;
+		while(trys<=tryNum){
+			try{
+				response = client.newCall(createRequest(url,headers)).execute();
+				code = response.code();
+				if(code!=200){
+					throw new NeulinkException(code,url+",请求失败 with code="+code);
+				}
+				is = response.body().byteStream();
+
+				byte[] buffer = new byte[1024];
+				int readed = 0;
+				while ((readed = is.read(buffer)) != -1) {
+					stringBuilder.append(new String(buffer, 0, readed));
+				}
+				break;
+			}
+			catch (IOException ex){
+				NeuLogUtils.eTag(TAG,"第"+trys+"次下载"+url+"失败：",ex);
+				if(trys==tryNum) {
+					throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+				}
+				trys++;
+				continue;
+			}
+			catch (NeulinkException ex){
+				throw ex;
+			}
+			catch (RuntimeException ex){
+				NeuLogUtils.eTag(TAG,"第"+trys+"下载"+url+"文件失败：",ex);
+				throw new NeulinkException(NeulinkException.CODE_50001,NeulinkException.CODE_50001_MESSAGE,ex);
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+				}
+				catch (IOException ex){}
+			}
+		}
+		return stringBuilder.toString();
+	}
 	public static String post(String url,Map<String,String> params,int tryNum){
 		return post(url,params,null,tryNum);
 	}

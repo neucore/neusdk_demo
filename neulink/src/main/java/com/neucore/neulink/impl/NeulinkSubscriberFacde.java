@@ -2,12 +2,15 @@ package com.neucore.neulink.impl;
 
 import android.content.Context;
 
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 import org.eclipse.paho.mqttv5.client.IMqttMessageListener;
 import org.eclipse.paho.mqttv5.client.MqttActionListener;
+
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * 终端消费者
@@ -28,6 +31,10 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      *
      */
     public void subAll(){
+        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
+        String productId = deviceService.getProductId();
+        String extSN = deviceService.getExtSN();
+
         /**
          * 单播
          *
@@ -49,7 +56,10 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          *
          * 抓拍库上报响应      upld/res/{$dev_id}/biz/v1.0/${req_no}[/${md5}], qos=0
          */
-        String ucst_topic = "+/req/" + ServiceRegistry.getInstance().getDeviceService().getExtSN() + "/#";
+        String ucst_topic = "+/req/" + extSN + "/#";
+        if(ObjectUtil.isNotEmpty(productId)){
+            ucst_topic = String.format("%s/%s",productId,ucst_topic);
+        }
         /**
          * 广播
          *
@@ -76,6 +86,9 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
         boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
         if(bcstEnable){
             String bcst_topic = "+/req/" + service.getCustId() + "/#";
+            if(ObjectUtil.isNotEmpty(productId)){
+                bcst_topic = String.format("%s/%s",productId,bcst_topic);
+            }
             qoss = new int[]{qos,qos};
             topics = new String[]{ucst_topic,bcst_topic};
         }
