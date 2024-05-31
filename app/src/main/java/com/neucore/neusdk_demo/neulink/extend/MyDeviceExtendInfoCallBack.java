@@ -213,12 +213,16 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
         public String productMode = Build.MODEL;
         public String systemVer = "v1.0.1.20120101";
         private String buildInfo = "";
+        private String productId;   //椰壳ID
         private String yekerId;   //椰壳ID
+        private String deviceSecret;//设备密钥
         public String deviceSn; //机器设备号
 
         private DimSystemVer() {
             buildInfo = getSystemProperties("ro.product.build.dim", "ics_test_v1.0.1.20130101");// android.os.SystemProperties.get("ro.product.build.dim",android.os.Build.MODEL);
+            productId = getSystemProperties("ro.boot.product", "");
             yekerId = getSystemProperties("ro.boot.cidnum", "BLB10Y2020A0404220100000009");
+            deviceSecret = getSystemProperties("ro.boot.secret", "");
             deviceSn = getSystemProperties("ro.serialno", "");
             buildInfo = buildInfo.toUpperCase();
             if (buildInfo.contains("_")) {
@@ -298,12 +302,25 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
         }
 
         /**
+         * 获取授权设备所属产品Id
+         * @return
+         */
+        public String getProductId() {
+            return productId;
+        }
+
+        /**
          * 获取设备yekerId
          * @return
          */
         public String getYekerId() {
 
             return yekerId;
+        }
+
+        public String getDeviceSecret() {
+
+            return deviceSecret;
         }
 
         /**

@@ -23,6 +23,7 @@ import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
@@ -241,8 +242,18 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
-        ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
-        ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
+        String devId = deviceService.getDevId();
+        String deviceSecret = deviceService.getDeviceSecret();
+        if(ObjectUtil.isNotEmpty(devId) && ObjectUtil.isNotEmpty(deviceSecret)){
+            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, devId);
+            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, deviceSecret);
+        }
+        else{
+            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
+            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+        }
+
         ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
         ConfigContext.getInstance().update(ConfigContext.HTTP_REQ_IP,reqIp);
     }

@@ -16,6 +16,29 @@ public interface IDeviceService {
      */
     String getExtSN();
 
+    /**
+     * 获取授权设备所属产品Id
+     * @return
+     */
+    String getProductId();
+    /**
+     * 设备id【设备授权id：椰壳Id】
+     * @return
+     */
+    String getDevId();
+
+    /**
+     * 设备密钥
+     * @return
+     */
+    String getDeviceSecret();
+
+    /**
+     * 获取签名
+     * @return
+     */
+    String sign(String devId,String deviceSecret);
+
     DeviceInfo getInfo();
 
     /**

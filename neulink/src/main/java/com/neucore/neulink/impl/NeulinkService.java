@@ -532,8 +532,8 @@ public class NeulinkService implements NeulinkConst{
         StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId).append("/").append(md5);
 
         stringBuffer.append("/").append(getCustId()).append("/").append(getStoreId()).append("/").append(getZoneId()).append("/").append(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-
-        return stringBuffer.toString();
+        String topic = stringBuffer.toString();
+        return topic;
     }
 
     private void regist(String reqId,String topStr, String payload, int qos, Boolean retained){
@@ -710,6 +710,10 @@ public class NeulinkService implements NeulinkConst{
                     version = temps[3];
                 }
                 this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
+                String productId = deviceService.getProductId();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    this.topStr = productId+"/"+this.topStr;
+                }
             }
             this.qos = qos;
             this.retained = retained;
@@ -909,7 +913,12 @@ public class NeulinkService implements NeulinkConst{
                 if(debug){
                     this.topStr = this.topStr+"/debug";
                 }
+                String productId = deviceService.getProductId();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    this.topStr = productId+"/"+this.topStr;
+                }
             }
+
             this.qos = qos;
             this.retained = retained;
             this.callback = callback;

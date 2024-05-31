@@ -190,38 +190,57 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 ##### 参考 MyInstaller[详见代码]
 
-##### 扩展-HTTP安全登录
+##### 安全认证
+
+###### 扩展-HTTP安全登录
 ```java
     /**
-     * HTTP(S)安全登录 loginCallback
+     * HTTP(S)安全登录
+     * 参考：MyLoginCallbackImpl
      */
-    ILoginCallback loginCallback = new ILoginCallback() {
-        @Override
-        public String login() {
-            /**
-             * 实现登录返回token
-             */
-            return null;
-        }
-    };
+    
 
 ```
-
+###### [http请求]签名验签请求
++ header
+  + licId: 椰壳Id
+  + sign: 签名
+```java
+        /**
+        * 生成签名
+        */
+        String devId = "设备授权Id";
+    
+        String deviceSecret = "设备密钥";
+    
+        String sign = AESUtil.v1V2Encrypt(deviceSecret,devId);
+    
+        /**
+        * 新增http请求头
+        * "licId": ${devId}
+        * "sign": ${sign}
+        * 
+        */
+        Map<String,String> headers = new HashMap();
+        headers.put("licId",devId);
+        headers.put("sign",sign);
+        String response = NeuHttpHelper.get(context,headers, reqId,String url);
+```
 ##### 扩展-MQTT联网状态
 
 ```java
     /**
-     * MQTT 网络、消息扩展 参考 MyMqttCallbackImpl
+     * MQTT 网络、消息扩展 
+     * 参考 MyMqttCallbackImpl
      */
-     IMqttCallBack mqttCallBack = new MyMqttCallbackImpl();
 ```
 
 ##### 扩展-设备服务
 ```java
     /**
      * 设备服务扩展
+     * 参考：MyDeviceExtendServiceImpl 
      */
-     IDeviceService deviceService = new MyDeviceExtendServiceImpl();
     
 ```
     
@@ -229,8 +248,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ```java
     /**
      * 设备信息上报扩展 参考 MyDeviceServiceImpl
+     * 参考：MyDeviceExtendInfoCallBack
      */
-    IDeviceExtendInfoCallback extendInfoCallback = new MyDeviceExtendInfoCallBack();
 
 ```
 
@@ -238,16 +257,16 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ```java
     /**
      * 外部扩展注册器
+     * 参考：MyBizExtendRegistCallbackImpl
      */
-    IExtendCallback callback = new MyBizExtendRegistCallbackImpl();
 ```
 
 ##### 扩展-权限检测扩展
 ```java
     /**
      * 默认：READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE 权限检测
+     * 参考：MyPermissionChecker
      */
-    IPermissionChecker permissionChecker = new MyPermissionChecker();
 ```
 
 ##### 扩展-文件下载器

@@ -1,11 +1,15 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
+import com.neucore.neulink.util.AESUtil;
 import com.neucore.neulink.util.DeviceUtils;
 
 import java.util.Locale;
+
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * 设备服务扩展实现
@@ -17,6 +21,35 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
          * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
+    }
+    @Override
+    public String getProductId(){
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getProductId();
+    }
+    @Override
+    public String getDevId(){
+        /**
+         * 读取设备烧录的授权ID【椰壳Id，即：设备Id】
+         */
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId();
+    }
+
+    @Override
+    public String getDeviceSecret(){
+        /**
+         * 读取设备烧录的设备密钥
+         */
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getDeviceSecret();
+    }
+    @Override
+    public String sign(String devId,String deviceSecret){
+        if(ObjectUtil.isEmpty(devId)){
+            throw new RuntimeException("设备授权Id不能为空");
+        }
+        if(ObjectUtil.isEmpty(deviceSecret)){
+            throw new RuntimeException("设备密钥不能为空");
+        }
+        return AESUtil.v1V2Encrypt(deviceSecret,devId);
     }
     @Override
     public Locale getLocale(){
