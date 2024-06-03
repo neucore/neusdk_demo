@@ -248,7 +248,7 @@ class RegisterAdapter implements NeulinkConst{
         String deviceSecret = deviceService.getDeviceSecret();
         if(ObjectUtil.isNotEmpty(devId) && ObjectUtil.isNotEmpty(deviceSecret)){
             if(ObjectUtil.isNotEmpty(productId)){
-                ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, String.format("%s&%s",devId,productId));
+                ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, String.format("%s|%s",devId,productId));
             }
             else{
                 ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, devId);
