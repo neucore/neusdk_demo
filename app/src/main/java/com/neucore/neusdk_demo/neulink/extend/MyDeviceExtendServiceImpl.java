@@ -1,6 +1,5 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
-import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
@@ -16,20 +15,34 @@ import cn.hutool.core.util.ObjectUtil;
  */
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
     @Override
+    public String clientId(){
+        String clientId = getExtSN();
+        String productId = getProductId();
+        if(ObjectUtil.isNotEmpty(productId)){
+            clientId = String.format("%s|%s",productId,getExtSN());
+        }
+        return clientId;
+    }
+    @Override
     public String getExtSN() {
         /**
          * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
+         * TODO 需要从设备生产时烧入的位置读取的:椰壳Id@mac信息
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
     }
     @Override
     public String getProductId(){
+        /**
+         * TODO 需要从设备生产时烧入的位置读取的:椰壳Id@mac信息,没有时返回为空
+         */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getProductId();
     }
     @Override
-    public String getDevId(){
+    public String getDeviceId(){
         /**
          * 读取设备烧录的授权ID【椰壳Id，即：设备Id】
+         * TODO 需要从设备生产时烧入的位置读取的:椰壳Id
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId();
     }
@@ -38,6 +51,7 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
     public String getDeviceSecret(){
         /**
          * 读取设备烧录的设备密钥
+         * TODO 需要从设备生产时烧入的位置读取的:设备密钥
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getDeviceSecret();
     }

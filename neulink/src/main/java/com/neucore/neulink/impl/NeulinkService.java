@@ -128,6 +128,8 @@ public class NeulinkService implements NeulinkConst{
     }
 
     private void createMqttService(String serverUri, String userName, String password){
+        //唯一标示 保证每个设备都唯一就可以 建议 imei
+
         synchronized (this){
             if(!mqttInited){
                 NeuLogUtils.iTag(TAG,String.format("createMqttService inited %s", mqttInited));
@@ -136,8 +138,7 @@ public class NeulinkService implements NeulinkConst{
                         .serverUrl(serverUri)
                         .userName(userName)
                         .passWord(password)
-                        //唯一标示 保证每个设备都唯一就可以 建议 imei
-                        .clientId(ServiceRegistry.getInstance().getDeviceService().getExtSN())
+                        .clientId(deviceService.clientId())
                         //设置自动重连
                         .autoReconnect(ConfigContext.getInstance().getConfig(ConfigContext.AUTO_RECONNECT,true))
                         //最大延时时间
