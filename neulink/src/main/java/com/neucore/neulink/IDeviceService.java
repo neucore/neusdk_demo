@@ -11,6 +11,12 @@ import java.util.Locale;
 
 public interface IDeviceService {
     /**
+     * [${productId}|]${extSn}
+     * @return
+     */
+    String clientId();
+
+    /**
      * 设备序列号，每台设备必须固定且唯一
      * @return
      */
@@ -25,7 +31,7 @@ public interface IDeviceService {
      * 设备id【设备授权id：椰壳Id】
      * @return
      */
-    String getDevId();
+    String getDeviceId();
 
     /**
      * 设备密钥

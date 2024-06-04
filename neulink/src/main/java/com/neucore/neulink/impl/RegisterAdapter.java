@@ -23,7 +23,6 @@ import com.neucore.neulink.util.NeuHttpHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
@@ -243,7 +242,7 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
-        String devId = deviceService.getDevId();
+        String devId = deviceService.getDeviceId();
         String productId = deviceService.getProductId();
         String deviceSecret = deviceService.getDeviceSecret();
         if(ObjectUtil.isNotEmpty(devId) && ObjectUtil.isNotEmpty(deviceSecret)){
