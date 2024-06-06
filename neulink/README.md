@@ -192,7 +192,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 
 ##### 安全认证
 
-###### 扩展-HTTP安全登录
+###### 扩展-HTTP安全登录[过期]
 ```java
     /**
      * HTTP(S)安全登录
@@ -201,7 +201,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     
 
 ```
-###### [http请求]签名验签请求
+###### [http请求]签名验签请求【推荐】
 + header
   + licId: 椰壳Id
   + sign: 签名
@@ -238,7 +238,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ##### 扩展-设备服务
 ```java
     /**
-     * 设备服务扩展
+     * 设备服务扩展【实现productId、deviceName、deviceSecret 烧录信息的读取】
      * 参考：MyDeviceExtendServiceImpl 
      */
     

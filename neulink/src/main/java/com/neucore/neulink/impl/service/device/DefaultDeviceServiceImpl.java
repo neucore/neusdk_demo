@@ -23,15 +23,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class DefaultDeviceServiceImpl implements IDeviceService {
 
-    @Override
-    public String clientId(){
-        String clientId = getExtSN();
-        String productId = getProductId();
-        if(ObjectUtil.isNotEmpty(productId)){
-            clientId = String.format("%s|%s",productId,getExtSN());
-        }
-        return clientId;
-    }
+
 
     @Override
     public String getExtSN() {
