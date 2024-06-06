@@ -75,6 +75,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String MQTT_PASSWORD = "login.password";
 
+    public final static String MQTT_CLIENT_ID = "login.clientid";
+
     public final static String KEEP_ALIVE_INTERVAL= "keepAliveInterval";
 
     public final static String CONNECT_TIMEOUT= "connectTimeout";

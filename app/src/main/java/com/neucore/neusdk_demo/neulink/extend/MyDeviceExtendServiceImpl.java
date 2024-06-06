@@ -14,15 +14,7 @@ import cn.hutool.core.util.ObjectUtil;
  * 设备服务扩展实现
  */
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
-    @Override
-    public String clientId(){
-        String clientId = getExtSN();
-        String productId = getProductId();
-        if(ObjectUtil.isNotEmpty(productId)){
-            clientId = String.format("%s|%s",productId,getExtSN());
-        }
-        return clientId;
-    }
+
     @Override
     public String getExtSN() {
         /**

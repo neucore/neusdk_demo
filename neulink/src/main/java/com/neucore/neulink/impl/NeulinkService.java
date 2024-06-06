@@ -138,7 +138,7 @@ public class NeulinkService implements NeulinkConst{
                         .serverUrl(serverUri)
                         .userName(userName)
                         .passWord(password)
-                        .clientId(deviceService.clientId())
+                        .clientId(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_CLIENT_ID,deviceService.getExtSN()))
                         //设置自动重连
                         .autoReconnect(ConfigContext.getInstance().getConfig(ConfigContext.AUTO_RECONNECT,true))
                         //最大延时时间

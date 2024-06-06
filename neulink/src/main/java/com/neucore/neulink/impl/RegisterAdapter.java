@@ -18,6 +18,7 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.HttpParamWrapper;
 import com.neucore.neulink.util.JSonUtils;
+import com.neucore.neulink.util.MqttSign;
 import com.neucore.neulink.util.NetworkHelper;
 import com.neucore.neulink.util.NeuHttpHelper;
 
@@ -242,21 +243,20 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
-        String devId = deviceService.getDeviceId();
+        String deviceName = deviceService.getDeviceId();
         String productId = deviceService.getProductId();
         String deviceSecret = deviceService.getDeviceSecret();
-        if(ObjectUtil.isNotEmpty(devId) && ObjectUtil.isNotEmpty(deviceSecret)){
-            if(ObjectUtil.isNotEmpty(productId)){
-                ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, String.format("%s|%s",devId,productId));
-            }
-            else{
-                ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, devId);
-            }
-            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, deviceSecret);
+        MqttSign mqttSign = new MqttSign();
+        if(ObjectUtil.isNotEmpty(productId)){
+            mqttSign.calculate(productId,deviceName,deviceSecret,DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
+            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttSign.getUsername());
+            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttSign.getPassword());
+            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, mqttSign.getClientid());
         }
         else{
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, deviceService.getExtSN());
         }
 
         ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
