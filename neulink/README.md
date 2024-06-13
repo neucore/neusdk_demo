@@ -201,7 +201,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
     
 
 ```
-###### [http请求]签名验签请求【推荐】
+###### [http请求]新版设备http请求,每台设备都配置了（productKey,deviceName,）【推荐】
 + header
   + clientId: 椰壳Id
   + sign: 签名
