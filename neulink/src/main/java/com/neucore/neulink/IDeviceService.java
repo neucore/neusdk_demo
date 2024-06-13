@@ -53,6 +53,14 @@ public interface IDeviceService {
     String getDeviceSecret();
 
     /**
+     * 是否是新版本
+     * @return
+     */
+    default boolean newVersion(){
+        return ObjectUtil.isNotEmpty(getProductKey()) &&ObjectUtil.isNotEmpty(getDeviceName()) && ObjectUtil.isNotEmpty(getDeviceSecret());
+    }
+
+    /**
      * 获取签名
      * @return
      */

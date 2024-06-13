@@ -88,44 +88,51 @@ class RegisterAdapter implements NeulinkConst{
         new Thread("RegisterAdapter"){
             public void run(){
 
-
-                NeuLogUtils.iTag(TAG,"do regist ...");
-
-                Integer channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
                 boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
 
-                NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
+                IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
+                boolean newVersion = deviceService.newVersion();
+                if(!newVersion){
+                    /**
+                     * 老版本需要登录，获取token
+                     */
+                    NeuLogUtils.iTag(TAG,"do regist ...");
 
-                while (!logined && (channel==1 || remoteConfig)) {
-                    ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-                    if(loginCallback!=null) {
-                        String token = null;
-                        try {
-                            token = loginCallback.login();
-                            if(ObjectUtil.isEmpty(token)){
-                                NeuLogUtils.iTag(TAG,"token非法。。。");
+                    Integer channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
+
+
+                    NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
+
+                    while (!logined && (channel==1 || remoteConfig)) {
+                        ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
+                        if(loginCallback!=null) {
+                            String token = null;
+                            try {
+                                token = loginCallback.login();
+                                if(ObjectUtil.isEmpty(token)){
+                                    NeuLogUtils.iTag(TAG,"token非法。。。");
+                                    toSleep();
+                                    continue;
+                                }
+                                else{
+                                    logined = true;
+                                    NeulinkSecurity.getInstance().setToken(token);
+                                    NeuLogUtils.iTag(TAG,"success logined");
+                                    break;
+                                }
+                            }
+                            catch (Exception e){
+                                NeuLogUtils.eTag(TAG,"登陆失败",e);
                                 toSleep();
                                 continue;
                             }
-                            else{
-                                logined = true;
-                                NeulinkSecurity.getInstance().setToken(token);
-                                NeuLogUtils.iTag(TAG,"success logined");
-                                break;
-                            }
                         }
-                        catch (Exception e){
-                            NeuLogUtils.eTag(TAG,"登陆失败",e);
-                            toSleep();
-                            continue;
+                        else{
+                            logined = true;
+                            NeuLogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
                         }
-                    }
-                    else{
-                        logined = true;
-                        NeuLogUtils.iTag(TAG,"没有实现ILoginCallback，跳过登录授权");
                     }
                 }
-
                 /**
                  * 配置请求
                  */
@@ -141,7 +148,9 @@ class RegisterAdapter implements NeulinkConst{
                 String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
 
                 Map<String, String> headers = HttpParamWrapper.getParams();
-
+                if(newVersion){
+                    logined = true;
+                }
                 while (logined && remoteConfig && !configLoaded){
                     String response = null;
                     try {
@@ -180,7 +189,6 @@ class RegisterAdapter implements NeulinkConst{
                 while(!registed){
                     try {
 
-                        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
                         DeviceInfo deviceInfo = deviceService.getInfo();
                         if (ObjectUtil.isEmpty(deviceInfo)) {
                             throw new RuntimeException("设备服务 getInfo没有实现。。。");

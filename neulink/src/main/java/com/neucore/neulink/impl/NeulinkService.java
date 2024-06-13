@@ -32,6 +32,7 @@ import com.neucore.neulink.util.MD5Utils;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.HeadersUtil;
 import com.neucore.neulink.util.RequestContext;
+import com.neucore.neulink.util.SecuretSign;
 
 import org.eclipse.paho.mqttv5.client.MqttActionListener;
 import org.eclipse.paho.mqttv5.client.MqttClientException;
@@ -809,14 +810,14 @@ public class NeulinkService implements NeulinkConst{
                             registed = true;
                         }
                         else{
-                            Map<String,String> params = HttpParamWrapper.getParams();
+                            Map<String,String> headers = HttpParamWrapper.getParams();
                             String response = null;
                             NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道注册");
                             String registServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
                             NeuLogUtils.dTag(TAG,"registServer："+registServer);
 
                             String topic = URLEncoder.encode(topStr,"UTF-8");
-                            response = NeuHttpHelper.post(true,false,registServer+"?topic="+topic,payload,params,10,60,1);
+                            response = NeuHttpHelper.post(true,false,registServer+"?topic="+topic,payload,headers,10,60,1);
 
                             NeuLogUtils.dTag(TAG,"设备注册响应："+response);
                             getRegistCallback().onFinished(Result.ok());
