@@ -195,6 +195,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ###### 扩展-HTTP安全登录[过期]
 ```java
     /**
+    * 老版本需要实现 
      * HTTP(S)安全登录
      * 参考：MyLoginCallbackImpl
      */
