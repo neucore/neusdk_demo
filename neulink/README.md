@@ -203,27 +203,23 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ```
 ###### [http请求]签名验签请求【推荐】
 + header
-  + licId: 椰壳Id
+  + clientId: 椰壳Id
   + sign: 签名
 ```java
         /**
         * 生成签名
         */
-        String devId = "设备授权Id";
-    
-        String deviceSecret = "设备密钥";
-    
-        String sign = AESUtil.v1V2Encrypt(deviceSecret,devId);
-    
+        SecuretSign securetSign = ServiceRegistry.getInstance().getDeviceService().sign();
+        
         /**
         * 新增http请求头
-        * "licId": ${devId}
+        * "clientId": ${clientId}
         * "sign": ${sign}
         * 
         */
         Map<String,String> headers = new HashMap();
-        headers.put("licId",devId);
-        headers.put("sign",sign);
+        headers.put("clientId",securetSign.getClientId());
+        headers.put("sign",securetSign.getSign());
         String response = NeuHttpHelper.get(context,headers, reqId,String url);
 ```
 ##### 扩展-MQTT联网状态
@@ -238,7 +234,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ##### 扩展-设备服务
 ```java
     /**
-     * 设备服务扩展【实现productId、deviceName、deviceSecret 烧录信息的读取】
+     * 设备服务扩展【实现productKey、deviceName、deviceSecret 烧录信息的读取】
      * 参考：MyDeviceExtendServiceImpl 
      */
     

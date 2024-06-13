@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl.service.device;
 
 import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.impl.NeulinkService;
 import com.neucore.neulink.impl.cmd.msg.CPUInfo;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.DiskInfo;
@@ -10,8 +11,7 @@ import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
-import com.neucore.neulink.impl.NeulinkService;
-import com.neucore.neulink.util.AESUtil;
+import com.neucore.neulink.util.SecuretSign;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
@@ -41,7 +41,7 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public String getProductId(){
+    public String getProductKey(){
         return null;
     }
     @Override
@@ -61,14 +61,9 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public String sign(String devId,String deviceSecret){
-        if(ObjectUtil.isEmpty(devId)){
-            throw new RuntimeException("设备授权Id不能为空");
-        }
-        if(ObjectUtil.isEmpty(deviceSecret)){
-            throw new RuntimeException("设备密钥不能为空");
-        }
-        return AESUtil.v1V2Encrypt(deviceSecret,devId);
+    public SecuretSign sign(){
+        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceId(),getDeviceSecret(),DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
+        return securetSign;
     }
 
     @Override
