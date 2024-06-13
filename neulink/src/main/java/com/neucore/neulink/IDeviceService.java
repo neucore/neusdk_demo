@@ -6,6 +6,7 @@ import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.impl.service.device.LocalTimezone;
+import com.neucore.neulink.util.SecuretSign;
 
 import java.util.Locale;
 
@@ -21,7 +22,7 @@ public interface IDeviceService {
      * 获取授权设备所属产品Id
      * @return
      */
-    String getProductId();
+    String getProductKey();
     /**
      * 设备id【设备授权id：椰壳Id】
      * @return
@@ -38,7 +39,7 @@ public interface IDeviceService {
      * 获取签名
      * @return
      */
-    String sign(String devId,String deviceSecret);
+    SecuretSign sign();
 
     DeviceInfo getInfo();
 

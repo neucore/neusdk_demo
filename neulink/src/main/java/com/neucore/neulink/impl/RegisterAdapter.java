@@ -18,7 +18,7 @@ import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.HttpParamWrapper;
 import com.neucore.neulink.util.JSonUtils;
-import com.neucore.neulink.util.MqttSign;
+import com.neucore.neulink.util.SecuretSign;
 import com.neucore.neulink.util.NetworkHelper;
 import com.neucore.neulink.util.NeuHttpHelper;
 
@@ -244,14 +244,14 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         String deviceName = deviceService.getDeviceId();
-        String productId = deviceService.getProductId();
+        String productKey = deviceService.getProductKey();
         String deviceSecret = deviceService.getDeviceSecret();
-        MqttSign mqttSign = new MqttSign();
-        if(ObjectUtil.isNotEmpty(productId)){
-            mqttSign.calculate(productId,deviceName,deviceSecret,DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
-            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttSign.getUsername());
-            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttSign.getPassword());
-            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, mqttSign.getClientid());
+
+        if(ObjectUtil.isNotEmpty(productKey)){
+            SecuretSign securetSign = deviceService.sign();
+            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, securetSign.getUsername());
+            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, securetSign.getSign());
+            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, securetSign.getClientId());
         }
         else{
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);

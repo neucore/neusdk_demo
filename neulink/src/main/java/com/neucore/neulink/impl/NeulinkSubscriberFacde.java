@@ -7,7 +7,6 @@ import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
-import org.eclipse.paho.mqttv5.client.IMqttMessageListener;
 import org.eclipse.paho.mqttv5.client.MqttActionListener;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -32,7 +31,7 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      */
     public void subAll(){
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
-        String productId = deviceService.getProductId();
+        String productId = deviceService.getProductKey();
         String extSN = deviceService.getExtSN();
 
         /**

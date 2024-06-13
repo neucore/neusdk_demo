@@ -42,12 +42,10 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
@@ -272,7 +270,7 @@ public class NeulinkService implements NeulinkConst{
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTTopic info = new LWTTopic();
         String topic = "msg/req/lwt";
-        String productId = deviceService.getProductId();
+        String productId = deviceService.getProductKey();
         if(ObjectUtil.isNotEmpty(productId)){
             topic = productId+"/"+topic;
         }
@@ -716,7 +714,7 @@ public class NeulinkService implements NeulinkConst{
                     version = temps[3];
                 }
                 this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
-                String productId = deviceService.getProductId();
+                String productId = deviceService.getProductKey();
                 if(ObjectUtil.isNotEmpty(productId)){
                     this.topStr = productId+"/"+this.topStr;
                 }
@@ -919,7 +917,7 @@ public class NeulinkService implements NeulinkConst{
                 if(debug){
                     this.topStr = this.topStr+"/debug";
                 }
-                String productId = deviceService.getProductId();
+                String productId = deviceService.getProductKey();
                 if(ObjectUtil.isNotEmpty(productId)){
                     this.topStr = productId+"/"+this.topStr;
                 }
