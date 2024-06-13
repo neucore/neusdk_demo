@@ -12,23 +12,38 @@ import cn.hutool.core.util.ObjectUtil;
 
 public class HttpParamWrapper {
     public static Map<String,String> getParams(){
+
+        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
+
+        boolean newVersion = deviceService.newVersion();
         String token = NeulinkSecurity.getInstance().getToken();
-        final Map<String,String> params = new HashMap<>();
+        final Map<String,String> headers = new HashMap<>();
         if(token!=null){
             int index = token.indexOf(" ");
             if(index!=-1){
                 token = token.substring(index+1);
             }
-            params.put("Authorization","bearer "+token);
+            headers.put("Authorization","bearer "+token);
         }
-        IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         if(ObjectUtil.isNotEmpty(deviceService)){
             Locale locale = deviceService.getLocale();
             if(ObjectUtil.isEmpty(locale)){
                 locale = Locale.getDefault();
             }
-            params.put("Accept-Language",locale.getLanguage()+"-"+locale.getCountry());
+            headers.put("Accept-Language",locale.getLanguage()+"-"+locale.getCountry());
         }
-        return params;
+
+        if(newVersion){
+            /**
+             * 新版本无需登录
+             */
+            headers.remove("Authorization");
+            SecuretSign securetSign = deviceService.sign();
+            String clientId = securetSign.getClientId();
+            String sign = securetSign.getSign();
+            headers.put("clientId",clientId);
+            headers.put("sign",sign);
+        }
+        return headers;
     }
 }
