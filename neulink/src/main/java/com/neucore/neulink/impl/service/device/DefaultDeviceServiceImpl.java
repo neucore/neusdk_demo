@@ -11,7 +11,6 @@ import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
-import com.neucore.neulink.util.SecuretSign;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
@@ -19,51 +18,21 @@ import com.neucore.neulink.util.MemoryUtils;
 
 import java.util.Locale;
 
-import cn.hutool.core.util.ObjectUtil;
-
 public class DefaultDeviceServiceImpl implements IDeviceService {
-
-
-
-    @Override
-    public String getExtSN() {
-        /**
-         * 默认实现
-         * 每台设备固定不变【必须和设备出厂时的设备序列号一致，当不一致的时候设备将无法使用neucore云管理设备】
-         * 这个主要时提供给中小企业不想建立云平台，想使用neucore云服务
-         */
-        if(ObjectUtil.isEmpty(getDeviceId())){
-            return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
-        }
-        else{
-            return getDeviceId()+"@"+ DeviceUtils.getMacAddress();
-        }
-    }
 
     @Override
     public String getProductKey(){
-        return null;
+        return "";
     }
+
     @Override
-    public String getDeviceId(){
-        /**
-         * 读取设备烧录的椰壳Id，即：设备Id
-         */
+    public String getDeviceName(){
         return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
     }
 
     @Override
     public String getDeviceSecret(){
-        /**
-         * 读取设备烧录的设备密钥
-         */
         return "";
-    }
-
-    @Override
-    public SecuretSign sign(){
-        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceId(),getDeviceSecret(),DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
-        return securetSign;
     }
 
     @Override

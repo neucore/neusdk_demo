@@ -10,26 +10,20 @@ import java.util.Locale;
 
 /**
  * 设备服务扩展实现
+ *
  */
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
 
     @Override
-    public String getExtSN() {
-        /**
-         * 需要获取设备唯一标识【自定义，eg：YekerID@MacAddress】
-         * TODO 需要从设备生产时烧入的位置读取的:椰壳Id@mac信息
-         */
-        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getYekerId()+"@"+ DeviceUtils.getMacAddress();
-    }
-    @Override
     public String getProductKey(){
         /**
-         * TODO 需要从设备生产时烧入的位置读取的:椰壳Id@mac信息,没有时返回为空
+         * TODO 需要从设备生产时烧入的位置读取的:productId
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getProductKey();
     }
+
     @Override
-    public String getDeviceId(){
+    public String getDeviceName(){
         /**
          * 读取设备烧录的授权ID【椰壳Id，即：设备Id】
          * TODO 需要从设备生产时烧入的位置读取的:椰壳Id
@@ -45,11 +39,7 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getDeviceSecret();
     }
-    @Override
-    public SecuretSign sign(){
-        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceId(),getDeviceSecret(),DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
-        return securetSign;
-    }
+
     @Override
     public Locale getLocale(){
         /**
