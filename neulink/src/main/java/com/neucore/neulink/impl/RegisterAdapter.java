@@ -252,9 +252,12 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         String productKey = deviceService.getProductKey();
+        String deviceName = deviceService.getDeviceName();
         String deviceSecret = deviceService.getDeviceSecret();
         if(ObjectUtil.isNotEmpty(productKey)
-                && ObjectUtil.isNotEmpty(deviceSecret)){
+                && ObjectUtil.isNotEmpty(deviceSecret)
+                && ObjectUtil.isNotEmpty(deviceName)
+        ){
             SecuretSign securetSign = deviceService.sign();
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, securetSign.getUsername());
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, securetSign.getSign());
