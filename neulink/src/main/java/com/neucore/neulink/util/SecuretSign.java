@@ -40,7 +40,7 @@ public class SecuretSign {
 
             //MQTT ClientId
             this.clientId = productKey + "." + deviceName + "@" + macAddress + "|" + "timestamp=" + timestamp +
-                    ",securemode=2,signmethod=hmacsha256,_v=paho-java-1.0.0|";
+                    ",securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|";
         }catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -209,8 +209,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
   + deviceSecret 设备密钥
 + header
   + clientId
-    + 当用户启用(YekerID)规则时：${productKey}|${YekerID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256|
-    + 当用户启用(自定义ID)规则时：${productKey}|${自定义ID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256|
+    + 当用户启用(YekerID)规则时：${productKey}|${YekerID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + 当用户启用(自定义ID)规则时：${productKey}|${自定义ID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
   + sign: 签名
 ```java
         /**
