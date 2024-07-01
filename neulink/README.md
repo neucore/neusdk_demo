@@ -22,10 +22,64 @@
 ##### Mqtt_mqtt时序图
 ![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
 
-#### 协议说明
+### 协议说明
 
-##### 非一机一密
-###### neulink[1.0]
+#### 鉴权规范
+
+##### 老版本
++ mqttClientId
+  + 当用户启用(YekerID)规则时：${YekerID}@${macAddress}
+  + 当用户启用(自定义ID)规则时：${自定义ID}@${macAddress}
++ mqttHost
+  + 通过【远程配置接口】获取
++ mqttUsername
+  + 通过【远程配置接口】获取
++ mqttPassword
+  + 通过【远程配置接口】获取
+##### 一机一密
++ 新版本所有设备都必须是一机一密机制
++ 授权时每台设备都会有
+  + productKey：产品id
+  + deviceName：椰壳Id或者自定义Id
+  + deviceSecret：设备密钥，建议设备加密保存
++ 设备连接规则
+  + 当前时间戳：timestamp
++ mqttUsername:
+  + String mqttUsername = ${deviceName} + "|" + ${productKey};
++ mqttPassword
+  + hmacSha256(plainTxt,deviceSecret)签名后的值
+```java
+public class CryptoUtil {
+    private static String hmac(String plainText, String key, String algorithm, String format) throws Exception {
+        if (plainText == null || key == null) {
+            return null;
+        }
+
+        byte[] hmacResult = null;
+
+        Mac mac = Mac.getInstance(algorithm);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), algorithm);
+        mac.init(secretKeySpec);
+        hmacResult = mac.doFinal(plainText.getBytes());
+        return String.format(format, new BigInteger(1, hmacResult));
+    }
+    public static String hmacSha256(String plainText, String key) throws Exception {
+        return hmac(plainText,key,"HmacSHA256","%064x");
+    }
+}
+```  
++ 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
++ 其中plainTxt
+```java
+String plainTxt = "clientId:" + ${productKey} + "." + ${deviceName} + ",deviceName:" + ${deviceName} 
+    + ",productKey:" + ${productKey} +",macAddress:" + ${macAddress} + "timestamp:" + ${timestamp}
+```
++ mqttClientId
+  + 当用户启用(YekerID)规则时：${productKey}|${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+  + 当用户启用(自定义ID)规则时：${productKey}|${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+#### topic 规范
+
+##### topic[1.0]
 
 + 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
@@ -37,9 +91,9 @@
   + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
-###### neulink[1.2]
+##### topic[1.2]
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【${productId}/rmsg/req/${dev_id}/#、${productId}/rrpc/req/${dev_id}/#、${productId}/upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
@@ -47,11 +101,16 @@
 
   + eg：授权处理器
   + topic：rrpc/req/${dev_id}/v1.0；
-  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor; 
 
-##### 一机一密
++ 3，变化点&注意事项：
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+  + 0，新增了header
+
+  + 1，biz、req_no、md5三个字段从topic移到了header
+##### topic[一机一密]
+
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【${productId}/rmsg/req/${dev_id}/#、${productId}/rrpc/req/${dev_id}/#、${productId}/upld/res/${dev_id}/#】订阅;
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
@@ -67,7 +126,7 @@
 
   + 1，biz、req_no、md5三个字段从topic移到了header
 
-##### neulink[2.0]
+#### 协议体规范【neulink[2.0]】
 
 + 变化点&注意事项：
 
