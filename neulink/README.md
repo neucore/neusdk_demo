@@ -24,7 +24,8 @@
 
 #### 协议说明
 
-##### neulink[1.0]
+##### 非一机一密
+###### neulink[1.0]
 
 + 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
@@ -36,7 +37,19 @@
   + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
-##### neulink[1.2]
+###### neulink[1.2]
+
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【${productId}/rmsg/req/${dev_id}/#、${productId}/rrpc/req/${dev_id}/#、${productId}/upld/res/${dev_id}/#】订阅;
+
++ 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
+
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
+
+  + eg：授权处理器
+  + topic：rrpc/req/${dev_id}/v1.0；
+  + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
+
+##### 一机一密
 
 + 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
 
