@@ -1,5 +1,7 @@
 package com.neucore.neulink.util;
 
+import java.util.Locale;
+
 public class SecuretSign {
 
     private String username = "";
@@ -30,7 +32,7 @@ public class SecuretSign {
         if(macAddress == null||macAddress.trim().length() == 0) {
             throw new IllegalArgumentException("macAddress  can not be null");
         }
-        macAddress = macAddress.replace(":","");
+        macAddress = macAddress.replace(":","").toUpperCase();
         try {
             //MQTT UserName
             this.username = deviceName + "|" + productKey;
