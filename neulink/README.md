@@ -26,19 +26,21 @@
 
 #### 鉴权规范
 
-##### 老版本
+##### 老版本【废弃】
++ YekerID、自定义ID出厂时烧录
 + mqttClientId
   + 当用户启用(YekerID)规则时：${YekerID}@${macAddress}
   + 当用户启用(自定义ID)规则时：${自定义ID}@${macAddress}
++ 登录成功后，调用远程配置接口获得
 + mqttHost
   + 通过【远程配置接口】获取
 + mqttUsername
   + 通过【远程配置接口】获取
 + mqttPassword
   + 通过【远程配置接口】获取
-##### 一机一密
+##### 一机一密【推荐】
 + 新版本所有设备都必须是一机一密机制
-+ 授权时每台设备都会有
++ 授权时每台设备都会有【出厂时烧入到每台设备】
   + productKey：产品id
   + deviceName：椰壳Id或者自定义Id
   + deviceSecret：设备密钥，建议设备加密保存
