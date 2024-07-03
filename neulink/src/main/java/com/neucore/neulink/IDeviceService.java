@@ -33,7 +33,7 @@ public interface IDeviceService {
             return getDeviceName()+"@"+ DeviceUtils.getMacAddress();
         }
     }
-
+    String getMqttServer();
     /**
      * 获取授权设备所属产品Id
      * @return

@@ -21,6 +21,11 @@ import java.util.Locale;
 public class DefaultDeviceServiceImpl implements IDeviceService {
 
     @Override
+    public String getMqttServer(){
+        return "";
+    }
+
+    @Override
     public String getProductKey(){
         return "";
     }

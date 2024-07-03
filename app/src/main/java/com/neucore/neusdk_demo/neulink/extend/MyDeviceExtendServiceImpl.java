@@ -15,6 +15,14 @@ import java.util.Locale;
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
 
     @Override
+    public String getMqttServer(){
+        /**
+         * TODO 需要从设备生产时烧入的位置读取的:productId
+         */
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getMqttServer();
+    }
+
+    @Override
     public String getProductKey(){
         /**
          * TODO 需要从设备生产时烧入的位置读取的:productId
