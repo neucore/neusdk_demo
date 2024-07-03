@@ -213,6 +213,7 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
         public String productMode = Build.MODEL;
         public String systemVer = "v1.0.1.20120101";
         private String buildInfo = "";
+        private String mqttServer="";
         private String productKey;   //椰壳ID
         private String yekerId;   //椰壳ID
         private String deviceSecret;//设备密钥
@@ -220,6 +221,7 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
 
         private DimSystemVer() {
             buildInfo = getSystemProperties("ro.product.build.dim", "ics_test_v1.0.1.20130101");// android.os.SystemProperties.get("ro.product.build.dim",android.os.Build.MODEL);
+            mqttServer = getSystemProperties("ro.boot.mqttServer", "");
             productKey = getSystemProperties("ro.boot.product", "");
             yekerId = getSystemProperties("ro.boot.cidnum", "BLB10Y2020A0404220100000009");
             deviceSecret = getSystemProperties("ro.boot.secret", "");
@@ -299,6 +301,10 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
          */
         public String getSystemVer() {
             return systemVer;
+        }
+
+        public String getMqttServer(){
+            return mqttServer;
         }
 
         /**

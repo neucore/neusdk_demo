@@ -251,6 +251,7 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
+
         String productKey = deviceService.getProductKey();
         String deviceName = deviceService.getDeviceName();
         String deviceSecret = deviceService.getDeviceSecret();
@@ -258,15 +259,19 @@ class RegisterAdapter implements NeulinkConst{
                 && ObjectUtil.isNotEmpty(deviceSecret)
                 && ObjectUtil.isNotEmpty(deviceName)
         ){
+            mqttServer = deviceService.getMqttServer();
+            ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
             SecuretSign securetSign = deviceService.sign();
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, securetSign.getUsername());
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, securetSign.getSign());
             ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, securetSign.getClientId());
+            NeuLogUtils.iTag(TAG,String.format("一机一密 host=%,productKey=%s,deviceName=%s,sign=%s,clientId=%s",mqttServer,deviceService.getProductKey(),deviceService.getDeviceName(),securetSign.getSign(),securetSign.getClientId()));
         }
         else{
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
             ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, deviceService.getExtSN());
+            NeuLogUtils.iTag(TAG,String.format("老版本 mqtt 连接,clientId=%s",deviceService.getExtSN()));
         }
 
         ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
