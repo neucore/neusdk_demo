@@ -294,8 +294,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
         
         /**
         * 新增http请求头
-        * "clientId": ${clientId}
-        * "sign": ${sign}
+        * "clientId": ${securetSign.getClientId()}
+        * "sign": ${securetSign.getSign()}
         * 
         */
         Map<String,String> headers = new HashMap();
