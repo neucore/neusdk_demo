@@ -283,6 +283,9 @@ public class MyInstaller implements NeulinkConst {
     IDeviceService deviceService = new MyDeviceExtendServiceImpl();
     /**
      * TODO 登录loginCallback
+     * 非一机一密版本启用
+     *
+     * 一机一密版本不再启用
      */
     ILoginCallback loginCallback = new MyLoginCallbackImpl();
     /**
