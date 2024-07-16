@@ -4,8 +4,10 @@ import android.os.Build;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.neucore.neulink.IDeviceExtendInfoCallback;
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
 import com.neucore.neulink.impl.cmd.msg.SubApp;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.MacHelper;
@@ -23,7 +25,7 @@ import cn.hutool.core.util.ObjectUtil;
  * 设备扩展信息获取回调
  */
 public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
-
+    private IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
     /**
      * 子应用列表
      *
@@ -151,12 +153,12 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
     @Override
     public SoftVInfo getMain() {
         SoftVInfo softVInfo = new SoftVInfo();
-        softVInfo.setReportName(AppUtils.getAppName()); //主app名字尊从公司统一命名规则
-        softVInfo.setReportVersion(AppUtils.getAppVersionName()); //主app版本
-        softVInfo.setOsVersion(String.valueOf(Build.VERSION.SDK_INT)); //操作系统版本
-        softVInfo.setOsName(DeviceUtils.getOsVersion()); //操作系统名称
-        softVInfo.setFirVersion(DimSystemVer.getInstance().getSystemVer()); //固件版本
-        softVInfo.setFirName(DimSystemVer.getInstance().getSystemVer()); //固件名称
+        softVInfo.setReportName(deviceService.getApkName()); //主app名字尊从公司统一命名规则
+        softVInfo.setReportVersion(deviceService.getApkVersion()); //主app版本
+        softVInfo.setOsVersion(deviceService.getOsVersion()); //操作系统版本
+        softVInfo.setOsName(deviceService.getOsName()); //操作系统名称
+        softVInfo.setFirVersion(deviceService.getFirVersion()); //固件版本
+        softVInfo.setFirName(DimSystemVer.getInstance().getFirName()); //固件名称
         return softVInfo;
     }
 
@@ -217,15 +219,19 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
         private String productKey;   //椰壳ID
         private String yekerId;   //椰壳ID
         private String deviceSecret;//设备密钥
+        private String custVersion;//自定义版本
         public String deviceSn; //机器设备号
 
+
         private DimSystemVer() {
-            buildInfo = getSystemProperties("ro.product.build.dim", "ics_test_v1.0.1.20130101");// android.os.SystemProperties.get("ro.product.build.dim",android.os.Build.MODEL);
+
             mqttServer = getSystemProperties("ro.boot.mqttServer", "");
             productKey = getSystemProperties("ro.boot.product", "");
             yekerId = getSystemProperties("ro.boot.cidnum", "BLB10Y2020A0404220100000009");
             deviceSecret = getSystemProperties("ro.boot.secret", "");
             deviceSn = getSystemProperties("ro.serialno", "");
+            custVersion = getSystemProperties("ro.product.releaseversion","");
+            buildInfo = getSystemProperties("ro.product.build.dim", "ics_test_v1.0.1.20130101");// android.os.SystemProperties.get("ro.product.build.dim",android.os.Build.MODEL);
             buildInfo = buildInfo.toUpperCase();
             if (buildInfo.contains("_")) {
                 String[] typeInfo = buildInfo.split("_");
@@ -294,13 +300,34 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
             return productMode;
         }
 
+        public String getOsVersion() {
+            //os.version
+            return System.getProperty("os.version","");
+        }
+
         /**
-         * 获取特定型号产品版本识别号
-         *
+         * 获取操作系统名称
          * @return
          */
-        public String getSystemVer() {
-            return systemVer;
+        public String getOsName(){
+            //os.name
+            return System.getProperty("os.name","");
+        }
+
+        /**
+         * 固件名称
+         * @return
+         */
+        public static String getFirName() {
+            return Build.DISPLAY;  // 获取固件名称
+        }
+
+        /**
+         * 固件版本
+         * @return
+         */
+        public static String getFirVersion() {
+            return Build.VERSION.RELEASE;  // 获取Android版本号
         }
 
         public String getMqttServer(){

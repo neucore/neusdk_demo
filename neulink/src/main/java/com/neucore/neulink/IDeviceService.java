@@ -6,6 +6,7 @@ import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.impl.service.device.LocalTimezone;
+import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.SecuretSign;
@@ -30,9 +31,14 @@ public interface IDeviceService {
             return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
         }
         else{
-            return getDeviceName()+"@"+ DeviceUtils.getMacAddress();
+            return getDeviceName()+"@"+ getMacAddress();
         }
     }
+
+    default String getMacAddress(){
+        return DeviceUtils.getMacAddress().replace(":","").toUpperCase();
+    }
+
     String getMqttServer();
     /**
      * 获取授权设备所属产品Id
@@ -51,6 +57,58 @@ public interface IDeviceService {
      * @return
      */
     String getDeviceSecret();
+
+    /**
+     * 获取操作系统名称
+     * @return
+     */
+    default String getOsName(){
+        //os.name
+        return System.getProperty("os.name","");
+    }
+
+    /**
+     * 操作系统版本
+     * @return
+     */
+    default String getOsVersion() {
+        //os.version
+        return System.getProperty("os.version","");
+    }
+
+    /**
+     * 固件名称
+     * @return
+     */
+    default String getFirName(){
+        //os.name
+        return System.getProperty("os.name","");
+    }
+
+    /**
+     * 固件版本
+     * @return
+     */
+    default String getFirVersion() {
+        //os.version
+        return System.getProperty("os.version","");
+    }
+
+    /**
+     * 获取主apk名称
+     * @return
+     */
+    default String getApkName(){
+        return AppUtils.getApkName(ContextHolder.getInstance().getContext());
+    }
+
+    /**
+     * 获取主Apk版本
+     * @return
+     */
+    default String getApkVersion(){
+        return AppUtils.getVersionName(ContextHolder.getInstance().getContext());
+    }
 
     /**
      * 是否是新版本

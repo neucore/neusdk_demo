@@ -3,8 +3,8 @@ package com.neucore.neusdk_demo.neulink.extend;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
-import com.neucore.neulink.util.DeviceUtils;
-import com.neucore.neulink.util.SecuretSign;
+import com.neucore.neulink.util.AppUtils;
+import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Locale;
 
@@ -13,6 +13,7 @@ import java.util.Locale;
  *
  */
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
+
 
     @Override
     public String getMqttServer(){
@@ -47,6 +48,52 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
          */
         return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getDeviceSecret();
     }
+
+    /**
+     * 获取操作系统名称
+     * @return
+     */
+    public String getOsName(){
+        //os.name
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getOsName();//System.getProperty("os.name","");
+    }
+
+
+    public String getOsVersion() {
+        //os.version
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getOsVersion();
+    }
+
+
+    /**
+     * 固件名称
+     * @return
+     */
+    @Override
+    public String getFirName() {
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getFirName();  // 获取固件名称
+    }
+
+    /**
+     * 固件版本
+     * @return
+     */
+    @Override
+    public String getFirVersion() {
+        return MyDeviceExtendInfoCallBack.DimSystemVer.getInstance().getFirVersion();  // 获取Android版本号
+    }
+
+    @Override
+    public String getApkName(){
+        return AppUtils.getApkName(ContextHolder.getInstance().getContext());
+    }
+
+    @Override
+    public String getApkVersion(){
+        return AppUtils.getVersionName(ContextHolder.getInstance().getContext());
+    }
+
+
 
     @Override
     public Locale getLocale(){

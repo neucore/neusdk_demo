@@ -3,10 +3,12 @@ package com.neucore.neulink.impl.service.device;
 import android.content.Context;
 import android.os.Build;
 
+import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.MiscInfo;
 import com.neucore.neulink.impl.cmd.msg.SoftVInfo;
 import com.neucore.neulink.IDeviceExtendInfoCallback;
+import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
@@ -21,15 +23,17 @@ public class DeviceInfoDefaultBuilder {
     public static DeviceInfoDefaultBuilder getInstance(){
         return instance;
     }
+    private IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
 
     public DeviceInfo build(){
+
         DeviceInfo deviceInfo = new DeviceInfo();
         /**
          * cpu_sn@@ext_sn@@device_type
          */
         Context context = ContextHolder.getInstance().getContext();
 
-        String mac = DeviceUtils.getMacAddress();
+        String mac = deviceService.getMacAddress();
         deviceInfo.setMac(mac);
 
         deviceInfo.setTag(AppUtils.getVersionName(context));
@@ -40,20 +44,31 @@ public class DeviceInfoDefaultBuilder {
         deviceInfo.setMiscInfo(miscInfo);
 
         SoftVInfo vInfo = new SoftVInfo();
-
-        vInfo.setOsName(android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT);
+        /**
+         * 操作系统名称
+         */
+        vInfo.setOsName(deviceService.getOsName());
+        /**
+         * 操作系统版本
+         */
+        vInfo.setOsVersion(deviceService.getOsVersion());
+        /**
+         * 固件名称
+         */
+        vInfo.setFirName(deviceService.getFirName());
         /**
          * 固件版本
          */
-        vInfo.setOsVersion(DeviceUtils.getSystemProperties("ro.product.releaseversion","V0.0.0"));
+        vInfo.setFirVersion(deviceService.getFirVersion());
+
         /**
-         * apk名称
+         * 主apk名称
          */
-        vInfo.setReportName(AppUtils.getApkName(context));
+        vInfo.setReportName(deviceService.getApkName());
         /**
-         * apk版本信息
+         * 主apk版本信息
          */
-        vInfo.setReportVersion(AppUtils.getVersionName(context));
+        vInfo.setReportVersion(deviceService.getApkVersion());
 
         deviceInfo.setSoftVInfo(vInfo);
 
