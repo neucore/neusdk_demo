@@ -11,6 +11,7 @@ import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
 import com.neucore.neulink.impl.cmd.msg.SDInfo;
 import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
+import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.CpuStat;
 import com.neucore.neulink.util.DeviceUtils;
