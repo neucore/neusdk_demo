@@ -266,7 +266,8 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ###### 扩展-HTTP安全登录[过期]
 ```java
     /**
-    * 老版本需要实现 
+     * 老版本【非一机一密】需要实现
+     * 新版【一机一密】不要实现 
      * HTTP(S)安全登录
      * 参考：MyLoginCallbackImpl
      */
@@ -918,8 +919,6 @@ extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://mqtt.neucore.com:1883");
  * 取消下列备注
  * 
  */
-//extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"1");//end2cloud neulink 协议 切换至https通道
-//extConfig.setProperty(ConfigContext.REGIST_SERVER,"https://data.neuapi.com/v1/device/regist");//end2cloud neulink 注册的http服务地址
 SampleConnector register = new SampleConnector(this,callback,service,extConfig);
 ```
 

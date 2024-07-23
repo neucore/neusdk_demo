@@ -181,43 +181,24 @@ public class MyInstaller implements NeulinkConst {
          *
          * 获取cloud2end【mqtt下发】 & end2cloud【mqtt或者http】通信通道的配置信息
          *
-         * 默认配置值：https://dev.neucore.com/api/user/v1/configs【C端云平台】
+         * 默认配置值：https://dev.neucore.com/api/user/v1/device/configs【C端云平台】
          *
          * 智能楼宇地址：https://dev.neucore.com/v1/smrtlibs/devices/configs【智能楼宇平台】
          *
-         * 一机一密地址：https://dev.neucore.com/api/user/v1/device/configs
+         * 非一机一密：https://dev.neucore.com/api/user/v1/configs【C端云平台】
+         *
+         * 一机一密地址：https://dev.neucore.com/api/user/v1/device/configs【C端云平台】
          *
          */
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/device/configs");
         /**
          * 当存储服务为OSS时需要开启&设置【可选，本地部署时一般不需要，eg：智能楼宇系统】
          */
         extConfig.setProperty(ConfigContext.OSS_STS_AUTH_URL,String.format("https://dev.neucore.com/api/storage/v1/%s/authorization",extConfig.getProperty(ConfigContext.SCOPEID)));//OSS存储临时授权地址
 
-        /**
-         * Neulink通道设置【可选，默认为mqtt通道】
-         */
-        extConfig.setProperty(ConfigContext.UPLOAD_CHANNEL,"0");//上报通道设置【0：mqtt；1：http】，默认mqtt
-
         //##########################################################################################
-        /**
-         * ENABLE_REMOTE_CONFIG = false起效
-         * ⚠️注意；mqtt通道启用时打开
-         * 设置登录用户名密码
-         * MQTT_SERVER 可以用逗号连接多个服务器地址【集群、需要paho库的支持】;
-         * eg：tcp://10.18.9.240:1883,tcp://10.18.9.241:1883,tcp://10.18.9.242:1883,tcp://10.18.9.243:1883,tcp://10.18.9.244:1883
-         */
-        extConfig.setProperty(ConfigContext.MQTT_USERNAME,"zXzc3gkY1RGS626w");
-        extConfig.setProperty(ConfigContext.MQTT_PASSWORD,"702c08e642f6330ac1d8141242eb5214a9fcb599");
-        extConfig.setProperty(ConfigContext.MQTT_SERVER,"tcp://dev.neucore.com:1883");
         extConfig.setProperty(ConfigContext.KEEP_ALIVE_INTERVAL,"60");
         //##########################################################################################
-        /**
-         * ENABLE_REMOTE_CONFIG = false & UPLOAD_CHANNEL = "0" 起效
-         * ⚠️注意；http 通道启用时打开
-         * 设置设备注册服务地址
-         */
-        extConfig.setProperty(ConfigContext.HTTP_UPLOAD_SERVER,"http://dev.neucore.com/api/v1/neulink/upload2cloud");
 
         /**
          * 设置设备端与云端的通信通道；
