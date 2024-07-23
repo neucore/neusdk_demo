@@ -12,15 +12,12 @@
 ### 图
 
 #### 通道通信说明图
-![通道通信图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt.png)
+![通道通信图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/【一机一密】通信.png)
 
 #### 时序图说明图
 
-##### Http_mqtt时序图
-![http_mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/http_mqtt_seq.png)
-
-##### Mqtt_mqtt时序图
-![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/mqtt_mqtt_seq.png)
+##### mqtt时序图
+![mqtt时序图](https://github.com/neucore/neusdk_demo/blob/master/neulink/images/【一机一密】时序图.png)
 
 ### 协议说明
 
