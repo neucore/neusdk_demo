@@ -247,6 +247,8 @@ class RegisterAdapter implements NeulinkConst{
         if(ObjectUtil.isEmpty(reqIp)){
             reqIp = DeviceUtils.getIpAddress(ContextHolder.getInstance().getContext());
         }
+
+        ConfigContext.getInstance().update(ConfigContext.SCOPEID, zone.getCustid());
         ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
@@ -262,7 +264,6 @@ class RegisterAdapter implements NeulinkConst{
             mqttServer = deviceService.getMqttServer();
             ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
             SecuretSign securetSign = deviceService.sign();
-            ConfigContext.getInstance().update(ConfigContext.SCOPEID, zone.getCustid());
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, securetSign.getUsername());
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, securetSign.getSign());
             ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, securetSign.getClientId());
