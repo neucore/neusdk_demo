@@ -15,12 +15,13 @@ public final class ServiceRegistry {
     public static ServiceRegistry getInstance(){
         return instance;
     }
-
+    @Deprecated
     private ILoginCallback loginCallback;
+    @Deprecated
     public void setLoginCallback(ILoginCallback loginCallback) {
         this.loginCallback = loginCallback;
     }
-
+    @Deprecated
     public ILoginCallback getLoginCallback() {
         return loginCallback;
     }

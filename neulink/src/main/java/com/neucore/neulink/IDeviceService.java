@@ -144,6 +144,7 @@ public interface IDeviceService {
     default String getDevId(){
         return getDeviceName();
     }
+
     DeviceInfo getInfo();
 
     /**

@@ -182,7 +182,10 @@ public class MyInstaller implements NeulinkConst {
          * 获取cloud2end【mqtt下发】 & end2cloud【mqtt或者http】通信通道的配置信息
          *
          * 默认配置值：https://dev.neucore.com/api/user/v1/configs【C端云平台】
+         *
          * 智能楼宇地址：https://dev.neucore.com/v1/smrtlibs/devices/configs【智能楼宇平台】
+         *
+         * 一机一密地址：https://dev.neucore.com/api/user/v1/device/configs
          *
          */
         extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://dev.neucore.com/api/user/v1/configs");
