@@ -5,6 +5,7 @@ import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.impl.service.device.DeviceInfoDefaultBuilder;
 import com.neucore.neulink.util.AppUtils;
 import com.neucore.neulink.util.ContextHolder;
+import com.neucore.neulink.util.DeviceUtils;
 
 import java.util.Locale;
 
@@ -14,6 +15,10 @@ import java.util.Locale;
  */
 public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
 
+    @Override
+    public String getMacAddress(){
+        return DeviceUtils.getMacAddress().replace(":","").toUpperCase();
+    }
 
     @Override
     public String getMqttServer(){
@@ -92,9 +97,7 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
     public String getApkVersion(){
         return AppUtils.getVersionName(ContextHolder.getInstance().getContext());
     }
-
-
-
+    
     @Override
     public Locale getLocale(){
         /**
