@@ -39,6 +39,7 @@
 ###### MQTT
 + 新版本所有设备都必须是一机一密机制
 + 授权时每台设备都会有【出厂时烧入到每台设备】
+  + mqttServer: mqtt服务地址
   + productKey：产品id
   + deviceName：椰壳Id或者自定义Id
   + deviceSecret：设备密钥，建议设备加密保存
@@ -299,7 +300,7 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
 ##### 扩展-设备服务
 ```java
     /**
-     * 设备服务扩展【实现productKey、deviceName、deviceSecret 烧录信息的读取】
+     * 设备服务扩展【实现mqttServer、productKey、deviceName、deviceSecret 烧录信息的读取】
      * 参考：MyDeviceExtendServiceImpl 
      */
     
