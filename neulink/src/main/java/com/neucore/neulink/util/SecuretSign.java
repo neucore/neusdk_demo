@@ -1,7 +1,5 @@
 package com.neucore.neulink.util;
 
-import java.util.Locale;
-
 public class SecuretSign {
 
     private String username = "";
