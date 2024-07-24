@@ -43,11 +43,19 @@
   + deviceName：椰壳Id或者自定义Id
   + deviceSecret：设备密钥，建议设备加密保存
 + 设备连接规则
-  + 当前时间戳：timestamp
-+ mqttUsername:
-  + String mqttUsername = ${deviceName} + "|" + ${productKey};
-+ mqttPassword
-  + hmacSha256(plainTxt,deviceSecret)签名后的值
+  + mqttClientId
+    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
+    + 当前时间戳：timestamp
+  + mqttUsername:
+    + String mqttUsername = ${deviceName} + "|" + ${productKey};
+  + mqttPassword
+    + hmacSha256(plainTxt,deviceSecret)签名后的值
+    + 其中plainTxt
+```java
+    String plainTxt = "clientId:" + ${productKey} + "." + ${deviceName} + ",deviceName:" + ${deviceName} + ",productKey:" + ${productKey} +",macAddress:" + ${macAddress} + "timestamp:" + ${timestamp}
+```
 ```java
 public class CryptoUtil {
     private static String hmac(String plainText, String key, String algorithm, String format) throws Exception {
@@ -67,25 +75,23 @@ public class CryptoUtil {
         return hmac(plainText,key,"HmacSHA256","%064x");
     }
 }
-```  
-+ 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
-+ 其中plainTxt
-```java
-    String plainTxt = "clientId:" + ${productKey} + "." + ${deviceName} + ",deviceName:" + ${deviceName} + ",productKey:" + ${productKey} +",macAddress:" + ${macAddress} + "timestamp:" + ${timestamp}
 ```
-+ mqttClientId
-  + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
-  + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
-  
-###### end2cloud http请求鉴权机制
 
-算法AES：对称密钥加解密
-所有接口header含有：
-+ clientId：
-  + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
-  + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0| 
-+ sign：
-  + hmacSha256(plainTxt,deviceSecret)签名后的值
+###### HTTP
++ 设备端http鉴权机制
++ 算法AES：对称密钥加解密
++ 所有接口header含有：
+  + clientId：
+    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
+    + 当前时间戳：timestamp
+  + sign：
+    + hmacSha256(plainTxt,deviceSecret)签名后的值
+    + 其中plainTxt：
+```java
+String plainTxt = "clientId:" + ${productKey} + "." + ${deviceName} + ",deviceName:" + ${deviceName} + ",productKey:" + ${productKey} +",macAddress:" + ${macAddress} + ",timestamp:" + ${timestamp}
+```
 ````java
   public class CryptoUtil {
       private static String hmac(String plainText, String key, String algorithm, String format) throws Exception {
@@ -106,11 +112,6 @@ public class CryptoUtil {
       }
   }
 ````
-+ 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
-+ 其中plainTxt：
-```java
-String plainTxt = "clientId:" + ${productKey} + "." + ${deviceName} + ",deviceName:" + ${deviceName} + ",productKey:" + ${productKey} +",macAddress:" + ${macAddress} + ",timestamp:" + ${timestamp}
-```
 #### topic 规范
 
 ##### topic[1.0]
