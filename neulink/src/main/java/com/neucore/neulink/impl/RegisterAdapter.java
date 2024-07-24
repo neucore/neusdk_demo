@@ -264,9 +264,9 @@ class RegisterAdapter implements NeulinkConst{
             mqttServer = deviceService.getMqttServer();
             ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
             SecuretSign securetSign = deviceService.sign();
+            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, securetSign.getClientId());
             ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, securetSign.getUsername());
             ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, securetSign.getSign());
-            ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, securetSign.getClientId());
             NeuLogUtils.iTag(TAG,String.format("一机一密 host=%,productKey=%s,deviceName=%s,sign=%s,clientId=%s",mqttServer,deviceService.getProductKey(),deviceService.getDeviceName(),securetSign.getSign(),securetSign.getClientId()));
         }
         else{
