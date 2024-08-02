@@ -270,7 +270,7 @@ public class NeulinkService implements NeulinkConst{
     public LWTTopic lwtTopic(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTTopic info = new LWTTopic();
-        String topic = "msg/req/lwt";
+        String topic = String.format("msg/req/lwt/v1.2/%s",deviceService.getExtSN());
         String productId = deviceService.getProductKey();
         if(ObjectUtil.isNotEmpty(productId)){
             topic = productId+"/"+topic;
@@ -410,14 +410,14 @@ public class NeulinkService implements NeulinkConst{
      * @param topicPrefix
      * @param version
      * @param reqId
-     * @param clientId
+     * @param requestorClientId
      * @param message
      */
-    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String version, String reqId,String clientId, IMessage message){
+    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String version, String reqId,String requestorClientId, IMessage message){
         /**
          * @TODO
          */
-        message.getPayload();
+        throw new RuntimeException("待实现。。。");
     }
 
     /**
@@ -431,10 +431,10 @@ public class NeulinkService implements NeulinkConst{
      * @param res
      * @param callback
      */
-    public void response(boolean debug, int qos,boolean retained,String topicPrefix, String version,String reqId,String clientId, CmdRes res,IResCallback callback){
+    public void response(boolean debug, int qos,boolean retained,String topicPrefix, String version,String reqId,String requestorClientId, CmdRes res,IResCallback callback){
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
-        response(debug,qos,retained,topicPrefix,version,reqId,clientId,payloadStr,callback);
+        response(debug,qos,retained,topicPrefix,version,reqId,requestorClientId,payloadStr,callback);
     }
 
     /**
@@ -446,20 +446,20 @@ public class NeulinkService implements NeulinkConst{
      * @param biz
      * @param version
      * @param reqId
-     * @param clientId
+     * @param requestorClientId
      * @param mode
      * @param code
      * @param message
      * @param heads
      */
-    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String biz, String version, String reqId,String clientId, String mode, Integer code, String message, Map<String,String> heads){
+    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String biz, String version, String reqId,String requestorClientId, String mode, Integer code, String message, Map<String,String> heads){
         CmdRes res = new CmdRes();
         res.setHeaders(heads);
         res.setCode(code);
         res.setMsg(message);
         res.setCmdStr(mode);
         IResCallback resCallback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
-        response(debug,qos,retained,topicPrefix,version,reqId,clientId,res, resCallback);
+        response(debug,qos,retained,topicPrefix,version,reqId,requestorClientId,res, resCallback);
     }
 
     /**
@@ -471,11 +471,12 @@ public class NeulinkService implements NeulinkConst{
      * @param topicPrefix
      * @param version
      * @param reqId
+     * @param requestorClientId
      * @param payload
      */
-    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String biz,String version,String reqId,String clientId, String payload){
+    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String biz,String version,String reqId,String requestorClientId, String payload){
         IResCallback callback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
-        response(debug,qos,retained,topicPrefix,version,reqId,clientId,payload,callback);
+        response(debug,qos,retained,topicPrefix,version,reqId,requestorClientId,payload,callback);
     }
 
     /**
@@ -486,11 +487,11 @@ public class NeulinkService implements NeulinkConst{
      * @param topicPrefix
      * @param version
      * @param reqId
-     * @param clientId
+     * @param requestorClientId
      * @param payload
      * @param resCallback
      */
-    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String version,String reqId,String clientId, String payload,IResCallback resCallback){
+    public void response(boolean debug,int qos,boolean retained,String topicPrefix, String version,String reqId,String requestorClientId, String payload,IResCallback resCallback){
 
         String md5 = MD5Utils.getInstance().getMD5String(payload);
         /**
@@ -498,7 +499,7 @@ public class NeulinkService implements NeulinkConst{
          */
         String topic = buildTopic(topicPrefix,version,reqId,md5);
 
-        publish(debug,reqId,topic,clientId,payload,qos,retained,resCallback);
+        publish(debug,reqId,topic,requestorClientId,payload,qos,retained,resCallback);
     }
     /**
      *
@@ -570,7 +571,18 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    private void publish(boolean debug,String reqId,String payload,String topStr,String clientId,Integer qos,boolean retained,IResCallback callback){
+    /**
+     *
+     * @param debug
+     * @param reqId
+     * @param payload
+     * @param topStr
+     * @param requestorClientId
+     * @param qos
+     * @param retained
+     * @param callback
+     */
+    private void publish(boolean debug,String reqId,String payload,String topStr,String requestorClientId,Integer qos,boolean retained,IResCallback callback){
 
         if(ObjectUtil.isEmpty(callback)){
             NeuLogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
@@ -586,7 +598,7 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynPublisher(debug,reqId,payload,topStr,clientId,qos,retained,callback));
+            fixedThreadPool.execute(new AsynPublisher(debug,reqId,payload,topStr,requestorClientId,qos,retained,callback));
         }
     }
 
@@ -714,7 +726,7 @@ public class NeulinkService implements NeulinkConst{
                 if(len>3){
                     version = temps[3];
                 }
-                this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
+                this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
                 String productId = deviceService.getProductKey();
                 if(ObjectUtil.isNotEmpty(productId)){
                     this.topStr = productId+"/"+this.topStr;
@@ -868,7 +880,7 @@ public class NeulinkService implements NeulinkConst{
         boolean debug;
         private String reqId;
         private String topStr;
-        private String clientId;
+        private String requestorClientId;
         private String payload;
         private Integer qos;
         private Boolean retained;
@@ -877,11 +889,11 @@ public class NeulinkService implements NeulinkConst{
         public AsynPublisher(boolean debug,String reqId, String topStr, String payload, int qos, Boolean retained, IResCallback callback){
             this(debug,reqId,topStr,null,payload,qos,retained,callback);
         }
-        public AsynPublisher(boolean debug,String reqId, String topStr, String clientId,String payload, int qos, Boolean retained, IResCallback callback){
+        public AsynPublisher(boolean debug,String reqId, String topStr, String requestorClientId,String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
             this.topStr = topStr;
-            this.clientId = clientId;
+            this.requestorClientId = requestorClientId;
             this.payload = payload;
             this.payload = payload;
             String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
@@ -911,9 +923,9 @@ public class NeulinkService implements NeulinkConst{
                 if(len>3){
                     version = temps[3];
                 }
-                this.topStr = String.format("%s/%s/%s/%s",group,req$res,biz,version);
-                if(ObjectUtil.isNotEmpty(clientId)){
-                    this.topStr = this.topStr+"/"+clientId;
+                this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
+                if(ObjectUtil.isNotEmpty(requestorClientId)){
+                    this.topStr = this.topStr+"/"+requestorClientId;
                 }
                 if(debug){
                     this.topStr = this.topStr+"/debug";
