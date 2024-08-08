@@ -4,13 +4,13 @@ public class SecuretSign {
 
     private String username = "";
 
-    private String sign = "";
+    private String password = "";
 
     private String clientId = "";
 
     public String getUsername() { return this.username;}
 
-    public String getSign() { return this.sign;}
+    public String getPassword() { return this.password;}
 
     public String getClientId() { return this.clientId;}
     public SecuretSign(String productKey, String deviceName, String deviceSecret, String macAddress, String timestamp){
@@ -32,15 +32,14 @@ public class SecuretSign {
         }
         macAddress = macAddress.replace(":","").toUpperCase();
         try {
+            //MQTT ClientId
+            this.clientId = String.format("%s.%s@%s|timestamp=%s,end=%s,securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|",productKey,deviceName, macAddress,timestamp,"device");
             //MQTT UserName
             this.username = deviceName + "|" + productKey;
-            String plainTxt = String.format("clientId:%s.%s,deviceName:%s,productKey:%s,macAddress:%s,timestamp:%s",productKey,deviceName,deviceName,productKey,macAddress,timestamp);
+            String plainTxt = String.format("clientId:%s.%s,deviceName:%s,productKey:%s,macAddress:%s,timestamp:%s,end:%s",productKey,deviceName,deviceName,productKey,macAddress,timestamp,"device");
             //MQTT Password
-            this.sign = CryptoUtil.hmacSha256(plainTxt, deviceSecret);
+            this.password = CryptoUtil.hmacSha256(plainTxt, deviceSecret);
 
-            //MQTT ClientId
-            this.clientId = productKey + "." + deviceName + "@" + macAddress + "|" + "timestamp=" + timestamp +
-                    ",securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|";
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,6 +54,6 @@ public class SecuretSign {
         SecuretSign sign = new SecuretSign(productKey,deviceName,deviceSecret,macAddress,timestamp);
         System.out.println(sign.getClientId());
         System.out.println(sign.getUsername());
-        System.out.println(sign.getSign());
+        System.out.println(sign.getPassword());
     }
 }
