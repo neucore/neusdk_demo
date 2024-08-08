@@ -11,7 +11,9 @@ public class SecuretSign {
     public String getUsername() { return this.username;}
 
     public String getPassword() { return this.password;}
-
+    public String getSign(){
+        return password;
+    }
     public String getClientId() { return this.clientId;}
     public SecuretSign(String productKey, String deviceName, String deviceSecret, String macAddress, String timestamp){
         calculate(productKey,deviceName,deviceSecret,macAddress,timestamp);
