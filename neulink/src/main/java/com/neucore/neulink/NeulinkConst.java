@@ -84,6 +84,10 @@ public interface NeulinkConst {
      * 解绑
      */
     String NEULINK_MODE_UNBIND = "unbind";
+    /**
+     *
+     */
+    String NEULINK_BIZ_ONLINE = "online";
 
     String NEULINK_BIZ_REBOOT = "reboot";
 
