@@ -19,6 +19,7 @@ import com.neucore.neulink.impl.listener.DefaultHibrateCmdListener;
 import com.neucore.neulink.impl.listener.DefaultLicCheckListener;
 import com.neucore.neulink.impl.listener.DefaultLicQueryListener;
 import com.neucore.neulink.impl.listener.DefaultLicSyncListener;
+import com.neucore.neulink.impl.listener.DefaultStatusCmdListener;
 import com.neucore.neulink.impl.listener.DefaultQCfgCmdListener;
 import com.neucore.neulink.impl.listener.DefaultQLogCmdListener;
 import com.neucore.neulink.impl.listener.DefaultRebootCmdListener;
@@ -34,7 +35,6 @@ import com.neucore.neulink.impl.proc.DefaultFaceSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
-import com.neucore.neulink.impl.proc.DefaultQLogProcessor;
 import com.neucore.neulink.impl.registry.ListenerRegistry;
 import com.neucore.neulink.impl.registry.ProcessRegistry;
 
@@ -50,6 +50,11 @@ public final class DefaultExtendCallback implements IExtendCallback {
          * 重启 扩展【默认实现】
          */
         ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_REBOOT,new DefaultRebootCmdListener());
+
+        /**
+         * 设备在线探针 扩展【默认实现】
+         */
+        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_ONLINE,new DefaultStatusCmdListener());
 
         /**
          * Shell 扩展【默认实现】
