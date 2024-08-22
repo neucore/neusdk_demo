@@ -33,7 +33,7 @@ public class DefaultDeviceServiceImpl implements IDeviceService {
 
     @Override
     public String getDeviceName(){
-        return DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+        return "";
     }
 
     @Override
