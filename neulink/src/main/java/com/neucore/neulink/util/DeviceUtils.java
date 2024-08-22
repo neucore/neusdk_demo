@@ -10,6 +10,7 @@ import android.os.Parcel;
 import android.os.StatFs;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -397,6 +398,34 @@ public class DeviceUtils implements NeulinkConst{
 			NeuLogUtils.dTag(TAG, key + "= " + ret);
 			if (ret != null && !StrUtil.isEmpty(ret)){
 				return ret;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return def;
+	}
+
+	public static String getSystemPropertiesCrop(String key, String def) {
+		try {
+			Method systemProperties_get = Class.forName("android.os.SystemProperties").getMethod("get", String.class);
+			String ret = (String) systemProperties_get.invoke(null, key);
+			NeuLogUtils.dTag(TAG, key + "= " + ret);
+			if (ret != null && !StrUtil.isEmpty(ret)){
+				Log.e(TAG, "---------->>>>>>>> 当前系统是最新版本：getprop ro.product.build.dim  未裁剪过 原始的  =  " + ret);
+
+				String value = null;
+				String strVer = ret;
+				int end = strVer.length();
+				if (strVer.contains("V")) {
+					int index = strVer.lastIndexOf("V");
+					value = strVer.substring(index, end);
+				} else if (strVer.contains("v")) {
+					int index = strVer.lastIndexOf("v");
+					value = strVer.substring(index, end);
+				}
+				Log.e(TAG, "---------->>>>>>>> 当前系统是最新版本：getprop ro.product.build.dim  裁剪过的  =  " + value);
+
+				return value;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
