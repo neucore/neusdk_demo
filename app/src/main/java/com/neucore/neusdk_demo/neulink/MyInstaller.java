@@ -183,7 +183,7 @@ public class MyInstaller implements NeulinkConst {
          *
          * 默认配置值：https://dev.neucore.com/api/user/v1/device/configs【C端云平台】
          *
-         * 智能楼宇地址：https://dev.neucore.com/v1/smrtlibs/devices/configs【智能楼宇平台】
+         * 智能楼宇地址：https://dev.neucore.com/v1/device/configs【智能楼宇平台】
          *
          * 非一机一密：https://dev.neucore.com/api/user/v1/configs【C端云平台】
          *
