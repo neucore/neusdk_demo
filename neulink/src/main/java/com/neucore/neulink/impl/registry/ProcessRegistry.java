@@ -24,6 +24,7 @@ import com.neucore.neulink.impl.proc.DefaultLicCheckProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicQueryProcessor;
 import com.neucore.neulink.impl.proc.DefaultLicSyncProcessor;
 import com.neucore.neulink.impl.proc.DefaultResetProcessor;
+import com.neucore.neulink.impl.proc.DefaultStatusProcessor;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IBlib$ObjtypeProcessor;
 import com.neucore.neulink.IClib$ObjtypeProcessor;
@@ -65,6 +66,7 @@ public final class ProcessRegistry implements NeulinkConst {
     static {
         Context context = ContextHolder.getInstance().getContext();
 
+        regist(NEULINK_BIZ_STATUS,new DefaultStatusProcessor(context));
         regist(NEULINK_BIZ_REBOOT,new DefaultRebootProcessor(context));
         regist(NEULINK_BIZ_SHELL,new DefaultShellProcessor(context));
         regist(NEULINK_BIZ_AWAKEN,new DefaultAwakenProcessor(context));

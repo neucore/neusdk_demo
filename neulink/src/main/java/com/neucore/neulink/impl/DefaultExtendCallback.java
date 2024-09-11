@@ -47,14 +47,14 @@ public final class DefaultExtendCallback implements IExtendCallback {
         //######################################################################################
 
         /**
+         * 设备在线探针 扩展【默认实现】
+         */
+        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_STATUS,new DefaultStatusCmdListener());
+
+        /**
          * 重启 扩展【默认实现】
          */
         ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_REBOOT,new DefaultRebootCmdListener());
-
-        /**
-         * 设备在线探针 扩展【默认实现】
-         */
-        ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_ONLINE,new DefaultStatusCmdListener());
 
         /**
          * Shell 扩展【默认实现】
