@@ -87,7 +87,7 @@ public interface NeulinkConst {
     /**
      *
      */
-    String NEULINK_BIZ_ONLINE = "online";
+    String NEULINK_BIZ_STATUS = "status";
 
     String NEULINK_BIZ_REBOOT = "reboot";
 
