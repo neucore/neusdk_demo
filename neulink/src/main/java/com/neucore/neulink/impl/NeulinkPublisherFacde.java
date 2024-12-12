@@ -17,9 +17,6 @@ import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.util.DeviceUtils;
 import com.neucore.neulink.util.JSonUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
 
@@ -100,7 +97,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
 
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/carplateinfo";
-        service.publishMessage(topic, IProcessor.V1$0, payload, qos,retained,callback);
+        service.publishRequestMessage(topic, IProcessor.V1$0, payload, qos,retained,callback);
     }
     /**
      * 体温检测上报
@@ -162,7 +159,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         req.setData(data);
         String payload = JSonUtils.toString(req);
         String topic = "upld/req/facetemprature";
-        service.publishMessage(topic, IProcessor.V1$0,UUID.fastUUID().toString(), payload, qos,retained,callback);
+        service.publishRequestMessage(topic, IProcessor.V1$0,UUID.fastUUID().toString(), payload, qos,retained,callback);
     }
     /**
      * 人脸抓拍上报
@@ -216,7 +213,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                     }
                     String payload = JSonUtils.toString(info);
                     String topic = "upld/req/faceinfo";
-                    service.publishMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
+                    service.publishRequestMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
                 }
                 else{
                     NeuLogUtils.iTag(TAG,String.format("url=%s",url));
@@ -518,7 +515,7 @@ public class NeulinkPublisherFacde implements NeulinkConst{
     private void response(boolean debug,String topicPrefix, String version,String reqId, CmdRes res, int qos,boolean retained,IResCallback callback){
         res.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         String payloadStr = JSonUtils.toString(res);
-        service.publishMessage(debug,topicPrefix,version,reqId,payloadStr,qos,retained,callback);
+        service.publishRequestMessage(debug,topicPrefix,version,reqId,payloadStr,qos,retained,callback);
     }
 
     /**
@@ -532,6 +529,6 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     private void request(String topicPrefix,String version,String reqId,NewCmd cmd,Integer qos,Boolean retained,IResCallback callback){
-        service.publishMessage(topicPrefix,version,reqId,JSonUtils.toString(cmd),qos,retained,callback);
+        service.publishRequestMessage(topicPrefix,version,reqId,JSonUtils.toString(cmd),qos,retained,callback);
     }
 }
