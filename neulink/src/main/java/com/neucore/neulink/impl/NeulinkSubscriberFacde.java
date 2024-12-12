@@ -52,12 +52,15 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          * 终端配置管理       rrpc/req/${dev_id}/cfg/v1.1/${req_no}[/${md5}],qos=0
          * 查看终端配置       rrpc/req/${dev_id}/qcfg/v1.1/${req_no}[/${md5}],qos=0
          * 预约信息展示       rrpc/req/${dev_id}/reserve/v1.0/${req_no}[/${md5}], qos=0
-         *
-         * 抓拍库上报响应      upld/res/{$dev_id}/biz/v1.0/${req_no}[/${md5}], qos=0
          */
-        String ucst_topic = "+/req/" + extSN + "/#";
+        String rmsg_topic = "rmsg/req/" + extSN + "/#";
         if(ObjectUtil.isNotEmpty(productId)){
-            ucst_topic = String.format("%s/%s",productId,ucst_topic);
+            rmsg_topic = String.format("%s/%s",productId,rmsg_topic);
+        }
+
+        String rrpc_topic = "rrpc/req/" + extSN + "/#";
+        if(ObjectUtil.isNotEmpty(productId)){
+            rrpc_topic = String.format("%s/%s",productId,rrpc_topic);
         }
         /**
          * 广播
@@ -80,16 +83,16 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          */
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
         int[] qoss = new int[]{qos};
-        String[] topics = new String[]{ucst_topic};
+        String[] topics = new String[]{rmsg_topic,rrpc_topic};
         MqttActionListener listeners = service.getNeulinkActionListenerAdapter();
         boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
         if(bcstEnable){
-            String bcst_topic = "+/req/" + service.getCustId() + "/#";
+            String bcst_topic = "bcst/req/" + service.getCustId() + "/#";
             if(ObjectUtil.isNotEmpty(productId)){
                 bcst_topic = String.format("%s/%s",productId,bcst_topic);
             }
             qoss = new int[]{qos,qos};
-            topics = new String[]{ucst_topic,bcst_topic};
+            topics = new String[]{rmsg_topic,rrpc_topic,bcst_topic};
         }
         service.subscribeToTopic(topics, qoss, listeners);
     }

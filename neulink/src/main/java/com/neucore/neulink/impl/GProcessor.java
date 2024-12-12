@@ -293,7 +293,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param headers
      */
     protected void resReceived2Cloud(boolean debug,int qos,boolean retained,String resTopic,String biz,String version,String reqNo,String clientId,Map<String,String> headers){
-        NeulinkService.getInstance().response(debug,qos,retained,resTopic,biz,version,reqNo,clientId,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,headers);
+        NeulinkService.getInstance().publishResponseMessage(debug,qos,retained,resTopic,biz,version,reqNo,clientId,NEULINK_MODE_RECEIVE,STATUS_201, NeulinkConst.MESSAGE_PROCESSING,headers);
     }
 
     /**
@@ -302,7 +302,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param message
      */
     protected void resLstRsl2Cloud(boolean debug,String resTopic,String version,String reqNo,String clientId, IMessage message){
-        NeulinkService.getInstance().response(debug,message.getQos(),message.getRetained(),resTopic,version,reqNo,clientId,message);
+        NeulinkService.getInstance().publishResponseMessage(debug,message.getQos(),message.getRetained(),resTopic,version,reqNo,clientId,message);
     }
 
     /**
@@ -312,7 +312,7 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
      * @param result
      */
     protected void resLstRsl2Cloud(boolean debug,int qos,boolean retained,String resTopic,String biz,String version,String reqNo,String clientId,String result){
-        NeulinkService.getInstance().response(debug,qos,retained,resTopic,biz,version,reqNo,clientId,result);
+        NeulinkService.getInstance().publishResponseMessage(debug,qos,retained,resTopic,biz,version,reqNo,clientId,result);
     }
 
     /**
