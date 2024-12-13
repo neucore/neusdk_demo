@@ -123,7 +123,7 @@ public interface IDeviceService {
      * @return
      */
     default SecuretSign sign(){
-        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), DeviceUtils.getMacAddress(),String.valueOf(System.currentTimeMillis()));
+        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), DeviceUtils.getMacAddress(),"salt");
         return securetSign;
     }
     /**
