@@ -115,32 +115,65 @@ public class HeadersUtil implements NeulinkConst {
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr,qos);
         JsonObject  headers = (JsonObject) payload.get(NEULINK_HEADERS);
         if(ObjectUtil.isNotEmpty(headers)){
-            headers.add(NEULINK_HEADERS_BIZ, new JsonPrimitive(topic.getBiz()));
-            headers.add(NEULINK_HEADERS_VERSION,new JsonPrimitive(topic.getVersion()));
-            headers.add(NEULINK_HEADERS_REQNO,new JsonPrimitive(topic.getReqId()));
-            headers.add(NEULINK_HEADERS_MD5,new JsonPrimitive(topic.getMd5()));
-
-            headers.add(NEULINK_HEADERS_DEVID, new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
-            headers.add(NEULINK_HEADERS_CUSTID, new JsonPrimitive(NeulinkService.getInstance().getCustId()));
-            headers.add(NEULINK_HEADERS_STOREID ,new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
-            headers.add(NEULINK_HEADERS_ZONEID,new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
-
-            headers.add(NEULINK_HEADERS_TIME,new JsonPrimitive(String.valueOf(resTime)));
+            if(ObjectUtil.isNotEmpty(topic.getBiz())) {
+                headers.add(NEULINK_HEADERS_BIZ, new JsonPrimitive(topic.getBiz()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getVersion())) {
+                headers.add(NEULINK_HEADERS_VERSION, new JsonPrimitive(topic.getVersion()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getReqId())) {
+                headers.add(NEULINK_HEADERS_REQNO, new JsonPrimitive(topic.getReqId()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getMd5())){
+                headers.add(NEULINK_HEADERS_MD5,new JsonPrimitive(topic.getMd5()));
+            }
+            if(ObjectUtil.isNotEmpty(ServiceRegistry.getInstance().getDeviceService().getExtSN())) {
+                headers.add(NEULINK_HEADERS_DEVID, new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getCustId())) {
+                headers.add(NEULINK_HEADERS_CUSTID, new JsonPrimitive(NeulinkService.getInstance().getCustId()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getStoreId())) {
+                headers.add(NEULINK_HEADERS_STOREID, new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getZoneId())) {
+                headers.add(NEULINK_HEADERS_ZONEID, new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
+            }
+            if(ObjectUtil.isNotEmpty(resTime)) {
+                headers.add(NEULINK_HEADERS_TIME, new JsonPrimitive(String.valueOf(resTime)));
+            }
         }
         else{
             JsonObject tempHeaders = new JsonObject();
 
-            tempHeaders.add(NEULINK_HEADERS_BIZ,new JsonPrimitive(topic.getBiz()));
-            tempHeaders.add(NEULINK_HEADERS_VERSION,new JsonPrimitive(topic.getVersion()));
-            tempHeaders.add(NEULINK_HEADERS_REQNO,new JsonPrimitive(topic.getReqId()));
-            tempHeaders.add(NEULINK_HEADERS_MD5,new JsonPrimitive(topic.getMd5()));
+            if(ObjectUtil.isNotEmpty(topic.getBiz())) {
+                headers.add(NEULINK_HEADERS_BIZ, new JsonPrimitive(topic.getBiz()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getVersion())) {
+                headers.add(NEULINK_HEADERS_VERSION, new JsonPrimitive(topic.getVersion()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getReqId())) {
+                headers.add(NEULINK_HEADERS_REQNO, new JsonPrimitive(topic.getReqId()));
+            }
+            if(ObjectUtil.isNotEmpty(topic.getMd5())){
+                headers.add(NEULINK_HEADERS_MD5,new JsonPrimitive(topic.getMd5()));
+            }
 
-            tempHeaders.add(NEULINK_HEADERS_DEVID, new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
-            tempHeaders.add(NEULINK_HEADERS_CUSTID, new JsonPrimitive(NeulinkService.getInstance().getCustId()));
-            tempHeaders.add(NEULINK_HEADERS_STOREID,new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
-            tempHeaders.add(NEULINK_HEADERS_ZONEID,new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
-
-            tempHeaders.add(NEULINK_HEADERS_TIME,new JsonPrimitive(String.valueOf(resTime)));
+            if(ObjectUtil.isNotEmpty(ServiceRegistry.getInstance().getDeviceService().getExtSN())) {
+                headers.add(NEULINK_HEADERS_DEVID, new JsonPrimitive(ServiceRegistry.getInstance().getDeviceService().getExtSN()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getCustId())) {
+                headers.add(NEULINK_HEADERS_CUSTID, new JsonPrimitive(NeulinkService.getInstance().getCustId()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getStoreId())) {
+                headers.add(NEULINK_HEADERS_STOREID, new JsonPrimitive(NeulinkService.getInstance().getStoreId()));
+            }
+            if(ObjectUtil.isNotEmpty(NeulinkService.getInstance().getZoneId())) {
+                headers.add(NEULINK_HEADERS_ZONEID, new JsonPrimitive(NeulinkService.getInstance().getZoneId()));
+            }
+            if(ObjectUtil.isNotEmpty(resTime)) {
+                headers.add(NEULINK_HEADERS_TIME, new JsonPrimitive(String.valueOf(resTime)));
+            }
 
             payload.add(NEULINK_HEADERS,tempHeaders);
         }
