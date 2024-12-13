@@ -144,7 +144,7 @@ public class HeadersUtil implements NeulinkConst {
             }
         }
         else{
-            JsonObject tempHeaders = new JsonObject();
+            headers = new JsonObject();
 
             if(ObjectUtil.isNotEmpty(topic.getBiz())) {
                 headers.add(NEULINK_HEADERS_BIZ, new JsonPrimitive(topic.getBiz()));
@@ -175,7 +175,7 @@ public class HeadersUtil implements NeulinkConst {
                 headers.add(NEULINK_HEADERS_TIME, new JsonPrimitive(String.valueOf(resTime)));
             }
 
-            payload.add(NEULINK_HEADERS,tempHeaders);
+            payload.add(NEULINK_HEADERS,headers);
         }
     }
 }
