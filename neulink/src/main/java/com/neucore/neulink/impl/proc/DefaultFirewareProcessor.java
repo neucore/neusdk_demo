@@ -2,7 +2,6 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.upd.UgrdeCmd;
@@ -20,6 +19,7 @@ public final class DefaultFirewareProcessor extends GProcessor<UgrdeCmd, UgrdeCm
 
     public DefaultFirewareProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("fireware",new DefaultFirewareCmdListener());
     }
 
     @Override

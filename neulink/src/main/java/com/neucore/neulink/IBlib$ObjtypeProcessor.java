@@ -1,9 +1,8 @@
 package com.neucore.neulink;
 
+import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
 import com.neucore.neulink.impl.cmd.rrpc.PkgCmd;
 import com.neucore.neulink.impl.cmd.rrpc.PkgRes;
-import com.neucore.neulink.impl.cmd.rrpc.PkgActionResult;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 public interface IBlib$ObjtypeProcessor<Req extends PkgCmd, Res extends PkgRes, ActionResult extends PkgActionResult> extends NeulinkConst {
 

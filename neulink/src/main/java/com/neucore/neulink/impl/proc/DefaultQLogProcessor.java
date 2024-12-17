@@ -2,7 +2,6 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.log.DnloadCmd;
 import com.neucore.neulink.impl.cmd.rmsg.log.DnloadRes;
@@ -16,6 +15,7 @@ public final class DefaultQLogProcessor extends GProcessor<DnloadCmd, DnloadRes,
 
     public DefaultQLogProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("qlog",new DefaultQLogCmdListener());
     }
 
     @Override

@@ -64,7 +64,7 @@ public interface IDeviceService {
      */
     default String getOsName(){
         //os.name
-        return System.getProperty("os.name","");
+        return android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT;
     }
 
     /**
@@ -73,7 +73,7 @@ public interface IDeviceService {
      */
     default String getOsVersion() {
         //os.version
-        return System.getProperty("os.version","");
+        return DeviceUtils.getSystemPropertiesCrop("ro.product.build.dim","V0.0.0");
     }
 
     /**
@@ -82,7 +82,7 @@ public interface IDeviceService {
      */
     default String getFirName(){
         //os.name
-        return System.getProperty("os.name","");
+        return android.os.Build.MANUFACTURER+"@"+android.os.Build.PRODUCT;
     }
 
     /**
@@ -91,7 +91,7 @@ public interface IDeviceService {
      */
     default String getFirVersion() {
         //os.version
-        return System.getProperty("os.version","");
+        return DeviceUtils.getSystemPropertiesCrop("ro.product.build.dim","V0.0.0");
     }
 
     /**

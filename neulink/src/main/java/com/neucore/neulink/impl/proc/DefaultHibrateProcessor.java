@@ -3,7 +3,6 @@ package com.neucore.neulink.impl.proc;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.HibrateCmd;
@@ -20,6 +19,7 @@ public final class DefaultHibrateProcessor extends GProcessor<HibrateCmd, Hibrat
     @SuppressLint("InvalidWakeLockTag")
     public DefaultHibrateProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("hibrate",new DefaultHibrateCmdListener());
     }
    
     @Override

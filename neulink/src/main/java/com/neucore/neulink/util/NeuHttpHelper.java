@@ -5,12 +5,10 @@ import android.content.Context;
 import android.util.Base64;
 
 import com.google.gson.annotations.SerializedName;
-import com.neucore.neulink.IDeviceService;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.GzipRequestInterceptor;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.log.NeuLogUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

@@ -20,20 +20,16 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
 
     private Context context;
     private NeulinkService service;
-
+    private MqttActionListener listeners = null;
+    private String[] topics = null;
+    private int[] qoss = null;
     public NeulinkSubscriberFacde(Context context, NeulinkService service){
         this.context = context;
         this.service = service;
-    }
-
-    /**
-     *
-     */
-    public void subAll(){
+        listeners = service.getNeulinkActionListenerAdapter();
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         String productId = deviceService.getProductKey();
         String extSN = deviceService.getExtSN();
-
         /**
          * 单播
          *
@@ -82,18 +78,28 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          * 预约信息展示          bcst/req/${scopeId}/reserve/v1.0/${req_no}[/${md5}], qos=0
          */
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
-        int[] qoss = new int[]{qos};
-        String[] topics = new String[]{rmsg_topic,rrpc_topic};
-        MqttActionListener listeners = service.getNeulinkActionListenerAdapter();
+        qoss = new int[]{qos,qos};
+        topics = new String[]{rmsg_topic,rrpc_topic};
+
         boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
         if(bcstEnable){
             String bcst_topic = "bcst/req/" + service.getCustId() + "/#";
             if(ObjectUtil.isNotEmpty(productId)){
                 bcst_topic = String.format("%s/%s",productId,bcst_topic);
             }
-            qoss = new int[]{qos,qos};
+            qoss = new int[]{qos,qos,qos};
             topics = new String[]{rmsg_topic,rrpc_topic,bcst_topic};
         }
+    }
+
+    /**
+     *
+     */
+    public void subAll(){
         service.subscribeToTopic(topics, qoss, listeners);
+    }
+
+    public void unsubAll(){
+        service.unsubscribeToTopic(topics, qoss,listeners);
     }
 }

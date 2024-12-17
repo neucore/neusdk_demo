@@ -87,7 +87,6 @@ class RegisterAdapter implements NeulinkConst{
     void regist() {
         new Thread("RegisterAdapter"){
             public void run(){
-
                 boolean remoteConfig = ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_REMOTE_CONFIG,false);
 
                 IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();

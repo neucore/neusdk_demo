@@ -24,6 +24,7 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
 
     private String bucketName = "";
     Ftp ftp = null;
+    private FtpConfig config = null;
     public MyFTPStorage(){
 
         server = ConfigContext.getInstance().getConfig(ConfigContext.FTP_SERVER);
@@ -34,7 +35,7 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
 
         int readTimeOut = ConfigContext.getInstance().getConfig(ConfigContext.READ_TIME_OUT,15*1000);
 
-        FtpConfig config = new FtpConfig();
+        config = new FtpConfig();
         config.setHost(server);
         config.setPort(21);
         config.setUser(username);
@@ -67,7 +68,6 @@ public class MyFTPStorage extends AbsStorage implements IStorage {
         } catch (Exception e) {
             NeuLogUtils.eTag(TAG, e.getMessage() , e);
         }
-
         NeuLogUtils.iTag(TAG,"uploadFile: "+successed);
         if(successed){
             return url;

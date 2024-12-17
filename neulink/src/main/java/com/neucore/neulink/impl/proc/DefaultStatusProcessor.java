@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.GProcessor;
-import com.neucore.neulink.impl.cmd.rmsg.ShellCmd;
-import com.neucore.neulink.impl.cmd.rmsg.ShellCmdRes;
 import com.neucore.neulink.impl.cmd.rmsg.StatusCmd;
 import com.neucore.neulink.impl.cmd.rmsg.StatusCmdRes;
 import com.neucore.neulink.impl.registry.ServiceRegistry;

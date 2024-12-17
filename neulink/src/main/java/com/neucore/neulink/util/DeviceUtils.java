@@ -353,7 +353,7 @@ public class DeviceUtils implements NeulinkConst{
 		return (i & 0xFF)+ "." + ((i >> 8 ) & 0xFF) + "." + ((i >> 16 ) & 0xFF) +"."+((i >> 24 ) & 0xFF );
 	}
 
-
+	@RequiresApi(api = Build.VERSION_CODES.N)
 	public static CpuUsageInfo getCpuRate(){
 		return android.os.CpuUsageInfo.CREATOR.createFromParcel(Parcel.obtain());
 	}

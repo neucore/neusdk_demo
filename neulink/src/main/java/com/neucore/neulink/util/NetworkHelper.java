@@ -85,8 +85,13 @@ public class NetworkHelper implements NeulinkConst {
 
     private void onConnectivityChange() {
         updateConnectivityStatus();
-        for (Listener listener : mListeners) {
-            listener.onConnectivityChange(getNetworkConnected());
+        try {
+            boolean connected = getNetworkConnected();
+            for (Listener listener: mListeners){
+                listener.onConnectivityChange(connected);
+            }
+        }catch (Exception e){
+            NeuLogUtils.eTag(TAG,"onConnectivityChange",e);
         }
     }
 
