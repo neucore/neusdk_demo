@@ -1,8 +1,10 @@
 package com.neucore.neulink.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 public class AppUtils {
 
@@ -26,16 +28,23 @@ public class AppUtils {
     }
 
     public static String getApkName(Context context){
-        PackageInfo packInfo =null;
-        // 获取packagemanager的实例
-        PackageManager packageManager = context.getPackageManager();
-        // getPackageName()是你当前类的包名
+        ApplicationInfo appInfo;
+        String appName = "";
+
         try {
-            packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+
+            appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+
+            appName = appInfo.loadLabel(context.getPackageManager()) + "";
+
+            Log.d("稳定、可靠获取App名称", appName);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
         }
-        catch (Exception ex){
-        }
-        return packInfo.packageName;
+        return appName;
     }
 
     /**

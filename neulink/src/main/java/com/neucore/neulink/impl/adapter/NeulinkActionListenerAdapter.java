@@ -17,7 +17,6 @@ import com.neucore.neulink.util.JSonUtils;
 import com.neucore.neulink.util.MessageUtil;
 import com.neucore.neulink.util.RequestContext;
 
-import org.eclipse.paho.mqttv5.client.IMqttDeliveryToken;
 import org.eclipse.paho.mqttv5.client.IMqttMessageListener;
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttActionListener;
@@ -109,9 +108,9 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
      */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
+        NeuLogUtils.iTag(TAG, "connectComplete ");
+        reentrantLock.lock();
         try {
-            NeuLogUtils.iTag(TAG, "connectComplete ");
-            reentrantLock.lock();
             service.getSubscriberFacde().subAll();
             deviceService.connect();
             NeuLogUtils.dTag(TAG, "Server:" + serverURI + " ,connectComplete reconnect:" + reconnect);
@@ -169,6 +168,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     @Override
     public void disconnected(MqttDisconnectResponse disconnectResponse) {
         NeuLogUtils.eTag(TAG,"disconnected",disconnectResponse.getException());
+        service.getSubscriberFacde().unsubAll();
         deviceService.disconnect();
         List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
         if (mqttCallBacks != null) {

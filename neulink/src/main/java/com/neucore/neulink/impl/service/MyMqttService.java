@@ -332,6 +332,17 @@ public class MyMqttService implements NeulinkConst{
         }
     }
 
+    public void unsubscribe(String[] topics, int[] qoss,MqttActionListener mqttMessageListeners) {
+        try {
+            // 订阅topic话题
+            client.unsubscribe(topics,context,mqttMessageListeners,new MqttProperties());
+        } catch (Exception e) {
+            NeuLogUtils.eTag(TAG, e.toString());
+        }
+    }
+
+
+
     /**
      * 判断连接是否断开
      */

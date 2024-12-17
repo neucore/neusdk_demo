@@ -1,7 +1,6 @@
 package com.neucore.neulink.log;
 
 import com.neucore.neulink.util.RequestContext;
-import com.xlog.core.XLog;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

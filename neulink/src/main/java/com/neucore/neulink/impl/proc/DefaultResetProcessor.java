@@ -2,7 +2,6 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.Cmd;
 import com.neucore.neulink.impl.CmdRes;
@@ -15,6 +14,7 @@ import com.neucore.neulink.util.JSonUtils;
 public final class DefaultResetProcessor extends GProcessor<Cmd, CmdRes, ActionResult> {
     public DefaultResetProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("reset",new DefaultResetCmdListener());
     }
     @Override
     protected Cmd parser(String payload) {

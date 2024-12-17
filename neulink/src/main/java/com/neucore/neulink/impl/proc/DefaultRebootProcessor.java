@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.RebootCmd;
@@ -24,6 +23,7 @@ public final class DefaultRebootProcessor extends GProcessor<RebootCmd, RebootRe
     @SuppressLint("InvalidWakeLockTag")
     public DefaultRebootProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("reboot",new DefaultRebootCmdListener());
     }
 
     @Override

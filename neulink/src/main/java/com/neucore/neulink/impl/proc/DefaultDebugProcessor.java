@@ -2,7 +2,6 @@ package com.neucore.neulink.impl.proc;
 
 import android.content.Context;
 
-import com.neucore.neulink.ICmdListener;
 import com.neucore.neulink.impl.ActionResult;
 import com.neucore.neulink.impl.GProcessor;
 import com.neucore.neulink.impl.cmd.rmsg.app.DebugCmd;
@@ -16,6 +15,7 @@ public final class DefaultDebugProcessor extends GProcessor<DebugCmd, DebugRes, 
 
     public DefaultDebugProcessor(Context context){
         super(context);
+        ListenerRegistry.getInstance().setExtendListener("debug",new DefaultDebugCmdListener());
     }
 
     public DebugCmd parser(String payload){

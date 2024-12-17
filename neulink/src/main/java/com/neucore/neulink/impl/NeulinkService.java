@@ -136,6 +136,7 @@ public class NeulinkService implements NeulinkConst{
                         .serverUrl(serverUri)
                         .userName(userName)
                         .passWord(password)
+                        //唯一标示 保证每个设备都唯一就可以 建议 imei
                         .clientId(ConfigContext.getInstance().getConfig(ConfigContext.MQTT_CLIENT_ID,deviceService.getExtSN()))
                         //设置自动重连
                         .autoReconnect(ConfigContext.getInstance().getConfig(ConfigContext.AUTO_RECONNECT,true))
@@ -306,12 +307,22 @@ public class NeulinkService implements NeulinkConst{
 
     /**
      *
-     * @param topic
+     * @param topics
      * @param qos
      * @param mqttMessageListener
      */
-    protected void subscribeToTopic(final String topic[], int qos[],MqttActionListener mqttMessageListener){
-        myMqttService.subscribe(topic, qos,mqttMessageListener);
+    protected void subscribeToTopic(final String topics[], int qos[],MqttActionListener mqttMessageListener){
+        myMqttService.subscribe(topics, qos,mqttMessageListener);
+        for (String topic:topics) {
+            NeuLogUtils.iTag(TAG,String.format("success subscribe %s",topic));
+        }
+    }
+
+    protected void unsubscribeToTopic(final String topics[], int qos[],MqttActionListener mqttMessageListener){
+        myMqttService.unsubscribe(topics, qos,mqttMessageListener);
+        for (String topic:topics) {
+            NeuLogUtils.iTag(TAG,String.format("success unsubscribe %s",topic));
+        }
     }
 
     /**
@@ -1137,8 +1148,12 @@ public class NeulinkService implements NeulinkConst{
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
-
-                myMqttService.publish(debug,reqId,payload,topStr, qos, retained,callback);
+                try {
+                    myMqttService.publish(debug, reqId, payload, topStr, qos, retained, callback);
+                }
+                catch (Exception ex){
+                    NeuLogUtils.eTag(TAG,"设备upload2cloud请求",ex);
+                }
             }
             else{
                 /**
