@@ -744,7 +744,7 @@ public class NeulinkService implements NeulinkConst{
                 /**
                  * 绑定Head
                  */
-                HeadersUtil.registBinding(jsonObject,topStr,qos);
+                HeadersUtil.registBinding(jsonObject,reqId,topStr,qos);
                 this.payload = jsonObject.toString();
                 String[] temps = topStrTemp.split("/");
                 int len = temps.length;
@@ -935,7 +935,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,topStr,qos);
+            HeadersUtil.binding(jsonObject,reqId,topStr,qos);
             this.payload = jsonObject.toString();
             String[] temps = topStrTemp.split("/");
             int len = temps.length;
@@ -1095,7 +1095,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,topStr,qos);
+            HeadersUtil.binding(jsonObject,reqId,topStr,qos);
             this.payload = jsonObject.toString();
             String[] temps = topStrTemp.split("/");
             int len = temps.length;

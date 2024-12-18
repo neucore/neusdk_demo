@@ -100,8 +100,8 @@ public class HeadersUtil implements NeulinkConst {
      * @param topicStr
      * @param qos
      */
-    public static void registBinding(JsonObject payload,String topicStr,int qos){
-        binding(payload,topicStr,qos);
+    public static void registBinding(JsonObject payload,String reqId,String topicStr,int qos){
+        binding(payload,reqId,topicStr,qos);
         String lzr = ConfigContext.getInstance().getConfig(NeulinkConst.NEULINK_HEADERS_LZR,TimeZoneId_Asia$ShangHai);
         payload.add(NEULINK_HEADERS_LZR,new JsonPrimitive(String.valueOf(lzr)));
     }
@@ -110,7 +110,7 @@ public class HeadersUtil implements NeulinkConst {
      * @param payload
      * @param topicStr
      */
-    public static void binding(JsonObject payload,String topicStr,int qos){
+    public static void binding(JsonObject payload,String reqId,String topicStr,int qos){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr,qos);
         JsonObject  headers = (JsonObject) payload.get(NEULINK_HEADERS);
@@ -121,8 +121,8 @@ public class HeadersUtil implements NeulinkConst {
             if(ObjectUtil.isNotEmpty(topic.getVersion())) {
                 headers.add(NEULINK_HEADERS_VERSION, new JsonPrimitive(topic.getVersion()));
             }
-            if(ObjectUtil.isNotEmpty(topic.getReqId())) {
-                headers.add(NEULINK_HEADERS_REQNO, new JsonPrimitive(topic.getReqId()));
+            if(ObjectUtil.isNotEmpty(reqId)) {
+                headers.add(NEULINK_HEADERS_REQNO, new JsonPrimitive(reqId));
             }
             if(ObjectUtil.isNotEmpty(topic.getMd5())){
                 headers.add(NEULINK_HEADERS_MD5,new JsonPrimitive(topic.getMd5()));
