@@ -65,7 +65,9 @@ public final class ProcessRegistry implements NeulinkConst {
 
     static {
         Context context = ContextHolder.getInstance().getContext();
-
+        /**
+         * 设备管理
+         */
         regist(NEULINK_BIZ_STATUS,new DefaultStatusProcessor(context));
         regist(NEULINK_BIZ_REBOOT,new DefaultRebootProcessor(context));
         regist(NEULINK_BIZ_SHELL,new DefaultShellProcessor(context));
