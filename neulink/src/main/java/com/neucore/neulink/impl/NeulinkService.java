@@ -254,7 +254,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishRequestMessage("msg/req/connect","v1.0",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishRequestMessage("msg/req/connect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -263,14 +263,14 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishRequestMessage("msg/req/disconnect","v1.0",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishRequestMessage("msg/req/disconnect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
     public LWTTopic lwtTopic(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTTopic info = new LWTTopic();
-        String topic = String.format("msg/req/lwt/v1.2/%s",deviceService.getExtSN());
+        String topic = String.format("msg/req/lwt/v1d2/%s",deviceService.getExtSN());
         String productId = deviceService.getProductKey();
         if(ObjectUtil.isNotEmpty(productId)){
             topic = productId+"/"+topic;
@@ -284,7 +284,7 @@ public class NeulinkService implements NeulinkConst{
     public LWTPayload lwtPayload(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         LWTPayload info = new LWTPayload();
-        info.setHeader("version","v1.0");
+        info.setHeader("version","v1d2");
         info.setHeader("biz","lwt");
         info.setHeader("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
         info.setHeader("custid", NeulinkService.getInstance().getCustId());
@@ -486,6 +486,7 @@ public class NeulinkService implements NeulinkConst{
      */
     public void publishResponseMessage(boolean debug, int qos, boolean retained, String topicPrefix, String biz, String version, String reqId, String requestorClientId, String payload){
         IResCallback callback = CallbackRegistry.getInstance().getResCallback(biz.toLowerCase());
+        version = version.replace(".","d");
         publishResponseMessage(debug,qos,retained,topicPrefix,version,reqId,requestorClientId,payload,callback);
     }
 

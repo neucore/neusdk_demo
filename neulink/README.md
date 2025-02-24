@@ -816,10 +816,10 @@ public class AuthActionResultData {
     };
     //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
     String biz = "binding";
-    String version = "v1.0";
+    String version = "v1d2";
     String reqId = "3214323ewadfdsad";
     String mode = "bind";
-    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iResCallback);
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1d2", reqId, mode, 202, NeulinkConst.MESSAGE_PROCESSING, "",iResCallback);
     
 ```
 
@@ -838,10 +838,10 @@ public class AuthActionResultData {
     };
     //从数据库或者ActionListener中获取到获取到云端下发的Cmd【biz、协议版本、请求Id，命令模式】
     String biz = "binding";
-    String version = "v1.0";
+    String version = "v1d2";
     String reqId = "3214323ewadfdsad";
     String mode = "bind";
-    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1.0", reqId, mode, 200, NeulinkConst.MESSAGE_AGREE, "",iResCallback);
+    NeulinkService.getInstance().getPublisherFacde().rrpcResponse(biz, "v1d2", reqId, mode, 200, NeulinkConst.MESSAGE_AGREE, "",iResCallback);
     
 ```
 

@@ -45,8 +45,8 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          * 目标库批量同步      rrpc/req/${dev_id}/blib/v1.0/${req_no}[/${md5}],qos=0
          * 目标库单条写操作    rrpc/req/${dev_id}/lib/v1.0/${req_no}[/${md5}],qos=0
          * 目标库批量查询操作  rrpc/req/ ${dev_id}/qlib/${req_no}[/${md5},qos=0
-         * 终端配置管理       rrpc/req/${dev_id}/cfg/v1.1/${req_no}[/${md5}],qos=0
-         * 查看终端配置       rrpc/req/${dev_id}/qcfg/v1.1/${req_no}[/${md5}],qos=0
+         * 终端配置管理       rrpc/req/${dev_id}/cfg/v1d2/${req_no}[/${md5}],qos=0
+         * 查看终端配置       rrpc/req/${dev_id}/qcfg/v1d2/${req_no}[/${md5}],qos=0
          * 预约信息展示       rrpc/req/${dev_id}/reserve/v1.0/${req_no}[/${md5}], qos=0
          */
         String rmsg_topic = "rmsg/req/" + extSN + "/#";
@@ -73,8 +73,8 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
          * 目标库批量同步        bcst/req/${scopeId}/blib/v1.0/${req_no}[/${md5}],qos=0
          * 目标库单条写操作       bcst/req/${scopeId}/lib/v1.0/${req_no}[/${md5}],qos=0
          * 目标库批量查询操作     bcst/req/ ${scopeId}/qlib/${req_no}[/${md5},qos=0
-         * 终端配置管理          bcst/req/${scopeId}/cfg/v1.1/${req_no}[/${md5}],qos=0
-         * 查看终端配置          bcst/req/${scopeId}/qcfg/v1.1/${req_no}[/${md5}],qos=0
+         * 终端配置管理          bcst/req/${scopeId}/cfg/v1d2/${req_no}[/${md5}],qos=0
+         * 查看终端配置          bcst/req/${scopeId}/qcfg/v1d2/${req_no}[/${md5}],qos=0
          * 预约信息展示          bcst/req/${scopeId}/reserve/v1.0/${req_no}[/${md5}], qos=0
          */
         int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
