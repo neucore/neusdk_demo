@@ -206,7 +206,7 @@ public class MyDeviceExtendInfoCallBack implements IDeviceExtendInfoCallback {
     /*
      * 获取系统自定义设备型号和版本号
      * 系统属性自定义变量 ro.product.build.dim 用于判断设备型号,客户,版本号
-     * 格式为:型号_客户_版本号,如 T860_GADMEI_V1.1.1.20120101
+     * 格式为:型号_客户_版本号,如 T860_GADMEI_v1d2.1.20120101
      * android.os.Build.MODEL 则是获取通用的型号,用于系统显示用
      */
     public static class DimSystemVer {

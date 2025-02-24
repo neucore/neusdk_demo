@@ -83,7 +83,7 @@ public class HeadersUtil implements NeulinkConst {
             }
         }
         if(ObjectUtil.isEmpty(version)){
-            version = "v1.0";
+            version = "v1d2";
         }
         req.setGroup(group);
         req.setCmdType(req$res);

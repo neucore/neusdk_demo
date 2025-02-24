@@ -22,8 +22,11 @@ import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
+import org.eclipse.paho.mqttv5.common.packet.UserProperty;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 
@@ -249,7 +252,7 @@ public class MyMqttService implements NeulinkConst{
             LWTTopic lwtTopic = ServiceRegistry.getInstance().getDeviceService().lwtTopic();
             LWTPayload payloadInfo = ServiceRegistry.getInstance().getDeviceService().lwtPayload();
 
-            payloadInfo.setHeader("version","v1.0");
+            payloadInfo.setHeader("version","v1d2");
             payloadInfo.setHeader("biz","lwt");
             payloadInfo.setHeader("devid", ServiceRegistry.getInstance().getDeviceService().getExtSN());
             payloadInfo.setHeader("custid", NeulinkService.getInstance().getCustId());
@@ -261,6 +264,12 @@ public class MyMqttService implements NeulinkConst{
             boolean retained = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,lwtTopic.getRetained());
             byte[] encoded = MessageUtil.encode(false,lwtTopic.getTopic(),payload);
             MqttMessage mqttMessage = new MqttMessage(encoded,qos,retained,null);
+            List<UserProperty> usersProperties = new ArrayList<>();
+            UserProperty userProperty = new UserProperty("status@from","lwt");
+            usersProperties.add(userProperty);
+            MqttProperties properties = new MqttProperties();
+            properties.setUserProperties(usersProperties);
+            mqttMessage.setProperties(properties);
             conOpt.setWill(lwtTopic.getTopic(),mqttMessage);
             NeuLogUtils.iTag(TAG,String.format("end init with : \n%s",toString()));
         }

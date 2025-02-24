@@ -26,11 +26,11 @@ public interface NeulinkConst {
 
     String Backup_Obj_Data = "data";
 
-    String V1$0 = "v1.0";
+    String V1$0 = "v1d0";
 
-    String V1$1 = "v1.1";
+    String V1$1 = "v1d1";
 
-    String V1$2 = "v1.2";
+    String V1$2 = "v1d2";
 
     /**
      * 添加
