@@ -27,6 +27,7 @@ import java.util.Map;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 class RegisterAdapter implements NeulinkConst{
 
@@ -162,13 +163,19 @@ class RegisterAdapter implements NeulinkConst{
                         }
 
                         NeuLogUtils.dTag(TAG, "设备configs响应：" + response);
-
-                        ResRegist resRegist = JSonUtils.toObject(response, ResRegist.class);
-                        NeulinkZone zone = resRegist.getZone();
-                        if(ObjectUtil.isEmpty(zone)){
-                            zone = resRegist.getData();
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONObject zone = (JSONObject) jsonObject.get("zone");
+                        NeulinkZone neulinkZone = null;
+                        if(ObjectUtil.isNotEmpty(zone)){
+                            neulinkZone = JSonUtils.toObject(zone.toString(), NeulinkZone.class);
                         }
-                        syncConfig(zone);
+                        else{
+                            zone = (JSONObject) jsonObject.get("data");
+                            neulinkZone = JSonUtils.toObject(zone.toString(), NeulinkZone.class);
+                        }
+
+                        syncConfig(neulinkZone);
+
                         configLoaded = true;
                     }
                     catch (NeulinkException e) {
@@ -247,10 +254,29 @@ class RegisterAdapter implements NeulinkConst{
             reqIp = DeviceUtils.getIpAddress(ContextHolder.getInstance().getContext());
         }
 
+        String ftpServer = zone.getFtpServer();
+        if(ObjectUtil.isEmpty(ftpServer)){
+            ftpServer = ConfigContext.getInstance().getConfig(ConfigContext.FTP_SERVER);
+        }
+
+        String ftpUsername = zone.getFtpUsername();
+        if(ObjectUtil.isEmpty(ftpUsername)){
+            ftpUsername = ConfigContext.getInstance().getConfig(ConfigContext.FTP_USER_NAME);
+        }
+
+        String ftpPassword = zone.getFtpPassword();
+        if(ObjectUtil.isEmpty(ftpPassword)){
+            ftpPassword = ConfigContext.getInstance().getConfig(ConfigContext.FTP_PASSWORD);
+        }
+
         ConfigContext.getInstance().update(ConfigContext.SCOPEID, zone.getCustid());
         ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
+        ConfigContext.getInstance().update(ConfigContext.FTP_SERVER, ftpServer);
+        ConfigContext.getInstance().update(ConfigContext.FTP_USER_NAME, ftpUsername);
+        ConfigContext.getInstance().update(ConfigContext.FTP_PASSWORD, ftpPassword);
+
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
 
         String productKey = deviceService.getProductKey();
