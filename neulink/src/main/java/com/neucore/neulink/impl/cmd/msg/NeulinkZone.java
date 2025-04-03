@@ -23,6 +23,15 @@ public class NeulinkZone {
     @SerializedName("req_ip")
     private String reqIp;
 
+    @SerializedName("ftp_server")
+    private String ftpServer;
+
+    @SerializedName("ftp_username")
+    private String ftpUsername;
+
+    @SerializedName("ftp_password")
+    private String ftpPassword;
+
     public String getId() {
         return id;
     }
@@ -30,6 +39,15 @@ public class NeulinkZone {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getReqIp() {
+        return reqIp;
+    }
+
+    public void setReqIp(String reqIp) {
+        this.reqIp = reqIp;
+    }
+
 
     public String getCustid() {
         return custid;
@@ -87,11 +105,27 @@ public class NeulinkZone {
         this.uploadServer = uploadServer;
     }
 
-    public String getReqIp() {
-        return reqIp;
+    public String getFtpServer() {
+        return ftpServer;
     }
 
-    public void setReqIp(String reqIp) {
-        this.reqIp = reqIp;
+    public void setFtpServer(String ftpServer) {
+        this.ftpServer = ftpServer;
+    }
+
+    public String getFtpUsername() {
+        return ftpUsername;
+    }
+
+    public void setFtpUsername(String ftpUsername) {
+        this.ftpUsername = ftpUsername;
+    }
+
+    public String getFtpPassword() {
+        return ftpPassword;
+    }
+
+    public void setFtpPassword(String ftpPassword) {
+        this.ftpPassword = ftpPassword;
     }
 }
