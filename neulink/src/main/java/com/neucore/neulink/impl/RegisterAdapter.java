@@ -145,7 +145,7 @@ class RegisterAdapter implements NeulinkConst{
                     String licId = extSn.split("@")[0];
                     params.put("licId",licId);
                 }
-                String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
+                String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/device/configs");
 
                 Map<String, String> headers = HttpParamWrapper.getParams();
                 if(newVersion){
