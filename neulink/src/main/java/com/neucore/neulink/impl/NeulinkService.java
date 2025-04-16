@@ -312,6 +312,9 @@ public class NeulinkService implements NeulinkConst{
      * @param mqttMessageListener
      */
     protected void subscribeToTopic(final String topics[], int qos[],MqttActionListener mqttMessageListener){
+        for (String topic:topics) {
+            NeuLogUtils.iTag(TAG,String.format("start subscribe %s",topic));
+        }
         myMqttService.subscribe(topics, qos,mqttMessageListener);
         for (String topic:topics) {
             NeuLogUtils.iTag(TAG,String.format("success subscribe %s",topic));
