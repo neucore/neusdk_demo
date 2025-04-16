@@ -72,6 +72,13 @@ public class CompressUtil {
         if (compressed == null) {
             return null;
         }
+        try {
+            if (!isCompressed(compressed)) {
+                return compressed;
+            }
+        } catch (IOException e) {
+            return compressed;
+        }
         ByteArrayInputStream in = null;
         GZIPInputStream ginzip = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -105,5 +112,13 @@ public class CompressUtil {
             }
         }
         return null;
+    }
+
+    public static boolean isCompressed(byte[] bytes) throws IOException {
+        if ((bytes == null) || (bytes.length < 2)) {
+            return false;
+        } else {
+            return ((bytes[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (bytes[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8)));
+        }
     }
 }

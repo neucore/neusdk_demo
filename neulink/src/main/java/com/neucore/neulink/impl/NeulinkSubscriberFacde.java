@@ -26,7 +26,6 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
     public NeulinkSubscriberFacde(Context context, NeulinkService service){
         this.context = context;
         this.service = service;
-        listeners = service.getNeulinkActionListenerAdapter();
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
         String productId = deviceService.getProductKey();
         String extSN = deviceService.getExtSN();
@@ -96,10 +95,12 @@ public class NeulinkSubscriberFacde implements NeulinkConst{
      *
      */
     public void subAll(){
+        listeners = service.getNeulinkActionListenerAdapter();
         service.subscribeToTopic(topics, qoss, listeners);
     }
 
     public void unsubAll(){
+        listeners = service.getNeulinkActionListenerAdapter();
         service.unsubscribeToTopic(topics, qoss,listeners);
     }
 }

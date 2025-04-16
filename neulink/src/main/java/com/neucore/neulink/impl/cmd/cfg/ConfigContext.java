@@ -302,37 +302,40 @@ public class ConfigContext implements NeulinkConst{
         return configs;
     }
 
-
     public String getConfig(String key){
-        return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,null))));
+        return getConfig(key,null);
     }
-
 
     public String getConfig(String key, String defaultValue){
-        return System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,defaultValue))));
+        return getConfigValue(key,defaultValue);
     }
-
 
     public int getConfig(String key, int defaultValue){
-        return Integer.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
-    }
+        return Integer.valueOf(getConfigValue(key,defaultValue));
 
+    }
 
     public long getConfig(String key, long defaultValue){
-        return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
+        return Long.valueOf(getConfigValue(key,defaultValue));
     }
-
 
     public double getConfig(String key, double defaultValue){
-        return Long.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
+        return Double.valueOf(getConfigValue(key,defaultValue));
     }
-
 
     public Boolean getConfig(String key, boolean defaultValue){
-        return Boolean.valueOf(System.getenv().getOrDefault(key,extConfig.getProperty(key,configs.getProperty(key,getDefault(key,String.valueOf(defaultValue))))));
+        return Boolean.valueOf(getConfigValue(key,defaultValue));
     }
 
-    private String getDefault(String key,String defaultValue){
+    private String getConfigValue(String key, Object defaultValue){
+        String value = System.getenv().get(key);
+        if(ObjectUtil.isNotEmpty(value)){
+            return value;
+        }
+        return extConfig.getProperty(key,configs.getProperty(key,getDefaultValue(key,String.valueOf(defaultValue))));
+    }
+
+    private String getDefaultValue(String key,String defaultValue){
         if(defaultValue!=null){
             return defaultValue;
         }

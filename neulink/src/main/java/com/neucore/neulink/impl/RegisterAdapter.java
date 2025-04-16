@@ -145,7 +145,7 @@ class RegisterAdapter implements NeulinkConst{
                     String licId = extSn.split("@")[0];
                     params.put("licId",licId);
                 }
-                String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/device/configs");
+                String configsURL = ConfigContext.getInstance().getConfig(ConfigContext.CONDIG_SERVER_URL, "https://dev.neucore.com/api/user/v1/configs");
 
                 Map<String, String> headers = HttpParamWrapper.getParams();
                 if(newVersion){
@@ -154,7 +154,7 @@ class RegisterAdapter implements NeulinkConst{
                 while (logined && remoteConfig && !configLoaded){
                     String response = null;
                     try {
-
+                        NeuLogUtils.dTag(TAG, "getConfig from：" + configsURL);
                         response = NeuHttpHelper.post(configsURL, params, headers, 10, 60, 1,null);
                         if(ObjectUtil.isEmpty(response)){
                             NeuLogUtils.iTag(TAG,"配置非法。。。");
@@ -167,11 +167,32 @@ class RegisterAdapter implements NeulinkConst{
                         JSONObject zone = (JSONObject) jsonObject.get("zone");
                         NeulinkZone neulinkZone = null;
                         if(ObjectUtil.isNotEmpty(zone)){
-                            neulinkZone = JSonUtils.toObject(zone.toString(), NeulinkZone.class);
+                            neulinkZone = new NeulinkZone();
+                            neulinkZone.setCustid((String)zone.get("custid"));
+                            neulinkZone.setReqIp((String)zone.get("req_ip"));
+                            neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
+                            neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
+                            neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
+                            neulinkZone.setUploadServer((String)zone.get("upload_server"));
                         }
                         else{
-                            zone = (JSONObject) jsonObject.get("data");
-                            neulinkZone = JSonUtils.toObject(zone.toString(), NeulinkZone.class);
+                            Object data = jsonObject.get("data");
+                            if(data instanceof String){
+                                zone = new JSONObject(data);
+                            }
+                            else if(data instanceof JSONObject){
+                                zone = (JSONObject) data;
+                            }
+                            else{
+                                NeuLogUtils.dTag(TAG, "设备configs响应：" + response);
+                            }
+                            neulinkZone = new NeulinkZone();
+                            neulinkZone.setCustid((String)zone.get("custid"));
+                            neulinkZone.setReqIp((String)zone.get("req_ip"));
+                            neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
+                            neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
+                            neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
+                            neulinkZone.setUploadServer((String)zone.get("upload_server"));
                         }
 
                         syncConfig(neulinkZone);
