@@ -1,5 +1,7 @@
 package com.neucore.neulink.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.neucore.neulink.NeulinkConst;
@@ -11,6 +13,7 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 
 public class HeadersUtil implements NeulinkConst {
 
@@ -29,58 +32,73 @@ public class HeadersUtil implements NeulinkConst {
         String md5 = topic.getMd5();
         String clientId = null;
         if(ObjectUtil.isNotEmpty(headers)){
-            JsonPrimitive _group = (JsonPrimitive) headers.get(NEULINK_HEADERS_GROUP);
-            if(ObjectUtil.isNotEmpty(_group)){
-                String temp = _group.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    group = temp;
+            JsonElement _group = headers.get(NEULINK_HEADERS_GROUP);
+            if(_group instanceof JsonPrimitive){
+                if(ObjectUtil.isNotEmpty(_group)){
+                    String temp = _group.getAsString();
+                    if(ObjectUtil.isNotEmpty(temp)){
+                        group = temp;
+                    }
                 }
             }
 
-            JsonPrimitive _cmdType = (JsonPrimitive) headers.get(NEULINK_HEADERS_REQ$RES);
-            if(ObjectUtil.isNotEmpty(_cmdType)){
-                String temp = _cmdType.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    req$res = temp;
+            JsonElement _cmdType = headers.get(NEULINK_HEADERS_REQ$RES);
+            if(_cmdType instanceof JsonPrimitive) {
+                if (ObjectUtil.isNotEmpty(_cmdType)) {
+                    String temp = _cmdType.getAsString();
+                    if (ObjectUtil.isNotEmpty(temp)) {
+                        req$res = temp;
+                    }
                 }
             }
 
-            JsonPrimitive _biz = (JsonPrimitive) headers.get(NEULINK_HEADERS_BIZ);
-            if(ObjectUtil.isNotEmpty(_biz)){
-                String temp = _biz.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    biz = temp;
+            JsonElement _biz = headers.get(NEULINK_HEADERS_BIZ);
+            if(_biz instanceof JsonPrimitive) {
+                if (ObjectUtil.isNotEmpty(_biz)) {
+                    String temp = _biz.getAsString();
+                    if (ObjectUtil.isNotEmpty(temp)) {
+                        biz = temp;
+                    }
                 }
             }
 
-            JsonPrimitive _version = (JsonPrimitive) headers.get(NEULINK_HEADERS_VERSION);
-            if(ObjectUtil.isNotEmpty(_version)){
-                String temp = _version.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    version = temp;
+            JsonElement _version = headers.get(NEULINK_HEADERS_VERSION);
+            if(_version instanceof JsonPrimitive) {
+                if (ObjectUtil.isNotEmpty(_version)) {
+                    String temp = _version.getAsString();
+                    if (ObjectUtil.isNotEmpty(temp)) {
+                        version = temp;
+                    }
                 }
             }
-            JsonPrimitive _reqNo = (JsonPrimitive)headers.get(NEULINK_HEADERS_REQNO);
-            if(ObjectUtil.isNotEmpty(_reqNo)){
-                String temp = _reqNo.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    reqNo = temp;
+            JsonElement _reqNo = headers.get(NEULINK_HEADERS_REQNO);
+            if(_reqNo instanceof JsonPrimitive) {
+                if (ObjectUtil.isNotEmpty(_reqNo)) {
+                    String temp = _reqNo.getAsString();
+                    if (ObjectUtil.isNotEmpty(temp)) {
+                        reqNo = temp;
+                    }
                 }
             }
-            JsonPrimitive _md5 = (JsonPrimitive)headers.get(NEULINK_HEADERS_MD5);
-            if(ObjectUtil.isNotEmpty(_md5)){
-                String temp = _md5.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    md5 = temp;
+            JsonElement _md5 = headers.get(NEULINK_HEADERS_MD5);
+            if(_md5 instanceof JsonPrimitive){
+                if(ObjectUtil.isNotEmpty(_md5)){
+                    String temp = _md5.getAsString();
+                    if(ObjectUtil.isNotEmpty(temp)){
+                        md5 = temp;
+                    }
                 }
             }
-            JsonPrimitive _clientId = (JsonPrimitive)headers.get(NEULINK_HEADERS_CLIENT_ID);
-            if(ObjectUtil.isNotEmpty(_clientId)){
-                String temp = _clientId.getAsString();
-                if(ObjectUtil.isNotEmpty(temp)){
-                    clientId = temp;
+            JsonElement _clientId = headers.get(NEULINK_HEADERS_CLIENT_ID);
+            if(_clientId instanceof JsonPrimitive){
+                if(ObjectUtil.isNotEmpty(_clientId)){
+                    String temp = _clientId.getAsString();
+                    if(ObjectUtil.isNotEmpty(temp)){
+                        clientId = temp;
+                    }
                 }
             }
+
         }
         if(ObjectUtil.isEmpty(version)){
             version = "v1d2";
