@@ -31,6 +31,9 @@ import com.neucore.neulink.util.ContextHolder;
 
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
 import cn.hutool.core.util.ObjectUtil;
 
 public class SampleConnector implements NeulinkConst{
@@ -114,6 +117,17 @@ public class SampleConnector implements NeulinkConst{
      * 不然不起效果
      */
     public void start(){
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {  // Android 4.4
+            SSLContext sc = null;
+            try {
+                sc = SSLContext.getInstance("TLSv1.2");
+                sc.init(null, null, null);
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         if(!started){
 
