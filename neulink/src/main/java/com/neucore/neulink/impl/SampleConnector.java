@@ -29,6 +29,9 @@ import com.neucore.neulink.impl.service.device.DefaultDeviceServiceImpl;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 
+import org.conscrypt.Conscrypt;
+
+import java.security.Security;
 import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -118,16 +121,7 @@ public class SampleConnector implements NeulinkConst{
      */
     public void start(){
 
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {  // Android 4.4
-            SSLContext sc = null;
-            try {
-                sc = SSLContext.getInstance("TLSv1.2");
-                sc.init(null, null, null);
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        Security.insertProviderAt(Conscrypt.newProvider(), 1);
 
         if(!started){
 

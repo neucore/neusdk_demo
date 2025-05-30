@@ -9,9 +9,28 @@ buildscript {
     }
     repositories {
 
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/google' }
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        mavenLocal() // 表示从本地Maven存储库获取依赖项.
+        mavenCentral() // 表示从central Maven 2 repository获取依赖项
         google()
-        jcenter()
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+
+        maven {
+            url 'https://dl.google.com/dl/android/maven2/'
+            name 'Google'
+        }
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
+        maven { url 'https://jitpack.io' }
+        maven {
+            url 'https://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
+        maven { url 'https://dl.bintray.com/tuyasmartai/sdk' }
     }
     dependencies {
         //for mac
