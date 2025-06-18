@@ -143,7 +143,7 @@ public class NeulinkService implements NeulinkConst{
                         //最大延时时间
                         .maxReconnectDelay(ConfigContext.getInstance().getConfig(ConfigContext.MAX_RECONNECT_DELAY,30000))
                         //设置不清除回话session 可收到服务器之前发出的推送消息
-                        .cleanSession(ConfigContext.getInstance().getConfig(ConfigContext.CLEAN_SESSION,false))
+                        .cleanSession(ConfigContext.getInstance().getConfig(ConfigContext.CLEAN_SESSION,true))
                         //mqtt服务器地址 格式例如：tcp://10.0.261.159:1883
                         //心跳包默认的发送间隔
                         .keepAliveInterval(ConfigContext.getInstance().getConfig(ConfigContext.KEEP_ALIVE_INTERVAL,60))
