@@ -63,8 +63,12 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
 
         /**
          * 发送响应消息给到服务端
+         * 支持一机一秘
          */
         String resTopic = String.format("%s/%s/%s",group,"res",biz);
+        if(ObjectUtil.isNotEmpty(topic.getProduct())){
+            resTopic = String.format("/%s%s/%s/%s",topic.getProduct(),group,"res",biz);
+        }
 
         //检查当前请求是否已经已经到达过
         synchronized (lock){

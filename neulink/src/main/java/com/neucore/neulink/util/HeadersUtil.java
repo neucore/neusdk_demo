@@ -128,9 +128,9 @@ public class HeadersUtil implements NeulinkConst {
      * @param payload
      * @param topicStr
      */
-    public static void binding(JsonObject payload,String reqId,String topicStr,int qos){
+    public static void binding(JsonObject payload,String reqId,String topicStr){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
-        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr,qos);
+        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr);
         JsonObject  headers = (JsonObject) payload.get(NEULINK_HEADERS);
         if(ObjectUtil.isNotEmpty(headers)){
             if(ObjectUtil.isNotEmpty(topic.getBiz())) {
