@@ -57,6 +57,9 @@ public final class DefaultCLibProcessor extends GProcessor<CheckCmd, CheckCmdRes
          * 发送响应消息给到服务端
          */
         String resTopic = String.format("%s/%s/%s",group,"res",biz);
+        if(ObjectUtil.isNotEmpty(topic.getProduct())){
+            resTopic = String.format("/%s%s/%s/%s",topic.getProduct(),group,"res",biz);
+        }
 
         //检查当前请求是否已经已经到达过
         synchronized (lock){
