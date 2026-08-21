@@ -119,7 +119,7 @@ public class HeadersUtil implements NeulinkConst {
      * @param qos
      */
     public static void registBinding(JsonObject payload,String reqId,String topicStr,int qos){
-        binding(payload,reqId,topicStr,qos);
+        binding(payload,reqId,topicStr);
         String lzr = ConfigContext.getInstance().getConfig(NeulinkConst.NEULINK_HEADERS_LZR,TimeZoneId_Asia$ShangHai);
         payload.add(NEULINK_HEADERS_LZR,new JsonPrimitive(String.valueOf(lzr)));
     }
