@@ -131,10 +131,9 @@ public class NeulinkTopicParser {
     /**
      * 【msg｜upld】/req/[devinfo|status|faceinfo|...]/vx.x/${req_no}/${md5}[/$custid}][/${storeid}][/${zoneid}][/${dev_id}]
      * @param topStr
-     * @param qos
      * @return
      */
-    public Topic end2cloudParser(String topStr, int qos){
+    public Topic end2cloudParser(String topStr){
         Topic topic = new Topic();
         topic.setString(topStr);
         String[] paths = topStr.split("/");
@@ -190,7 +189,6 @@ public class NeulinkTopicParser {
         private String biz;
         private String version;
         private String topString;
-        private int qos;
 
         public Topic(){
         }

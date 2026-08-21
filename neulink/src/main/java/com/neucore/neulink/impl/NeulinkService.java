@@ -530,7 +530,7 @@ public class NeulinkService implements NeulinkConst{
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
         final String topic = buildReqTopic(topicPrefix,version);
-        if(topic.toLowerCase().startsWith("msg/req/devinfo")){
+        if(topic.toLowerCase().indexOf("msg/req/devinfo")!=-1){
             regist(reqId,topic,payload,qos,retained);
         }
         else{
@@ -562,9 +562,12 @@ public class NeulinkService implements NeulinkConst{
     private String buildReqTopic(String topicPrefix, String version){
 
         StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version);
-
-        String topic = stringBuffer.toString();
-        return topic;
+        String topicStr = stringBuffer.toString();
+        NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr);
+        if(ObjectUtil.isEmpty(topic.getProduct())){
+            topicStr = String.format("%s/%s",deviceService.getProductKey(),topicStr);
+        }
+        return topicStr;
     }
 
     private void regist(String reqId,String topStr, String payload, int qos, Boolean retained){
@@ -939,7 +942,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,reqId,topStr,qos);
+            HeadersUtil.binding(jsonObject,reqId,topStr);
             this.payload = jsonObject.toString();
             String[] temps = topStrTemp.split("/");
             int len = temps.length;
@@ -1099,7 +1102,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,reqId,topStr,qos);
+            HeadersUtil.binding(jsonObject,reqId,topStr);
             this.payload = jsonObject.toString();
             String[] temps = topStrTemp.split("/");
             int len = temps.length;
