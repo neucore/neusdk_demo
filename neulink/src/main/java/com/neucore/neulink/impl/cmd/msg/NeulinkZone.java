@@ -18,6 +18,9 @@ public class NeulinkZone {
     private String mqttServer;
     @SerializedName("mqtt_port")
     private int mqttPort;
+
+    @SerializedName("web_server")
+    private String webServer;
     @SerializedName("upload_server")
     private String uploadServer="https://dev.neucore.com/api/v1/neulink/upload2cloud";
     @SerializedName("req_ip")
@@ -95,6 +98,14 @@ public class NeulinkZone {
 
     public void setMqttPort(int mqttPort) {
         this.mqttPort = mqttPort;
+    }
+
+    public String getWebServer() {
+        return webServer;
+    }
+
+    public void setWebServer(String webServer) {
+        this.webServer = webServer;
     }
 
     public String getUploadServer() {

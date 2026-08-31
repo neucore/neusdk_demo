@@ -89,6 +89,7 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String MAX_RECONNECT_DELAY= "maxReconnectDelay";
 
+    public final static String HTTP_WEB_SERVER = "http.web.server";
     public final static String HTTP_UPLOAD_SERVER = "http.upload.server";
 
     public final static String HTTP_REQ_IP = "http.req.ip";

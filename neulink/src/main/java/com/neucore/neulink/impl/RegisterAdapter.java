@@ -173,6 +173,7 @@ class RegisterAdapter implements NeulinkConst{
                             neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
                             neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
                             neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
+                            neulinkZone.setWebServer((String)zone.get("web_server"));
                             neulinkZone.setUploadServer((String)zone.get("upload_server"));
                         }
                         else{
@@ -192,6 +193,7 @@ class RegisterAdapter implements NeulinkConst{
                             neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
                             neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
                             neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
+                            neulinkZone.setWebServer((String)zone.get("web_server"));
                             neulinkZone.setUploadServer((String)zone.get("upload_server"));
                         }
 
@@ -266,6 +268,10 @@ class RegisterAdapter implements NeulinkConst{
         if(ObjectUtil.isEmpty(mqttPassword)){
             mqttPassword = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_PASSWORD);
         }
+        String webServer = zone.getWebServer();
+        if(ObjectUtil.isEmpty(webServer)){
+            webServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_WEB_SERVER);
+        }
         String upldServer = zone.getUploadServer();
         if(ObjectUtil.isEmpty(upldServer)){
             upldServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER);
@@ -294,6 +300,8 @@ class RegisterAdapter implements NeulinkConst{
         ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
         ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
         ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
+        ConfigContext.getInstance().update(ConfigContext.HTTP_WEB_SERVER, webServer);
+        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER, upldServer);
         ConfigContext.getInstance().update(ConfigContext.FTP_SERVER, ftpServer);
         ConfigContext.getInstance().update(ConfigContext.FTP_USER_NAME, ftpUsername);
         ConfigContext.getInstance().update(ConfigContext.FTP_PASSWORD, ftpPassword);
@@ -321,7 +329,6 @@ class RegisterAdapter implements NeulinkConst{
             ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, deviceService.getExtSN());
             NeuLogUtils.iTag(TAG,String.format("老版本 mqtt 连接,clientId=%s",deviceService.getExtSN()));
         }
-
         ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
         ConfigContext.getInstance().update(ConfigContext.HTTP_REQ_IP,reqIp);
     }
