@@ -40,7 +40,7 @@ public class HttpParamWrapper {
             headers.remove("Authorization");
             SecuretSign securetSign = deviceService.sign();
             String clientId = securetSign.getClientId();
-            String sign = securetSign.getSign();
+            String sign = securetSign.getPassword();
             headers.put("clientId",clientId);
             headers.put("sign",sign);
         }
