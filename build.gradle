@@ -46,9 +46,13 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://dl.bintray.com/bookzhan/bzlib' }
+        maven { url 'https://jitpack.io' }
     }
 }
 

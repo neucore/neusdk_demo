@@ -198,6 +198,11 @@ public class Message implements IMessage {
         return this.retained;
     }
 
+    @Override
+    public boolean isRetained() {
+        return this.retained;
+    }
+
     public void setRetained(boolean retained) {
         this.retained = retained;
     }

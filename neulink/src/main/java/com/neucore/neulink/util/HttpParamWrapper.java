@@ -1,8 +1,10 @@
 package com.neucore.neulink.util;
 
 import com.neucore.neulink.IDeviceService;
+import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.NeulinkSecurity;
+import com.neucore.neulink.log.NeuLogUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -10,7 +12,8 @@ import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
 
-public class HttpParamWrapper {
+public class HttpParamWrapper implements NeulinkConst {
+    private static String TAG = TAG_PREFIX+"HttpParamWrapper";
     public static Map<String,String> getParams(){
 
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
@@ -44,6 +47,7 @@ public class HttpParamWrapper {
             headers.put("clientId",clientId);
             headers.put("sign",sign);
         }
+        NeuLogUtils.iTag(TAG,String.format("Http headers=%s",headers));
         return headers;
     }
 }
