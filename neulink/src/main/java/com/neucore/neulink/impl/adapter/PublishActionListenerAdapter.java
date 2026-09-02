@@ -12,16 +12,18 @@ public class PublishActionListenerAdapter implements MqttActionListener, Neulink
 
     private String TAG = TAG_PREFIX+"PublishActionListenerAdapter";
     private String reqId;
+    private String topic;
     private String payload;
     private IResCallback iResCallback;
-    public PublishActionListenerAdapter(String reqId,String payload, IResCallback iResCallback){
+    public PublishActionListenerAdapter(String reqId,String topic,String payload, IResCallback iResCallback){
         this.reqId = reqId;
+        this.topic = topic;
         this.payload = payload;
         this.iResCallback = iResCallback;
     }
     @Override
     public void onSuccess(IMqttToken asyncActionToken) {
-        NeuLogUtils.iTag(TAG,"publishSuccess");
+        NeuLogUtils.iTag(TAG,String.format("publishSuccess topic=%s, payload=%s",topic,payload));
         Result result = Result.ok();
         result.setReqId(reqId);
         result.setData(payload);
@@ -30,7 +32,7 @@ public class PublishActionListenerAdapter implements MqttActionListener, Neulink
 
     @Override
     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-        NeuLogUtils.iTag(TAG,"onFailure");
+        NeuLogUtils.iTag(TAG,String.format("publishFailure topic=%s, payload=%s",topic,payload));
         Result result = Result.fail(exception.getMessage());
         result.setReqId(reqId);
         result.setData(payload);

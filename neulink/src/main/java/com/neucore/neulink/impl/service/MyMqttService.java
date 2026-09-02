@@ -178,15 +178,16 @@ public class MyMqttService implements NeulinkConst{
 
             byte[] compress= MessageUtil.encode(debug,topic,msg);
             if(ObjectUtil.isNotEmpty(iResCallback)){
-                PublishActionListenerAdapter myPublishAction = new PublishActionListenerAdapter(reqId,msg, iResCallback);
+                PublishActionListenerAdapter myPublishAction = new PublishActionListenerAdapter(reqId,topic,msg, iResCallback);
                 client.publish(topic, compress, qos, retained, ContextHolder.getInstance().getContext(),myPublishAction);
             }
             else{
                 client.publish(topic, compress, qos, retained);
+                NeuLogUtils.iTag(TAG,String.format("after publish topic=%s,payload=%s",topic,msg));
             }
 
         } catch (Exception e) {
-            NeuLogUtils.eTag(TAG, "publish: "+e.toString(),e);
+            NeuLogUtils.eTag(TAG, String.format("publish: %s",e.getMessage()),e);
         }
     }
 

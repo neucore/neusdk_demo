@@ -746,31 +746,17 @@ public class NeulinkService implements NeulinkConst{
             this.payload = payload;
             String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
-                String topStrTemp = topStr;
                 JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
                 /**
                  * 绑定Head
                  */
                 HeadersUtil.registBinding(jsonObject,reqId,topStr,qos);
                 this.payload = jsonObject.toString();
-                String[] temps = topStrTemp.split("/");
-                int len = temps.length;
-                String group = null;
-                String req$res = null;
-                String biz = null;
-                String version = null;
-                if(len>0){
-                    group = temps[0];
-                }
-                if(len>1){
-                    req$res = temps[1];
-                }
-                if(len>2){
-                    biz = temps[2];
-                }
-                if(len>3){
-                    version = temps[3];
-                }
+                NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topStr);
+                String group = topic.getGroup();
+                String req$res = topic.getReq$res();
+                String biz = topic.getBiz();
+                String version = topic.getVersion();
                 this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
                 String productId = deviceService.getProductKey();
                 if(ObjectUtil.isNotEmpty(productId)){
@@ -855,28 +841,28 @@ public class NeulinkService implements NeulinkConst{
             }
 
             NeuLogUtils.iTag(TAG,String.format("开始异步注册：neulinkServiceInited=%s,registed=%s",neulinkServiceInited,registed));
-
+            NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,neulinkServiceInited=%s,registed=%s",channel,topStr,neulinkServiceInited,registed));
             trys = 1;
             while (neulinkServiceInited && !registed){
                 try {
 
                     if(isMqttConnSuccessed()){
+                        NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,第%s次注册",channel,topStr,trys));
                         if(channel==0){
-                            NeuLogUtils.iTag(TAG,"第"+trys+"次MQTT通道注册");
                             myMqttService.publish(false,reqId,payload,topStr, qos, retained,registCallback);
                             registed = true;
                         }
                         else{
                             Map<String,String> headers = HttpParamWrapper.getParams();
                             String response = null;
-                            NeuLogUtils.iTag(TAG,"第"+trys+"次Http通道注册");
+                            NeuLogUtils.iTag(TAG,"开始异步注册：第"+trys+"次Http通道注册");
                             String registServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
-                            NeuLogUtils.dTag(TAG,"registServer："+registServer);
+                            NeuLogUtils.dTag(TAG,"开始异步注册：registServer："+registServer);
 
                             String topic = URLEncoder.encode(topStr,"UTF-8");
                             response = NeuHttpHelper.post(true,false,registServer+"?topic="+topic,payload,headers,10,60,1);
 
-                            NeuLogUtils.dTag(TAG,"设备注册响应："+response);
+                            NeuLogUtils.dTag(TAG,"开始异步注册：设备注册响应："+response);
                             getRegistCallback().onFinished(Result.ok());
                             registed = true;
                         }
