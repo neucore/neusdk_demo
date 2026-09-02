@@ -54,6 +54,7 @@ public class NeuLogUtils {
                 logConfigurator.setInternalDebugging(false);
 
                 logConfigurator.configure();
+                init = true;
             }
         }
         finally {

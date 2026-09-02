@@ -121,13 +121,19 @@ public class SampleConnector implements NeulinkConst{
      */
     public void start(){
 
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
-
         if(!started){
 
             new Thread("SampleConnector"){
                 @Override
                 public void run() {
+
+                    //Conscrypt加载native库涉及磁盘IO，放子线程执行以避免主线程StrictMode DiskReadViolation；
+                    //仍在service.init()建立MQTT连接之前完成注册，时序与原实现一致
+                    Security.insertProviderAt(Conscrypt.newProvider(), 1);
+
+                    //提前在子线程完成log4j首次初始化（构造文件Appender会打开FileOutputStream属磁盘IO），
+                    //避免后续主线程（如网络广播回调里的日志调用）触发DiskWriteViolation
+                    NeuLogUtils.configLog();
 
                     boolean allow = false;
                     /**

@@ -27,7 +27,12 @@ class NeuLogConfig {
     /** 这里的AppName决定log的文件位置和名称 **/
     private static final String APP_NAME = "neulink";
 
-    /** 设置log文件全路径，这里是 MyApp/Log/myapp.log **/
+    /** 设置log文件全路径
+     * SDCard 已挂载
+     * /storage/emulated/0/neucore/logs/neucore.log
+     * SDCard 未挂载
+     * /data/data/<应用包名>/cache/neucore/logs/neucore.log
+     */
     public static final String LOG_FILE_PATH = DeviceUtils.getLogPath(ContextHolder.getInstance().getContext())+ File.separator+APP_NAME+".log";
 
     /**

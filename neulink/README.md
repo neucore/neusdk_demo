@@ -847,12 +847,17 @@ public class AuthActionResultData {
 
 ## 配置文件管理
 
-SD卡启用时存储在，存储在下列文件的可以通过neulink远程管理
-
 Context.getExternalFilesDir()/
 
     + neucore/config 配置文件目录neuconfig.properties
-    
+
+SDCard启用时存储在
+
+    + /storage/emulated/0/neucore/config/neuconfig.properties
+
+SDCard没有启用时存储在
+
+    + /data/data/<应用包名>/cache/neucore/config/neuconfig.properties
 
 ## 配置文件介绍
 
@@ -881,17 +886,23 @@ Context.getExternalCacheDir()/
     + logs 运行日志目录
     + tmp 临时目录
 
-SD卡没有启用时存储在
-
 Context.getCacheDir()/
 
     + neucore/logs 系统运行日志目录
     + neucore/tmp 系统临时目录
 
-
 Context.getFilesDir()/
 
     + neucore/config 配置文件目录
+
+SDCard启用时存储在
+
+    + /storage/emulated/0/neucore/logs/neucore.log
+
+SDCard没有启用时存储在
+
+    + /data/data/<应用包名>/cache/neucore/logs/neucore.log
+
     
 ### 配置扩展机制
 ```java
