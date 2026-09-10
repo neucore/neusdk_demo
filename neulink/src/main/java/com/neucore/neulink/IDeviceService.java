@@ -1,5 +1,7 @@
 package com.neucore.neulink;
 
+import com.neucore.neulink.impl.NeulinkService;
+import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.cmd.msg.HeatbeatInfo;
 import com.neucore.neulink.impl.cmd.msg.RuntimeInfo;
@@ -172,4 +174,81 @@ public interface IDeviceService {
     LWTTopic lwtTopic();
 
     LWTPayload lwtPayload();
+
+    /**
+     * 订阅的topic
+     * @return
+     */
+    default String[] subscribeTopics(){
+        /**
+         * 单播
+         *
+         * 设备重启             rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+         * 设备休眠             rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+         * 设备唤醒             rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+         * 固件升级             rmsg/req/${dev_id}/fireware/v1.0/${req_no}[/${md5}], qos=0
+         * Debug设置          rmsg/req/${dev_id}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+         *
+         * 算法升级           rrpc/req/${dev_id}/alog/v1.0/${req_no}[/${md5}], qos=0
+         * 执行shell命令      rrpc/req/${dev_id}/shell/v1.0/${req_no}[/${md5}], qos=0
+         * 日志导出           rrpc/req/${dev_id}/rlog/v1.0/${req_no}[/${md5}],qos=0
+         * 目标库批量同步      rrpc/req/${dev_id}/blib/v1.0/${req_no}[/${md5}],qos=0
+         * 目标库单条写操作    rrpc/req/${dev_id}/lib/v1.0/${req_no}[/${md5}],qos=0
+         * 目标库批量查询操作  rrpc/req/ ${dev_id}/qlib/${req_no}[/${md5},qos=0
+         * 终端配置管理       rrpc/req/${dev_id}/cfg/v1d2/${req_no}[/${md5}],qos=0
+         * 查看终端配置       rrpc/req/${dev_id}/qcfg/v1d2/${req_no}[/${md5}],qos=0
+         * 预约信息展示       rrpc/req/${dev_id}/reserve/v1.0/${req_no}[/${md5}], qos=0
+         */
+        String rmsg_topic = "rmsg/req/" + getExtSN() + "/#";
+        String rrpc_topic = "rrpc/req/" + getExtSN() + "/#";
+        String productKey = getProductKey();
+        if(ObjectUtil.isNotEmpty(productKey)){
+            rmsg_topic = String.format("%s/%s",productKey,rmsg_topic);
+            rrpc_topic = String.format("%s/%s",productKey,rrpc_topic);
+        }
+        boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
+        if(bcstEnable){
+            /**
+             * 广播
+             *
+             * 设备重启             bcst/req/${scopeId}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+             * 设备休眠             bcst/req/${scopeId}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+             * 设备唤醒             bcst/req/${scopeId}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+             * 固件升级             bcst/req/${scopeId}/fireware/v1.0/${req_no}[/${md5}], qos=0
+             * Debug设置           bcst/req/${scopeId}/sys_ctrl/v1.0/${req_no}[/${md5}], qos=0
+             *
+             * 算法升级             bcst/req/${scopeId}/alog/v1.0/${req_no}[/${md5}], qos=0
+             * 执行shell命令        bcst/req/${scopeId}/shell/v1.0/${req_no}[/${md5}], qos=0
+             * 日志导出             bcst/req/${scopeId}/rlog/v1.0/${req_no}[/${md5}],qos=0
+             * 目标库批量同步        bcst/req/${scopeId}/blib/v1.0/${req_no}[/${md5}],qos=0
+             * 目标库单条写操作       bcst/req/${scopeId}/lib/v1.0/${req_no}[/${md5}],qos=0
+             * 目标库批量查询操作     bcst/req/ ${scopeId}/qlib/${req_no}[/${md5},qos=0
+             * 终端配置管理          bcst/req/${scopeId}/cfg/v1d2/${req_no}[/${md5}],qos=0
+             * 查看终端配置          bcst/req/${scopeId}/qcfg/v1d2/${req_no}[/${md5}],qos=0
+             * 预约信息展示          bcst/req/${scopeId}/reserve/v1.0/${req_no}[/${md5}], qos=0
+             */
+            String custId = NeulinkService.getInstance().getCustId();
+            String bcst_topic = "bcst/req/" + custId + "/#";
+            if(ObjectUtil.isNotEmpty(productKey)){
+                bcst_topic = String.format("%s/%s",productKey,bcst_topic);
+            }
+            return new String[]{rmsg_topic,rrpc_topic,bcst_topic};
+        }
+        return new String[]{rmsg_topic,rrpc_topic};
+    }
+
+    /**
+     * 订阅topic对应的qos
+     * 按照 订阅topic顺序指定，默认为0
+     * @return
+     */
+    default int[] subscribeQoss(){
+        int qos = ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0);
+        String[] topics = subscribeTopics();
+        int[] qoss = new int[topics.length];
+        for(int i=0;i<topics.length;i++){
+            qoss[i]=qos;
+        }
+        return qoss;
+    }
 }
