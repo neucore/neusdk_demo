@@ -1,5 +1,6 @@
 package com.neucore.neulink;
 
 public interface ILoginCallback {
-    String login();
+    LoginUser login();
+    LoginUser refresh(String refreshToken);
 }

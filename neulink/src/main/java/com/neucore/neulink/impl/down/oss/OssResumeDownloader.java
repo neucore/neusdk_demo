@@ -21,6 +21,7 @@ import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HttpParamWrapper;
 import com.neucore.neulink.util.NeuHttpHelper;
 import com.neucore.neulink.util.RequestContext;
 
@@ -50,21 +51,7 @@ public class OssResumeDownloader implements IDownloder, NeulinkConst {
         /**
          * 登录
          */
-        ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-        String token = loginCallback.login();
-        if(token!=null){
-            int index = token.indexOf(" ");
-            if(index!=-1){
-                token = token.substring(index+1);
-            }
-        }
-        if(ObjectUtil.isNotEmpty(token)){
-            NeulinkSecurity.getInstance().setToken(token);
-        }
-
-        HashMap<String,String> headers = new HashMap<>();
-        headers.put("Authorization","bearer "+token);
-
+        Map<String,String> headers = HttpParamWrapper.getParams();
         /**
          * 获取OSS临时授权
          */

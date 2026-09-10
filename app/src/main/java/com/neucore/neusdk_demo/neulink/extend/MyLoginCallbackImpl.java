@@ -1,6 +1,7 @@
 package com.neucore.neusdk_demo.neulink.extend;
 
 import com.neucore.neulink.ILoginCallback;
+import com.neucore.neulink.LoginUser;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.log.NeuLogUtils;
@@ -17,7 +18,7 @@ import cn.hutool.json.JSONObject;
 public class MyLoginCallbackImpl implements ILoginCallback, NeulinkConst {
     private String TAG = "MyLoginCallbackImpl";
     @Override
-    public String login() {
+    public LoginUser login() {
         /**
          * 实现登录返回token
          */
@@ -45,7 +46,43 @@ public class MyLoginCallbackImpl implements ILoginCallback, NeulinkConst {
         String response = NeuHttpHelper.post(url,params,headers,3);
 
         JSONObject jsonObject = new JSONObject(response);
-        String accessToken = ((JSONObject)jsonObject.get("data")).getStr("access_token");
-        return accessToken;
+        String code = jsonObject.getStr("code");
+        if("200".equalsIgnoreCase(code)) {
+            return new LoginUser(jsonObject);
+        }
+        else{
+            NeuLogUtils.iTag(TAG,"login 失败");
+            return new LoginUser(new JSONObject());
+        }
+    }
+
+    @Override
+    public LoginUser refresh(String refreshToken) {
+        NeuLogUtils.iTag(TAG,"refresh...");
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("accept-language","zh-Hans-CN");
+        headers.put("mate-scope","Mg");
+        headers.put("from","3");
+        headers.put("ltz", ConfigContext.getInstance().getConfig(TimeZoneId,TimeZoneId_Asia$ShangHai));
+        Map<String,String> params = new HashMap<>();
+        params.put("client_id","gemini");//client-smrtlib,gemini
+        params.put("client_secret","secret");//client-smrtlib-secret,secret
+        params.put("grant_type","refresh_token");//password
+        params.put("refresh_token",refreshToken);//15800860806,frame2
+
+        String url = "https://dev.neucore.com/api/uaa/oauth/token";
+
+        String response = NeuHttpHelper.post(url,params,headers,3);
+
+        JSONObject jsonObject = new JSONObject(response);
+        String code = jsonObject.getStr("code");
+        if("200".equalsIgnoreCase(code)) {
+            return new LoginUser(jsonObject);
+        }
+        else{
+            NeuLogUtils.iTag(TAG,"refresh 失败");
+            return new LoginUser(new JSONObject());
+        }
     }
 }

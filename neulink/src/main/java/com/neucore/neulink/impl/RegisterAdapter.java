@@ -3,6 +3,7 @@ package com.neucore.neulink.impl;
 import android.content.Context;
 
 import com.neucore.neulink.IResCallback;
+import com.neucore.neulink.LoginUser;
 import com.neucore.neulink.NeulinkException;
 import com.neucore.neulink.impl.cmd.msg.NeulinkZone;
 import com.neucore.neulink.impl.cmd.msg.ResRegist;
@@ -104,19 +105,20 @@ class RegisterAdapter implements NeulinkConst{
                     NeuLogUtils.dTag(TAG,"start "+(channel==0?"mqtt":"http")+ " register");
 
                     while (!logined && (channel==1 || remoteConfig)) {
+
                         ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
                         if(loginCallback!=null) {
-                            String token = null;
+                            LoginUser loginUser = null;
                             try {
-                                token = loginCallback.login();
-                                if(ObjectUtil.isEmpty(token)){
-                                    NeuLogUtils.iTag(TAG,"token非法。。。");
+                                loginUser = loginCallback.login();
+                                if(ObjectUtil.isEmpty(loginUser)){
+                                    NeuLogUtils.iTag(TAG,"用户名密码错误，登录失败。。。");
                                     toSleep();
                                     continue;
                                 }
                                 else{
                                     logined = true;
-                                    NeulinkSecurity.getInstance().setToken(token);
+                                    NeulinkSecurity.getInstance().setLoginUser(loginUser);
                                     NeuLogUtils.iTag(TAG,"success logined");
                                     break;
                                 }

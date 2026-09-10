@@ -1,5 +1,7 @@
 package com.neucore.neulink.impl.service;
 
+import com.neucore.neulink.LoginUser;
+
 public class NeulinkSecurity {
 
     private static NeulinkSecurity instance = new NeulinkSecurity();
@@ -7,13 +9,22 @@ public class NeulinkSecurity {
     public static NeulinkSecurity getInstance(){
         return instance;
     }
+    private LoginUser loginUser;
 
-    private String token;
-    public void setToken(String token){
-        this.token = token;
+    public LoginUser getLoginUser() {
+        return loginUser;
+    }
+
+    public void setLoginUser(LoginUser loginUser) {
+        this.loginUser = loginUser;
     }
 
     public String getToken() {
-        return token;
+        return loginUser.getAccessToken();
     }
+
+    public String getRefreshToken() {
+        return loginUser.getRefreshToken();
+    }
+
 }

@@ -3,13 +3,11 @@ package com.neucore.neulink.impl.down.http;
 import android.content.Context;
 
 import com.neucore.neulink.IDownloadProgressListener;
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
+import com.neucore.neulink.util.HttpParamWrapper;
 import com.neucore.neulink.util.SSLSocketClient;
 
 import java.io.File;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -303,20 +300,7 @@ public class HttpResumeDownloadRequest implements NeulinkConst {
         Response response = null;
         try {
 
-            ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-            String token = loginCallback.login();
-            if(token!=null){
-                int index = token.indexOf(" ");
-                if(index!=-1){
-                    token = token.substring(index+1);
-                }
-            }
-            if(ObjectUtil.isNotEmpty(token)){
-                NeulinkSecurity.getInstance().setToken(token);
-            }
-
-            HashMap<String,String> headers = new HashMap<>();
-            headers.put("Authorization","bearer "+token);
+            Map<String,String> headers = HttpParamWrapper.getParams();
 
             this.context = context;
             this.downloadUrl = url;

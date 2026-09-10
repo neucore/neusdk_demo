@@ -11,7 +11,6 @@ import com.neucore.neulink.impl.service.LWTPayload;
 import com.neucore.neulink.impl.service.LWTTopic;
 import com.neucore.neulink.log.NeuLogUtils;
 import com.neucore.neulink.IDeviceService;
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.IMqttCallBack;
 import com.neucore.neulink.IProcessor;
 import com.neucore.neulink.IResCallback;
@@ -21,7 +20,6 @@ import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
 import com.neucore.neulink.impl.cmd.msg.DeviceInfo;
 import com.neucore.neulink.impl.registry.ServiceRegistry;
 import com.neucore.neulink.impl.service.MyMqttService;
-import com.neucore.neulink.impl.service.NeulinkSecurity;
 import com.neucore.neulink.impl.service.broadcast.UdpReceiveAndtcpSend;
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DatesUtil;
@@ -1011,30 +1009,6 @@ public class NeulinkService implements NeulinkConst{
                             result.setCode(e.getCode());
                             result.setMsg("token过期");
                             callback.onFinished(result);
-
-                            ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-                            if(ObjectUtil.isNotEmpty(loginCallback)){
-                                String token = loginCallback.login();
-                                if(ObjectUtil.isNotEmpty(token)){
-                                    NeuLogUtils.iTag(TAG,"token过期，重新登录成功");
-                                    NeulinkSecurity.getInstance().setToken(token);
-                                }
-                                else{
-                                    result = Result.fail(e.getCode(),e.getMessage());
-                                    result.setReqId(reqId);
-                                    result.setCode(e.getCode());
-                                    result.setMsg("token过期，重新登录失败");
-                                    callback.onFinished(result);
-                                }
-                            }
-                            else{
-                                NeuLogUtils.eTag(TAG,"没有实现ILoginCallback");
-                                result = Result.fail(e.getCode(),e.getMessage());
-                                result.setReqId(reqId);
-                                result.setCode(e.getCode());
-                                result.setMsg("没有实现ILoginCallback");
-                                callback.onFinished(result);
-                            }
                             count++;
                         }
                         else {
@@ -1177,30 +1151,6 @@ public class NeulinkService implements NeulinkConst{
                             result.setCode(e.getCode());
                             result.setMsg("token过期");
                             callback.onFinished(result);
-
-                            ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-                            if(ObjectUtil.isNotEmpty(loginCallback)){
-                                String token = loginCallback.login();
-                                if(ObjectUtil.isNotEmpty(token)){
-                                    NeuLogUtils.iTag(TAG,"token过期，重新登录成功");
-                                    NeulinkSecurity.getInstance().setToken(token);
-                                }
-                                else{
-                                    result = Result.fail(e.getCode(),e.getMessage());
-                                    result.setReqId(reqId);
-                                    result.setCode(e.getCode());
-                                    result.setMsg("token过期，重新登录失败");
-                                    callback.onFinished(result);
-                                }
-                            }
-                            else{
-                                NeuLogUtils.eTag(TAG,"没有实现ILoginCallback");
-                                result = Result.fail(e.getCode(),e.getMessage());
-                                result.setReqId(reqId);
-                                result.setCode(e.getCode());
-                                result.setMsg("没有实现ILoginCallback");
-                                callback.onFinished(result);
-                            }
                             count++;
                         }
                         else {

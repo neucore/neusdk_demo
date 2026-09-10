@@ -1,15 +1,11 @@
 package com.neucore.neulink.util;
 
-import com.neucore.neulink.ILoginCallback;
 import com.neucore.neulink.NeulinkConst;
 import com.neucore.neulink.impl.cmd.cfg.ConfigContext;
-import com.neucore.neulink.impl.registry.ServiceRegistry;
-import com.neucore.neulink.impl.service.NeulinkSecurity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 
 public class OssUtil {
@@ -17,24 +13,8 @@ public class OssUtil {
     private static String TAG = NeulinkConst.TAG_PREFIX+"OssUtil";
 
     public static JSONObject getOssConfig(){
-        /**
-         * 登录
-         */
-        ILoginCallback loginCallback = ServiceRegistry.getInstance().getLoginCallback();
-        String token = loginCallback.login();
-        if(token!=null){
-            int index = token.indexOf(" ");
-            if(index!=-1){
-                token = token.substring(index+1);
-            }
-        }
-        if(ObjectUtil.isNotEmpty(token)){
-            NeulinkSecurity.getInstance().setToken(token);
-        }
 
-        HashMap<String,String> headers = new HashMap<>();
-        headers.put("Authorization","bearer "+token);
-
+        Map<String,String> headers = HttpParamWrapper.getParams();
         /**
          * 获取OSS临时授权
          */
