@@ -119,14 +119,23 @@ public interface IDeviceService {
     default boolean newVersion(){
         return ObjectUtil.isNotEmpty(getProductKey()) &&ObjectUtil.isNotEmpty(getDeviceName()) && ObjectUtil.isNotEmpty(getDeviceSecret());
     }
+    default String getSecuremode(){
+        return "2";
+    }
 
+    default String getSignmethod(){
+        return "hmacsha256";
+    }
+    default String getVersion(){
+        return "paho-1.0.0";
+    }
     /**
      * 获取签名
      * @return
      */
     default SecuretSign sign(){
         String timestamp = String.valueOf(System.currentTimeMillis());
-        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), DeviceUtils.getMacAddress(),"salt",timestamp,"device");
+        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), DeviceUtils.getMacAddress(),"salt",timestamp,"device",getSecuremode(),getSignmethod(),getVersion());
         return securetSign;
     }
     /**

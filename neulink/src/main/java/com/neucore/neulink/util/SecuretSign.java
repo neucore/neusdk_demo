@@ -17,11 +17,11 @@ public class SecuretSign {
         return plainTxt;
     }
 
-    public SecuretSign(String productKey, String deviceName, String deviceSecret, String macAddress, String saltKey,String saltValue,String end){
-        calculate(productKey,deviceName,deviceSecret,macAddress,saltKey,saltValue,end);
+    public SecuretSign(String productKey, String deviceName, String deviceSecret, String macAddress, String saltKey,String saltValue,String end,String securemode,String signmethod,String version){
+        calculate(productKey,deviceName,deviceSecret,macAddress,saltKey,saltValue,end,securemode,signmethod,version);
     }
 
-    private void calculate(String productKey, String deviceName, String deviceSecret, String macAddress,String saltKey, String saltValue, String end) {
+    private void calculate(String productKey, String deviceName, String deviceSecret, String macAddress,String saltKey, String saltValue, String end,String securemode,String signmethod,String version) {
 
         if (productKey == null||productKey.trim().length() == 0) {
             throw new IllegalArgumentException("productKey can not be null");
@@ -38,12 +38,14 @@ public class SecuretSign {
         macAddress = macAddress.replace(":","").toUpperCase();
         try {
             //MQTT ClientId
-            this.clientid = String.format("%s.%s@%s|%s=%s,end=%s,securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|",productKey,deviceName, macAddress,saltKey,saltValue,end);
-//            this.clientid = productKey + "." + deviceName + "@" + macAddress + "|" + "timestamp=" + timestamp +
-//                    ",securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|";
+            this.clientid = String.format("%s.%s@%s|%s=%s,end=%s,securemode=%s,signmethod=%s,_v=%s|",productKey,deviceName, macAddress,saltKey,saltValue,end,securemode,signmethod,version);
             //MQTT UserName
             this.username = deviceName + "|" + productKey;
+            //MQTT PlainTxt: paho-1.0.0不含securemode/signmethod/_v，其他版本追加
             this.plainTxt = String.format("clientId:%s.%s,deviceName:%s,productKey:%s,macAddress:%s,%s:%s,end:%s",productKey,deviceName,deviceName,productKey,macAddress,saltKey,saltValue,end);
+            if (!"paho-1.0.0".equals(version)) {
+                this.plainTxt = this.plainTxt + String.format(",securemode:%s,signmethod:%s,_v:%s", securemode, signmethod, version);
+            }
             //MQTT Password
             this.password = CryptoUtil.hmacSha256(plainTxt, deviceSecret);
 

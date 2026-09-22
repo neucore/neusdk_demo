@@ -252,7 +252,7 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishRequestMessage("msg/req/connect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishRequestMessage("msg/req/status/connect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
@@ -261,14 +261,19 @@ public class NeulinkService implements NeulinkConst{
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
             String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishRequestMessage("msg/req/disconnect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            publishRequestMessage("msg/req/status/disconnect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
         }
     }
 
     public LWTTopic lwtTopic(){
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
+        String version = deviceService.getVersion();
         LWTTopic info = new LWTTopic();
         String topic = String.format("msg/req/lwt/v1d2/%s",deviceService.getExtSN());
+        if(!"paho-1.0.0".equalsIgnoreCase(version)){
+            topic = String.format("msg/req/status/lwt/v1d2/%s",deviceService.getExtSN());
+        }
+
         String productId = deviceService.getProductKey();
         if(ObjectUtil.isNotEmpty(productId)){
             topic = productId+"/"+topic;
@@ -288,7 +293,7 @@ public class NeulinkService implements NeulinkConst{
         info.setHeader("custid", NeulinkService.getInstance().getCustId());
         info.setHeader("storeid",NeulinkService.getInstance().getStoreId());
         info.setHeader("zoneid",NeulinkService.getInstance().getZoneId());
-        info.setHeader("time",String.valueOf(resTime));
+        info.setHeader("xtime",String.valueOf(resTime));
         info.setStatus(-1);
         return info;
     }
