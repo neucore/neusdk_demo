@@ -18,6 +18,32 @@ public class NeulinkTopicParser {
         String[] paths = topStr.split("/");
         boolean hasProduct = hasProduct(paths);
         int len = paths.length;
+
+        // ===== 新版topic格式检测（paho-2.0.0+） =====
+        // req: {productId}/req/{biz}/{devId}/{requesterClientId}
+        // bcst: {productId}/bcst/{biz}
+        if(hasProduct && len > 2){
+            String group = paths[1];
+            topic.setProduct(paths[0]);
+            topic.setGroup(group);
+            if("req".equalsIgnoreCase(group)){
+                // {productId}/req/{biz}/{devId}/{requesterClientId}
+                topic.setReq$res("req");
+                if(len>2) topic.biz = paths[2];
+                if(len>3) topic.reqId = paths[3];
+                if(len>4) topic.md5 = paths[4];
+                return topic;
+            }
+            if("bcst".equalsIgnoreCase(group) && len>2
+                    && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
+                // {productId}/bcst/{biz}
+                topic.setReq$res("req");
+                if(len>2) topic.biz = paths[2];
+                return topic;
+            }
+        }
+        // ===== 新版topic格式检测结束 =====
+
         if(hasProduct){
             topic.setProduct(paths[0]);
             String group = paths[1];
@@ -139,6 +165,50 @@ public class NeulinkTopicParser {
         String[] paths = topStr.split("/");
         boolean hasProduct = hasProduct(paths);
         int len = paths.length;
+
+        // ===== 新版topic格式检测（paho-2.0.0+） =====
+        // evt: {productId}/evt/{devId}/connect|disconnect|lwt
+        // msg: {productId}/msg/{devId}/{biz}
+        // res: {productId}/res/{biz}/{devId}/{requesterClientId}
+        // upld: {productId}/upld/{devId}/{fileId}
+        // bcst: {productId}/bcst/{biz}
+        if(hasProduct && len > 2){
+            String group = paths[1];
+            topic.setProduct(paths[0]);
+            topic.setGroup(group);
+            if("evt".equalsIgnoreCase(group)){
+                // {productId}/evt/{devId}/{status}
+                topic.setReq$res("req");
+                if(len>2) topic.reqId = paths[2];
+                if(len>3) topic.biz = paths[3];
+                return topic;
+            }
+            if("res".equalsIgnoreCase(group)){
+                // {productId}/res/{biz}/{devId}/{requesterClientId}
+                topic.setReq$res("res");
+                if(len>2) topic.biz = paths[2];
+                if(len>3) topic.reqId = paths[3];
+                if(len>4) topic.md5 = paths[4];
+                return topic;
+            }
+            if(("msg".equalsIgnoreCase(group) || "upld".equalsIgnoreCase(group))
+                    && len>2 && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
+                // {productId}/msg/{devId}/{biz}  |  {productId}/upld/{devId}/{fileId}
+                topic.setReq$res("req");
+                if(len>2) topic.reqId = paths[2];
+                if(len>3) topic.biz = paths[3];
+                return topic;
+            }
+            if("bcst".equalsIgnoreCase(group) && len>2
+                    && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
+                // {productId}/bcst/{biz}
+                topic.setReq$res("req");
+                if(len>2) topic.biz = paths[2];
+                return topic;
+            }
+        }
+        // ===== 新版topic格式检测结束 =====
+
         if(hasProduct){
             topic.setProduct(paths[0]);
             String group = paths[1];
@@ -265,6 +335,9 @@ public class NeulinkTopicParser {
                 || "upld".equalsIgnoreCase(topicA[0])
                 || "bcst".equalsIgnoreCase(topicA[0])
                 || "svc".equalsIgnoreCase(topicA[0])
+                || "evt".equalsIgnoreCase(topicA[0])
+                || "req".equalsIgnoreCase(topicA[0])
+                || "res".equalsIgnoreCase(topicA[0])
         ){
             return false;
         }
@@ -273,7 +346,10 @@ public class NeulinkTopicParser {
                 || "msg".equalsIgnoreCase(topicA[1])
                 || "upld".equalsIgnoreCase(topicA[1])
                 || "bcst".equalsIgnoreCase(topicA[1])
-                || "svc".equalsIgnoreCase(topicA[1])){
+                || "svc".equalsIgnoreCase(topicA[1])
+                || "evt".equalsIgnoreCase(topicA[1])
+                || "req".equalsIgnoreCase(topicA[1])
+                || "res".equalsIgnoreCase(topicA[1])){
             return true;
         }
         return false;

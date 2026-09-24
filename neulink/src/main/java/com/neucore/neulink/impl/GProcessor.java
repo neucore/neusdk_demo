@@ -65,9 +65,21 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
          * 发送响应消息给到服务端
          * 支持一机一秘
          */
-        String resTopic = String.format("%s/%s/%s",group,"res",biz);
-        if(ObjectUtil.isNotEmpty(topic.getProduct())){
-            resTopic = String.format("/%s%s/%s/%s",topic.getProduct(),group,"res",biz);
+        String resTopic;
+        boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        if(isNew){
+            // 新版: res/{biz}/{devId}，buildResTopic会拼接requestorClientId
+            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            resTopic = String.format("res/%s/%s", biz, devId);
+            if(ObjectUtil.isNotEmpty(topic.getProduct())){
+                resTopic = String.format("%s/%s", topic.getProduct(), resTopic);
+            }
+        }
+        else{
+            resTopic = String.format("%s/%s/%s",group,"res",biz);
+            if(ObjectUtil.isNotEmpty(topic.getProduct())){
+                resTopic = String.format("/%s%s/%s/%s",topic.getProduct(),group,"res",biz);
+            }
         }
 
         //检查当前请求是否已经已经到达过

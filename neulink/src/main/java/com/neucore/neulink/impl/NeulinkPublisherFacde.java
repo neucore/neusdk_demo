@@ -96,7 +96,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
 
         String payload = JSonUtils.toString(req);
-        String topic = "upld/req/carplateinfo";
+        boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String topic;
+        if(isNew){
+            topic = String.format("upld/%s/carplateinfo", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        }
+        else{
+            topic = "upld/req/carplateinfo";
+        }
         service.publishRequestMessage(topic, IProcessor.V1$0, payload, qos,retained,callback);
     }
     /**
@@ -158,7 +165,15 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
         req.setData(data);
         String payload = JSonUtils.toString(req);
-        String topic = "upld/req/facetemprature";
+        boolean isNewFaceTmp = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String topic;
+        if(isNewFaceTmp){
+            // 新版: upld/{devId}/facetemprature
+            topic = String.format("upld/%s/facetemprature", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+        }
+        else{
+            topic = "upld/req/facetemprature";
+        }
         service.publishRequestMessage(topic, IProcessor.V1$0,UUID.fastUUID().toString(), payload, qos,retained,callback);
     }
     /**
@@ -212,7 +227,14 @@ public class NeulinkPublisherFacde implements NeulinkConst{
                         info.getAiData().setDir(dir);
                     }
                     String payload = JSonUtils.toString(info);
-                    String topic = "upld/req/faceinfo";
+                    boolean isNewFace = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+                    String topic;
+                    if(isNewFace){
+                        topic = String.format("upld/%s/faceinfo", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                    }
+                    else{
+                        topic = "upld/req/faceinfo";
+                    }
                     service.publishRequestMessage(topic, IProcessor.V1$2, UUID.fastUUID().toString(), payload, qos,retained,callback);
                 }
                 else{
@@ -340,7 +362,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         res.setMsg(message);
         res.setCmdStr(mode);
         res.setData(payload);
-        String topicPrefix = String.format("rmsg/res/%s",biz);
+        boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String topicPrefix;
+        if(isNew){
+            // 新版: res/{biz}/{devId}
+            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            topicPrefix = String.format("res/%s/%s", biz, devId);
+        }
+        else{
+            topicPrefix = String.format("rmsg/res/%s",biz);
+        }
         response(topicPrefix,version,reqId,res,qos,retained,callback);
     }
 
@@ -392,7 +423,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void upldRequest(String biz, String version, String reqId,NewCmd cmd,int qos,boolean retained,IResCallback callback){
-        String topicPrefix = String.format("upld/req/%s",biz);
+        boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String topicPrefix;
+        if(isNew){
+            // 新版: upld/{devId}/{biz}
+            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            topicPrefix = String.format("upld/%s/%s", devId, biz);
+        }
+        else{
+            topicPrefix = String.format("upld/req/%s",biz);
+        }
         request(topicPrefix,version,reqId,cmd,qos,retained,callback);
     }
     /**
@@ -478,7 +518,16 @@ public class NeulinkPublisherFacde implements NeulinkConst{
      * @param callback
      */
     public void rrpcResponse(String biz, String version, String reqId, String mode, Integer code, String message, String payload,int qos,boolean retained, IResCallback callback){
-        String topicPrefix = String.format("rrpc/res/%s",biz);
+        boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String topicPrefix;
+        if(isNew){
+            // 新版: res/{biz}/{devId}（统一用res组，服务端自动回退rrpc处理器）
+            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            topicPrefix = String.format("res/%s/%s", biz, devId);
+        }
+        else{
+            topicPrefix = String.format("rrpc/res/%s",biz);
+        }
         CmdRes res = new CmdRes();
         res.setCode(code);
         res.setMsg(message);

@@ -188,7 +188,41 @@ public interface IDeviceService {
      * 订阅的topic
      * @return
      */
+    /**
+     * 判断是否为新版topic协议（paho-2.0.0及以上）
+     */
+    default boolean isNewTopicVersion(){
+        String version = getVersion();
+        return version != null && !version.isEmpty()
+                && !"paho-1.0.0".equals(version)
+                && !"unknown".equals(version);
+    }
+
     default String[] subscribeTopics(){
+        String productKey = getProductKey();
+        boolean isNew = isNewTopicVersion();
+
+        if(isNew){
+            /**
+             * 新版topic（paho-2.0.0+）
+             * 请求: {productId}/req/{biz}/{devId}/{requesterClientId}
+             * 广播: {productId}/bcst/{biz}
+             */
+            String req_topic = "req/+/" + getExtSN() + "/+";
+            if(ObjectUtil.isNotEmpty(productKey)){
+                req_topic = String.format("%s/%s", productKey, req_topic);
+            }
+            boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
+            if(bcstEnable){
+                String bcst_topic = "bcst/+";
+                if(ObjectUtil.isNotEmpty(productKey)){
+                    bcst_topic = String.format("%s/%s", productKey, bcst_topic);
+                }
+                return new String[]{req_topic, bcst_topic};
+            }
+            return new String[]{req_topic};
+        }
+
         /**
          * 单播
          *
@@ -210,7 +244,6 @@ public interface IDeviceService {
          */
         String rmsg_topic = "rmsg/req/" + getExtSN() + "/#";
         String rrpc_topic = "rrpc/req/" + getExtSN() + "/#";
-        String productKey = getProductKey();
         if(ObjectUtil.isNotEmpty(productKey)){
             rmsg_topic = String.format("%s/%s",productKey,rmsg_topic);
             rrpc_topic = String.format("%s/%s",productKey,rrpc_topic);

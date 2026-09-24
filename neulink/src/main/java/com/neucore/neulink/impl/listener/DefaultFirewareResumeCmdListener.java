@@ -32,7 +32,14 @@ public class DefaultFirewareResumeCmdListener implements ICmdListener<ActionResu
             final UgrdeCmd cmd = event.getSource();
             final String upgrade_url = cmd.getUrl();
             NeuLogUtils.iTag(TAG,"开始下载："+upgrade_url);
-            final String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
+            boolean isNewFwr = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+            final String resTopic;
+            if(isNewFwr){
+                resTopic = String.format("res/%s/%s", cmd.getBiz(), ServiceRegistry.getInstance().getDeviceService().getExtSN());
+            }
+            else{
+                resTopic = String.format("rrpc/res/%s",cmd.getBiz());
+            }
             String md5 = cmd.getMd5();
 
             IDownloder downloader = ServiceRegistry.getInstance().getDownloder();;

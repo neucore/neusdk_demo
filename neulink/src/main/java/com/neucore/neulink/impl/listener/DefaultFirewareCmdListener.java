@@ -36,7 +36,14 @@ public class DefaultFirewareCmdListener implements ICmdListener<ActionResult, Ug
             /**
              * 新增上报下载进度
              */
-            String resTopic = String.format("rrpc/res/%s",cmd.getBiz());
+            boolean isNewFw = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+            String resTopic;
+            if(isNewFw){
+                resTopic = String.format("res/%s/%s", cmd.getBiz(), ServiceRegistry.getInstance().getDeviceService().getExtSN());
+            }
+            else{
+                resTopic = String.format("rrpc/res/%s",cmd.getBiz());
+            }
 
             IDownloder downloader = ServiceRegistry.getInstance().getDownloder();;
             File saveFile = downloader.start(ContextHolder.getInstance().getContext(),cmd.getReqNo(),cmd.getUrl(),new IDownloadProgressListener() {

@@ -68,7 +68,14 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             if(ObjectUtil.isNotEmpty(heatbeatInfo)){
                                 heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
                                 String payload = JSonUtils.toString(heatbeatInfo);
-                                String topic = "msg/req/status";
+                                boolean isNew = service.getDeviceService().isNewTopicVersion();
+                                String topic;
+                                if(isNew){
+                                    topic = String.format("msg/%s/status", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                }
+                                else{
+                                    topic = "msg/req/status";
+                                }
                                 service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
@@ -104,8 +111,15 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             if(ObjectUtil.isNotEmpty(runtimeInfo)){
                                 runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
                                 String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
-                                String topic = "msg/req/stat";
-                                service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
+                                boolean isNewStat = service.getDeviceService().isNewTopicVersion();
+                                String topicStat;
+                                if(isNewStat){
+                                    topicStat = String.format("msg/%s/stat", service.getDeviceService().getExtSN());
+                                }
+                                else{
+                                    topicStat = "msg/req/stat";
+                                }
+                                service.publishRequestMessage(topicStat, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
                             else{
                                 NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
@@ -168,7 +182,15 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             int index = name.lastIndexOf(".");
                             req.setTime(name.substring(0, index));
                             String payload = JSonUtils.toString(req);
-                            String topic = "upld/req/rlog";
+                            boolean isNewRlog = service.getDeviceService().isNewTopicVersion();
+                            String topic;
+                            if(isNewRlog){
+                                // 新版: upld/{devId}/rlog
+                                topic = String.format("upld/%s/rlog", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                            }
+                            else{
+                                topic = "upld/req/rlog";
+                            }
                             service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                         }
                     }

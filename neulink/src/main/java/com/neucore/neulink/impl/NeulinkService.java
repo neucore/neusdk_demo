@@ -242,7 +242,15 @@ public class NeulinkService implements NeulinkConst{
 
     public boolean regist(DeviceInfo deviceInfo){
         String payload = JSonUtils.toString(deviceInfo);
-        String devinfo_topic = "msg/req/devinfo";
+        String devinfo_topic;
+        boolean isNew = deviceService.isNewTopicVersion();
+        if(isNew){
+            // 新版: msg/{devId}/devinfo
+            devinfo_topic = String.format("msg/%s/devinfo", deviceService.getExtSN());
+        }
+        else{
+            devinfo_topic = "msg/req/devinfo";
+        }
         NeuLogUtils.iTag(TAG,"regist");
         publishRequestMessage(devinfo_topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1));
         return true;
@@ -251,8 +259,21 @@ public class NeulinkService implements NeulinkConst{
     public void connect(Integer flg){
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":1}";
-            publishRequestMessage("msg/req/status/connect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            String extSN = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            String payload = "{\"dev_id\":\""+ extSN +"\",\"status\":1}";
+            boolean isNew = deviceService.isNewTopicVersion();
+            if(isNew){
+                // 新版: evt/{devId}/connect
+                String topic = "evt/" + extSN + "/connect";
+                String productId = deviceService.getProductKey();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    topic = productId + "/" + topic;
+                }
+                publishRaw(topic, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1), false);
+            }
+            else{
+                publishRequestMessage("msg/req/status/connect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            }
         }
     }
 
@@ -260,8 +281,21 @@ public class NeulinkService implements NeulinkConst{
 
         String manualReport = ConfigContext.getInstance().getConfig(ConfigContext.STATUS_MANUAL_REPORT,"true");
         if("true".equalsIgnoreCase(manualReport)){
-            String payload = "{\"dev_id\":\""+ ServiceRegistry.getInstance().getDeviceService().getExtSN()+"\",\"status\":0}";
-            publishRequestMessage("msg/req/status/disconnect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            String extSN = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+            String payload = "{\"dev_id\":\""+ extSN +"\",\"status\":0}";
+            boolean isNew = deviceService.isNewTopicVersion();
+            if(isNew){
+                // 新版: evt/{devId}/disconnect
+                String topic = "evt/" + extSN + "/disconnect";
+                String productId = deviceService.getProductKey();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    topic = productId + "/" + topic;
+                }
+                publishRaw(topic, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1), false);
+            }
+            else{
+                publishRequestMessage("msg/req/status/disconnect","v1d2",UUID.fastUUID().toString(),payload,ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,1),ConfigContext.getInstance().getConfig(ConfigContext.MQTT_RETAINED,false));
+            }
         }
     }
 
@@ -269,9 +303,17 @@ public class NeulinkService implements NeulinkConst{
         long resTime = DatesUtil.getNowTimeStamp();//msg.getReqtime();
         String version = deviceService.getVersion();
         LWTTopic info = new LWTTopic();
-        String topic = String.format("msg/req/lwt/v1d2/%s",deviceService.getExtSN());
-        if(!"paho-1.0.0".equalsIgnoreCase(version)){
-            topic = String.format("msg/req/status/lwt/v1d2/%s",deviceService.getExtSN());
+        boolean isNew = deviceService.isNewTopicVersion();
+        String topic;
+        if(isNew){
+            // 新版: evt/{devId}/lwt，retain=false
+            topic = String.format("evt/%s/lwt", deviceService.getExtSN());
+        }
+        else{
+            topic = String.format("msg/req/lwt/v1d2/%s",deviceService.getExtSN());
+            if(ObjectUtil.isNotEmpty(version)){
+                topic = String.format("msg/req/status/v1d2/%s",deviceService.getExtSN());
+            }
         }
 
         String productId = deviceService.getProductKey();
@@ -279,7 +321,7 @@ public class NeulinkService implements NeulinkConst{
             topic = productId+"/"+topic;
         }
         info.setTopic(topic);
-        info.setRetained(true);
+        info.setRetained(!isNew); // 新版retain=false
         info.setQos(1);
         return info;
     }
@@ -528,12 +570,21 @@ public class NeulinkService implements NeulinkConst{
      * @param retained
      * @param callback
      */
+    /**
+     * 直接发布消息到指定topic（不经过topic构建逻辑）
+     * 用于新版evt等固定格式topic
+     */
+    protected void publishRaw(String topic, String payload, int qos, boolean retained){
+        publishRequestMessage(false, UUID.fastUUID().toString(), payload, topic, qos, retained, null);
+    }
+
     protected void publishRequestMessage(boolean debug, final String topicPrefix, String version, final String reqId, final String payload, final int qos, final boolean retained, final IResCallback callback){
 
         String md5 = MD5Utils.getInstance().getMD5String(payload);
 
         final String topic = buildReqTopic(topicPrefix,version);
-        if(topic.toLowerCase().indexOf("msg/req/devinfo")!=-1){
+        if(topic.toLowerCase().indexOf("msg/req/devinfo")!=-1
+                || (deviceService.isNewTopicVersion() && topic.matches(".*/msg/[^/]+/devinfo"))){
             regist(reqId,topic,payload,qos,retained);
         }
         else{
@@ -549,10 +600,18 @@ public class NeulinkService implements NeulinkConst{
      * @return [rmsg|rrpc|upld]/[res|req]/biz/version/reqId
      */
     private String buildResTopic(String topicPrefix, String version, String reqId){
-
-        StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId);
-
-        String topic = stringBuffer.toString();
+        boolean isNew = deviceService.isNewTopicVersion();
+        String topic;
+        if(isNew){
+            // 新版: topicPrefix=res/{biz}/{devId}，拼接requestorClientId
+            // 最终: res/{biz}/{devId}/{requesterClientId}
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(reqId);
+            topic = stringBuffer.toString();
+        }
+        else{
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId);
+            topic = stringBuffer.toString();
+        }
         return topic;
     }
 
@@ -563,9 +622,16 @@ public class NeulinkService implements NeulinkConst{
      * @return
      */
     private String buildReqTopic(String topicPrefix, String version){
-
-        StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version);
-        String topicStr = stringBuffer.toString();
+        boolean isNew = deviceService.isNewTopicVersion();
+        String topicStr;
+        if(isNew){
+            // 新版: 不拼接version，topicPrefix已含完整结构（如 msg/{devId}/{biz}）
+            topicStr = topicPrefix;
+        }
+        else{
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version);
+            topicStr = stringBuffer.toString();
+        }
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr);
         if(ObjectUtil.isEmpty(topic.getProduct())){
             topicStr = String.format("%s/%s",deviceService.getProductKey(),topicStr);
