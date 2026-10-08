@@ -103,6 +103,14 @@ public class HeadersUtil implements NeulinkConst {
         if(ObjectUtil.isEmpty(version)){
             version = "v1d2";
         }
+        /**
+         * 新版topic格式：req topic 的 requesterClientId 存储在 topic.md5 字段中
+         * 当 headers 中未显式指定 clientId 时，使用 md5 作为 requesterClientId
+         * 老格式 md5 是真正的 md5 值，此时 clientId 保持 null（老格式响应无需 requesterClientId）
+         */
+        if(ObjectUtil.isEmpty(clientId) && ObjectUtil.isNotEmpty(md5)){
+            clientId = md5;
+        }
         req.setGroup(group);
         req.setCmdType(req$res);
         req.setBiz(biz);

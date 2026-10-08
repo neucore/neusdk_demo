@@ -472,10 +472,14 @@ public class NeulinkService implements NeulinkConst{
      * @param message
      */
     public void publishResponseMessage(boolean debug, int qos, boolean retained, String topicPrefix, String version, String reqId, String requestorClientId, IMessage message){
-        /**
-         * @TODO
-         */
-        throw new RuntimeException("待实现。。。");
+        String payload = message.getResult();
+        if(ObjectUtil.isEmpty(payload)){
+            payload = message.getPayload();
+        }
+        if(ObjectUtil.isEmpty(payload)){
+            payload = "{}";
+        }
+        publishResponseMessage(debug,qos,retained,topicPrefix,version,reqId,requestorClientId,payload,(IResCallback)null);
     }
 
     /**

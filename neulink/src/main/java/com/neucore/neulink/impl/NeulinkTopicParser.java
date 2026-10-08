@@ -30,8 +30,7 @@ public class NeulinkTopicParser {
                 // {productId}/req/{biz}/{devId}/{requesterClientId}
                 topic.setReq$res("req");
                 if(len>2) topic.biz = paths[2];
-                if(len>3) topic.reqId = paths[3];
-                if(len>4) topic.md5 = paths[4];
+                if(len>4) topic.requestorClientId = paths[4];
                 return topic;
             }
             if("bcst".equalsIgnoreCase(group) && len>2
@@ -167,11 +166,12 @@ public class NeulinkTopicParser {
         int len = paths.length;
 
         // ===== 新版topic格式检测（paho-2.0.0+） =====
+        // 本方法仅解析 设备→云端(End2Cloud) 方向的 topic：
         // evt: {productId}/evt/{devId}/connect|disconnect|lwt
         // msg: {productId}/msg/{devId}/{biz}
         // res: {productId}/res/{biz}/{devId}/{requesterClientId}
         // upld: {productId}/upld/{devId}/{fileId}
-        // bcst: {productId}/bcst/{biz}
+        // 注意：req/bcst 是 云端→设备(Cloud2End) 方向，由 cloud2EndParser 解析
         if(hasProduct && len > 2){
             String group = paths[1];
             topic.setProduct(paths[0]);
@@ -179,7 +179,6 @@ public class NeulinkTopicParser {
             if("evt".equalsIgnoreCase(group)){
                 // {productId}/evt/{devId}/{status}
                 topic.setReq$res("req");
-                if(len>2) topic.reqId = paths[2];
                 if(len>3) topic.biz = paths[3];
                 return topic;
             }
@@ -187,23 +186,14 @@ public class NeulinkTopicParser {
                 // {productId}/res/{biz}/{devId}/{requesterClientId}
                 topic.setReq$res("res");
                 if(len>2) topic.biz = paths[2];
-                if(len>3) topic.reqId = paths[3];
-                if(len>4) topic.md5 = paths[4];
+                if(len>4) topic.requestorClientId = paths[4];
                 return topic;
             }
             if(("msg".equalsIgnoreCase(group) || "upld".equalsIgnoreCase(group))
                     && len>2 && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
                 // {productId}/msg/{devId}/{biz}  |  {productId}/upld/{devId}/{fileId}
                 topic.setReq$res("req");
-                if(len>2) topic.reqId = paths[2];
                 if(len>3) topic.biz = paths[3];
-                return topic;
-            }
-            if("bcst".equalsIgnoreCase(group) && len>2
-                    && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
-                // {productId}/bcst/{biz}
-                topic.setReq$res("req");
-                if(len>2) topic.biz = paths[2];
                 return topic;
             }
         }
@@ -254,7 +244,14 @@ public class NeulinkTopicParser {
         private String product;
         private String group;
         private String req$res;
+        /**
+         * 请求Id
+         */
         private String reqId;
+        /**
+         * 请求者id
+         */
+        private String requestorClientId;
         private String md5;
         private String biz;
         private String version;
@@ -293,6 +290,14 @@ public class NeulinkTopicParser {
 
         public void setReqId(String reqId) {
             this.reqId = reqId;
+        }
+
+        public String getRequestorClientId() {
+            return requestorClientId;
+        }
+
+        public void setRequestorClientId(String requestorClientId) {
+            this.requestorClientId = requestorClientId;
         }
 
         public String getMd5() {

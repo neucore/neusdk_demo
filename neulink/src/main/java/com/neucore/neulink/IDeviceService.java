@@ -41,7 +41,27 @@ public interface IDeviceService {
         return DeviceUtils.getMacAddress().replace(":","").toUpperCase();
     }
 
+    /**
+     * 本地配置
+     * @return
+     */
     String getMqttServer();
+
+    /**
+     * 本地配置
+     * @return
+     */
+    default String getMqttUserName(){
+        return "";
+    }
+
+    /**
+     * 本地配置
+     * @return
+     */
+    default String getMqttPassword(){
+        return "";
+    }
     /**
      * 获取授权设备所属产品Id
      * @return
