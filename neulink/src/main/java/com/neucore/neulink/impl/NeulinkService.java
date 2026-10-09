@@ -672,7 +672,7 @@ public class NeulinkService implements NeulinkConst{
         }
     }
 
-    private void publishResponseMessage(boolean debug, String reqId, String payload, String topStr, String requestorClientId, Integer qos, boolean retained, IResCallback callback){
+    private void publishResponseMessage(boolean debug, String reqId, String topicStr, String requestorClientId,String payload, Integer qos, boolean retained, IResCallback callback){
         if(ObjectUtil.isEmpty(callback)){
             NeuLogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
             callback = defaultResCallback;
@@ -687,7 +687,7 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynResPublisher(debug,reqId,payload,topStr,requestorClientId,qos,retained,callback));
+            fixedThreadPool.execute(new AsynResPublisher(debug,reqId,topicStr,requestorClientId,payload,qos,retained,callback));
         }
     }
     /**
