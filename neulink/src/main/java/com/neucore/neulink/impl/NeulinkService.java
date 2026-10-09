@@ -1129,46 +1129,13 @@ public class NeulinkService implements NeulinkConst{
             this.topStr = topStr;
             this.requestorClientId = requestorClientId;
             this.payload = payload;
-            this.payload = payload;
-            String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
 
-            String topStrTemp = topStr;
             JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
             /**
              * 绑定Head
              */
             HeadersUtil.binding(jsonObject,reqId,topStr);
             this.payload = jsonObject.toString();
-            String[] temps = topStrTemp.split("/");
-            int len = temps.length;
-            String group = null;
-            String req$res = null;
-            String biz = null;
-            String version = null;
-            if(len>0){
-                group = temps[0];
-            }
-            if(len>1){
-                req$res = temps[1];
-            }
-            if(len>2){
-                biz = temps[2];
-            }
-            if(len>3){
-                version = temps[3];
-            }
-            this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
-            if(ObjectUtil.isNotEmpty(requestorClientId)){
-                this.topStr = this.topStr+"/"+requestorClientId;
-            }
-            if(debug){
-                this.topStr = this.topStr+"/debug";
-            }
-            String productId = deviceService.getProductKey();
-            if(ObjectUtil.isNotEmpty(productId)){
-                this.topStr = productId+"/"+this.topStr;
-            }
-
             this.qos = qos;
             this.retained = retained;
             this.callback = callback;

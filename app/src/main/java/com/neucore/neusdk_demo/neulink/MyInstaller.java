@@ -190,7 +190,7 @@ public class MyInstaller implements NeulinkConst {
          * 一机一密地址：https://dev.neucore.com/api/user/v1/device/configs【C端云平台】
          *
          */
-        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://iot.neucore.com/api/user/v1/device/configs");
+        extConfig.setProperty(ConfigContext.CONDIG_SERVER_URL,"https://test.neucore.com/api/user/v1/device/configs");
         /**
          * 当存储服务为OSS时需要开启&设置【可选，本地部署时一般不需要，eg：智能楼宇系统】
          */

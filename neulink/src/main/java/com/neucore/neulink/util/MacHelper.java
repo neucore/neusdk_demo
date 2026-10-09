@@ -62,6 +62,9 @@ public class MacHelper implements NeulinkConst{
         if (ObjectUtil.isEmpty(macAddress)) {
             macAddress = getWifiMac(ContextHolder.getInstance().getContext());
         }
+        if(ObjectUtil.isEmpty(macAddress)){
+            return "test123456";
+        }
         return macAddress;
     }
 
