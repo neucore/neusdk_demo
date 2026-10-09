@@ -69,6 +69,13 @@ public class DeviceUtils implements NeulinkConst{
 					path = "/storage/sdcard0";
 				}
 			}
+			//Scoped Storage(Android 10+)等虚拟/受限环境下外部存储顶层目录不可创建，
+			//探测不可写时回退应用私有缓存目录，保证config/logs/db/crash均可写
+			File probe = new File(path, "neucore");
+			if (!probe.exists() && !probe.mkdirs()) {
+				root = context.getCacheDir();
+				path = root.toString();
+			}
 		}
 		else{
 			root = context.getCacheDir();

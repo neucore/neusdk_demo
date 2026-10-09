@@ -1,5 +1,7 @@
 package com.neucore.neulink.log;
 
+import android.content.Context;
+
 import com.neucore.neulink.util.ContextHolder;
 import com.neucore.neulink.util.DeviceUtils;
 
@@ -150,10 +152,25 @@ class NeuLogConfig {
 
         Layout fileLayout = new MyPatternLayout(getFilePattern());
         RollingFileAppender rollingFileAppender;
+        String fileName = getFileName();
         try {
-            rollingFileAppender = new RollingFileAppender(fileLayout, getFileName());
+            rollingFileAppender = new RollingFileAppender(fileLayout, fileName);
         } catch (IOException e) {
-            throw new RuntimeException("Exception configuring log system", e);
+            //Scoped Storage(Android 10+)等环境下外部存储顶层目录不可创建，
+            //fallback到应用私有缓存目录，保证日志可用且不崩溃
+            try {
+                Context ctx = ContextHolder.getInstance().getContext();
+                File fallbackDir = new File(ctx.getCacheDir(), APP_NAME + File.separator + "logs");
+                fallbackDir.mkdirs();
+                fileName = new File(fallbackDir, APP_NAME + ".log").getAbsolutePath();
+                rollingFileAppender = new RollingFileAppender(fileLayout, fileName);
+                setFileName(fileName);
+                LogLog.warn("fallback log file to: " + fileName);
+            } catch (IOException ex) {
+                //仍失败则放弃文件appender仅用LogCat，避免线程崩溃
+                LogLog.warn("config file appender failed, logcat only", ex);
+                return;
+            }
         }
 
         rollingFileAppender.setMaxBackupIndex(getMaxBackupSize());

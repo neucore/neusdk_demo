@@ -157,7 +157,7 @@ class RegisterAdapter implements NeulinkConst{
                     String response = null;
                     try {
                         NeuLogUtils.dTag(TAG, "getConfig from：" + configsURL);
-                        response = NeuHttpHelper.post(configsURL, params, headers, 10, 60, 1,null);
+                        response = NeuHttpHelper.post(configsURL, params, headers, 30, 60, 3, null);
                         if(ObjectUtil.isEmpty(response)){
                             NeuLogUtils.iTag(TAG,"配置非法。。。");
                             toSleep();
@@ -297,22 +297,42 @@ class RegisterAdapter implements NeulinkConst{
         if(ObjectUtil.isEmpty(ftpPassword)){
             ftpPassword = ConfigContext.getInstance().getConfig(ConfigContext.FTP_PASSWORD);
         }
-
-        ConfigContext.getInstance().update(ConfigContext.SCOPEID, zone.getCustid());
-        ConfigContext.getInstance().update(ConfigContext.STOREID,storeid );
-        ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
-        ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
-        ConfigContext.getInstance().update(ConfigContext.HTTP_WEB_SERVER, webServer);
-        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER, upldServer);
-        ConfigContext.getInstance().update(ConfigContext.FTP_SERVER, ftpServer);
-        ConfigContext.getInstance().update(ConfigContext.FTP_USER_NAME, ftpUsername);
-        ConfigContext.getInstance().update(ConfigContext.FTP_PASSWORD, ftpPassword);
+        if(ObjectUtil.isNotEmpty(zone.getCustid())) {
+            ConfigContext.getInstance().update(ConfigContext.SCOPEID, zone.getCustid());
+        }
+        if(ObjectUtil.isNotEmpty(storeid)) {
+            ConfigContext.getInstance().update(ConfigContext.STOREID, storeid);
+        }
+        if(ObjectUtil.isNotEmpty(zoneid)) {
+            ConfigContext.getInstance().update(ConfigContext.ZONEID, zoneid);
+        }
+        if(ObjectUtil.isNotEmpty(webServer)) {
+            ConfigContext.getInstance().update(ConfigContext.HTTP_WEB_SERVER, webServer);
+        }
+        if(ObjectUtil.isNotEmpty(upldServer)) {
+            ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER, upldServer);
+        }
+        if(ObjectUtil.isNotEmpty(ftpServer)) {
+            ConfigContext.getInstance().update(ConfigContext.FTP_SERVER, ftpServer);
+        }
+        if(ObjectUtil.isNotEmpty(ftpUsername)) {
+            ConfigContext.getInstance().update(ConfigContext.FTP_USER_NAME, ftpUsername);
+        }
+        if(ObjectUtil.isNotEmpty(ftpPassword)){
+            ConfigContext.getInstance().update(ConfigContext.FTP_PASSWORD, ftpPassword);
+        }
 
         IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
 
         String localMqttServer = deviceService.getMqttServer();
         if(ObjectUtil.isNotEmpty(localMqttServer)) {
             mqttServer = localMqttServer;
+        }
+        if(ObjectUtil.isNotEmpty(mqttServer)){
+            ConfigContext.getInstance().update(ConfigContext.MQTT_SERVER, mqttServer);
+        }
+        if(ObjectUtil.isNotEmpty(reqIp)) {
+            ConfigContext.getInstance().update(ConfigContext.HTTP_REQ_IP, reqIp);
         }
 
         String productKey = deviceService.getProductKey();
@@ -337,12 +357,14 @@ class RegisterAdapter implements NeulinkConst{
             if(ObjectUtil.isNotEmpty(localMqttPassword)) {
                 mqttPassword = localMqttPassword;
             }
-            ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
-            ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+            if(ObjectUtil.isNotEmpty(mqttUserName)) {
+                ConfigContext.getInstance().update(ConfigContext.MQTT_USERNAME, mqttUserName);
+            }
+            if(ObjectUtil.isNotEmpty(mqttPassword)) {
+                ConfigContext.getInstance().update(ConfigContext.MQTT_PASSWORD, mqttPassword);
+            }
             ConfigContext.getInstance().update(ConfigContext.MQTT_CLIENT_ID, deviceService.getExtSN());
             NeuLogUtils.iTag(TAG,String.format("老版本 mqtt 连接,host=%s clientId=%s",mqttServer,deviceService.getExtSN()));
         }
-        ConfigContext.getInstance().update(ConfigContext.HTTP_UPLOAD_SERVER,upldServer);
-        ConfigContext.getInstance().update(ConfigContext.HTTP_REQ_IP,reqIp);
     }
 }

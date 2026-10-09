@@ -131,10 +131,6 @@ public class SampleConnector implements NeulinkConst{
                     //仍在service.init()建立MQTT连接之前完成注册，时序与原实现一致
                     Security.insertProviderAt(Conscrypt.newProvider(), 1);
 
-                    //提前在子线程完成log4j首次初始化（构造文件Appender会打开FileOutputStream属磁盘IO），
-                    //避免后续主线程（如网络广播回调里的日志调用）触发DiskWriteViolation
-                    NeuLogUtils.configLog();
-
                     boolean allow = false;
                     /**
                      * onPermissionsGranted之后调用
@@ -154,6 +150,10 @@ public class SampleConnector implements NeulinkConst{
                         } catch (InterruptedException e) {
                         }
                     }
+
+                    //权限已授予后初始化log4j：构造文件Appender需创建/打开外部存储日志文件，
+                    //权限未就绪会导致目录创建失败→ENOENT；放此处既在子线程避免主线程违规，又不崩
+                    NeuLogUtils.configLog();
 
                     PropChgWatcher propChgWatcher = new PropChgWatcher();
 

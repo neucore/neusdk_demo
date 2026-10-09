@@ -31,7 +31,7 @@ public class NeulinkScheduledReport implements NeulinkConst{
     private NeulinkService service;
     private Boolean started = false;
     private String TAG = TAG_PREFIX+"ScheduledReport";
-    private IDeviceService deviceService;
+    private IDeviceService deviceService = ServiceRegistry.getInstance().getDeviceService();
 
     public NeulinkScheduledReport(Context context, NeulinkService service) {
         this.context = context;
@@ -53,43 +53,44 @@ public class NeulinkScheduledReport implements NeulinkConst{
      */
     private void status() {
 
+        if(deviceService.statusReport()){
+            new Thread("StatusReport") {
+                public void run() {
 
-        new Thread("StatusReport") {
-            public void run() {
-
-                while (!service.getDestroyed() && true) {
-                    try {
-                        Thread.sleep(1000 * 30);
-                    }
-                    catch (Exception ex){}
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_HEARTBEAT,"false"))){
+                    while (!service.getDestroyed() && true) {
                         try {
-                            HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
-                            if(ObjectUtil.isNotEmpty(heatbeatInfo)){
-                                heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                                String payload = JSonUtils.toString(heatbeatInfo);
-                                boolean isNew = service.getDeviceService().isNewTopicVersion();
-                                String topic;
-                                if(isNew){
-                                    topic = String.format("msg/%s/status", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                            Thread.sleep(1000 * 30);
+                        }
+                        catch (Exception ex){}
+                        if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_HEARTBEAT,"false"))){
+                            try {
+                                HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
+                                if(ObjectUtil.isNotEmpty(heatbeatInfo)){
+                                    heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                    String payload = JSonUtils.toString(heatbeatInfo);
+                                    boolean isNew = service.getDeviceService().isNewTopicVersion();
+                                    String topic;
+                                    if(isNew){
+                                        topic = String.format("msg/%s/status", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                    }
+                                    else{
+                                        topic = "msg/req/status";
+                                    }
+                                    service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                                 }
                                 else{
-                                    topic = "msg/req/status";
+                                    NeuLogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
                                 }
-                                service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
-                            else{
-                                NeuLogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
+                            catch(Exception ex){
+                                NeuLogUtils.eTag(TAG,ex.getMessage());
                             }
-                        }
-                        catch(Exception ex){
-                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }
-            }
 
-        }.start();
+            }.start();
+        }
     }
 
 
@@ -98,40 +99,42 @@ public class NeulinkScheduledReport implements NeulinkConst{
      * msg/req/stat/v1.0/${req_no}[/${md5}], qos=0
      */
     private void stat(){
-        new Thread("StatReport") {
-            public void run() {
-                while (!service.getDestroyed() &&true) {
-                    try {
-                        Thread.sleep(1000 * 30);
-                    }
-                    catch (Exception ex){}
-                    if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_RUNTIME,"false"))){
+        if(deviceService.runtimeReport()){
+            new Thread("StatReport") {
+                public void run() {
+                    while (!service.getDestroyed() &&true) {
                         try {
-                            RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
-                            if(ObjectUtil.isNotEmpty(runtimeInfo)){
-                                runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
-                                String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
-                                boolean isNewStat = service.getDeviceService().isNewTopicVersion();
-                                String topicStat;
-                                if(isNewStat){
-                                    topicStat = String.format("msg/%s/stat", service.getDeviceService().getExtSN());
+                            Thread.sleep(1000 * 30);
+                        }
+                        catch (Exception ex){}
+                        if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_RUNTIME,"false"))){
+                            try {
+                                RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
+                                if(ObjectUtil.isNotEmpty(runtimeInfo)){
+                                    runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
+                                    String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
+                                    boolean isNewStat = service.getDeviceService().isNewTopicVersion();
+                                    String topicStat;
+                                    if(isNewStat){
+                                        topicStat = String.format("msg/%s/stat", service.getDeviceService().getExtSN());
+                                    }
+                                    else{
+                                        topicStat = "msg/req/stat";
+                                    }
+                                    service.publishRequestMessage(topicStat, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                                 }
                                 else{
-                                    topicStat = "msg/req/stat";
+                                    NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
                                 }
-                                service.publishRequestMessage(topicStat, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
-                            }
-                            else{
-                                NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
-                            }
 
-                        }catch (Exception ex){
-                            NeuLogUtils.eTag(TAG,ex.getMessage());
+                            }catch (Exception ex){
+                                NeuLogUtils.eTag(TAG,ex.getMessage());
+                            }
                         }
                     }
                 }
-            }
-        }.start();
+            }.start();
+        }
     }
 
     /**
@@ -139,66 +142,67 @@ public class NeulinkScheduledReport implements NeulinkConst{
      * msg/req/rlog/v1.0/${req_no}/[/${md5}],qos=0
      */
     private void lgUpld(){
+        if(deviceService.logReport()){
+            new Thread("CarshLoggerReport"){
+                public void run() {
+                    while (!service.getDestroyed() && true) {
 
-        new Thread("CarshLoggerReport"){
-            public void run() {
-                while (!service.getDestroyed() && true) {
-
-                    try{
-                        Thread.sleep(1000*60);
-                    }
-                    catch (Exception ex){}
-                    try {
-                        File[] logfiles = CarshHandler.getIntance().getFiles();
-                        int len = logfiles == null ? 0 : logfiles.length;
-                        StringBuffer sb = new StringBuffer();
-                        for (int i = 0; i < len; i++) {
-                            File tmp = logfiles[i];
-                            int readed = 0;
-                            byte[] buffer = new byte[1024];
-                            FileInputStream fileInputStream = null;
-                            String name = null;
-                            try {
-                                fileInputStream = new FileInputStream(tmp);
-                                while ((readed = fileInputStream.read(buffer)) != -1) {
-                                    sb.append(new String(buffer, 0, readed));
-                                }
-                                name = tmp.getName();
-                                tmp.delete();
-                            } catch (Throwable ex) {
-                                NeuLogUtils.eTag(TAG, ex.getMessage());
-                            } finally {
-                                if (fileInputStream != null) {
-                                    try {
-                                        fileInputStream.close();
-                                    } catch (IOException e) {
+                        try{
+                            Thread.sleep(1000*60);
+                        }
+                        catch (Exception ex){}
+                        try {
+                            File[] logfiles = CarshHandler.getIntance().getFiles();
+                            int len = logfiles == null ? 0 : logfiles.length;
+                            StringBuffer sb = new StringBuffer();
+                            for (int i = 0; i < len; i++) {
+                                File tmp = logfiles[i];
+                                int readed = 0;
+                                byte[] buffer = new byte[1024];
+                                FileInputStream fileInputStream = null;
+                                String name = null;
+                                try {
+                                    fileInputStream = new FileInputStream(tmp);
+                                    while ((readed = fileInputStream.read(buffer)) != -1) {
+                                        sb.append(new String(buffer, 0, readed));
+                                    }
+                                    name = tmp.getName();
+                                    tmp.delete();
+                                } catch (Throwable ex) {
+                                    NeuLogUtils.eTag(TAG, ex.getMessage());
+                                } finally {
+                                    if (fileInputStream != null) {
+                                        try {
+                                            fileInputStream.close();
+                                        } catch (IOException e) {
+                                        }
                                     }
                                 }
+                                LogUploadCmd req = new LogUploadCmd();
+                                req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                req.setReqNo(UUID.randomUUID().toString());
+                                req.setMsg(sb.toString());
+                                int index = name.lastIndexOf(".");
+                                req.setTime(name.substring(0, index));
+                                String payload = JSonUtils.toString(req);
+                                boolean isNewRlog = service.getDeviceService().isNewTopicVersion();
+                                String topic;
+                                if(isNewRlog){
+                                    // 新版: upld/{devId}/rlog
+                                    topic = String.format("upld/%s/rlog", ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                }
+                                else{
+                                    topic = "upld/req/rlog";
+                                }
+                                service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
-                            LogUploadCmd req = new LogUploadCmd();
-                            req.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                            req.setReqNo(UUID.randomUUID().toString());
-                            req.setMsg(sb.toString());
-                            int index = name.lastIndexOf(".");
-                            req.setTime(name.substring(0, index));
-                            String payload = JSonUtils.toString(req);
-                            boolean isNewRlog = service.getDeviceService().isNewTopicVersion();
-                            String topic;
-                            if(isNewRlog){
-                                // 新版: upld/{devId}/rlog
-                                topic = String.format("upld/%s/rlog", ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                            }
-                            else{
-                                topic = "upld/req/rlog";
-                            }
-                            service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
+                        }
+                        catch (Exception ex){
+                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
-                    catch (Exception ex){
-                        NeuLogUtils.eTag(TAG,ex.getMessage());
-                    }
                 }
-            }
-        }.start();
+            }.start();
+        }
     }
 }

@@ -155,7 +155,12 @@ public interface IDeviceService {
      */
     default SecuretSign sign(){
         String timestamp = String.valueOf(System.currentTimeMillis());
-        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), DeviceUtils.getMacAddress(),"salt",timestamp,"device",getSecuremode(),getSignmethod(),getVersion());
+        String macAddress = DeviceUtils.getMacAddress();
+        if (ObjectUtil.isEmpty(macAddress)) {
+            //虚拟设备/受限环境取不到MAC，fallback到设备ID(最终派生ANDROID_ID)，避免签名强校验崩溃
+            macAddress = DeviceUtils.getDeviceId(ContextHolder.getInstance().getContext());
+        }
+        SecuretSign securetSign = new SecuretSign(getProductKey(),getDeviceName(),getDeviceSecret(), macAddress,"salt",timestamp,"device",getSecuremode(),getSignmethod(),getVersion());
         return securetSign;
     }
     /**
@@ -312,5 +317,14 @@ public interface IDeviceService {
             qoss[i]=qos;
         }
         return qoss;
+    }
+    default boolean statusReport(){
+        return false;
+    }
+    default boolean runtimeReport(){
+        return false;
+    }
+    default boolean logReport(){
+        return false;
     }
 }
