@@ -319,10 +319,10 @@ public interface IDeviceService {
         return qoss;
     }
     default boolean statusReport(){
-        return false;
+        return true;
     }
     default boolean runtimeReport(){
-        return false;
+        return true;
     }
     default boolean logReport(){
         return false;

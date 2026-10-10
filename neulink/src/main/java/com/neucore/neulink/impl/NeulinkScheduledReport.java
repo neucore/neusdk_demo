@@ -62,29 +62,27 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             Thread.sleep(1000 * 30);
                         }
                         catch (Exception ex){}
-                        if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_HEARTBEAT,"false"))){
-                            try {
-                                HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
-                                if(ObjectUtil.isNotEmpty(heatbeatInfo)){
-                                    heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                                    String payload = JSonUtils.toString(heatbeatInfo);
-                                    boolean isNew = service.getDeviceService().isNewTopicVersion();
-                                    String topic;
-                                    if(isNew){
-                                        topic = String.format("msg/%s/status", ServiceRegistry.getInstance().getDeviceService().getExtSN());
-                                    }
-                                    else{
-                                        topic = "msg/req/status";
-                                    }
-                                    service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
+                        try {
+                            HeatbeatInfo heatbeatInfo = service.getDeviceService().heatbeat();
+                            if(ObjectUtil.isNotEmpty(heatbeatInfo)){
+                                heatbeatInfo.setDeviceId(ServiceRegistry.getInstance().getDeviceService().getExtSN());
+                                String payload = JSonUtils.toString(heatbeatInfo);
+                                boolean isNew = service.getDeviceService().isNewTopicVersion();
+                                String topic;
+                                if(isNew){
+                                    topic = String.format("msg/%s/status", ServiceRegistry.getInstance().getDeviceService().getExtSN());
                                 }
                                 else{
-                                    NeuLogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
+                                    topic = "msg/req/status";
                                 }
+                                service.publishRequestMessage(topic, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
-                            catch(Exception ex){
-                                NeuLogUtils.eTag(TAG,ex.getMessage());
+                            else{
+                                NeuLogUtils.eTag(TAG,"deviceService的heatbeat没有实现");
                             }
+                        }
+                        catch(Exception ex){
+                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }
@@ -107,29 +105,27 @@ public class NeulinkScheduledReport implements NeulinkConst{
                             Thread.sleep(1000 * 30);
                         }
                         catch (Exception ex){}
-                        if("true".equalsIgnoreCase(ConfigContext.getInstance().getConfig(ConfigContext.ENABLE_RUNTIME,"false"))){
-                            try {
-                                RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
-                                if(ObjectUtil.isNotEmpty(runtimeInfo)){
-                                    runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
-                                    String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
-                                    boolean isNewStat = service.getDeviceService().isNewTopicVersion();
-                                    String topicStat;
-                                    if(isNewStat){
-                                        topicStat = String.format("msg/%s/stat", service.getDeviceService().getExtSN());
-                                    }
-                                    else{
-                                        topicStat = "msg/req/stat";
-                                    }
-                                    service.publishRequestMessage(topicStat, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
+                        try {
+                            RuntimeInfo runtimeInfo = service.getDeviceService().runtime();
+                            if(ObjectUtil.isNotEmpty(runtimeInfo)){
+                                runtimeInfo.setDeviceId(service.getDeviceService().getExtSN());
+                                String payload = JSonUtils.toString(runtimeInfo, Double.class, new DoubleSerializer(2));
+                                boolean isNewStat = service.getDeviceService().isNewTopicVersion();
+                                String topicStat;
+                                if(isNewStat){
+                                    topicStat = String.format("msg/%s/stat", service.getDeviceService().getExtSN());
                                 }
                                 else{
-                                    NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
+                                    topicStat = "msg/req/stat";
                                 }
-
-                            }catch (Exception ex){
-                                NeuLogUtils.eTag(TAG,ex.getMessage());
+                                service.publishRequestMessage(topicStat, IProcessor.V1$0, payload, ConfigContext.getInstance().getConfig(ConfigContext.MQTT_QOS,0));
                             }
+                            else{
+                                NeuLogUtils.eTag(TAG,"deviceService的runtime没有实现");
+                            }
+
+                        }catch (Exception ex){
+                            NeuLogUtils.eTag(TAG,ex.getMessage());
                         }
                     }
                 }

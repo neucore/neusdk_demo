@@ -1051,7 +1051,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * End2Cloud
              */
-            NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
+            NeuLogUtils.dTag(TAG,"topic:"+topStr);
             NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
@@ -1156,7 +1156,7 @@ public class NeulinkService implements NeulinkConst{
             /**
              * End2Cloud
              */
-            NeuLogUtils.dTag(TAG,"响应topic:"+topStr);
+            NeuLogUtils.dTag(TAG,"topic:"+topStr);
             NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
