@@ -638,7 +638,10 @@ public class NeulinkService implements NeulinkConst{
         }
         NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr);
         if(ObjectUtil.isEmpty(topic.getProduct())){
-            topicStr = String.format("%s/%s",deviceService.getProductKey(),topicStr);
+            String productKey = deviceService.getProductKey();
+            if(ObjectUtil.isNotEmpty(productKey)) {
+                topicStr = String.format("%s/%s", productKey, topicStr);
+            }
         }
         return topicStr;
     }
