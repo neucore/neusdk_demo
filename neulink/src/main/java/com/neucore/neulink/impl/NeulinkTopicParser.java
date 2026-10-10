@@ -7,6 +7,7 @@ public class NeulinkTopicParser {
     //rrpc/req/${dev_id}/facelib/v1.0/${req_no}[/${md5}
     //upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
     //upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
+    //{productId}/req/{biz}/{devId}/{requesterClientId}
     private static NeulinkTopicParser parser = new NeulinkTopicParser();
     public static NeulinkTopicParser getInstance(){
         return parser;

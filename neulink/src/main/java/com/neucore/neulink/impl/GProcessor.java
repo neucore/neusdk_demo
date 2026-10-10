@@ -57,7 +57,6 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         String biz = req.getBiz();
         String reqNo = req.getReqNo();
         String version = req.getVersion();
-        String requestorClientId = req.getClientId();
 
         payload = auth(headers,payload);
 
@@ -68,6 +67,10 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         String resTopic;
         boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
         String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+        String requestorClientId = topic.getRequestorClientId();
+        if(ObjectUtil.isEmpty(requestorClientId)){
+            requestorClientId = req.getClientId();
+        }
         if(isNew){
             // 新版: res/{biz}/{devId}，buildResTopic会拼接requestorClientId
             resTopic = String.format("res/%s/%s", biz, devId);
