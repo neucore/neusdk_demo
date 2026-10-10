@@ -807,7 +807,7 @@ public class NeulinkService implements NeulinkConst{
     class AsyncRegistor implements Runnable {
 
         private String reqId;
-        private String topStr;
+        private String topicStr;
         private String payload;
         private int qos;
         private Boolean retained;
@@ -817,32 +817,48 @@ public class NeulinkService implements NeulinkConst{
          *
          * @param context
          * @param reqId
-         * @param topStr msg/req/devinfo ｜ {productId}/msg/req/devinfo | {productId}/msg/{devId}/devinfo
+         * @param topicStr msg/req/devinfo ｜ {productId}/msg/req/devinfo | {productId}/msg/{devId}/devinfo
          * @param payload
          * @param qos
          * @param retained
          */
-        public AsyncRegistor(Context context,String reqId,String topStr, String payload, int qos, Boolean retained){
+        public AsyncRegistor(Context context,String reqId,String topicStr, String payload, int qos, Boolean retained){
             this.context = context;
             this.reqId = reqId;
-            this.topStr = topStr;
+            this.topicStr = topicStr;
             this.payload = payload;
+            NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(this.topicStr);
+            String group = topic.getGroup();
+            String biz = topic.getBiz();
+            String version = topic.getVersion();
             String mode = ConfigContext.getInstance().getConfig(ConfigContext.TOPIC_MODE,ConfigContext.TOPIC_SHORT);
+            boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+            String devId = deviceService.getExtSN();
+            if(isNew){
+                // 新版: {productId}/upld/{devId}/{biz}
+                this.topicStr = String.format("%s/%s/%s",group, devId,biz);
+            }
+            else{
+                if(ObjectUtil.isNotEmpty(version)) {
+                    this.topicStr = String.format("%s/%s/%s/%s/%s", group, "req", biz, version,devId);
+                }
+                else{
+                    this.topicStr = String.format("%s/%s/%s/%s", group, "req", biz,devId);
+                }
+            }
             if(ConfigContext.TOPIC_SHORT.equals(mode)){
                 JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
                 /**
                  * 绑定Head
                  */
-                HeadersUtil.registBinding(jsonObject,reqId,topStr,qos);
+                HeadersUtil.registBinding(jsonObject,reqId,this.topicStr,qos);
                 this.payload = jsonObject.toString();
-                NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topStr);
-                if(ObjectUtil.isEmpty(topic.getProduct())){
-                    String productId = deviceService.getProductKey();
-                    if(ObjectUtil.isNotEmpty(productId)){
-                        this.topStr = productId+"/"+this.topStr;
-                    }
+            }
+            if(ObjectUtil.isEmpty(topic.getProduct())){
+                String productId = deviceService.getProductKey();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    this.topicStr = productId+"/"+this.topicStr;
                 }
-
             }
             this.qos = qos;
             this.retained = retained;
@@ -922,15 +938,15 @@ public class NeulinkService implements NeulinkConst{
             }
 
             NeuLogUtils.iTag(TAG,String.format("开始异步注册：neulinkServiceInited=%s,registed=%s",neulinkServiceInited,registed));
-            NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,neulinkServiceInited=%s,registed=%s",channel,topStr,neulinkServiceInited,registed));
+            NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,neulinkServiceInited=%s,registed=%s",channel, topicStr,neulinkServiceInited,registed));
             trys = 1;
             while (neulinkServiceInited && !registed){
                 try {
 
                     if(isMqttConnSuccessed()){
-                        NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,第%s次注册",channel,topStr,trys));
+                        NeuLogUtils.iTag(TAG,String.format("开始异步注册：channel=%s,topic=%s,第%s次注册",channel, topicStr,trys));
                         if(channel==0){
-                            myMqttService.publish(false,reqId,payload,topStr, qos, retained,registCallback);
+                            myMqttService.publish(false,reqId,payload, topicStr, qos, retained,registCallback);
                             registed = true;
                         }
                         else{
@@ -940,7 +956,7 @@ public class NeulinkService implements NeulinkConst{
                             String registServer = ConfigContext.getInstance().getConfig(ConfigContext.HTTP_UPLOAD_SERVER,"https://dev.neucore.com/api/neulink/upload2cloud");
                             NeuLogUtils.dTag(TAG,"开始异步注册：registServer："+registServer);
 
-                            String topic = URLEncoder.encode(topStr,"UTF-8");
+                            String topic = URLEncoder.encode(topicStr,"UTF-8");
                             response = NeuHttpHelper.post(true,false,registServer+"?topic="+topic,payload,headers,10,60,1);
 
                             NeuLogUtils.dTag(TAG,"开始异步注册：设备注册响应："+response);
@@ -991,13 +1007,13 @@ public class NeulinkService implements NeulinkConst{
     class AsynReqPublisher implements Runnable{
         boolean debug;
         private String reqId;
-        private String topStr;
+        private String topicStr;
         private String payload;
         private Integer qos;
         private Boolean retained;
         private IResCallback callback;
         private Map<String,String> headers;
-        public AsynReqPublisher(boolean debug, String reqId, String topStr, String payload, int qos, Boolean retained, IResCallback callback){
+        public AsynReqPublisher(boolean debug, String reqId, String topicStr, String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
             this.payload = payload;
@@ -1006,35 +1022,35 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,reqId,topStr);
+            HeadersUtil.binding(jsonObject,reqId, topicStr);
             this.payload = jsonObject.toString();
-            NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topStr);
+            NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topicStr);
             String biz = topic.getBiz();
             String group = topic.getGroup();
             String version = topic.getVersion();
+            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
             boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
             if(isNew){
                 // 新版: {productId}/upld/{devId}/{biz}
-                String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
-                this.topStr = String.format("%s/%s/%s",group, devId,biz);
+                this.topicStr = String.format("%s/%s/%s",group, devId,biz);
             }
             else{
                 if(ObjectUtil.isNotEmpty(version)) {
-                    this.topStr = String.format("%s/%s/%s/%s", group, "req", biz, version);
+                    this.topicStr = String.format("%s/%s/%s/%s/%s", group, "req", biz, version,devId);
                 }
                 else{
-                    this.topStr = String.format("%s/%s/%s", group, "req", biz);
+                    this.topicStr = String.format("%s/%s/%s/%s", group, "req", biz,devId);
                 }
             }
 
             if(ObjectUtil.isEmpty(topic.getProduct())){
                 String productId = deviceService.getProductKey();
                 if(ObjectUtil.isNotEmpty(productId)){
-                    this.topStr = productId+"/"+this.topStr;
+                    this.topicStr = productId+"/"+this.topicStr;
                 }
             }
             if(debug){
-                this.topStr = this.topStr+"/debug";
+                this.topicStr = this.topicStr +"/debug";
             }
 
             this.qos = qos;
@@ -1051,13 +1067,13 @@ public class NeulinkService implements NeulinkConst{
             /**
              * End2Cloud
              */
-            NeuLogUtils.dTag(TAG,"topic:"+topStr);
+            NeuLogUtils.dTag(TAG,"topic:"+ topicStr);
             NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
 
-                myMqttService.publish(debug,reqId,payload,topStr, qos, retained,callback);
+                myMqttService.publish(debug,reqId,payload, topicStr, qos, retained,callback);
             }
             else{
                 /**
@@ -1068,7 +1084,7 @@ public class NeulinkService implements NeulinkConst{
                 int count = 0;
                 while(!done && count<3){
                     try {
-                        String topicStr = URLEncoder.encode(topStr,"UTF-8");
+                        String topicStr = URLEncoder.encode(this.topicStr,"UTF-8");
                         Map<String,String> params = HttpParamWrapper.getParams();
                         String response = NeuHttpHelper.post(true,debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);
@@ -1119,7 +1135,7 @@ public class NeulinkService implements NeulinkConst{
     class AsynResPublisher implements Runnable{
         boolean debug;
         private String reqId;
-        private String topStr;
+        private String topicStr;
         private String requestorClientId;
         private String payload;
         private Integer qos;
@@ -1127,10 +1143,10 @@ public class NeulinkService implements NeulinkConst{
         private IResCallback callback;
         private Map<String,String> headers;
 
-        public AsynResPublisher(boolean debug, String reqId, String topStr, String requestorClientId, String payload, int qos, Boolean retained, IResCallback callback){
+        public AsynResPublisher(boolean debug, String reqId, String topicStr, String requestorClientId, String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
-            this.topStr = topStr;
+            this.topicStr = topicStr;
             this.requestorClientId = requestorClientId;
             this.payload = payload;
 
@@ -1138,13 +1154,13 @@ public class NeulinkService implements NeulinkConst{
             /**
              * 绑定Head
              */
-            HeadersUtil.binding(jsonObject,reqId,topStr);
+            HeadersUtil.binding(jsonObject,reqId, topicStr);
             this.payload = jsonObject.toString();
             this.qos = qos;
             this.retained = retained;
             this.callback = callback;
         }
-        public AsynResPublisher(boolean debug, String reqId, String topStr, String payload, int qos, Boolean retained, Map<String,String> headers, IResCallback callback){
+        public AsynResPublisher(boolean debug, String reqId, String topicStr, String payload, int qos, Boolean retained, Map<String,String> headers, IResCallback callback){
             this.headers = headers;
         }
         @Override
@@ -1156,13 +1172,13 @@ public class NeulinkService implements NeulinkConst{
             /**
              * End2Cloud
              */
-            NeuLogUtils.dTag(TAG,"topic:"+topStr);
+            NeuLogUtils.dTag(TAG,"topic:"+ topicStr);
             NeuLogUtils.dTag(TAG,"设备upload2cloud请求："+payload);
 
             int channel = ConfigContext.getInstance().getConfig(ConfigContext.UPLOAD_CHANNEL,0);
             if(channel==0){
                 try {
-                    myMqttService.publish(debug, reqId, payload, topStr, qos, retained, callback);
+                    myMqttService.publish(debug, reqId, payload, topicStr, qos, retained, callback);
                 }
                 catch (Exception ex){
                     NeuLogUtils.eTag(TAG,"设备upload2cloud请求",ex);
@@ -1177,7 +1193,7 @@ public class NeulinkService implements NeulinkConst{
                 int count = 0;
                 while(!done && count<3){
                     try {
-                        String topicStr = URLEncoder.encode(topStr,"UTF-8");
+                        String topicStr = URLEncoder.encode(this.topicStr,"UTF-8");
                         Map<String,String> params = HttpParamWrapper.getParams();
                         String response = NeuHttpHelper.post(true,debug,httpServiceUri +"?topic="+topicStr,payload,params,10,60,1);
                         NeuLogUtils.dTag(TAG,"设备upload2cloud响应："+response);

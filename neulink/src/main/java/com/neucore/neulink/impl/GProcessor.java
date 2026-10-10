@@ -67,9 +67,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
          */
         String resTopic;
         boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+        String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
         if(isNew){
             // 新版: res/{biz}/{devId}，buildResTopic会拼接requestorClientId
-            String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
             resTopic = String.format("res/%s/%s", biz, devId);
             if(ObjectUtil.isNotEmpty(topic.getProduct())){
                 resTopic = String.format("%s/%s", topic.getProduct(), resTopic);
@@ -77,10 +77,10 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         }
         else{
             if(ObjectUtil.isNotEmpty(topic.getVersion())){
-                resTopic = String.format("%s/%s/%s/%s",group,"res",biz,topic.getVersion());
+                resTopic = String.format("%s/%s/%s/%s/%s",group,"res",biz,topic.getVersion(),devId);
             }
             else{
-                resTopic = String.format("%s/%s/%s",group,"res",biz);
+                resTopic = String.format("%s/%s/%s/%s",group,"res",biz,devId);
             }
 
             if(ObjectUtil.isNotEmpty(topic.getProduct())){
