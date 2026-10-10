@@ -547,7 +547,7 @@ public class NeulinkService implements NeulinkConst{
      * @param debug
      * @param qos
      * @param retained
-     * @param topicPrefix
+     * @param topicPrefix 【rmsg｜rrpc】/res/[qlib|blib….]
      * @param version
      * @param reqId
      * @param requestorClientId
@@ -557,7 +557,7 @@ public class NeulinkService implements NeulinkConst{
     public void publishResponseMessage(boolean debug, int qos, boolean retained, String topicPrefix, String version, String reqId, String requestorClientId, String payload, IResCallback resCallback){
 
         /**
-         * [rmsg|rrpc]/[res]/biz/version/${requestorClientId}
+         * [rmsg|rrpc]/[res]/biz/${version}/${devId}
          */
         String topic = buildResTopic(topicPrefix,version,requestorClientId);
 
@@ -603,9 +603,9 @@ public class NeulinkService implements NeulinkConst{
      * @param reqId
      * @return [rmsg|rrpc|upld]/[res|req]/biz/version/reqId
      */
-    private String buildResTopic(String topicPrefix, String version, String reqId){
+    private String buildResTopic(String topicPrefix, String version,String reqId){
         boolean isNew = deviceService.isNewTopicVersion();
-        String topic;
+        String topic = null;
         if(isNew){
             // 新版: topicPrefix=res/{biz}/{devId}，拼接requestorClientId
             // 最终: res/{biz}/{devId}/{requesterClientId}
@@ -613,7 +613,8 @@ public class NeulinkService implements NeulinkConst{
             topic = stringBuffer.toString();
         }
         else{
-            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(reqId);
+            String devId = deviceService.getExtSN();
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(devId).append("/").append(reqId);
             topic = stringBuffer.toString();
         }
         return topic;

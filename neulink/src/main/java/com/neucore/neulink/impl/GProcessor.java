@@ -76,13 +76,8 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
             }
         }
         else{
-            if(ObjectUtil.isNotEmpty(topic.getVersion())){
-                resTopic = String.format("%s/%s/%s/%s/%s",group,"res",biz,topic.getVersion(),devId);
-            }
-            else{
-                resTopic = String.format("%s/%s/%s/%s",group,"res",biz,devId);
-            }
-
+            //【rmsg｜rrpc】/res/[qlib|blib….]/vxdx/${dev_id}[/${requester.client.id}]
+            resTopic = String.format("%s/%s/%s",group,"res",biz);
             if(ObjectUtil.isNotEmpty(topic.getProduct())){
                 resTopic = String.format("%s/%s", topic.getProduct(), resTopic);
             }
