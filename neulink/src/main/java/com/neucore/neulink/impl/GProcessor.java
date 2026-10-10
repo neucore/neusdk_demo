@@ -76,7 +76,13 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
             }
         }
         else{
-            resTopic = String.format("%s/%s/%s",group,"res",biz);
+            if(ObjectUtil.isNotEmpty(topic.getVersion())){
+                resTopic = String.format("%s/%s/%s/%s",group,"res",biz,topic.getVersion());
+            }
+            else{
+                resTopic = String.format("%s/%s/%s",group,"res",biz);
+            }
+
             if(ObjectUtil.isNotEmpty(topic.getProduct())){
                 resTopic = String.format("%s/%s", topic.getProduct(), resTopic);
             }

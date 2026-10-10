@@ -28,3 +28,4 @@ libs/armeabi-v7a/libneucore.so
 *.conf
 app/libs/neulink*.jar
 EnDecoderUtil
+MyDeviceExtendInfoCallBack

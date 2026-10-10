@@ -189,14 +189,16 @@ class RegisterAdapter implements NeulinkConst{
                             else{
                                 NeuLogUtils.dTag(TAG, "设备configs响应：" + response);
                             }
-                            neulinkZone = new NeulinkZone();
-                            neulinkZone.setCustid((String)zone.get("custid"));
-                            neulinkZone.setReqIp((String)zone.get("req_ip"));
-                            neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
-                            neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
-                            neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
-                            neulinkZone.setWebServer((String)zone.get("web_server"));
-                            neulinkZone.setUploadServer((String)zone.get("upload_server"));
+                            if(ObjectUtil.isNotEmpty(zone)){
+                                neulinkZone = new NeulinkZone();
+                                neulinkZone.setCustid((String)zone.get("custid"));
+                                neulinkZone.setReqIp((String)zone.get("req_ip"));
+                                neulinkZone.setMqttServer((String)zone.get("mqtt_server"));
+                                neulinkZone.setMqttUserName((String)zone.get("mqtt_username"));
+                                neulinkZone.setMqttPassword((String)zone.get("mqtt_password"));
+                                neulinkZone.setWebServer((String)zone.get("web_server"));
+                                neulinkZone.setUploadServer((String)zone.get("upload_server"));
+                            }
                         }
 
                         syncConfig(neulinkZone);

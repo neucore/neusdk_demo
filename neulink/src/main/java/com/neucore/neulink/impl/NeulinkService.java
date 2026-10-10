@@ -812,6 +812,16 @@ public class NeulinkService implements NeulinkConst{
         private int qos;
         private Boolean retained;
         private Context context;
+
+        /**
+         *
+         * @param context
+         * @param reqId
+         * @param topStr msg/req/devinfo ｜ {productId}/msg/req/devinfo | {productId}/msg/{devId}/devinfo
+         * @param payload
+         * @param qos
+         * @param retained
+         */
         public AsyncRegistor(Context context,String reqId,String topStr, String payload, int qos, Boolean retained){
             this.context = context;
             this.reqId = reqId;
@@ -826,15 +836,13 @@ public class NeulinkService implements NeulinkConst{
                 HeadersUtil.registBinding(jsonObject,reqId,topStr,qos);
                 this.payload = jsonObject.toString();
                 NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topStr);
-                String group = topic.getGroup();
-                String req$res = topic.getReq$res();
-                String biz = topic.getBiz();
-                String version = topic.getVersion();
-                this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
-                String productId = deviceService.getProductKey();
-                if(ObjectUtil.isNotEmpty(productId)){
-                    this.topStr = productId+"/"+this.topStr;
+                if(ObjectUtil.isEmpty(topic.getProduct())){
+                    String productId = deviceService.getProductKey();
+                    if(ObjectUtil.isNotEmpty(productId)){
+                        this.topStr = productId+"/"+this.topStr;
+                    }
                 }
+
             }
             this.qos = qos;
             this.retained = retained;
@@ -992,45 +1000,41 @@ public class NeulinkService implements NeulinkConst{
         public AsynReqPublisher(boolean debug, String reqId, String topStr, String payload, int qos, Boolean retained, IResCallback callback){
             this.debug = debug;
             this.reqId = reqId;
-            this.topStr = topStr;
-            this.payload = payload;
             this.payload = payload;
 
-            String topStrTemp = topStr;
             JsonObject jsonObject = JSonUtils.toObject(payload,JsonObject.class);
             /**
              * 绑定Head
              */
             HeadersUtil.binding(jsonObject,reqId,topStr);
             this.payload = jsonObject.toString();
-            String[] temps = topStrTemp.split("/");
-            int len = temps.length;
-            String group = null;
-            String req$res = null;
-            String biz = null;
-            String version = null;
-            if(len>0){
-                group = temps[0];
+            NeulinkTopicParser.Topic topic = NeulinkTopicParser.getInstance().end2cloudParser(topStr);
+            String biz = topic.getBiz();
+            String group = topic.getGroup();
+            String version = topic.getVersion();
+            boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
+            if(isNew){
+                // 新版: {productId}/upld/{devId}/{biz}
+                String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
+                this.topStr = String.format("%s/%s/%s",group, devId,biz);
             }
-            if(len>1){
-                req$res = temps[1];
+            else{
+                if(ObjectUtil.isNotEmpty(version)) {
+                    this.topStr = String.format("%s/%s/%s/%s", group, "req", biz, version);
+                }
+                else{
+                    this.topStr = String.format("%s/%s/%s", group, "req", biz);
+                }
             }
-            if(len>2){
-                biz = temps[2];
+
+            if(ObjectUtil.isEmpty(topic.getProduct())){
+                String productId = deviceService.getProductKey();
+                if(ObjectUtil.isNotEmpty(productId)){
+                    this.topStr = productId+"/"+this.topStr;
+                }
             }
-            if(len>3){
-                version = temps[3];
-            }
-            /**
-             * 【msg｜upld】/req/[devinfo|status|faceinfo|...]/vx.x/${dev_id}
-             */
-            this.topStr = String.format("%s/%s/%s/%s/%s",group,req$res,biz,version,deviceService.getExtSN());
             if(debug){
                 this.topStr = this.topStr+"/debug";
-            }
-            String productId = deviceService.getProductKey();
-            if(ObjectUtil.isNotEmpty(productId)){
-                this.topStr = productId+"/"+this.topStr;
             }
 
             this.qos = qos;
