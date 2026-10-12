@@ -72,8 +72,8 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
             requestorClientId = req.getClientId();
         }
         if(isNew){
-            // 新版: res/{biz}/{devId}，buildResTopic会拼接requestorClientId
-            resTopic = String.format("res/%s/%s", biz, devId);
+            // 新版: res/{devId}/{biz}，buildResTopic会拼接requestorClientId
+            resTopic = String.format("res/%s/%s", devId, biz);
             if(ObjectUtil.isNotEmpty(topic.getProduct())){
                 resTopic = String.format("%s/%s", topic.getProduct(), resTopic);
             }

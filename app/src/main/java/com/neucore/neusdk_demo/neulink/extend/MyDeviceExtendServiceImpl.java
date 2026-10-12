@@ -117,4 +117,9 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
          */
         return DeviceInfoDefaultBuilder.getInstance().build(new MyDeviceExtendInfoCallBack());
     }
+
+    @Override
+    public String getVersion(){
+        return "paho-2.0.0";
+    }
 }

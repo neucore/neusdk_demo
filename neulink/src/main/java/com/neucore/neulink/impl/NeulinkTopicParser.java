@@ -7,7 +7,7 @@ public class NeulinkTopicParser {
     //rrpc/req/${dev_id}/facelib/v1.0/${req_no}[/${md5}
     //upld/res/${dev_id}/carplateinfo/v1.0/${req_no}[/${md5}], qos=0
     //upld/res/${dev_id}/facetemprature/v1.0/${req_no}[/${md5}], qos=0
-    //{productId}/req/{biz}/{devId}/{requesterClientId}
+    //{productId}/req/{devId}/{biz}/{requesterClientId}
     private static NeulinkTopicParser parser = new NeulinkTopicParser();
     public static NeulinkTopicParser getInstance(){
         return parser;
@@ -21,16 +21,17 @@ public class NeulinkTopicParser {
         int len = paths.length;
 
         // ===== 新版topic格式检测（paho-2.0.0+） =====
-        // req: {productId}/req/{biz}/{devId}/{requesterClientId}
+        // req: {productId}/req/{devId}/{biz}/{requesterClientId}
         // bcst: {productId}/bcst/{biz}
         if(hasProduct && len > 2){
             String group = paths[1];
             topic.setProduct(paths[0]);
             topic.setGroup(group);
             if("req".equalsIgnoreCase(group)){
-                // {productId}/req/{biz}/{devId}/{requesterClientId}
+                // {productId}/req/{devId}/{biz}/{requesterClientId}
                 topic.setReq$res("req");
-                if(len>2) topic.biz = paths[2];
+                if(len>2) topic.devId = paths[2];
+                if(len>3) topic.biz = paths[3];
                 if(len>4) topic.requestorClientId = paths[4];
                 return topic;
             }
@@ -170,7 +171,7 @@ public class NeulinkTopicParser {
         // 本方法仅解析 设备→云端(End2Cloud) 方向的 topic：
         // evt: {productId}/evt/{devId}/connect|disconnect|lwt
         // msg: {productId}/msg/{devId}/{biz}
-        // res: {productId}/res/{biz}/{devId}/{requesterClientId}
+        // res: {productId}/res/{devId}/{biz}/{requesterClientId}
         // upld: {productId}/upld/{devId}/{fileId}
         // 注意：req/bcst 是 云端→设备(Cloud2End) 方向，由 cloud2EndParser 解析
         if(hasProduct && len > 2){
@@ -180,13 +181,15 @@ public class NeulinkTopicParser {
             if("evt".equalsIgnoreCase(group)){
                 // {productId}/evt/{devId}/{status}
                 topic.setReq$res("req");
+                if(len>2) topic.devId = paths[2];
                 if(len>3) topic.biz = paths[3];
                 return topic;
             }
             if("res".equalsIgnoreCase(group)){
-                // {productId}/res/{biz}/{devId}/{requesterClientId}
+                // {productId}/res/{devId}/{biz}/{requesterClientId}
                 topic.setReq$res("res");
-                if(len>2) topic.biz = paths[2];
+                if(len>2) topic.devId = paths[2];
+                if(len>3) topic.biz = paths[3];
                 if(len>4) topic.requestorClientId = paths[4];
                 return topic;
             }
@@ -194,6 +197,7 @@ public class NeulinkTopicParser {
                     && len>2 && !"req".equalsIgnoreCase(paths[2]) && !"res".equalsIgnoreCase(paths[2])){
                 // {productId}/msg/{devId}/{biz}  |  {productId}/upld/{devId}/{fileId}
                 topic.setReq$res("req");
+                if(len>2) topic.devId = paths[2];
                 if(len>3) topic.biz = paths[3];
                 return topic;
             }
@@ -256,6 +260,7 @@ public class NeulinkTopicParser {
         private String md5;
         private String biz;
         private String version;
+        private String devId;
         private String topString;
 
         public Topic(){
@@ -323,6 +328,14 @@ public class NeulinkTopicParser {
 
         public void setVersion(String version) {
             this.version = version;
+        }
+
+        public String getDevId() {
+            return devId;
+        }
+
+        public void setDevId(String devId) {
+            this.devId = devId;
         }
 
         public void setString(String topString) {

@@ -365,9 +365,9 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
         String topicPrefix;
         if(isNew){
-            // 新版: res/{biz}/{devId}
+            // 新版: res/{devId}/{biz}
             String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
-            topicPrefix = String.format("res/%s/%s", biz, devId);
+            topicPrefix = String.format("res/%s/%s", devId, biz);
         }
         else{
             topicPrefix = String.format("rmsg/res/%s",biz);
@@ -521,9 +521,9 @@ public class NeulinkPublisherFacde implements NeulinkConst{
         boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
         String topicPrefix;
         if(isNew){
-            // 新版: res/{biz}/{devId}（统一用res组，服务端自动回退rrpc处理器）
+            // 新版: res/{devId}/{biz}（统一用res组，服务端自动回退rrpc处理器）
             String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
-            topicPrefix = String.format("res/%s/%s", biz, devId);
+            topicPrefix = String.format("res/%s/%s", devId, biz);
         }
         else{
             topicPrefix = String.format("rrpc/res/%s",biz);

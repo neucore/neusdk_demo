@@ -601,14 +601,14 @@ public class NeulinkService implements NeulinkConst{
      * @param topicPrefix [rmsg|rrpc|upld]/[res|req]/biz
      * @param version
      * @param requestorClientId
-     * @return res/{biz}/{devId}/{requesterClientId} 或者 [rmsg|rrpc|upld]/[res|req]/biz/version/requestorClientId
+     * @return res/{devId}/{biz}/{requesterClientId} 或者 [rmsg|rrpc|upld]/[res|req]/biz/version/requestorClientId
      */
     private String buildResTopic(String topicPrefix, String version,String requestorClientId){
         boolean isNew = deviceService.isNewTopicVersion();
         String topic = null;
         if(isNew){
-            // 新版: topicPrefix=res/{biz}/{devId}，拼接requestorClientId
-            // 最终: res/{biz}/{devId}/{requesterClientId}
+            // 新版: topicPrefix=res/{devId}/{biz}，拼接requestorClientId
+            // 最终: res/{devId}/{biz}/{requesterClientId}
             StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(requestorClientId);
             topic = stringBuffer.toString();
         }
@@ -858,11 +858,9 @@ public class NeulinkService implements NeulinkConst{
                 HeadersUtil.registBinding(jsonObject,reqId,this.topicStr,qos);
                 this.payload = jsonObject.toString();
             }
-            if(ObjectUtil.isEmpty(topic.getProduct())){
-                String productId = deviceService.getProductKey();
-                if(ObjectUtil.isNotEmpty(productId)){
-                    this.topicStr = productId+"/"+this.topicStr;
-                }
+            String productId = deviceService.getProductKey();
+            if(ObjectUtil.isNotEmpty(productId)){
+                this.topicStr = productId+"/"+this.topicStr;
             }
             this.qos = qos;
             this.retained = retained;
@@ -1047,12 +1045,11 @@ public class NeulinkService implements NeulinkConst{
                 }
             }
 
-            if(ObjectUtil.isEmpty(topic.getProduct())){
-                String productId = deviceService.getProductKey();
-                if(ObjectUtil.isNotEmpty(productId)){
-                    this.topicStr = productId+"/"+this.topicStr;
-                }
+            String productId = deviceService.getProductKey();
+            if(ObjectUtil.isNotEmpty(productId)){
+                this.topicStr = productId+"/"+this.topicStr;
             }
+
             if(debug){
                 this.topicStr = this.topicStr +"/debug";
             }

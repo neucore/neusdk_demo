@@ -230,10 +230,10 @@ public interface IDeviceService {
         if(isNew){
             /**
              * 新版topic（paho-2.0.0+）
-             * 请求: {productId}/req/{biz}/{devId}/{requesterClientId}
+             * 请求: {productId}/req/{devId}/{biz}/{requesterClientId}
              * 广播: {productId}/bcst/{biz}
              */
-            String req_topic = "req/+/" + getExtSN() + "/+";
+            String req_topic = "req/" + getExtSN() + "/+/+";
             if(ObjectUtil.isNotEmpty(productKey)){
                 req_topic = String.format("%s/%s", productKey, req_topic);
             }
@@ -319,10 +319,10 @@ public interface IDeviceService {
         return qoss;
     }
     default boolean statusReport(){
-        return true;
+        return false;
     }
     default boolean runtimeReport(){
-        return true;
+        return false;
     }
     default boolean logReport(){
         return false;

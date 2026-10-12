@@ -12,13 +12,14 @@ public class NeulinkTopicParserTest {
 
     @Test
     public void testCloud2End_NewFormat_Req() {
-        // {productId}/req/{biz}/{devId}/{requesterClientId}
-        String topicStr = "smarthome/req/devinfo/dev001/cloudClient01";
+        // {productId}/req/{devId}/{biz}/{requesterClientId}
+        String topicStr = "smarthome/req/dev001/devinfo/cloudClient01";
         NeulinkTopicParser.Topic t = parser.cloud2EndParser(topicStr);
         assertNotNull(t);
         assertEquals("smarthome", t.getProduct());
         assertEquals("req", t.getGroup());
         assertEquals("req", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("devinfo", t.getBiz());
         assertEquals("cloudClient01", t.getRequestorClientId());
     }
@@ -37,13 +38,14 @@ public class NeulinkTopicParserTest {
 
     @Test
     public void testCloud2End_NewFormat_Req_NoRequester() {
-        // {productId}/req/{biz}/{devId} （无requesterClientId）
-        String topicStr = "smarthome/req/devinfo/dev001";
+        // {productId}/req/{devId}/{biz} （无requesterClientId）
+        String topicStr = "smarthome/req/dev001/devinfo";
         NeulinkTopicParser.Topic t = parser.cloud2EndParser(topicStr);
         assertNotNull(t);
         assertEquals("smarthome", t.getProduct());
         assertEquals("req", t.getGroup());
         assertEquals("req", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("devinfo", t.getBiz());
         assertNull(t.getRequestorClientId());
     }
@@ -73,6 +75,7 @@ public class NeulinkTopicParserTest {
         assertEquals("smarthome", t.getProduct());
         assertEquals("evt", t.getGroup());
         assertEquals("req", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("connect", t.getBiz());
     }
 
@@ -81,6 +84,7 @@ public class NeulinkTopicParserTest {
         // {productId}/evt/{devId}/disconnect
         String topicStr = "smarthome/evt/dev001/disconnect";
         NeulinkTopicParser.Topic t = parser.end2cloudParser(topicStr);
+        assertEquals("dev001", t.getDevId());
         assertEquals("disconnect", t.getBiz());
     }
 
@@ -89,18 +93,20 @@ public class NeulinkTopicParserTest {
         // {productId}/evt/{devId}/lwt
         String topicStr = "smarthome/evt/dev001/lwt";
         NeulinkTopicParser.Topic t = parser.end2cloudParser(topicStr);
+        assertEquals("dev001", t.getDevId());
         assertEquals("lwt", t.getBiz());
     }
 
     @Test
     public void testEnd2Cloud_NewFormat_Res() {
-        // {productId}/res/{biz}/{devId}/{requesterClientId}
-        String topicStr = "smarthome/res/qlog/dev001/cloudClient01";
+        // {productId}/res/{devId}/{biz}/{requesterClientId}
+        String topicStr = "smarthome/res/dev001/qlog/cloudClient01";
         NeulinkTopicParser.Topic t = parser.end2cloudParser(topicStr);
         assertNotNull(t);
         assertEquals("smarthome", t.getProduct());
         assertEquals("res", t.getGroup());
         assertEquals("res", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("qlog", t.getBiz());
         assertEquals("cloudClient01", t.getRequestorClientId());
     }
@@ -114,6 +120,7 @@ public class NeulinkTopicParserTest {
         assertEquals("smarthome", t.getProduct());
         assertEquals("msg", t.getGroup());
         assertEquals("req", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("alog", t.getBiz());
     }
 
@@ -126,6 +133,7 @@ public class NeulinkTopicParserTest {
         assertEquals("smarthome", t.getProduct());
         assertEquals("upld", t.getGroup());
         assertEquals("req", t.getReq$res());
+        assertEquals("dev001", t.getDevId());
         assertEquals("file001", t.getBiz());
     }
 
