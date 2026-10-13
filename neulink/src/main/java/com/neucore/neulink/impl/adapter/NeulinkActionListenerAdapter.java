@@ -111,8 +111,11 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         NeuLogUtils.iTag(TAG, "connectComplete ");
         reentrantLock.lock();
         try {
+            if(reconnect){
+                service.getSubscriberFacde().unsubAll();
+            }
             service.getSubscriberFacde().subAll();
-            deviceService.connect();
+            //deviceService.connect();
             NeuLogUtils.dTag(TAG, "Server:" + serverURI + " ,connectComplete reconnect:" + reconnect);
             List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
             if (mqttCallBacks != null) {

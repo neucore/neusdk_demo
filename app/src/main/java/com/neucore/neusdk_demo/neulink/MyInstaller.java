@@ -215,7 +215,7 @@ public class MyInstaller implements NeulinkConst {
          * extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭上传内容压缩处理
          */
         extConfig.setProperty(ConfigContext.CUSTMER_COMPRESS,"true"); //关闭下发内容压缩处理
-        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"true"); //关闭下发内容压缩处理
+        extConfig.setProperty(ConfigContext.PRODUCT_COMPRESS,"false"); //关闭下发内容压缩处理
         extConfig.setProperty(ConfigContext.ENABLE_HEARTBEAT,"false"); //开启心跳
         extConfig.setProperty(ConfigContext.ENABLE_RUNTIME,"false"); //开启运行状态
 
