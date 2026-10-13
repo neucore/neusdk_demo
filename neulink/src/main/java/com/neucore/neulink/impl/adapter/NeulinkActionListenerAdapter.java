@@ -55,20 +55,25 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     public void onSuccess(IMqttToken asyncActionToken) {
 
         MqttActionListener actionListener = asyncActionToken.getActionCallback();
-        if(actionListener instanceof ConnectActionListener){
-            service.setFailException(null);
-            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-            NeuLogUtils.iTag(TAG, "connectSuccess ");
-            if (mqttCallBacks != null) {
-                for (IMqttCallBack callback: mqttCallBacks) {
-                    try {
-                        callback.connectSuccess(asyncActionToken);
-                    }
-                    catch (Exception ex){
-                        NeuLogUtils.eTag(TAG,ex.getMessage());
+        reentrantLock.lock();
+        try {
+            if (actionListener instanceof ConnectActionListener) {
+                service.setFailException(null);
+                List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+                NeuLogUtils.iTag(TAG, "connectSuccess ");
+                if (mqttCallBacks != null) {
+                    for (IMqttCallBack callback : mqttCallBacks) {
+                        try {
+                            callback.connectSuccess(asyncActionToken);
+                        } catch (Exception ex) {
+                            NeuLogUtils.eTag(TAG, ex.getMessage());
+                        }
                     }
                 }
             }
+        }
+        finally {
+            reentrantLock.unlock();
         }
     }
 
@@ -81,22 +86,28 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
         NeuLogUtils.eTag(TAG, "onFailure ",exception);
         MqttActionListener actionListener = asyncActionToken.getActionCallback();
-        if(actionListener instanceof ConnectActionListener){
-            NeuLogUtils.eTag(TAG, "connectFailed ",exception);
-            if (!service.isMqttConnSuccessed()) {
-                NeuLogUtils.iTag(TAG, "历史没有连接连接成功");
-                service.setFailException(exception);
-            }
-            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-            if (mqttCallBacks != null) {
-                for (IMqttCallBack callback : mqttCallBacks) {
-                    try {
-                        callback.connectFailed(asyncActionToken, exception);
-                    } catch (Exception ex) {
-                        NeuLogUtils.eTag(TAG, ex.getMessage());
+        reentrantLock.lock();
+        try {
+            if (actionListener instanceof ConnectActionListener) {
+                NeuLogUtils.eTag(TAG, "connectFailed ", exception);
+                if (!service.isMqttConnSuccessed()) {
+                    NeuLogUtils.iTag(TAG, "历史没有连接连接成功");
+                    service.setFailException(exception);
+                }
+                List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+                if (mqttCallBacks != null) {
+                    for (IMqttCallBack callback : mqttCallBacks) {
+                        try {
+                            callback.connectFailed(asyncActionToken, exception);
+                        } catch (Exception ex) {
+                            NeuLogUtils.eTag(TAG, ex.getMessage());
+                        }
                     }
                 }
             }
+        }
+        finally {
+            reentrantLock.unlock();
         }
     }
 
@@ -111,11 +122,9 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         NeuLogUtils.iTag(TAG, "connectComplete ");
         reentrantLock.lock();
         try {
-            if(reconnect){
-                service.getSubscriberFacde().unsubAll();
-            }
+            // SUBSCRIBE是幂等的，直接subAll即可，无需先unsubAll
+            // sessionExpiryInterval=0时broker已清空旧会话；>0时broker保留订阅，subAll为幂等确认
             service.getSubscriberFacde().subAll();
-            //deviceService.connect();
             NeuLogUtils.dTag(TAG, "Server:" + serverURI + " ,connectComplete reconnect:" + reconnect);
             List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
             if (mqttCallBacks != null) {
@@ -152,15 +161,20 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     public void deliveryComplete(IMqttToken token) {
         NeuLogUtils.dTag(TAG,"deliveryComplete");
         List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.deliveryComplete(token);
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
+        reentrantLock.lock();
+        try {
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback : mqttCallBacks) {
+                    try {
+                        callback.deliveryComplete(token);
+                    } catch (Exception ex) {
+                        NeuLogUtils.eTag(TAG, ex.getMessage());
+                    }
                 }
             }
+        }
+        finally {
+            reentrantLock.unlock();
         }
     }
 
@@ -171,18 +185,23 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
     @Override
     public void disconnected(MqttDisconnectResponse disconnectResponse) {
         NeuLogUtils.eTag(TAG,"disconnected",disconnectResponse.getException());
-        service.getSubscriberFacde().unsubAll();
-        deviceService.disconnect();
-        List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
-        if (mqttCallBacks != null) {
-            for (IMqttCallBack callback: mqttCallBacks) {
-                try {
-                    callback.connectionLost(disconnectResponse.getException());
-                }
-                catch (Exception ex){
-                    NeuLogUtils.eTag(TAG,ex.getMessage());
+        // 不调用unsubAll：连接已断开无法发送UNSUBSCRIBE报文，且sessionExpiryInterval=0时broker已自动清除会话
+        reentrantLock.lock();
+        try {
+            deviceService.disconnect();
+            List<IMqttCallBack> mqttCallBacks = service.getMqttCallBacks();
+            if (mqttCallBacks != null) {
+                for (IMqttCallBack callback : mqttCallBacks) {
+                    try {
+                        callback.connectionLost(disconnectResponse.getException());
+                    } catch (Exception ex) {
+                        NeuLogUtils.eTag(TAG, ex.getMessage());
+                    }
                 }
             }
+        }
+        finally {
+            reentrantLock.unlock();
         }
     }
 

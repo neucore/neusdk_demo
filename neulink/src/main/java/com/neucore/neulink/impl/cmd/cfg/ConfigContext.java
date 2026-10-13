@@ -85,6 +85,8 @@ public class ConfigContext implements NeulinkConst{
 
     public final static String CLEAN_SESSION = "cleanSession";
 
+    public final static String SESSION_EXPIRY_INTERVAL = "sessionExpiryInterval";
+
     public final static String AUTO_RECONNECT = "autoReconnect";
 
     public final static String MAX_RECONNECT_DELAY= "maxReconnectDelay";

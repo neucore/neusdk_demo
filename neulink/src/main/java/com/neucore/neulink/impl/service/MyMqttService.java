@@ -47,6 +47,8 @@ public class MyMqttService implements NeulinkConst{
     private Integer maxReconnectDelay;
     //客户端掉线后是否清楚客户端session
     private Boolean cleanSession;
+
+    private Long sessionExpiryInterval = 0l;
     private Boolean autoReconnect;
 
     private boolean close = false;
@@ -69,6 +71,7 @@ public class MyMqttService implements NeulinkConst{
         this.executorServiceTimeout = builder.executorServiceTimeout;
         this.keepAliveInterval = builder.keepAliveInterval;
         this.cleanSession = builder.cleanSession;
+        this.sessionExpiryInterval = builder.sessionExpiryInterval;
         this.autoReconnect = builder.autoReconnect;
         this.maxReconnectDelay = builder.maxReconnectDelay;
         this.mqttCallback = builder.mqttCallback;
@@ -92,6 +95,8 @@ public class MyMqttService implements NeulinkConst{
         private Integer executorServiceTimeout;
         private Integer keepAliveInterval;
         private Boolean cleanSession;
+
+        private Long sessionExpiryInterval;
         private Boolean autoReconnect;
         private Integer maxReconnectDelay;
 
@@ -140,6 +145,11 @@ public class MyMqttService implements NeulinkConst{
 
         public Builder cleanSession(boolean cleanSession) {
             this.cleanSession = cleanSession;
+            return this;
+        }
+
+        public Builder sessionExpiryInterval(Long sessionExpiryInterval){
+            this.sessionExpiryInterval = sessionExpiryInterval;
             return this;
         }
 
@@ -220,7 +230,7 @@ public class MyMqttService implements NeulinkConst{
             /**
              * mqtt 5.0 lwt 消息必须设置sessionExpiryInterval，否则不会触发 lwt事件
              */
-            conOpt.setSessionExpiryInterval(0L);
+            conOpt.setSessionExpiryInterval(sessionExpiryInterval);
             // 清除缓存
             conOpt.setCleanStart(cleanSession);
             // 设置连接超时时间，单位：秒
