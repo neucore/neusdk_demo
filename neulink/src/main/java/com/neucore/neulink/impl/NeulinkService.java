@@ -609,12 +609,18 @@ public class NeulinkService implements NeulinkConst{
         if(isNew){
             // 新版: topicPrefix=res/{devId}/{biz}，拼接requestorClientId
             // 最终: res/{devId}/{biz}/{requesterClientId}
-            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(requestorClientId);
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix);
+            if(ObjectUtil.isNotEmpty(requestorClientId)){
+                stringBuffer.append("/").append(requestorClientId);
+            }
             topic = stringBuffer.toString();
         }
         else{
             String devId = deviceService.getExtSN();
-            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(devId).append("/").append(requestorClientId);
+            StringBuffer stringBuffer = new StringBuffer(topicPrefix).append("/").append(version).append("/").append(devId);
+            if(ObjectUtil.isNotEmpty(requestorClientId)){
+                stringBuffer.append("/").append(requestorClientId);
+            }
             topic = stringBuffer.toString();
         }
         return topic;

@@ -33,6 +33,8 @@ import com.neucore.neusdk_demo.neulink.extend.bind.listener.BindCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.HelloProcessor;
 import com.neucore.neusdk_demo.neulink.extend.hello.listener.HelloCmdListener;
 import com.neucore.neusdk_demo.neulink.extend.hello.response.HellResCallback;
+import com.neucore.neusdk_demo.neulink.extend.todolist.TodolistProcessor;
+import com.neucore.neusdk_demo.neulink.extend.todolist.listener.TodolistCmdListener;
 
 /**
  * 扩展业务注册回调实现
@@ -191,6 +193,8 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
          */
         //ListenerRegistry.getInstance().setExtendListener(NeulinkConst.NEULINK_BIZ_DEBUG,new SampleDebugCmdListener());
 
+
+
         //######################################################################################
         /**
          * SDK 自定义业务扩展实现
@@ -204,6 +208,12 @@ public class MyBizExtendRegistCallbackImpl implements IExtendCallback {
          * doAction返回结果后框架会把处理结果返回给云端；同时把云端处理状态返回给HellResCallback
          */
         ProcessRegistry.regist("hello",new HelloProcessor(),new HelloCmdListener(),new HellResCallback());
+
+        /**
+         * Todolist 扩展
+         */
+        ProcessRegistry.regist(NeulinkConst.NEULINK_BIZ_TODOLIST,new TodolistProcessor(),new TodolistCmdListener());
+
         //######################################################################################
         /**
          * 上传结果给到云端
