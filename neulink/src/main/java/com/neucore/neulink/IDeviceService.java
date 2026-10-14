@@ -237,7 +237,7 @@ public interface IDeviceService {
             if(ObjectUtil.isNotEmpty(productKey)){
                 req_topic = String.format("%s/%s", productKey, req_topic);
             }
-            boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,false);
+            boolean bcstEnable = ConfigContext.getInstance().getConfig(ConfigContext.BCST_ENABLE,true);
             if(bcstEnable){
                 String bcst_topic = "bcst/+";
                 if(ObjectUtil.isNotEmpty(productKey)){

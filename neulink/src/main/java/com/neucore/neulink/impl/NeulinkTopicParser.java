@@ -50,12 +50,42 @@ public class NeulinkTopicParser {
             String group = paths[1];
             topic.setGroup(group);
             topic.setReq$res(paths[2]);
-            if(topStr.startsWith("bcst/")){
+            if("bcst".equalsIgnoreCase(group)){
                 /**
-                 * 广播设备
+                 * 广播设备(v1.2)
+                 * {productId}/bcst/req/[${scopeId}]/vx.x
+                 * {productId}/bcst/res/[qlib|blib….]/vx.x[/${dev_id}][/${req_no}]
                  */
-                if(len>4){
-                    topic.setVersion(paths[4]);
+                if("req".equalsIgnoreCase(paths[2])){
+                    if(len>3){
+                        String scopeOrVersion = paths[3];
+                        if(scopeOrVersion.toLowerCase().startsWith("v")){
+                            /**
+                             * scopeId缺省: {productId}/bcst/req/vx.x
+                             */
+                            topic.setVersion(scopeOrVersion);
+                        }
+                        else{
+                            topic.setCustId(scopeOrVersion);
+                            if(len>4){
+                                topic.setVersion(paths[4]);
+                            }
+                        }
+                    }
+                }
+                else{
+                    if(len>3){
+                        topic.setBiz(paths[3]);
+                    }
+                    if(len>4){
+                        topic.setVersion(paths[4]);
+                    }
+                    if(len>5){
+                        topic.setDevId(paths[5]);
+                    }
+                    if(len>6){
+                        topic.setReqId(paths[6]);
+                    }
                 }
             }
             else{
@@ -261,6 +291,10 @@ public class NeulinkTopicParser {
         private String biz;
         private String version;
         private String devId;
+        /**
+         * 广播scopeId
+         */
+        private String custId;
         private String topString;
 
         public Topic(){
@@ -336,6 +370,14 @@ public class NeulinkTopicParser {
 
         public void setDevId(String devId) {
             this.devId = devId;
+        }
+
+        public String getCustId() {
+            return custId;
+        }
+
+        public void setCustId(String custId) {
+            this.custId = custId;
         }
 
         public void setString(String topString) {

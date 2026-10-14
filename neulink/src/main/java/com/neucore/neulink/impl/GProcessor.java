@@ -58,6 +58,11 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
         String reqNo = req.getReqNo();
         String version = req.getVersion();
 
+        /**
+         * 广播消息(bcst)：一对多下发，端侧只执行、不响应
+         */
+        boolean isBroadcast = "bcst".equalsIgnoreCase(group);
+
         payload = auth(headers,payload);
 
         /**
@@ -96,7 +101,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                             )
                     )
             ) {
-                resLstRsl2Cloud(debug,resTopic,version,reqNo,requestorClientId,msg);
+                if(!isBroadcast) {
+                    resLstRsl2Cloud(debug,resTopic,version,reqNo,requestorClientId,msg);
+                }
                 return;
             }
 
@@ -123,7 +130,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                 /**
                  * 响应消息已到达
                  */
-                resReceived2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,req.getHeaders());
+                if(debug && !isBroadcast) {
+                    resReceived2Cloud(debug, qos, retained, resTopic, biz, version, reqNo, requestorClientId, req.getHeaders());
+                }
 
                 ActionResult actionResult = process(req);
                 if(ObjectUtil.isNotEmpty(actionResult)){
@@ -140,7 +149,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                         }
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        if(!isBroadcast) {
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        }
                     }
                 }
             }
@@ -152,7 +163,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        if(!isBroadcast) {
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        }
                     }
                 }
                 catch(Exception e){
@@ -166,7 +179,9 @@ public abstract class GProcessor<Req extends NewCmd, Res extends NewCmdRes, Acti
                     if(ObjectUtil.isNotEmpty(res)){
                         mergeHeaders(req,res);
                         String jsonStr = JSonUtils.toString(res);
-                        resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        if(!isBroadcast) {
+                            resLstRsl2Cloud(debug,qos,retained,resTopic,biz,version,reqNo,requestorClientId,jsonStr);
+                        }
                     }
                 }
                 catch(Exception e){}

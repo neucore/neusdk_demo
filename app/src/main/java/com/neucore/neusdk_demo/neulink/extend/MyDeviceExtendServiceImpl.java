@@ -120,6 +120,6 @@ public class MyDeviceExtendServiceImpl extends DefaultDeviceServiceImpl {
 
     @Override
     public String getVersion(){
-        return "paho-1.0.0";
+        return "paho-2.0.0";
     }
 }

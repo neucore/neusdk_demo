@@ -64,6 +64,45 @@ public class NeulinkTopicParserTest {
         assertEquals("md5abc", t.getMd5());
     }
 
+    @Test
+    public void testCloud2End_V12Format_BcstReq_WithScopeId() {
+        // ${productId}/bcst/req/[${scopeId}]/vx.x
+        String topicStr = "smarthome/bcst/req/scope001/v1d0";
+        NeulinkTopicParser.Topic t = parser.cloud2EndParser(topicStr);
+        assertNotNull(t);
+        assertEquals("smarthome", t.getProduct());
+        assertEquals("bcst", t.getGroup());
+        assertEquals("req", t.getReq$res());
+        assertEquals("scope001", t.getCustId());
+        assertEquals("v1d0", t.getVersion());
+    }
+
+    @Test
+    public void testCloud2End_V12Format_BcstReq_WithoutScopeId() {
+        // ${productId}/bcst/req/[${scopeId}]/vx.x 中scopeId缺省
+        String topicStr = "smarthome/bcst/req/v1d0";
+        NeulinkTopicParser.Topic t = parser.cloud2EndParser(topicStr);
+        assertNotNull(t);
+        assertEquals("bcst", t.getGroup());
+        assertEquals("req", t.getReq$res());
+        assertNull(t.getCustId());
+        assertEquals("v1d0", t.getVersion());
+    }
+
+    @Test
+    public void testCloud2End_V12Format_BcstRes() {
+        // ${productId}/bcst/res/[${biz}]/vx.x[/${devId}][/${reqNo}]
+        String topicStr = "smarthome/bcst/res/qlog/v1d0/dev001/rn001";
+        NeulinkTopicParser.Topic t = parser.cloud2EndParser(topicStr);
+        assertNotNull(t);
+        assertEquals("bcst", t.getGroup());
+        assertEquals("res", t.getReq$res());
+        assertEquals("qlog", t.getBiz());
+        assertEquals("v1d0", t.getVersion());
+        assertEquals("dev001", t.getDevId());
+        assertEquals("rn001", t.getReqId());
+    }
+
     // ==================== end2cloudParser (设备→云端) ====================
 
     @Test
