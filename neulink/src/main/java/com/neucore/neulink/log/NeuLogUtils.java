@@ -1,7 +1,5 @@
 package com.neucore.neulink.log;
 
-import android.os.Environment;
-
 import com.neucore.neulink.util.RequestContext;
 
 import org.apache.log4j.Level;
@@ -29,9 +27,10 @@ public class NeuLogUtils {
 
         try{
             reentrantLock.lock();
-            File logDir = new File(Environment.getExternalStorageDirectory(), "neucore/logs");
-            if (!logDir.exists()) {
-                logDir.mkdirs(); // 一次性创建多级目录
+            // 日志目录与 LOG_FILE_PATH 的父目录保持一致，统一走 DeviceUtils.getLogPath() 计算
+            File logDir = new File(NeuLogConfig.LOG_FILE_PATH).getParentFile();
+            if (logDir != null && !logDir.exists()) {
+                logDir.mkdirs();
             }
             if(!init){
                 logConfigurator.setFileName(NeuLogConfig.LOG_FILE_PATH);

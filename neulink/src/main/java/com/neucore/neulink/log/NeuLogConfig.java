@@ -31,9 +31,9 @@ class NeuLogConfig {
 
     /** 设置log文件全路径
      * SDCard 已挂载
-     * /storage/emulated/0/neucore/logs/neucore.log
+     * /storage/emulated/0/neucore/logs/neulink.log
      * SDCard 未挂载
-     * /data/data/<应用包名>/cache/neucore/logs/neucore.log
+     * /data/data/<应用包名>/cache/neucore/logs/neulink.log
      */
     public static final String LOG_FILE_PATH = DeviceUtils.getLogPath(ContextHolder.getInstance().getContext())+ File.separator+APP_NAME+".log";
 
@@ -160,7 +160,8 @@ class NeuLogConfig {
             //fallback到应用私有缓存目录，保证日志可用且不崩溃
             try {
                 Context ctx = ContextHolder.getInstance().getContext();
-                File fallbackDir = new File(ctx.getCacheDir(), APP_NAME + File.separator + "logs");
+                // fallback 目录与 DeviceUtils.getLogPath() 的 cache 分支保持一致：cacheDir/neucore/logs
+                File fallbackDir = new File(ctx.getCacheDir(), "neucore" + File.separator + "logs");
                 fallbackDir.mkdirs();
                 fileName = new File(fallbackDir, APP_NAME + ".log").getAbsolutePath();
                 rollingFileAppender = new RollingFileAppender(fileLayout, fileName);

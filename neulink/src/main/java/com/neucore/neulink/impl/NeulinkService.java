@@ -1,6 +1,7 @@
 package com.neucore.neulink.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.neucore.neulink.IMessage;
@@ -658,8 +659,15 @@ public class NeulinkService implements NeulinkConst{
     private void regist(String reqId,String topStr, String payload, int qos, Boolean retained){
         synchronized (this){
             if(!registCalled){
-                fixedThreadPool.execute(new AsyncRegistor(ContextHolder.getInstance().getContext(),reqId,topStr,payload,qos,retained));
-                registCalled = true;
+                try {
+                    fixedThreadPool.execute(new AsyncRegistor(ContextHolder.getInstance().getContext(),reqId,topStr,payload,qos,retained));
+                    registCalled = true;
+                } catch (Throwable t) {
+                    // 进程正在关闭（runtime shutdown）时无法创建新线程，
+                    // 吞掉异常避免二次崩溃，让进程正常退出。
+                    // 用原生 Log 而非 NeuLogUtils，因为此时 log4j 可能已被关闭。
+                    Log.e(TAG, "regist submit failed, runtime may be shutting down", t);
+                }
             }
         }
     }
@@ -680,7 +688,15 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynReqPublisher(debug,reqId,payload,topStr,qos,retained,callback));
+            try {
+                fixedThreadPool.execute(new AsynReqPublisher(debug, reqId, payload, topStr, qos, retained, callback));
+            }
+            catch (Throwable t) {
+                // 进程正在关闭（runtime shutdown）时无法创建新线程，
+                // 吞掉异常避免二次崩溃，让进程正常退出。
+                // 用原生 Log 而非 NeuLogUtils，因为此时 log4j 可能已被关闭。
+                Log.e(TAG, "request submit failed, runtime may be shutting down", t);
+            }
         }
     }
 
@@ -699,36 +715,15 @@ public class NeulinkService implements NeulinkConst{
             }
         }
         else{
-            fixedThreadPool.execute(new AsynResPublisher(debug,reqId,topicStr,requestorClientId,payload,qos,retained,callback));
-        }
-    }
-    /**
-     *
-     * @param debug
-     * @param reqId
-     * @param payload
-     * @param topStr
-     * @param qos
-     * @param retained
-     * @param callback
-     */
-    private void request(boolean debug,String reqId,String payload,String topStr,Integer qos,boolean retained,IResCallback callback){
-
-        if(ObjectUtil.isEmpty(callback)){
-            NeuLogUtils.iTag(TAG,"没有设置IResCallback，走系统默认回调，日志输出回调结果");
-            callback = defaultResCallback;
-        }
-
-        if(!neulinkServiceInited){
-            if(callback!=null){
-                Result result = Result.fail(STATUS_503,"SDK还没初始化完成");
-                result.setReqId(reqId);
-                result.setData(payload);
-                callback.onFinished(result);
+            try {
+                fixedThreadPool.execute(new AsynResPublisher(debug, reqId, topicStr, requestorClientId, payload, qos, retained, callback));
             }
-        }
-        else{
-            fixedThreadPool.execute(new AsynReqPublisher(debug,reqId,payload,topStr,qos,retained,callback));
+            catch (Throwable t) {
+                // 进程正在关闭（runtime shutdown）时无法创建新线程，
+                // 吞掉异常避免二次崩溃，让进程正常退出。
+                // 用原生 Log 而非 NeuLogUtils，因为此时 log4j 可能已被关闭。
+                Log.e(TAG, "response submit failed, runtime may be shutting down", t);
+            }
         }
     }
 
