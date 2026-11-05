@@ -85,7 +85,7 @@
 + 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic或者payload的header内的{biz}；且首字母大写
 
   + eg：授权处理器
-  + topic：rrpc/req/${dev_id}/v1.0；
+  + topic：{productId}/rrpc/req/${dev_id}/v1.0；
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor; 
 
 + 3，变化点&注意事项：
@@ -106,7 +106,7 @@
 
   + eg：授权处理器
   
-  + topic：{productId}/req/${dev_id}/auth；
+  + topic：{productId}/req/${dev_id}/${auth}；
   
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
