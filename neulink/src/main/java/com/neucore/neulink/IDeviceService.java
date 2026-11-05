@@ -147,7 +147,7 @@ public interface IDeviceService {
         return "hmacsha256";
     }
     default String getVersion(){
-        return "paho-1.0.0";
+        return "paho-2.0.0";
     }
     /**
      * 获取签名
@@ -233,7 +233,7 @@ public interface IDeviceService {
              * 请求: {productId}/req/{devId}/{biz}/{requesterClientId}
              * 广播: {productId}/bcst/{biz}
              */
-            String req_topic = "req/" + getExtSN() + "/+/+";
+            String req_topic = "req/" + getExtSN() + "/#";
             if(ObjectUtil.isNotEmpty(productKey)){
                 req_topic = String.format("%s/%s", productKey, req_topic);
             }

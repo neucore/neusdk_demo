@@ -32,7 +32,7 @@ public class NeulinkTopicParser {
                 topic.setReq$res("req");
                 if(len>2) topic.devId = paths[2];
                 if(len>3) topic.biz = paths[3];
-                if(len>4) topic.requestorClientId = paths[4];
+                if(len>4) topic.requesterClientId = paths[4];
                 return topic;
             }
             if("bcst".equalsIgnoreCase(group) && len>2
@@ -220,7 +220,7 @@ public class NeulinkTopicParser {
                 topic.setReq$res("res");
                 if(len>2) topic.devId = paths[2];
                 if(len>3) topic.biz = paths[3];
-                if(len>4) topic.requestorClientId = paths[4];
+                if(len>4) topic.requesterClientId = paths[4];
                 return topic;
             }
             if(("msg".equalsIgnoreCase(group) || "upld".equalsIgnoreCase(group))
@@ -286,7 +286,7 @@ public class NeulinkTopicParser {
         /**
          * 请求者id
          */
-        private String requestorClientId;
+        private String requesterClientId;
         private String md5;
         private String biz;
         private String version;
@@ -332,12 +332,12 @@ public class NeulinkTopicParser {
             this.reqId = reqId;
         }
 
-        public String getRequestorClientId() {
-            return requestorClientId;
+        public String getRequesterClientId() {
+            return requesterClientId;
         }
 
-        public void setRequestorClientId(String requestorClientId) {
-            this.requestorClientId = requestorClientId;
+        public void setRequesterClientId(String requesterClientId) {
+            this.requesterClientId = requesterClientId;
         }
 
         public String getMd5() {
