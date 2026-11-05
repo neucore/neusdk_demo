@@ -61,15 +61,11 @@
 ```
 #### topic 规范
 
-##### topic[1.0]
+##### topic[非一机一密]
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了
++ 0，消息订阅扩展；可以在DefaultDeviceServiceImpl.subscribeTopics() 中查看，目前适配了
   + 非一机一秘【废弃】
     + 【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-  + 一机一密 version=paho-1.0.0【废弃】
-    + ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-  + 一机一密 version=paho-2.0.0【推荐】
-    + ${productId}/req/${dev_id}/#
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
@@ -79,12 +75,10 @@
   + topic：rrpc/req/${dev_id}/${auth}/v1.0/${req_no}[/${md5}]；
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
-##### topic[1.2]
+##### topic[一机一密 version=paho-1.0.0]
 
 + 0，消息订阅扩展；可以在DefaultDeviceServiceImpl.subscribeTopics() 中查看，目前适配了
-  + 非一机一秘:【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
   + 一机一密 version=paho-1.0.0: ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-  + 一机一密 version=paho-2.0.0【推荐】${productId}/req/${dev_id}/#
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
@@ -97,19 +91,23 @@
 + 3，变化点&注意事项：
 
   + 0，新增了header
-  + 1，biz、req_no、md5三个字段从topic移到了header
-##### topic[一机一密]
 
-+ 0，消息订阅扩展；可以在继承DefaultDeviceServiceImpl，扩展实现subscribeTopics()，返回待订阅的topic列表，目前已经够用，除非调整topic规范;
+  + 1，biz、req_no、md5三个字段从topic移到了header
+
+##### topic[一机一密 version=paho-2.0.0]
+
+0，消息订阅扩展；可以在DefaultDeviceServiceImpl.subscribeTopics() 中查看，目前适配了
+
++ 一机一密 version=paho-2.0.0【推荐】${productId}/req/${dev_id}/#
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
-+ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic或者payload的header内的{biz}；且首字母大写
 
   + eg：授权处理器
-    + 非一机一秘:【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-    + 一机一密 version=paho-1.0.0: ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
-    + 一机一密 version=paho-2.0.0【推荐】${productId}/req/${dev_id}/# 订阅
+  
+  + topic：{productId}/req/${dev_id}/auth；
+  
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 + 3，变化点&注意事项：
@@ -117,7 +115,9 @@
   + 0，新增了header
 
   + 1，biz、req_no、md5三个字段从topic移到了header
+  
   + 2，兼容了非一机一密的支持
+  
   + 3，新增了一机一密 version=paho-1.0.0|paho-2.0.0的支持
 
 #### 协议体规范【neulink[2.0]】
