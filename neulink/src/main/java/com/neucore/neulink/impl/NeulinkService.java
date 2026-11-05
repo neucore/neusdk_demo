@@ -338,7 +338,7 @@ public class NeulinkService implements NeulinkConst{
         info.setHeader("custid", NeulinkService.getInstance().getCustId());
         info.setHeader("storeid",NeulinkService.getInstance().getStoreId());
         info.setHeader("zoneid",NeulinkService.getInstance().getZoneId());
-        info.setHeader("xtime",String.valueOf(resTime));
+        info.setHeader("xtimestamp",String.valueOf(resTime));
         info.setStatus(-1);
         return info;
     }
