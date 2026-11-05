@@ -44,8 +44,9 @@
   + deviceSecret：设备密钥，建议设备加密保存
 + 设备连接规则
   + mqttClientId
-    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
-    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${macAddress}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + securemode=2,signmethod=hmacsha256,version=paho-1.0.0|paho-2.0.0
+    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${UID}|salt=${设备id或者用户id},end=${device|izhiju|app|wechat|dingding|server},securemode=${securemode},signmethod=${signmethod},_v=${version}|
+    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${UID}|salt=${设备id或者用户id},end=${device|izhiju|app|wechat|dingding|server},securemode=${securemode},signmethod=${signmethod},_v=${version}|
     + 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
     + 当前时间戳：timestamp
   + mqttUsername:
@@ -62,7 +63,13 @@
 
 ##### topic[1.0]
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了
+  + 非一机一秘【废弃】
+    + 【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+  + 一机一密 version=paho-1.0.0【废弃】
+    + ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+  + 一机一密 version=paho-2.0.0【推荐】
+    + ${productId}/req/${dev_id}/#
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
@@ -74,11 +81,14 @@
 
 ##### topic[1.2]
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在DefaultDeviceServiceImpl.subscribeTopics() 中查看，目前适配了
+  + 非一机一秘:【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+  + 一机一密 version=paho-1.0.0: ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+  + 一机一密 version=paho-2.0.0【推荐】${productId}/req/${dev_id}/#
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
-+ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
++ 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic或者payload的header内的{biz}；且首字母大写
 
   + eg：授权处理器
   + topic：rrpc/req/${dev_id}/v1.0；
@@ -87,18 +97,19 @@
 + 3，变化点&注意事项：
 
   + 0，新增了header
-
   + 1，biz、req_no、md5三个字段从topic移到了header
 ##### topic[一机一密]
 
-+ 0，消息订阅扩展；可以在NeulinkSubscriberFacde中查看，目前已经完成了【${productId}/rmsg/req/${dev_id}/#、${productId}/rrpc/req/${dev_id}/#、${productId}/upld/res/${dev_id}/#】订阅;
++ 0，消息订阅扩展；可以在继承DefaultDeviceServiceImpl，扩展实现subscribeTopics()，返回待订阅的topic列表，目前已经够用，除非调整topic规范;
 
 + 1，实现payload的pojo对象【xxxCmd **extends Cmd**、xxxRes **extends CmdRes**、xxxActionResult **extends ActionResult**】
 
 + 2，新增一个XXXProcessor继承实现GProcessor；同时XXX就是topic第四段；且首字母大写
 
   + eg：授权处理器
-  + topic：rrpc/req/${dev_id}/v1.0；
+    + 非一机一秘:【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+    + 一机一密 version=paho-1.0.0: ${productId}/【rmsg/req/${dev_id}/#、rrpc/req/${dev_id}/#、upld/res/${dev_id}/#】订阅;
+    + 一机一密 version=paho-2.0.0【推荐】${productId}/req/${dev_id}/# 订阅
   + processor：包名com.neucore.neulink.extend.auth；类命名为AuthProcessor;
 
 + 3，变化点&注意事项：
@@ -106,6 +117,8 @@
   + 0，新增了header
 
   + 1，biz、req_no、md5三个字段从topic移到了header
+  + 2，兼容了非一机一密的支持
+  + 3，新增了一机一密 version=paho-1.0.0|paho-2.0.0的支持
 
 #### 协议体规范【neulink[2.0]】
 
@@ -265,8 +278,9 @@ apk升级建议采用增量升级方式【即：patch方式，这样可以保留
   + deviceSecret 设备密钥
 + header
   + clientId
-    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
-    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${mac地址}|timestamp=${timestamp},securemode=2,signmethod=hmacsha256,_v=paho-1.0.0|
+    + securemode=2,signmethod=hmacsha256,version=paho-1.0.0|paho-2.0.0
+    + 当用户启用(YekerID)规则时：${productKey}.${YekerID}@${UID}|salt=${设备id或者用户id},end=${device|izhiju|app|wechat|dingding|server},securemode=${securemode},signmethod=${signmethod},_v=${version}|
+    + 当用户启用(自定义ID)规则时：${productKey}.${自定义ID}@${UID}|salt=${设备id或者用户id},end=${device|izhiju|app|wechat|dingding|server},securemode=${securemode},signmethod=${signmethod},_v=${version}|
     + 其中macAddress：去除冒号连接符且大写，即：02AD3D0110D8
     + 当前时间戳：timestamp
   + sign: 签名

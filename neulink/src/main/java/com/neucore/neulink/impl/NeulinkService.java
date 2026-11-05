@@ -1036,7 +1036,7 @@ public class NeulinkService implements NeulinkConst{
             String devId = ServiceRegistry.getInstance().getDeviceService().getExtSN();
             boolean isNew = ServiceRegistry.getInstance().getDeviceService().isNewTopicVersion();
             if(isNew){
-                // 新版: {productId}/upld/{devId}/{biz}
+                // 新版: upld/{devId}/{biz}
                 this.topicStr = String.format("%s/%s/%s",group, devId,biz);
             }
             else{
