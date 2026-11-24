@@ -66,6 +66,21 @@ public class NeulinkService implements NeulinkConst{
     private Throwable failException;
     private Boolean closed=false, destroyed = false;
 
+    /** MQTT 5.0 CONNACK reason code：ClientId 无效 */
+    private static final int MQTT5_RC_CLIENT_ID_NOT_VALID = 0x85;
+    /** MQTT 5.0 CONNACK reason code：用户名或密码错误 */
+    private static final int MQTT5_RC_BAD_USERNAME_OR_PASSWORD = 0x86;
+    /** MQTT 5.0 CONNACK reason code：未授权 */
+    private static final int MQTT5_RC_NOT_AUTHORIZED = 0x87;
+    /** MQTT 5.0 CONNACK reason code：会话被接管 */
+    private static final int MQTT5_RC_SESSION_TAKEN_OVER = 0x8E;
+    /** MQTT 3.1.1 CONNACK return code：标识符被拒绝 */
+    private static final int MQTT3_RC_IDENTIFIER_REJECTED = 2;
+    /** MQTT 3.1.1 CONNACK return code：用户名或密码错误 */
+    private static final int MQTT3_RC_BAD_USERNAME_OR_PASSWORD = 4;
+    /** MQTT 3.1.1 CONNACK return code：未授权 */
+    private static final int MQTT3_RC_NOT_AUTHORIZED = 5;
+
     private NeulinkPublisherFacde publisherFacde;
     private NeulinkSubscriberFacde subscriberFacde;
     private NeulinkActionListenerAdapter neulinkActionListenerAdapter;
@@ -100,26 +115,29 @@ public class NeulinkService implements NeulinkConst{
                 connect();
             }
             catch (MqttException ex){
-                NeuLogUtils.eTag(TAG,"连接失败",ex);
+                NeuLogUtils.eTag(TAG,"连接失败：" + getConnackMessage(ex.getReasonCode()),ex);
+                // 同步异常交给 run() 统一分类处理，避免本层无限重试
+                throw ex;
             }
-            finally {
-                if(!isMqttConnSuccessed()){
-                    if(isFailed()){
-                        NeuLogUtils.eTag(TAG,"连接失败：",failException);
-                        if(failException instanceof MqttException){
-                            throw (MqttException)failException;
-                        }
+
+            if(!isMqttConnSuccessed()){
+                if(isFailed()){
+                    if(failException instanceof MqttException){
+                        MqttException mqttException = (MqttException)failException;
+                        NeuLogUtils.eTag(TAG,"连接失败：" + getConnackMessage(mqttException.getReasonCode()),failException);
+                        throw mqttException;
                     }
-                    try {
-                        Thread.sleep(1000*count);
-                        if(count<30){
-                            count++;
-                        }
-                    } catch (InterruptedException e) {
-                    }
+                    NeuLogUtils.eTag(TAG,"连接失败：",failException);
                 }
-                NeuLogUtils.iTag(TAG,String.format("end %s 次 connectMqtt",count));
+                try {
+                    Thread.sleep(1000*count);
+                    if(count<30){
+                        count++;
+                    }
+                } catch (InterruptedException e) {
+                }
             }
+            NeuLogUtils.iTag(TAG,String.format("end %s 次 connectMqtt",count));
         }
         NeuLogUtils.iTag(TAG,String.format("end connect success=%s with 第 %s 次",isMqttConnSuccessed(),count));
     }
@@ -747,6 +765,60 @@ public class NeulinkService implements NeulinkConst{
             return mqttConnSuccessed;
         }
     }
+
+    /**
+     * 将 MQTT CONNACK 原因码转换为可读的日志消息
+     * <p>
+     * 服务端为 MQTT 5.0，3.1.1 客户端由 broker 自动降级：
+     * 0x86(5.0) / 4(3.1.1)：DeviceName 不存在或密钥/签名错误
+     * 0x87(5.0) / 5(3.1.1)：未授权，DeviceName 可能已被其他物理设备绑定
+     * 0x85(5.0) / 2(3.1.1)：ClientId 无效
+     * </p>
+     */
+    private String getConnackMessage(int reasonCode){
+        switch (reasonCode){
+            case MQTT5_RC_CLIENT_ID_NOT_VALID:
+            case MQTT3_RC_IDENTIFIER_REJECTED:
+                return "设备标识（ClientId）无效，服务端拒绝该标识接入";
+            case MQTT5_RC_BAD_USERNAME_OR_PASSWORD:
+            case MQTT3_RC_BAD_USERNAME_OR_PASSWORD:
+                return "设备认证失败：DeviceName 不存在，或设备密钥/签名错误";
+            case MQTT5_RC_NOT_AUTHORIZED:
+            case MQTT3_RC_NOT_AUTHORIZED:
+                return "设备认证失败：未授权，该 DeviceName 可能已被其他物理设备绑定，请联系管理员解绑";
+            case MQTT5_RC_SESSION_TAKEN_OVER:
+                return "该 ClientId 的会话已被其他连接接管";
+            default:
+                return "MQTT 连接失败，reasonCode=" + reasonCode;
+        }
+    }
+
+    /**
+     * 可重试的连接异常：网络异常、服务器故障或服务重启中
+     */
+    private boolean isRetryableConnectError(int code){
+        return code == MqttReturnCode.RETURN_CODE_SERVER_UNAVAILABLE
+                || code == MqttReturnCode.RETURN_CODE_UNSPECIFIED_ERROR
+                || code == MqttReturnCode.RETURN_CODE_SERVER_BUSY
+                || code == MqttReturnCode.RETURN_CODE_SERVER_SHUTTING_DOWN
+                || code == MqttReturnCode.RETURN_CODE_SERVER_MOVED
+                || code == MqttReturnCode.RETURN_CODE_KEEP_ALIVE_TIMEOUT
+                || code == MqttClientException.REASON_CODE_CLIENT_TIMEOUT
+                || code == MqttClientException.REASON_CODE_SERVER_CONNECT_ERROR
+                || code == MqttClientException.REASON_CODE_CLIENT_NOT_CONNECTED;
+    }
+
+    /**
+     * 不可重试的认证异常：ClientId 无效、DeviceName/密钥错误、未授权（已被其他物理设备绑定）
+     */
+    private boolean isNonRetryableAuthError(int code){
+        return code == MQTT5_RC_CLIENT_ID_NOT_VALID
+                || code == MQTT5_RC_BAD_USERNAME_OR_PASSWORD
+                || code == MQTT5_RC_NOT_AUTHORIZED
+                || code == MQTT3_RC_IDENTIFIER_REJECTED
+                || code == MQTT3_RC_BAD_USERNAME_OR_PASSWORD
+                || code == MQTT3_RC_NOT_AUTHORIZED;
+    }
     public synchronized boolean isFailed(){
         synchronized (mqttConnSuccessed){
             return ObjectUtil.isNotEmpty(failException);
@@ -897,35 +969,35 @@ public class NeulinkService implements NeulinkConst{
                 }
                 catch (MqttException ex){
                     int code = ex.getReasonCode();
-                    NeuLogUtils.eTag(TAG,"MQTT 初始化异常",ex);
+                    NeuLogUtils.eTag(TAG,"MQTT 初始化异常：" + getConnackMessage(code),ex);
                     Result result = new Result();
                     result.setReqId(UUID.fastUUID().toString());
                     result.setCode(STATUS_403);
-                    result.setMsg(ex.getMessage());
+                    result.setMsg(getConnackMessage(code));
                     registCallback.onFinished(result);
 
-                    if(code == MqttReturnCode.RETURN_CODE_SERVER_UNAVAILABLE
-                            || code == MqttReturnCode.RETURN_CODE_UNSPECIFIED_ERROR
-                            || code == MqttReturnCode.RETURN_CODE_SERVER_BUSY
-                            || code == MqttReturnCode.RETURN_CODE_SERVER_SHUTTING_DOWN
-                            || code == MqttReturnCode.RETURN_CODE_SERVER_MOVED
-                            || code == MqttReturnCode.RETURN_CODE_KEEP_ALIVE_TIMEOUT
-                            || code == MqttClientException.REASON_CODE_CLIENT_TIMEOUT
-                            || code == MqttClientException.REASON_CODE_SERVER_CONNECT_ERROR
-                            || code == MqttClientException.REASON_CODE_CLIENT_NOT_CONNECTED
-                    ){
+                    if(isRetryableConnectError(code)){
                         /**
                          * 未知错误、网络异常、服务器故障、服务重启中需要重试
                          */
                         resetMqttConnCalled();
                         continue;
                     }
+                    else if(isNonRetryableAuthError(code)){
+                        /**
+                         * 认证失败：ClientId 无效、DeviceName/密钥错误、DeviceName 已被其他物理设备绑定
+                         * 重试无意义，重置状态后退出，便于服务端处理后重新发起注册
+                         */
+                        NeuLogUtils.eTag(TAG,"MQTT 认证失败,不再重试：" + getConnackMessage(code));
+                        resetMqttConnCalled();
+                        break;
+                    }
                     else{
                         /**
-                         * 非：未知错误、网络异常、服务器故障、服务重启中直接跳出循环
-                         * eg：clientId非法
+                         * 其他异常直接跳出循环
                          */
-                        NeuLogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册："+ ex.getMessage());
+                        NeuLogUtils.eTag(TAG,"MQTT 初始化异常,跳出注册：" + getConnackMessage(code) + "，" + ex.getMessage());
+                        resetMqttConnCalled();
                         break;
                     }
                 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.neucore.voicesdk">
+
+    <!-- SDK 不申请权限，录音权限由宿主 App 自行申请（RECORD_AUDIO） -->
+
+</manifest>

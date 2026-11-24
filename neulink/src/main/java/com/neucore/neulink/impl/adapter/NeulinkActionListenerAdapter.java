@@ -27,6 +27,7 @@ import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -233,6 +234,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         int qos = message.getQos();
         boolean isRetained = message.isRetained();
         int messageId = message.getId();
+
         String msgContent = MessageUtil.decode(debug,topicStr,message);
         JsonObject payload = JSonUtils.toObject(msgContent,JsonObject.class);
         JsonObject headers = (JsonObject) payload.get(NEULINK_HEADERS);
@@ -252,7 +254,8 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
         NeuLogUtils.iTag(TAG, "messageArrived:" + msgContent);
         biz = biz.toLowerCase();
         IProcessor processor = ProcessRegistry.build(context,biz);
-
+        MqttProperties mqttProperties = message.getProperties();
+        RequestContext.setMqttProperties(mqttProperties);
         try {
             if(processor!=null){
 
@@ -278,6 +281,7 @@ public class NeulinkActionListenerAdapter implements MqttActionListener, MqttCal
             NeuLogUtils.eTag(TAG,"messageArrived",ex);
         }
         finally {
+            RequestContext.removeMqttProperties();
             NeuLogUtils.dTag(TAG,"finished topic:"+ topicStr+",message:"+msgContent);
         }
     }

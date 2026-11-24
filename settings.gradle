@@ -1,2 +1,3 @@
 include ':app', ':neulink', 'opencv'
 include ':neuskit'
+include ':voicesdk'

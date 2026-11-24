@@ -3,6 +3,8 @@ package com.neucore.neulink.util;
 import com.neucore.neulink.IDebugger;
 import com.neucore.neulink.impl.MyDebugger;
 
+import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
+
 import java.util.UUID;
 
 import cn.hutool.core.util.ObjectUtil;
@@ -36,5 +38,17 @@ public class RequestContext {
 
     public static void setDebug(boolean debug){
         debugs.set(debug);
+    }
+
+    private static ThreadLocal<MqttProperties> mqttPropertiesHolder = new InheritableThreadLocal<>();
+    public static void setMqttProperties(MqttProperties mqttProperties){
+        mqttPropertiesHolder.set(mqttProperties);
+    }
+    public static MqttProperties getMqttProperties(){
+        MqttProperties mqttProperties = mqttPropertiesHolder.get();
+        return mqttProperties;
+    }
+    public static void removeMqttProperties(){
+        mqttPropertiesHolder.remove();
     }
 }

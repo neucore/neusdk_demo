@@ -1,0 +1,2 @@
+-keep public class com.neucore.voicesdk.** { *; }
+-keep interface com.neucore.voicesdk.** { *; }

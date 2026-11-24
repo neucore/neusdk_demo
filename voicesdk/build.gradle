@@ -1,0 +1,59 @@
+apply plugin: 'com.android.library'
+
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+
+android {
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.build_tools_version
+
+    defaultConfig {
+        // 与工程统一 minSdk；API 21 专属调用已在代码中做版本判断
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
+        versionCode 1
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // 只依赖 Android 平台 API（AudioRecord / MediaPlayer / TextToSpeech / org.json）
+    // 不引入任何三方库，保证 jar 可直接嵌入宿主工程
+}
+
+/**
+ * 生成纯 Java 接口 + 默认实现的 jar：
+ *   ./gradlew :voicesdk:makeJar
+ * 产物：voicesdk/build/libs/voicesdk-1.0.0.jar
+ */
+task makeJar(type: Copy) {
+    def SDK_BASENAME = "voicesdk"
+    def SDK_VERSION = "${versionMajor}.${versionMinor}.${versionPatch}"
+    def SDK_RELEASE = SDK_BASENAME + "-" + SDK_VERSION + ".jar"
+    delete "build/libs/${SDK_RELEASE}"
+    from('build/intermediates/packaged-classes/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename('classes.jar', SDK_RELEASE)
+}
+
+makeJar.dependsOn(build)
